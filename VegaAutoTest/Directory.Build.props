@@ -1,0 +1,22 @@
+<Project>
+    <!--
+      VegaAutoTest 独立构建配置。
+      本目录已从 Vega_SW 主仓库抽出为独立仓库；此文件的存在阻止 MSBuild 沿目录树
+      继续向上导入主仓库的 Directory.Build.props（MSBuild 只取目录树上第一个命中的），
+      从而切断：中央锁文件(nuGetLockFilePath 指向主仓库 packages.lock.json)、
+      LangVersion/TFM 覆盖、Galaxy/EFEM 本地源码条件引用等渗透。
+    -->
+    <PropertyGroup>
+        <LangVersion>latest</LangVersion>
+        <Nullable>enable</Nullable>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+        <WarningsNotAsErrors>NU1701</WarningsNotAsErrors>
+        <!-- 独立仓库不用中央锁文件：各工程包少且自带版本（ManagePackageVersionsCentrally=false） -->
+        <RestorePackagesWithLockFile>false</RestorePackagesWithLockFile>
+
+        <BuildInParallel>true</BuildInParallel>
+        <UseSharedCompilation>true</UseSharedCompilation>
+        <ContinuousIntegrationBuild>false</ContinuousIntegrationBuild>
+    </PropertyGroup>
+</Project>

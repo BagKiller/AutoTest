@@ -1,0 +1,81 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <PlatformTarget>x64</PlatformTarget>
+    <UseWPF>true</UseWPF>
+
+    <IsPackable>false</IsPackable>
+    <IsTestProject>true</IsTestProject>
+
+    <!-- 本仓库包版本全部自带（独立于任何主项目的中央包管理） -->
+    <ManagePackageVersionsCentrally>false</ManagePackageVersionsCentrally>
+
+    <!--
+      spike 可选化（跨仓库解耦）：
+      WorkItem3478Spike 是 ViewModel 级探针，引用被测主项目 Vega_SW 的 Vega.UI.Inspection。
+      本仓库独立后默认不引用（HasVegaSource=false），仅 harness/L2/Runner 三工程可独立编译；
+      需要跑 logic 层探针时设环境变量 VEGA_SW_ROOT=<Vega_SW 检出根> 启用。
+
+      编译（MSBuild 会把环境变量呈现为属性）：
+        set VEGA_SW_ROOT=D:\Code\Vega\Vega_SW.ChenLR\Vega_SW.chen.ChenLR
+        dotnet build spike/Vega.AutoTest.Spike/Vega.AutoTest.Spike.csproj
+    -->
+    <HasVegaSource Condition="'$(VEGA_SW_ROOT)' != ''">true</HasVegaSource>
+    <HasVegaSource Condition="'$(HasVegaSource)' == ''">false</HasVegaSource>
+    <DefineConstants Condition="'$(HasVegaSource)' == 'true'">$(DefineConstants);VEGA_SOURCE_AVAILABLE</DefineConstants>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.8.0" />
+    <PackageReference Include="xunit" Version="2.5.3" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="2.5.3" />
+
+    <!-- Galaxy 的 XActivator 在静态构造里反射加载它，编译期无引用因而不会自动传递 -->
+    <PackageReference Include="Castle.Core.AsyncInterceptor" Version="2.1.0" />
+
+    <!-- UIA 通道 -->
+    <PackageReference Include="FlaUI.UIA3" Version="4.0.0" />
+
+    <!-- L1 API 通道：JSON 解析（与主程序一致用 Newtonsoft；13.0.4 跟随传递依赖版本） -->
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(HasVegaSource)' == 'true'">
+    <ProjectReference Include="$(VEGA_SW_ROOT)\Vega.UI.Inspection\Vega.UI.Inspection.csproj" />
+  </ItemGroup>
+
+  <!--
+    ViewModel 探针 + Galaxy 容器替身只在 HasVegaSource 时编译：
+    StubServices/StubLogService 引用 Galaxy.*（随 Vega.UI.Inspection 传递），
+    WorkItem3478Spike 引用 DFInspectionRegionViewModel。未设 VEGA_SW_ROOT 时
+    spike 程序集只剩 UiaExploration（纯 FlaUI，任何环境可编译）。
+  -->
+  <ItemGroup Condition="'$(HasVegaSource)' != 'true'">
+    <Compile Remove="WorkItem3478Spike.cs" />
+    <Compile Remove="StubServices.cs" />
+    <Compile Remove="StubLogService.cs" />
+    <Compile Remove="StubGenerator.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\harness\Vega.AutoTest.Harness.csproj" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(HasVegaSource)' == 'true'">
+    <!-- Galaxy 组件容器在静态构造时强制读取这两个文件，且任一服务未注册都会栈溢出 -->
+    <Content Include="Galaxy_ComponentConfig.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\ComponentConfig.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Using Include="Xunit" />
+  </ItemGroup>
+
+</Project>

@@ -1,0 +1,18 @@
+{
+  "allowCodeModification": true,
+  "branchPrefix": "auto/wi-",
+  "requireCleanWorktreeBeforeStart": true,
+  "allowCommit": true,
+  "allowPush": false,
+  "allowPullRequest": false,
+  "allowWorkItemStateChange": false,
+  "allowWorkItemAssign": false,
+  "allowHardwareCommands": false,
+  "maxFilesChanged": 10,
+  "maxLinesChanged": 400,
+  "protectedPaths": [
+    "Vega/Resources/MachineConfiguration/**",
+    "**/*.vcxproj",
+    "Vega.sln"
+  ]
+}

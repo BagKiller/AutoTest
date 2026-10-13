@@ -1,0 +1,32 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <PlatformTarget>x64</PlatformTarget>
+    <AssemblyName>Vega.AutoTest.Runner</AssemblyName>
+    <RootNamespace>Vega.AutoTest.Runner</RootNamespace>
+
+    <IsPackable>false</IsPackable>
+    <IsTestProject>false</IsTestProject>
+
+    <!-- 试验工程自带版本，避免为 Newtonsoft.Json 去改仓库共享的 Directory.Packages.props -->
+    <ManagePackageVersionsCentrally>false</ManagePackageVersionsCentrally>
+
+    <InvariantGlobalization>true</InvariantGlobalization>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- 只引用 harness（复用 VegaEnv/RunContext 常量与 AssertionRecord 类型）。
+         不引用 L2/Spike 工程：dotnet test 子进程驱动，宿主崩溃 Runner 仍能写 result.json -->
+    <ProjectReference Include="..\..\harness\Vega.AutoTest.Harness.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- result.json 契约序列化（CLAUDE.md §6：统一 Newtonsoft.Json） -->
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
+  </ItemGroup>
+
+</Project>

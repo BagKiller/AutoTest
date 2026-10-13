@@ -1,0 +1,261 @@
+{
+  "schemaVersion": "1.0",
+  "cases": [
+    {
+      "id": "wi3478",
+      "title": "Inspection 检测区域参数联动",
+      "workItems": [
+        3478
+      ],
+      "tags": [
+        "inspection",
+        "recipe",
+        "df-region"
+      ],
+      "layers": {
+        "logic": {
+          "project": "spike/Vega.AutoTest.Spike/Vega.AutoTest.Spike.csproj",
+          "filter": "FullyQualifiedName~WorkItem3478Spike",
+          "timeoutSeconds": 300,
+          "requiresVegaExe": false,
+          "requiresL1Api": false,
+          "minAssertions": 0
+        },
+        "uia": {
+          "project": "l2/Vega.AutoTest.L2/Vega.AutoTest.L2.csproj",
+          "filter": "FullyQualifiedName~WorkItem3478L2",
+          "timeoutSeconds": 900,
+          "requiresVegaExe": true,
+          "requiresL1Api": false,
+          "minAssertions": 3
+        }
+      },
+      "evidenceFiles": [
+        "_wi3478_l2.txt"
+      ]
+    },
+    {
+      "id": "wi3547",
+      "title": "操作菜单强制中断替换中断/停止四项",
+      "workItems": [
+        3547
+      ],
+      "tags": [
+        "operation-menu",
+        "force-abort",
+        "menu-structure"
+      ],
+      "layers": {
+        "uia": {
+          "project": "l2/Vega.AutoTest.L2/Vega.AutoTest.L2.csproj",
+          "filter": "FullyQualifiedName~WorkItem3547L2",
+          "timeoutSeconds": 600,
+          "requiresVegaExe": true,
+          "requiresL1Api": false,
+          "minAssertions": 5
+        }
+      },
+      "evidenceFiles": [
+        "_wi3547_l2.txt"
+      ]
+    },
+    {
+      "id": "wi3549",
+      "title": "BSS 诊断 default 模式保存与加载往返",
+      "workItems": [
+        3549
+      ],
+      "tags": [
+        "bss",
+        "easyconfig",
+        "roundtrip"
+      ],
+      "layers": {
+        "uia": {
+          "project": "l2/Vega.AutoTest.L2/Vega.AutoTest.L2.csproj",
+          "filter": "FullyQualifiedName~WorkItem3549L2",
+          "timeoutSeconds": 900,
+          "requiresVegaExe": true,
+          "requiresL1Api": false,
+          "minAssertions": 5
+        }
+      },
+      "evidenceFiles": [
+        "_wi3549_l2.txt"
+      ]
+    },
+    {
+      "id": "l1-recipe-read",
+      "title": "L1 API 只读主通道冒烟（ping / tool-state / recipe-list / opened-recipe）",
+      "workItems": [],
+      "tags": [
+        "l1",
+        "recipe",
+        "smoke"
+      ],
+      "layers": {
+        "l1": {
+          "project": "l2/Vega.AutoTest.L2/Vega.AutoTest.L2.csproj",
+          "filter": "FullyQualifiedName~L1RecipeReadL2",
+          "timeoutSeconds": 900,
+          "requiresVegaExe": true,
+          "requiresL1Api": true,
+          "minAssertions": 3
+        }
+      },
+      "evidenceFiles": [
+        "_l1_recipe_read.txt"
+      ]
+    },
+    {
+      "id": "wi3575",
+      "title": "Haze校准配置界面拦截入射偏振不匹配的配方",
+      "workItems": [
+        3575
+      ],
+      "tags": [
+        "haze",
+        "calibration",
+        "recipe-check"
+      ],
+      "layers": {
+        "uia": {
+          "project": "l2/Vega.AutoTest.L2/Vega.AutoTest.L2.csproj",
+          "filter": "FullyQualifiedName~WorkItem3575L2",
+          "timeoutSeconds": 900,
+          "requiresVegaExe": true,
+          "requiresL1Api": false,
+          "minAssertions": 1
+        }
+      },
+      "evidenceFiles": [
+        "_wi3575_l2.txt"
+      ]
+    },
+    {
+      "id": "scan-chain",
+      "title": "扫描主链端到端（建方→上片→扫描→结果）",
+      "workItems": [],
+      "tags": [
+        "l1",
+        "scan",
+        "e2e",
+        "recipe",
+        "wafer"
+      ],
+      "layers": {
+        "uia": {
+          "project": "l2/Vega.AutoTest.L2/Vega.AutoTest.L2.csproj",
+          "filter": "FullyQualifiedName~ScanChainL2",
+          "timeoutSeconds": 1500,
+          "requiresVegaExe": true,
+          "requiresL1Api": true,
+          "minAssertions": 3
+        }
+      },
+      "evidenceFiles": [
+        "_scanchain_l2.txt"
+      ]
+    },
+    {
+      "id": "wi3579",
+      "title": "Vega100 BPSR 光挡位 OD1-OD6，诊断界面按机型隐藏 BPSI",
+      "workItems": [
+        3579
+      ],
+      "tags": [
+        "diagnostics",
+        "bps",
+        "vega100"
+      ],
+      "layers": {
+        "uia": {
+          "project": "l2/Vega.AutoTest.L2/Vega.AutoTest.L2.csproj",
+          "filter": "FullyQualifiedName~WorkItem3579L2",
+          "timeoutSeconds": 900,
+          "requiresVegaExe": true,
+          "requiresL1Api": false,
+          "minAssertions": 6
+        }
+      },
+      "evidenceFiles": [
+        "_wi3579_l2.txt"
+      ]
+    },
+    {
+      "id": "wi3611",
+      "title": "Vega100 摘除 CLPA/L3L4/窄掩膜，激光功率收敛为 BEA OD 三挡",
+      "workItems": [
+        3611
+      ],
+      "tags": [
+        "vega100",
+        "optics",
+        "laser-power",
+        "recipe"
+      ],
+      "layers": {
+        "uia": {
+          "project": "l2/Vega.AutoTest.L2/Vega.AutoTest.L2.csproj",
+          "filter": "FullyQualifiedName~WorkItem3611L2",
+          "timeoutSeconds": 900,
+          "requiresVegaExe": true,
+          "requiresL1Api": false,
+          "minAssertions": 8
+        }
+      },
+      "evidenceFiles": [
+        "_wi3611_l2.txt"
+      ]
+    },
+    {
+      "id": "wi3631",
+      "title": "F2 默认位置，诊断设置产量/入射时同步 L3L4",
+      "workItems": [
+        3631
+      ],
+      "tags": [
+        "optics",
+        "f2",
+        "l3l4",
+        "diagnostics"
+      ],
+      "layers": {
+        "uia": {
+          "project": "l2/Vega.AutoTest.L2/Vega.AutoTest.L2.csproj",
+          "filter": "FullyQualifiedName~WorkItem3631L2",
+          "timeoutSeconds": 900,
+          "requiresVegaExe": true,
+          "requiresL1Api": false,
+          "minAssertions": 6
+        }
+      },
+      "evidenceFiles": [
+        "_wi3631_l2.txt"
+      ]
+    },
+    {
+      "id": "gallery-nth",
+      "title": "Gallery 按下标点第 N 个 WaferRun，并用结果区与 L1 核对",
+      "workItems": [],
+      "tags": [
+        "gallery",
+        "result",
+        "wafer-run"
+      ],
+      "layers": {
+        "uia": {
+          "project": "l2/Vega.AutoTest.L2/Vega.AutoTest.L2.csproj",
+          "filter": "FullyQualifiedName~GalleryNthClickL2",
+          "timeoutSeconds": 900,
+          "requiresVegaExe": true,
+          "requiresL1Api": false,
+          "minAssertions": 4
+        }
+      },
+      "evidenceFiles": [
+        "_gallery_nth_l2.txt"
+      ]
+    }
+  ]
+}

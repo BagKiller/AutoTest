@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VegaAgent - Vega 智能助手</title>
+    <link rel="stylesheet" href="/static/style.css">
+    <script src="/static/marked.min.js"></script>
+</head>
+<body>
+    <div class="app">
+        <!-- 侧边栏 -->
+        <aside class="sidebar" id="sidebar">
+            <div class="logo">
+                <div class="logo-icon">&#9883;</div>
+                <h1>VegaAgent</h1>
+                <span class="version">v1.0</span>
+            </div>
+
+            <div class="vega-status-panel" id="vegaStatusPanel">
+                <h3>Vega 连接</h3>
+                <div class="vega-conn-row">
+                    <span class="vega-indicator" id="vegaIndicator"></span>
+                    <span class="vega-conn-text" id="vegaConnText">检测中...</span>
+                </div>
+                <div class="system-brief" id="systemBrief">
+                    <div class="monitor-item">
+                        <div class="monitor-label">
+                            <span>CPU</span>
+                            <span class="monitor-value" id="cpuValue">--</span>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill cpu-bar" id="cpuBar" style="width:0%"></div>
+                        </div>
+                    </div>
+                    <div class="monitor-item">
+                        <div class="monitor-label">
+                            <span>内存</span>
+                            <span class="monitor-value" id="memValue">--</span>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill mem-bar" id="memBar" style="width:0%"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="workitems-panel" id="workitemsPanel">
+                <h3>待处理工作项 <button class="refresh-btn" id="refreshWorkItemsBtn" title="刷新">&#8635;</button></h3>
+                <div class="workitems-list" id="workitemsList">
+                    <div class="loading-text">加载中...</div>
+                </div>
+            </div>
+
+            <div class="quick-actions">
+                <h3>快捷操作 <button class="refresh-btn" id="settingsBtn" title="设置">&#9881;</button></h3>
+                <button class="action-btn" data-action="检查新的工作项">
+                    <span class="btn-icon">&#128221;</span> 检查工作项
+                </button>
+                <button class="action-btn" data-action="帮我 ping 一下 Vega，看看连接状态">
+                    <span class="btn-icon">&#128225;</span> Ping Vega
+                </button>
+                <button class="action-btn" data-action="获取 Vega 系统的整体状态">
+                    <span class="btn-icon">&#128202;</span> 系统状态
+                </button>
+                <button class="action-btn" data-action="查看当前晶圆（Wafer）的状态">
+                    <span class="btn-icon">&#128191;</span> Wafer 状态
+                </button>
+                <button class="action-btn" data-action="查看运动系统状态">
+                    <span class="btn-icon">&#9881;</span> 运动状态
+                </button>
+                <button class="action-btn" data-action="列出 Vega 项目的完整架构结构">
+                    <span class="btn-icon">&#128193;</span> 项目结构
+                </button>
+                <button class="action-btn" data-action="在代码中搜索 WaferHandlerService 这个类的定义和用法">
+                    <span class="btn-icon">&#128269;</span> 代码搜索
+                </button>
+                <button class="action-btn danger" data-action="clear" id="clearBtn">
+                    <span class="btn-icon">&#128465;</span> 清空对话
+                </button>
+            </div>
+        </aside>
+
+        <!-- 侧边栏调整手柄 -->
+        <div class="sidebar-resizer" id="sidebarResizer"></div>
+
+        <!-- 主内容区 -->
+        <main class="main-content">
+            <div class="tab-bar">
+                <button class="tab-btn active" data-tab="chat">&#128172; 对话</button>
+                <button class="tab-btn" data-tab="vega">&#128300; Vega 状态</button>
+            </div>
+
+            <!-- 对话视图 -->
+            <div class="tab-view active" id="tabChat">
+                <div class="chat-area" id="chatArea">
+                    <div class="welcome-msg">
+                        <div class="welcome-icon">&#9883;</div>
+                        <h2>欢迎使用 VegaAgent</h2>
+                        <p>我是 Vega 晶圆检测系统的 AI 助手，可以帮你：</p>
+                        <div class="feature-grid">
+                            <div class="feature-card">
+                                <span>&#128221;</span>
+                                <span>工作项处理</span>
+                            </div>
+                            <div class="feature-card">
+                                <span>&#128225;</span>
+                                <span>Vega 运行时控制</span>
+                            </div>
+                            <div class="feature-card">
+                                <span>&#128269;</span>
+                                <span>代码探索学习</span>
+                            </div>
+                            <div class="feature-card">
+                                <span>&#128187;</span>
+                                <span>开发指导</span>
+                            </div>
+                            <div class="feature-card">
+                                <span>&#9881;</span>
+                                <span>系统运维</span>
+                            </div>
+                        </div>
+                        <p class="hint">在下方输入你的需求，或点击左侧快捷操作按钮开始</p>
+                    </div>
+                </div>
+
+                <div class="input-area" id="inputArea">
+                    <div class="input-top-bar">
+                        <div class="model-selector" id="modelSelector">
+                            <button class="model-selector-btn" id="modelSelectorBtn">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <circle cx="12" cy="12" r="3"/><path d="M12 1v4m0 14v4m-8.66-3.34 2.83-2.83m11.66-5.66 2.83-2.83M1 12h4m14 0h4m-3.34 8.66-2.83-2.83M5.17 5.17 2.34 2.34"/>
+                                </svg>
+                                <span id="activeModelName">加载中...</span>
+                                <svg class="chevron" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+                            </button>
+                            <div class="model-dropdown" id="modelDropdown">
+                                <div class="model-dropdown-list" id="modelDropdownList"></div>
+                                <div class="model-dropdown-divider"></div>
+                                <button class="model-dropdown-add" id="addModelBtn">
+                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14m-7-7h14"/></svg>
+                                    添加模型
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="input-wrapper">
+                        <textarea id="userInput" placeholder="输入你的需求，例如：解释 WaferHandlerService 的架构..." rows="1"></textarea>
+                        <button id="sendBtn" class="send-btn" title="发送">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Vega 状态视图 -->
+            <div class="tab-view" id="tabVega">
+                <div class="vega-dashboard">
+                    <div class="dashboard-header">
+                        <h3>Vega 系统仪表盘</h3>
+                        <button class="refresh-btn" id="refreshDashboard">&#8635; 刷新</button>
+                    </div>
+                    <div class="dashboard-cards" id="dashboardCards">
+                        <div class="dash-card">
+                            <div class="dash-card-title">连接状态</div>
+                            <div class="dash-card-value" id="dashConn">--</div>
+                        </div>
+                        <div class="dash-card">
+                            <div class="dash-card-title">系统信息</div>
+                            <div class="dash-card-value" id="dashInfo">--</div>
+                        </div>
+                    </div>
+                    <div class="dashboard-detail" id="dashboardDetail">
+                        <p class="hint">点击"刷新"按钮获取 Vega 实时状态</p>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- 添加模型弹窗 -->
+    <div class="modal-overlay" id="modelModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 id="modalTitle">添加模型</h3>
+                <button class="modal-close" id="modalClose">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>显示名称</label>
+                    <input type="text" id="mName" placeholder="例如：GPT-4o / DeepSeek-V3">
+                </div>
+                <div class="form-group">
+                    <label>提供商类型</label>
+                    <select id="mProvider">
+                        <option value="gemini">Google Gemini</option>
+                        <option value="zhipu">智谱 (ZhipuAI)</option>
+                        <option value="openai">OpenAI 兼容 (通用)</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>模型名称</label>
+                    <input type="text" id="mModel" placeholder="例如：gemini-2.0-flash-exp / glm-4-flash / deepseek-chat">
+                </div>
+                <div class="form-group">
+                    <label>API Key</label>
+                    <input type="password" id="mApiKey" placeholder="粘贴你的 API Key">
+                </div>
+                <div class="form-group" id="baseUrlGroup">
+                    <label>API Base URL <span class="optional">(可选)</span></label>
+                    <input type="text" id="mBaseUrl" placeholder="例如：https://api.deepseek.com">
+                </div>
+                <div class="form-tip">
+                    提示：Gemini 和智谱模型无需填 Base URL；OpenAI 兼容模型（DeepSeek、阿里云百炼等）需要填写对应的 API 地址。
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-cancel" id="modalCancelBtn">取消</button>
+                <button class="btn-confirm" id="modalConfirmBtn">添加</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 设置弹窗 -->
+    <div class="modal-overlay" id="settingsModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3>设置</h3>
+                <button class="modal-close" id="settingsClose">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>Vega 源码根目录 <span class="optional">(VEGA_WORKSPACE_ROOT)</span></label>
+                    <input type="text" id="sWorkspaceRoot" placeholder="例如：c:\Code\Vega\Vega_SW">
+                </div>
+                <div class="form-tip">
+                    MCP 代码分析工具需要此路径来读取 Vega C# 源码。留空则使用默认值 c:\Code\Vega\Vega_SW。
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-cancel" id="settingsCancelBtn">取消</button>
+                <button class="btn-confirm" id="settingsSaveBtn">保存</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 工作区未配置警告弹窗 -->
+    <div class="modal-overlay" id="workspaceWarning">
+        <div class="modal">
+            <div class="modal-header">
+                <h3>&#9888; 需要配置源码路径</h3>
+                <button class="modal-close" id="warningClose">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>Vega 源码根目录</label>
+                    <input type="text" id="wWorkspaceRoot" placeholder="例如：c:\Code\Vega\Vega_SW">
+                </div>
+                <div class="form-tip" style="border-left-color: var(--yellow);">
+                    检测到 Vega 源码路径未配置。MCP 代码分析工具（组件查找、类追踪、代码搜索等）需要此路径才能正常工作。<br>请填写 Vega C# 项目的根目录路径。
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-cancel" id="warningSkipBtn">稍后配置</button>
+                <button class="btn-confirm" id="warningSaveBtn">保存</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="/static/app.js"></script>
+</body>
+</html>

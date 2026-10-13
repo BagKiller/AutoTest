@@ -1,0 +1,19 @@
+{
+  "name": "vega-mcp-server",
+  "version": "1.0.0",
+  "description": "Vega Codebase Explorer MCP Server - 帮助理解和探索 Vega 上位机项目架构",
+  "type": "module",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "dev": "tsc --watch"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "latest"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "typescript": "^5.7.0"
+  }
+}

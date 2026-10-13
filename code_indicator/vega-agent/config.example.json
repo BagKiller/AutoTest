@@ -1,0 +1,14 @@
+{
+  "vega_workspace_root": "D:\\Code\\Vega\\Vega_SW.ChenLR\\Vega_SW.chen.ChenLR",
+  "azure_devops": {
+    "org_url": "http://win-devops:8080/DefaultCollection",
+    "project": "Vega_SW",
+    "pat": ""
+  },
+  "auto_processor": {
+    "enabled": false,
+    "interval_minutes": 10,
+    "auto_assign": false,
+    "assigned_to_email": ""
+  }
+}

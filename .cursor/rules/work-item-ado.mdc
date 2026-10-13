@@ -1,0 +1,21 @@
+---
+description: 提到工作项时先用 PAT 从 Azure DevOps 读取，不要先在仓库里搜编号
+alwaysApply: true
+---
+
+# 工作项先查 Azure DevOps
+
+用户说出「工作项」「work item」「WI」或「验证/查看 NNNN」时，**第一个动作**是用 PAT 拉 Azure DevOps 上的该工作项。禁止先用 Grep、Glob、codebase-memory 或对话记录搜这个编号。
+
+拉取方式（PAT 只从环境变量或本地 `config.json` 读，禁止把令牌写进任何文件或回复）：
+
+```powershell
+$env:PYTHONIOENCODING = 'utf-8'
+python -c "import sys; sys.path.insert(0, r'd:\Code\Vega\VegaAutomation\code_indicator\vega-agent'); from tools.azure_devops import get_work_item_detail; import json; print(json.dumps(get_work_item_detail(工作项号), ensure_ascii=False, indent=2))"
+```
+
+客户端在 `code_indicator/vega-agent/tools/azure_devops.py`：`AZURE_DEVOPS_PAT` 优先，否则 `config.json` 的 `azure_devops.pat`。组织默认 `http://win-devops:8080/DefaultCollection`，项目 `Vega_SW`。
+
+读到标题、描述、复现步骤、验收标准之后，验证流程按 `VegaAutoTest/AI操作手册.md` §2。判定只能来自 Runner 的 `result.json`。
+
+验证跑完后，Runner 会在 `result.json` 同目录写出 `report.md`。回复里给出该路径，并用报告中的结论转述。不要等用户再要文档，也不要另写一份和 `result.json` 不一致的结论。

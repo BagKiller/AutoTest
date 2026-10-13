@@ -1,0 +1,13 @@
+PowerShell 终端：
+
+cd D:\Code\Vega\code_indicator\vega-agent
+.venv\Scripts\Activate.ps1
+python app.py
+
+
+CMD 终端：
+
+
+cd D:\Code\Vega\code_indicator\vega-agent
+.venv\Scripts\activate.bat
+python app.py

@@ -1,0 +1,49 @@
+﻿{
+    "ToolConfigCollection": {
+        "SelectedToolType": "Galaxy",
+        "ToolConfigs": [
+            {
+                "ToolType": "Galaxy",
+                "RootCondition": "",
+                "Features": ""
+            }
+        ]
+    },
+    "Components": [
+        {
+            "Name": "LogService",
+            "Interface": "Galaxy.Platform.ILogging.ILogService, Galaxy.Platform.ILogging",
+            "Implementation": "Vega.AutoTest.Spike.StubLogService, Vega.AutoTest.Spike",
+            "RunOrder": 0,
+            "Condition": ""
+        },
+        {
+            "Name": "NavigationService",
+            "Interface": "Galaxy.Platform.INavigations.INavigationService, Galaxy.Platform.INavigations",
+            "Implementation": "Vega.AutoTest.Spike.StubNavigationService, Vega.AutoTest.Spike",
+            "RunOrder": 1,
+            "Condition": ""
+        },
+        {
+            "Name": "ConfigsManager",
+            "Interface": "Vega.Utility.Common.IConfigsManager, Vega.Utility.Common",
+            "Implementation": "Vega.AutoTest.Spike.StubConfigsManager, Vega.AutoTest.Spike",
+            "RunOrder": 2,
+            "Condition": ""
+        },
+        {
+            "Name": "CalibrationService",
+            "Interface": "Galaxy.Platform.ICalibrations.ICalibrationService, Galaxy.Platform.ICalibrations",
+            "Implementation": "Vega.AutoTest.Spike.StubCalibrationService, Vega.AutoTest.Spike",
+            "RunOrder": 3,
+            "Condition": ""
+        },
+        {
+            "Name": "AccessControlService",
+            "Interface": "Galaxy.Platform.IAccessControl.IAccessControlService, Galaxy.Platform.IAccessControl",
+            "Implementation": "Vega.AutoTest.Spike.StubAccessControlService, Vega.AutoTest.Spike",
+            "RunOrder": 4,
+            "Condition": ""
+        }
+    ]
+}

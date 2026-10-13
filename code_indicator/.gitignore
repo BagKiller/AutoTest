@@ -1,0 +1,16 @@
+# 密钥与本地配置（PAT、模型 api_key 只留在本机）
+config.json
+config.local.json
+vega-agent/models.json
+
+# Python
+__pycache__/
+.venv/
+*.pyc
+
+# Node / 前端构建产物
+node_modules/
+dist/
+
+# 运行产物
+runs/

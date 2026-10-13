@@ -1,0 +1,38 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <PlatformTarget>x64</PlatformTarget>
+
+    <IsPackable>false</IsPackable>
+    <IsTestProject>true</IsTestProject>
+
+    <!-- 试验工程自带版本，避免为了 FlaUI 去改仓库共享的 Directory.Packages.props -->
+    <ManagePackageVersionsCentrally>false</ManagePackageVersionsCentrally>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.8.0" />
+    <PackageReference Include="xunit" Version="2.5.3" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="2.5.3" />
+
+    <!-- UIA 通道 -->
+    <PackageReference Include="FlaUI.UIA3" Version="4.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\harness\Vega.AutoTest.Harness.csproj" />
+  </ItemGroup>
+
+  <!-- 只编译这一份纯函数源文件，避免还原主仓库（会去抢 packages.lock.json）。 -->
+  <ItemGroup Condition="'$(VEGA_SW_ROOT)' != ''">
+    <Compile Include="$(VEGA_SW_ROOT)\Vega.Data.Commons\Vega100LaserPowerGears.cs" Link="Linked\Vega100LaserPowerGears.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Using Include="Xunit" />
+  </ItemGroup>
+
+</Project>

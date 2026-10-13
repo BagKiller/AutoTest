@@ -1,0 +1,9 @@
+zhipuai
+openai
+psutil
+flask
+requests
+pywebview
+pyinstaller
+google-generativeai
+mcp

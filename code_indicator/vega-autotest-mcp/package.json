@@ -1,0 +1,19 @@
+{
+  "name": "vega-autotest-mcp",
+  "version": "1.0.0",
+  "description": "VegaAutoTest Runner MCP：与 code_indicator 共用同一套确定性验证",
+  "type": "module",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/index.js"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "1.12.1",
+    "zod": "^3.24.2"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "typescript": "^5.7.0"
+  }
+}

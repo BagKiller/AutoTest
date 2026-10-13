@@ -1,0 +1,26 @@
+# 自动化测试运行产物（证据文件，每次运行覆盖生成）
+_*.txt
+_*.tsv
+
+# 结构化断言落盘（Runner 未注入 RUNDIR 时手跑产物；注入时落在 runs/<runId>/<layer>/）
+assert-*.json
+
+# Runner 运行产物
+runs/
+
+# 闭环基线与对比报告（本机界面指纹，不入库）
+baselines/
+loops/
+
+# wi-verify 验证报告与自动复现报告（本地证据产物）
+wi-verify-*.md
+auto-repro-*.md
+
+# 构建产物
+bin/
+obj/
+
+# IDE
+.vs/
+*.user
+.claude/settings.local.json
