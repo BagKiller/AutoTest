@@ -1,0 +1,42 @@
+{
+  "schemaVersion": 1,
+  "tagCases": {
+    "sizes": ["wi3644-core", "daily-recent10"],
+    "bfp": ["daily-recent10"],
+    "pmt": ["daily-recent10"],
+    "autooptics": ["daily-recent10"],
+    "notch": ["daily-recent10"],
+    "loadport": ["daily-recent10"],
+    "gem-handshake": ["daily-recent10"],
+    "run-isolation": ["daily-recent10", "daily-supplement"],
+    "ni-abort": ["daily-supplement"],
+    "io-hwv2": ["daily-recent10"],
+    "xy-notch-gate": ["daily-recent10"],
+    "afs-close": ["daily-recent10"]
+  },
+  "baselineCases": ["daily-recent10", "daily-supplement"],
+  "caseProfiles": {
+    "wi3579": ["Vega100-PIC"],
+    "wi3611": ["Vega100-PIC"]
+  },
+  "defaultUiProfile": "Vega500",
+  "profileOrder": ["Vega100-PIC", "Vega100-Coherent", "Vega300-HWv1", "Vega300-HWv2", "Vega500"],
+  "headlessLayerModels": {
+    "logic": "不区分机型",
+    "logic-none": "无匹配机型",
+    "logic100": "Vega100",
+    "logic-channels100": "Vega100",
+    "logic300": "Vega300-HWv1",
+    "logic300-hwv2": "Vega300-HWv2",
+    "logic500": "Vega500"
+  },
+  "hardwareTags": {
+    "ni-abort": "NI 采集卡外部停止错误码与真实采集竞态，需真机 NI 卡",
+    "loadport": "SEPLAT/E87 Host 上片握手，需真机或协议联调台",
+    "gem-handshake": "GEM Load TCS 握手与 Host 并发时序，需真机或协议联调台",
+    "io-hwv2": "Slit/W1FF 真实 IO 接线，需对应硬件版本整机",
+    "afs-close": "MS 电机 30 秒超时的物理响应，需真实电机",
+    "notch": "对位通道真实信号质量，需真机数据"
+  },
+  "headlessBudgetMinutes": 150
+}

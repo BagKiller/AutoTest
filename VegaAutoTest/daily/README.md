@@ -1,56 +1,94 @@
 # Vega 每日提交批次验证
 
-每日 23:30（北京时间）的 Codex 本地定时任务已配置。任务使用本目录收集器和 AI操作手册.md 的 Runner 判定纪律；收集、规划、执行、总结保存在 daily/runs/<batchId>/。机器及桌面应用需要保持运行；UI 阶段需要可交互会话和有效机型授权。
+每日 23:30（北京时间）由本机 Codex 定时任务触发。收集当天 master 全部提交，按提交说明里的工作项号和改动路径把相似提交归成簇，簇映射到 `cases/registry.json` 的登记用例；同一目标 HEAD 只构建一次，同一用例无论被多少提交引用只跑一次，界面用例按机型配置合并成会话。判定纪律同 `AI操作手册.md`：结论只来自 Runner 的 `result.json`。产物在 `daily/runs/<batchId>/`。
 
-## 运行入口
+机器与桌面需保持运行；界面会话需要可交互桌面和有效的机型授权。
+
+## 定时任务要做的三步
 
 ```powershell
 $python='C:\Users\Administrator\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\python.exe'
-& $python C:\AutoTest\AutoTest\VegaAutoTest\daily\daily.py --execute
-# 示例：最近十次提交，不推进每日游标
-& $python C:\AutoTest\AutoTest\VegaAutoTest\daily\daily.py --last 10 --execute
+cd C:\AutoTest\AutoTest\VegaAutoTest
+
+# 1. 收集 + 归簇编排 + 独立 worktree 构建 + 全部无界面用例
+& $python .\daily\daily.py --execute
+
+# 2. 逐个执行 plan.json 的 uiSlots（报告“界面会话”一节有现成命令）
+& .\daily\Start-ModelValidation.ps1 -Model Vega100 -Profile PIC -RepoRoot <worktree> -Action Prepare
+#    按 AGENTS.md 用官方认证器配置该机型并确认能登录，然后：
+& $python .\daily\daily.py --resume .\daily\runs\<batchId> --run-slot ui-Vega100-PIC --session <SessionPath>
+#    --session 给出时，会话结束后自动 Restore 并核对 SHA256；失败的会话记录后继续下一个
+
+# 3. 读 daily\runs\<batchId>\report.md，原样转述逐提交状态与 runId
 ```
 
-默认从 C:\Vega\Vega_SW 读取本地目标。远端 master 刷新到独立 bare 缓存，PAT 仅在 git 子进程环境中使用，不进入 URL、命令参数或产物。日志不打印认证头。`--offline` 只允许离线分析，不得将其报告称为远端当天全量。
+第 1 步的 stdout 末行是 JSON：`report`、`acceptanceState`、`statusCounts`、`pendingUiSlots`。`pendingUiSlots` 为空表示当晚不需要界面会话。
 
-收集按 SHA 去重，覆盖可达 DAG 全部提交（不只 first-parent）；按 committer time 选当天 00:00~执行时的提交，并补收上次 collectedHead 之后新增可达提交，覆盖跨日及回填日期。author time 也保留在 manifest，便于审查。manifest 固定了目标 HEAD、截止时间、提交列表、文件与原始 diff。示例模式不会更新 state.json。每日收集游标与 pendingCommits 分离；验收阻塞项不会因游标推进而删除。历史重写必须人工审查，不能默默重置游标。首次每日运行仅收当天，若需首轮历史补收使用明确的历史示例/清单。
+其他入口：
 
-## 目标落后时的处理
+| 命令 | 作用 |
+| --- | --- |
+| `--last 10 --execute` | 示例：最近十个提交，不推进每日游标、不改待验队列 |
+| `--offline` | 只用本地仓库分析，报告不得称为远端当天全量 |
+| `--resume <batch> --execute` | 同一 manifest 重新构建并重跑无界面用例（新 attempt） |
+| `--resume <batch> --plan-only` | 补登记用例或改 `scheduling.json` 后重算计划与报告，不执行 |
+| `--ack <sha> --ack-reason <理由>` | 人工关闭一个待验提交（例如确认无需自动验证），理由写入 `state.json` |
 
-不使用旧 DLL 验证新提交。daily.py --execute 现自动清理专用验证 Simulator 遗留进程，从 manifest 的源缓存创建每次独立的 detached worktree，固定目标构建并核对提交/DLL指纹；无需人工先切换目录。不要 reset/覆盖用户的 C:\Vega 工程，也不复用旧的共享输出目录。每轮日志保存在批次 attempts/<attempt>/build；历史重写等事实仍保留为阻塞。
+## 收集
 
-```powershell
-& C:\AutoTest\AutoTest\VegaAutoTest\daily\Build-DailyVega.ps1 -RepoRoot C:\AutoTest\workspaces\Vega_SW
-$env:VEGA_SW_ROOT='C:\AutoTest\workspaces\Vega_SW'
-& $python C:\AutoTest\AutoTest\VegaAutoTest\daily\daily.py --last 10 --execute
-```
+- 按 **committer time** 取北京时间当天 00:00 至执行时刻的 master 全部可达提交（不只 first-parent），按 SHA 去重。
+- 补收上次 `collectedHead` 之后新出现的提交，覆盖 23:30 之后的提交和回填日期的提交。
+- `state.json` 的 `pendingCommits` 里前批未验收的提交，只要仍在 master 历史上，就**重新编入本批**并在当晚 HEAD 上重验；已不在历史上的列入报告“不可达的待验提交”，保留待人工确认。
+- 远端历史被改写时不执行，保留证据待人工审查，不会默默重置游标。
+- `manifest.json` 固定目标 HEAD、窗口、每个提交的完整说明、工作项号、文件列表；`<sha8>.diff` 保存原始改动。
 
-构建使用 SDK10、运行目标 .NET8；仅 Simulator 构建排除 NI 原生 C++ 项目。build/ 下保存 restore/build 日志和 commit+DLL SHA256。此构建未采用 locked restore，不能算锁文件门禁通过。构建脚本不修改产品 tracked 文件，也不复制旧 DLL 冒充新构建。
+## 归簇与编排
 
-Runner 仍通过既有 verify 输出 result.json/report.md。外部构建不改变其 builtFromCurrentSource=false 标记；在总报告补充独立构建证据，保留正式标记与限制。运行后必须检查测试文件数、断言、minAssertions、二进制指纹与失败明细，不按进程退出0自行判定。
+每个提交按以下顺序归簇（一个提交可落在多个簇）：
 
-核心执行后自动运行 daily-supplement：logic（17条行为断言）与 logic-channels100（1条V100 LPD过滤/保存场景）。源自目标提交的原始Binning测试和真实DLL交付/会话行为均独立记录。V100通道测试单独进程，避免Binning测试的配置服务影响机型单例；测试替身仅提供隔离服务，不操作真实桌面授权。原始Runner结果保存在supplement-runner，supplement-reference.json保存引用/指纹。
+1. **工作项簇** `wi:<id>`：从标题和正文提取工作项号（`#3661`、`AB#3661`、`Bug 3661`、`工作项 3661`、`Related work items: #3661`、`【3661】`；`Merged PR 4803` 里的 PR 号会排除）。同一工作项的多个提交合为一簇，映射 registry 中 `workItems` 含该号的用例。
+2. **路径簇** `tag:<name>`：`classify()` 的路径规则，经 `scheduling.json` 的 `tagCases` 映射到回归探针。只算候选，不代表验收。
+3. **未映射模块簇** `module:<目录>`：仅对没有工作项号的提交，把路径规则未覆盖的文件按模块分组，列入“需分析”。
+4. 仅文档改动（`ve-docs/`、`*.md`）的提交记为无需验证。
 
-## 动态规划和执行纪律
+有产品改动时，`baselineCases`（`daily-recent10`、`daily-supplement`）作为每日回归底线照常跑，单独标注，不计入任何提交的验收。
 
-1. 逐一阅读提交正文、diff、关联工作项的预期；新需求不能只靠标题/路径规则。classify 只是保守的候选分组，unmappedFiles 必须继续人工/Agent 分析。
-2. 固定同一个目标 HEAD 构建累积效果，不逐提交 checkout；互相覆盖的改动合并回归。提交合并验证不等于能定位哪一提交引入缺陷；失败后才做隔离或二分。
-3. 先执行无 GUI 的三机型/四配置核心批次（V100、V300 HWv1、V300 HWv2、V500），宿主使用真实 DLL 与现有原始产品测试，任何替身仅表示逻辑边界，不表示真实设备通过。
-4. 按机型+硬件 profile+Gen+Simulator/GemSim+数据前置分组，一组一次启动。V300 HWv2 不可与 HWv1 合并成一个配置结果。可先复用已打开的同版本/同配置会话，再切其它配置，最后恢复原会话配置。
-5. UI 配置修改前保存内容与 SHA256，停止测试进程后再改 SelectedToolType、RootCondition、Features、SelectedProfiles 和独立 UserDataFolder；设置 Simulator/GemSim/Gen2。不可仅改机型名称而漏掉 OuterToInner、硬件能力或用户数据目录。不得修改正式授权以绕过模型检查。
-6. 使用 computer-use 技能操作窗口。用户于本任务明确授权自动操作现有官方认证器、按机型配置并完成启动授权/登录；可以执行该范围内的合法认证流程，无须每机型再请用户手工操作。仅使用官方工具生成/保存的凭据，不猜密码、不伪造或绕过授权；不得将密钥/密码写入测试报告或仓库。确实无法取得合法授权时记 BLOCKED。禁止触发真实硬件，禁止将 GemSim 结果当作 SEPLAT/E87 Host 验收。
-7. 无人值守执行不等待人工关闭。自动清理本项目专用 workspaces 下已确认 Simulator 的遗留进程，记录 PID/路径/启动时间；与本项目无关进程采用隔离目录避开。每次构建创建全新 worktree、全新 attempts 证据目录并核对目标提交与 DLL SHA256，不复用运行中的输出。UI 每步超时、最多一次恢复重试，失败继续其他组，finally 停止本轮进程、恢复配置并核对 SHA256；无论成功失败都生成报告。Start 保存进程身份，Stop 等待实际退出。
-8. 只转述 Runner 四态和 runId；静态检查、手动观察、Simulator 部分覆盖、真机待验分开记录。没有完整验收就保留 pending，不能把多个局部 PASS 汇成工作项 PASS。
-9. 每个 batch 的报告必须包含所有提交及未覆盖项。所有 diff 未映射改动必须补计划。硬件验收要写出原因、需要的设备、操作及预期证据。不要 push、创建 PR 或写工作项状态。
+执行顺序：
 
-## 当前示例中的重点场景
+- **无界面**：用例去重后排序——工作项用例在前，路径探针其次，底线最后；同级按覆盖提交数从多到少。每个用例一次 Runner 调用，跑该用例全部非界面层（`logic100`/`logic300`/`logic300-hwv2`/`logic500`/`logic-none`/`logic` 等，每层独立机型宿主）。总时长受 `headlessBudgetMinutes` 约束，超出的用例记 `NOT_RUN_BUDGET`，相关提交保持待执行。
+- **界面会话**：界面层（`uia`、`l1`、`l2/` 工程）按机型配置分组，每个配置一次切换与授权覆盖组内全部用例，按 `profileOrder`（V100-PIC → V100-Coherent → V300-HWv1 → V300-HWv2 → V500）排列，**当晚没有用例的配置不启动**。用例机型来自 `scheduling.json` 的 `caseProfiles`；未声明的挂到当晚已计划的第一个配置（都没有则用 `defaultUiProfile`），报告标注“结论只代表该机型”。V300 HWv1 与 HWv2 永远是两个会话。
+- 界面用例仍由 `L2TestBase` 每条自行拉起并关闭 Vega；会话合并省的是机型配置切换和授权，不是进程启动次数。
+- **真机**：`hardwareTags` 命中的提交列入“需真机验证”，写明需要的设备，从不自动执行。
 
-- 采集隔离：正常 run、同晶圆失败后重跑、取消后重跑、停止/重启栅栏、超时与短读；避免仅测缓存键格式。
-- AFS：采集/监控开启后反复关页重开，无卡死/残留帧；MS 30秒只可在真实电机验证物理行为。
-- V100 XY：给 SimCenterX/Y/Theta 配置非零值后，执行结果仍为零补偿；旧 EnableNotchScan 自愈；V300/500 继续应用其 Sim 偏移。需要具备完整校准前置数据，缺失则记录 BLOCKED。
-- V300 HWv1/HWv2：配置 Slit/W1FF 显示差异、位号、旧副本加载；真实 IO 接线只能真机确认。
-- GEM：返回 false/异常/连续点击仅一次调用；Load 完成早于等待、晚于等待、取消、失败和超时路径；Host/E87 需真机或协议联调台。
+## 逐提交判定
 
-## 报告解释
+每个提交一行，列出所属簇、用到的用例与 runId、自己的状态：
 
-summary.json 的 acceptanceState 表示验收完整性，并非第二套 verdict；正式 verdict 始终来自 Runner 原始 result.json。默认 INCOMPLETE 表示仍有待验项，不等于 FAIL。编译/工具异常保持 ERROR，前置不足保持 BLOCKED。原始报告不手改；附加的批次总报告可补充真实观察、构建证据和覆盖矩阵。历史批次不删除。
+| 状态 | 条件 | 移出待验队列 |
+| --- | --- | --- |
+| 已验收 `ACCEPTED` | 有工作项号，该工作项的登记用例（非 `partial-acceptance`）在目标 HEAD 构建上全部 PASS，且关联探针无 FAIL | 是 |
+| 无需验证 `NOT_APPLICABLE` | 仅文档改动 | 是 |
+| 失败 `FAIL` | 任一关联用例 FAIL（含路径探针）；报告给出同簇提交，需隔离或二分 | 否 |
+| 工具异常 `ERROR` / 无法判定 `BLOCKED` | 工作项用例的 Runner 结论 | 否 |
+| 待执行 `PENDING` | 工作项用例还有层或界面会话未执行 | 否 |
+| 部分验收 `PARTIAL` | 只有路径探针，或登记用例带 `partial-acceptance` | 否 |
+| 缺用例 `NEEDS_CASE` | 工作项未登记用例，或无工作项号且无可映射探针 | 否 |
+
+`summary.json` 的 `acceptanceState`：无提交 `NO_COMMITS`；有失败 `HAS_FAIL`；全部关闭 `COMPLETE`；其余 `INCOMPLETE`。它表示验收完整性，不是第二套 verdict。多个提交合并验证通过，不代表能定位哪个提交引入缺陷；失败后才隔离。
+
+要让一个新工作项能被每晚自动验收：写用例并登记 `registry.json`（`workItems` 填工作项号）；界面用例需固定机型时，在 `scheduling.json` 的 `caseProfiles` 里声明。提交说明带上工作项号即可被自动归簇。
+
+## 构建与环境纪律
+
+不使用旧 DLL 验证新提交。`--execute` 先清理本项目专用 Simulator 遗留进程，从 manifest 的源缓存创建每次独立的 detached worktree，构建目标 HEAD 并核对提交与 Vega.dll SHA256。不 reset/覆盖用户的 `C:\Vega` 工程，不复用旧的共享输出目录。每轮日志在 `attempts/<attempt>/`。
+
+构建使用 SDK10、运行目标 .NET8；Simulator 构建排除 NI 原生 C++ 项目；未采用 locked restore，不能算锁文件门禁通过。Runner 自身未重编，`builtFromCurrentSource=false` 原样保留，报告附独立构建证据说明 DLL 来源。
+
+远端 master 刷新到独立 bare 缓存，PAT 只在 git 子进程环境中使用，不进 URL、命令参数或产物。
+
+## 界面会话纪律
+
+1. 配置修改前保存内容与 SHA256，Vega 停止后才改 `SelectedToolType`、`RootCondition`、`Features`、`SelectedProfiles` 和独立 `UserDataFolder`（`Start-ModelValidation.ps1 -Action Prepare`）。RootCondition 为 `<机型>,Simulator,GemSim,Gen2`；官方认证器里 Simulator 勾选、Gem 不勾选、Gen2。不得只改机型名称而漏掉 OuterToInner、硬件能力或用户数据目录，不得修改正式授权绕过机型检查。
+2. 认证与登录按 `AGENTS.md` 和 `authenticator-flow.json` 用 computer-use 操作官方认证器；密码只在内存与子进程环境中使用（L2 登录读取 `VEGA_AUTOTEST_USER`/`VEGA_AUTOTEST_PASSWORD`），不写入报告或仓库。取不到合法授权时该会话记 BLOCKED，继续下一个。
+3. 每个会话有界执行，失败最多恢复重试一次，继续其他会话；`finally` 停止本轮进程、恢复配置并核对 SHA256。无论成功失败都生成报告。禁止触发真实硬件，GemSim 结果不能当作 SEPLAT/E87 Host 验收。
+4. 不 push、不创建 PR、不写工作项状态。原始 Runner 报告不手改，历史批次不删除。

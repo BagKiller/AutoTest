@@ -1,4 +1,4 @@
-"""Collect immutable commit manifests, plan model batches, invoke the existing Runner.
+"""Collect immutable commit manifests, cluster commits, plan one run per case, invoke the existing Runner.
 
 No product checkout/configuration edits, no hardware commands, no fabricated verdicts.
 The scheduler supplies an agent for reviewing diffs and completing authorized UI work.
@@ -10,20 +10,44 @@ import hashlib
 import json
 import os
 from pathlib import Path
+import re
 import subprocess
+import time
 import uuid
 
 ROOT = Path(__file__).resolve().parents[1]
 REPO = Path(os.environ.get("VEGA_SW_ROOT", r"C:\Vega\Vega_SW"))
 MIRROR = ROOT / "daily" / "cache.git"
 STATE = ROOT / "daily" / "state.json"
+SCHEDULING = ROOT / "daily" / "scheduling.json"
+REGISTRY = ROOT / "cases" / "registry.json"
 CN = timezone(timedelta(hours=8))
 REMOTE = "http://win-devops:8080/DefaultCollection/Vega_SW/_git/Vega_SW"
+SHELL = r"C:\Users\Administrator\.cache\codex-runtimes\codex-primary-runtime\dependencies\native\powershell\pwsh.exe"
+DOTNET = Path(r"C:\AutoTest\runtime\dotnet\dotnet.exe")
+WORKSPACES = Path(r"C:\AutoTest\workspaces")
+LOG_FORMAT = "%H%x1f%cI%x1f%aI%x1f%s%x1f%b%x1e"
+PR_REF = re.compile(r"(?i)(?:merged\s+)?(?:PR|pull\s*request)\s*#?\s*\d+")
+WI_REFS = [
+    re.compile(r"(?<![\w#])(?:AB)?#(\d{3,6})(?!\d)"),
+    re.compile(r"(?i)(?:工作项|需求|任务|缺陷|(?<![A-Za-z])(?:work\s*item|WI|bug|task|pbi))\s*[#:：]?\s*(\d{3,6})(?!\d)"),
+    re.compile(r"[【\[]\s*(\d{4,6})\s*[】\]]"),
+]
+VERDICT_RANK = {"FAIL": 0, "ERROR": 1, "BLOCKED": 2, None: 3, "PASS": 4}
+CLOSED = ("ACCEPTED", "NOT_APPLICABLE", "ACKNOWLEDGED")
 
 
 def save(path, obj):
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(json.dumps(obj, ensure_ascii=False, indent=2), encoding="utf-8")
+
+
+def load(path, default=None):
+    return json.loads(path.read_text(encoding="utf-8-sig")) if path.exists() else default
+
+
+def now_cn():
+    return datetime.now(CN)
 
 
 def run_bounded(command, *, timeout, **kwargs):
@@ -66,6 +90,8 @@ def sync():
     return MIRROR
 
 
+# ────────────────────────────── 提交解析 ──────────────────────────────
+
 def classify(files):
     """Conservative coverage hints. Unmapped changes explicitly require agent triage."""
     rules = {
@@ -90,12 +116,45 @@ def classify(files):
     return groups, unknown
 
 
+def work_items(text):
+    text = PR_REF.sub(" ", text or "")
+    found = []
+    for pattern in WI_REFS:
+        found += [int(m) for m in pattern.findall(text)]
+    return sorted(set(found))
+
+
+def module_of(path):
+    parts = path.split("/")
+    if len(parts) == 1:
+        return "(root)"
+    if parts[0] in ("Vega", "src", "Source") and len(parts) > 2:
+        return parts[0] + "/" + parts[1]
+    return parts[0]
+
+
+def no_product_change(files):
+    return not files or all(p.startswith("ve-docs/") or p.lower().endswith(".md") for p in files)
+
+
+def describe(row, source, start, end, origin):
+    sha, committed, authored, title, body = (row.split("\x1f") + [""] * 5)[:5]
+    files = git("diff-tree", "--root", "--no-commit-id", "--name-only", "-r", "--first-parent", sha, repo=source).splitlines()
+    groups, unknown = classify(files)
+    is_today = start <= datetime.fromisoformat(committed) <= end
+    return dict(sha=sha, committedAt=committed, authoredAt=authored, title=title, message=body.strip(),
+                origin=origin if origin != "window" else ("today" if is_today else "carryover"),
+                carryover=not is_today, workItems=work_items(title + "\n" + body), files=files,
+                groups=groups, unmappedFiles=unknown, modules=sorted({module_of(p) for p in unknown}),
+                noProductChange=no_product_change(files))
+
+
 def collect(last, offline):
-    now = datetime.now(CN)
+    now = now_cn()
     start = now.replace(hour=0, minute=0, second=0, microsecond=0)
     source = REPO if offline else sync()
     head = git("rev-parse", "master", repo=source)
-    old = json.loads(STATE.read_text(encoding="utf-8")) if STATE.exists() else {}
+    old = load(STATE, {})
     previous_head = old.get("collectedHead")
     history_changed = False
     if previous_head:
@@ -103,30 +162,43 @@ def collect(last, offline):
             git("merge-base", "--is-ancestor", previous_head, head, repo=source)
         except RuntimeError:
             history_changed = True
-    rows = git("log", "master", "--format=%H%x09%cI%x09%aI%x09%s", *([f"-{last}"] if last else []), repo=source).splitlines()
+    log = git("log", "master", f"--format={LOG_FORMAT}", *([f"-{last}"] if last else []), repo=source)
+    rows = [r.strip("\n") for r in log.split("\x1e") if r.strip()]
     unseen = set(git("rev-list", head, "^" + previous_head, repo=source).splitlines()) if previous_head and not history_changed else set()
     commits = []
     for row in rows:
-        sha, committed, authored, title = row.split("\t", 3)
+        sha, committed = row.split("\x1f", 2)[:2]
         is_today = start <= datetime.fromisoformat(committed) <= now
         # Select today's commits plus every newly reachable commit since last collection,
         # including backdated commits and submissions after yesterday's cutoff.
         if not last and not (is_today or sha in unseen):
             continue
-        files = git("diff-tree", "--root", "--no-commit-id", "--name-only", "-r", "--first-parent", sha, repo=source).splitlines()
-        groups, unknown = classify(files)
-        commits.append(dict(sha=sha, committedAt=committed, authoredAt=authored, title=title,
-                            carryover=not is_today, files=files, groups=groups, unmappedFiles=unknown))
+        commits.append(describe(row, source, start, now, "window"))
+    # Earlier commits that never reached acceptance are re-planned against tonight's HEAD.
+    unreachable = []
+    if not last:
+        seen = {c["sha"] for c in commits}
+        for sha in old.get("pendingCommits", []):
+            if sha in seen:
+                continue
+            try:
+                git("merge-base", "--is-ancestor", sha, head, repo=source)
+                row = git("show", "-s", f"--format={LOG_FORMAT}", sha, repo=source).strip("\x1e\n")
+            except RuntimeError:
+                unreachable.append(sha)
+                continue
+            commits.append(describe(row, source, start, now, "pending"))
     batch_id = now.strftime("%Y%m%dT%H%M%S%z") + "_" + uuid.uuid4().hex[:6]
     out = ROOT / "daily" / "runs" / batch_id
     out.mkdir(parents=True)
-    manifest = dict(schemaVersion=1, batchId=batch_id, collectedAt=now.isoformat(), timezone="Asia/Shanghai",
+    manifest = dict(schemaVersion=2, batchId=batch_id, collectedAt=now.isoformat(), timezone="Asia/Shanghai",
                     mode="recent-example" if last else "daily", source=str(source), remoteFresh=not offline,
-                    selection="all reachable DAG commits; committer date today plus newly reachable carryover",
+                    selection="all reachable DAG commits; committer date today plus newly reachable carryover plus unaccepted pending",
                     windowStart=start.isoformat(), windowEnd=now.isoformat(), head=head,
                     previousCollectedHead=previous_head, historyRewritten=history_changed,
                     localHead=git("rev-parse", "HEAD"), localDirty=bool(git("status", "--porcelain")),
-                    pendingFromEarlierCollections=old.get("pendingCommits", []), commits=commits)
+                    pendingFromEarlierCollections=old.get("pendingCommits", []), unreachablePending=unreachable,
+                    commits=commits)
     for commit in commits:
         diff = git("show", "--format=fuller", "--first-parent", "--no-ext-diff", commit["sha"], repo=source)
         (out / (commit["sha"][:8] + ".diff")).write_text(diff, encoding="utf-8")
@@ -134,201 +206,522 @@ def collect(last, offline):
     if not last and not offline and not history_changed:
         # Collection checkpoint is separate from acceptance: blocked items remain pending.
         pending = list(dict.fromkeys(old.get("pendingCommits", []) + [c["sha"] for c in commits]))
-        save(STATE, dict(collectedHead=head, collectedAt=now.isoformat(), pendingCommits=pending,
+        save(STATE, dict(old, collectedHead=head, collectedAt=now.isoformat(), pendingCommits=pending,
                          previousBatch=str(out), note="Collection is not acceptance. Pending commits require verified closure."))
     return out, manifest
 
 
-def plan(out, manifest):
-    groups = sorted({g for c in manifest["commits"] for g in c["groups"]})
-    data = dict(targetHead=manifest["head"], groups=groups, configurationPolicy="backup/hash/restore; change model only while stopped; one start per model; Gen2 + Simulator + GemSim; never reuse one model verdict for another",
-                batches=[
-                    dict(order=0, id="preflight", models=[], startupCount=0, tasks=["remote freshness, source/binary fingerprints", "review all diffs and unclassified files", "lockfile restore/build gate, installer generation" ]),
-                    dict(order=1, id="headless", models=["Vega100", "Vega300", "Vega500"], startupCount=0,
-                         tasks=["Runner daily-recent10 logic100,logic300,logic300-hwv2,logic500", "Runner daily-supplement logic,logic-channels100: Binning/delivery/cancellation/timeout/fence/asset/LPD save", "size/BFP defaults, PMT routing, AutoOptics role predicate, DN fallback, GEMSim bool/single-call, run cache key, IO mapping, XY Notch visibility"]),
-                    dict(order=2, id="ui100", models=["Vega100"], startupCount=1, tasks=["200mm XY/XYAuto/ECAM/Uniformity/Beam/BFP", "AutoOptics hidden for su", "PMT model table/OD0.5/laser output/PowerLevel hidden", "notch simulated data source and LoadPort interaction"]),
-                    dict(order=3, id="ui300", models=["Vega300"], startupCount=2, tasks=["HWv1 and HWv2 are separate configurations: one start per hardware profile", "300mm defaults/BFP, IO Slit/W1FF mapping and capability-filtered display", "AutoOptics role regression, shared PMT conditions, LoadPort/GEMSim interaction"]),
-                    dict(order=4, id="ui500", models=["Vega500"], startupCount=1, tasks=["300mm defaults/BFP", "AutoOptics role regression", "shared PMT conditions", "GEM lifecycle/abort simulation and config restoration"]),
-                    dict(order=5, id="hardware", models=["Vega100", "Vega300", "Vega500"], startupCount=None, tasks=["NI external-stop error codes and real acquisition race", "SEPLAT/E87 Host loading handshake/race repeated stress", "real Slit/W1FF wiring and MS motor timeout response", "real alignment channel signal quality; failed-scan rerun data integrity"])
-                ], automationScope="headless Runner only; scheduled agent reviews and executes UI when license/session/config prerequisites allow; hardware never automated")
+# ────────────────────────────── 归簇与编排 ──────────────────────────────
+
+def is_ui_layer(name, layer):
+    return name in ("uia", "l1") or layer["project"].replace("\\", "/").startswith("l2/")
+
+
+def profile_args(profile):
+    """Vega100-PIC → (-Model Vega100, -Profile PIC); Vega500 → (-Model Vega500, -Profile Default)."""
+    model, _, variant = profile.partition("-")
+    return dict(model=model, profileArg=variant or "Default")
+
+
+def plan(out, manifest, registry, sched):
+    cases = {c["id"]: c for c in registry["cases"]}
+    by_wi = {}
+    for case in registry["cases"]:
+        for wi in case.get("workItems", []):
+            by_wi.setdefault(wi, []).append(case["id"])
+    partial = {cid for cid, c in cases.items() if "partial-acceptance" in c.get("tags", [])}
+
+    clusters = {}
+
+    def add(cid, kind, label, sha, case_ids):
+        entry = clusters.setdefault(cid, dict(id=cid, kind=kind, label=label, commits=[], cases=[]))
+        if sha not in entry["commits"]:
+            entry["commits"].append(sha)
+        entry["cases"] = sorted(set(entry["cases"]) | {c for c in case_ids if c in cases})
+
+    for c in manifest["commits"]:
+        if c.get("noProductChange"):
+            continue
+        wis = c.get("workItems") or work_items(c["title"] + "\n" + c.get("message", ""))
+        for wi in wis:
+            add(f"wi:{wi}", "workItem", f"工作项 #{wi}", c["sha"], by_wi.get(wi, []))
+        for tag in c.get("groups", []):
+            add(f"tag:{tag}", "pathTag", f"路径候选 {tag}", c["sha"], sched["tagCases"].get(tag, []))
+        if not wis:
+            for module in c.get("modules") or sorted({module_of(p) for p in c.get("unmappedFiles", [])}):
+                add(f"module:{module}", "unmapped", f"未映射模块 {module}", c["sha"], [])
+
+    product_commits = [c for c in manifest["commits"] if not c.get("noProductChange")]
+    if product_commits:
+        for cid in sched["baselineCases"]:
+            entry = clusters.setdefault("baseline", dict(id="baseline", kind="baseline", label="每日回归底线（与具体提交无关）", commits=[], cases=[]))
+            entry["cases"] = sorted(set(entry["cases"]) | ({cid} & cases.keys()))
+
+    # 每个用例只跑一次：被多少簇/提交引用都合并到同一次 Runner 调用。
+    case_refs = {}
+    for cl in clusters.values():
+        for cid in cl["cases"]:
+            ref = case_refs.setdefault(cid, dict(clusters=set(), commits=set()))
+            ref["clusters"].add(cl["id"])
+            ref["commits"].update(cl["commits"])
+
+    def priority(cid):
+        kinds = {clusters[k]["kind"] for k in case_refs[cid]["clusters"]}
+        rank = 0 if "workItem" in kinds else 1 if "pathTag" in kinds else 2
+        return (rank, -len(case_refs[cid]["commits"]), cid)
+
+    headless, ui_needs, case_phases = [], {}, {}
+    for cid in sorted(case_refs, key=priority):
+        layers = cases[cid]["layers"]
+        quiet = [n for n, l in layers.items() if not is_ui_layer(n, l)]
+        loud = [n for n, l in layers.items() if is_ui_layer(n, l)]
+        refs = case_refs[cid]
+        if quiet:
+            headless.append(dict(order=len(headless) + 1, caseId=cid, layers=quiet,
+                                 models=[sched["headlessLayerModels"].get(n, n) for n in quiet],
+                                 clusters=sorted(refs["clusters"]), commits=[s[:8] for s in sorted(refs["commits"])],
+                                 partial=cid in partial, timeoutSeconds=sum(layers[n].get("timeoutSeconds", 600) for n in quiet) + 180))
+            case_phases.setdefault(cid, []).append("headless")
+        if loud:
+            ui_needs[cid] = loud
+
+    order = sched["profileOrder"]
+    assigned = {cid: sched["caseProfiles"].get(cid) for cid in ui_needs}
+    declared = sorted({p for ps in assigned.values() if ps for p in ps}, key=lambda p: order.index(p) if p in order else len(order))
+    host = declared[0] if declared else sched["defaultUiProfile"]
+    slots = {}
+    for cid, loud in ui_needs.items():
+        profiles, assumed = (assigned[cid], False) if assigned[cid] else ([host], True)
+        for profile in profiles:
+            slot = slots.setdefault(profile, dict(id="ui-" + profile, profile=profile, **profile_args(profile), cases=[], commits=set()))
+            slot["cases"].append(dict(caseId=cid, layers=loud, profileAssumed=assumed, partial=cid in partial,
+                                      timeoutSeconds=sum(cases[cid]["layers"][n].get("timeoutSeconds", 900) for n in loud) + 180))
+            slot["commits"].update(case_refs[cid]["commits"])
+            case_phases.setdefault(cid, []).append(slot["id"])
+    ui_slots = []
+    for profile in sorted(slots, key=lambda p: order.index(p) if p in order else len(order)):
+        slot = slots[profile]
+        slot.update(order=len(ui_slots) + 1, commits=[s[:8] for s in sorted(slot["commits"])], configurationSwitches=1)
+        ui_slots.append(slot)
+
+    hardware = []
+    for tag, note in sched["hardwareTags"].items():
+        shas = clusters.get(f"tag:{tag}", {}).get("commits", [])
+        if shas:
+            hardware.append(dict(tag=tag, note=note, commits=[s[:8] for s in shas]))
+
+    cluster_list = []
+    for cl in sorted(clusters.values(), key=lambda x: (["workItem", "pathTag", "unmapped", "baseline"].index(x["kind"]), x["id"])):
+        cluster_list.append(dict(cl, commits=[s[:8] for s in cl["commits"]], hasCase=bool(cl["cases"]),
+                                 partial=bool(cl["cases"]) and all(c in partial for c in cl["cases"])))
+
+    data = dict(schemaVersion=2, targetHead=manifest["head"], generatedAt=now_cn().isoformat(),
+                configurationPolicy="backup/hash/restore; change model only while stopped; one configuration switch per profile; never reuse one model verdict for another",
+                clusters=cluster_list, headless=headless, uiSlots=ui_slots, hardware=hardware, casePhases=case_phases,
+                needsCase=[cl for cl in cluster_list if cl["kind"] == "workItem" and not cl["hasCase"]],
+                unmapped=[cl for cl in cluster_list if cl["kind"] == "unmapped"],
+                automationScope="--execute runs headless layers; each uiSlot runs via --run-slot after the agent prepares and authenticates that profile; hardware never automated")
     save(out / "plan.json", data)
     return data
 
 
-def execute(out, manifest):
-    if manifest["historyRewritten"]:
-        save(out / "execution.json", dict(state="BLOCKED", reason="remote history rewritten; retained for review"))
-        return None
-    attempt = datetime.now(CN).strftime("%Y%m%dT%H%M%S") + "_" + uuid.uuid4().hex[:6]
+# ────────────────────────────── 执行 ──────────────────────────────
+
+def runner_binary():
+    runner = ROOT / "runner" / "Vega.AutoTest.Runner" / "bin" / "Debug" / "net8.0-windows" / "Vega.AutoTest.Runner.dll"
+    if runner.exists():
+        return runner
+    # Locate by file name, to support the Runner project's target framework suffix.
+    candidates = list((ROOT / "runner" / "Vega.AutoTest.Runner" / "bin" / "Debug").glob("*/Vega.AutoTest.Runner.dll"))
+    if len(candidates) != 1:
+        raise RuntimeError("Runner binary is missing/ambiguous; build the Runner first")
+    return candidates[0]
+
+
+def runner_env(repo):
+    env = os.environ.copy()
+    env.update(VEGA_SW_ROOT=str(repo), DOTNET_ROOT=str(DOTNET.parent),
+               NUGET_PACKAGES=r"C:\Users\Administrator\.nuget\packages",
+               GIT_CONFIG_COUNT="1", GIT_CONFIG_KEY_0="safe.directory", GIT_CONFIG_VALUE_0=Path(repo).as_posix())
+    env["PATH"] = str(DOTNET.parent) + os.pathsep + env["PATH"]
+    return env
+
+
+def prepare_target(out, manifest):
+    """Fresh worktree at the manifest HEAD + Simulator build + DLL fingerprint check."""
+    attempt = now_cn().strftime("%Y%m%dT%H%M%S") + "_" + uuid.uuid4().hex[:6]
     evidence = out / "attempts" / attempt
     evidence.mkdir(parents=True)
     save(out / "execution.json", dict(state="PREPARING", attempt=attempt, evidence=str(evidence)))
-    repo = Path(r"C:\AutoTest\workspaces") / (manifest["batchId"] + "_" + attempt)
-    shell = r"C:\Users\Administrator\.cache\codex-runtimes\codex-primary-runtime\dependencies\native\powershell\pwsh.exe"
+    repo = WORKSPACES / (manifest["batchId"] + "_" + attempt)
     # Unattended recovery: owned Simulator processes may be stopped; never reuse
     # an output directory with a live session or reset the user's checkout.
     with (evidence / "cleanup.log").open("w", encoding="utf-8") as log:
-        cleanup = run_bounded([shell, "-NoProfile", "-File", str(ROOT / "daily" / "Stop-ManagedVega.ps1"),
-                                  "-AuditPath", str(evidence / "cleanup.json")], stdout=log, stderr=subprocess.STDOUT, timeout=45)
+        cleanup = run_bounded([SHELL, "-NoProfile", "-File", str(ROOT / "daily" / "Stop-ManagedVega.ps1"),
+                               "-AuditPath", str(evidence / "cleanup.json")], stdout=log, stderr=subprocess.STDOUT, timeout=45)
     save(evidence / "cleanup-status.json", dict(exitCode=cleanup.returncode,
          fallback="Fresh worktree isolates build even if an unrelated session cannot be stopped"))
     git("worktree", "add", "--detach", str(repo), manifest["head"], repo=Path(manifest["source"]))
     current_head = git("rev-parse", "HEAD", repo=repo)
     if current_head != manifest["head"] or git("status", "--porcelain", repo=repo):
         raise RuntimeError("Fresh worktree fingerprint mismatch")
-    save(out / "execution-target.json", dict(repo=str(repo), head=current_head, dirty=False, evidence=str(evidence)))
+    save(out / "execution-target.json", dict(repo=str(repo), head=current_head, dirty=False, evidence=str(evidence), attempt=attempt))
     save(out / "execution.json", dict(state="BUILDING", attempt=attempt, evidence=str(evidence)))
     with (evidence / "build-driver.log").open("w", encoding="utf-8") as log:
-        build = run_bounded([shell, "-NoProfile", "-File", str(ROOT / "daily" / "Build-DailyVega.ps1"),
-                                "-RepoRoot", str(repo), "-EvidenceRoot", str(evidence / "build")],
-                               stdout=log, stderr=subprocess.STDOUT, timeout=1800)
+        build = run_bounded([SHELL, "-NoProfile", "-File", str(ROOT / "daily" / "Build-DailyVega.ps1"),
+                             "-RepoRoot", str(repo), "-EvidenceRoot", str(evidence / "build")],
+                            stdout=log, stderr=subprocess.STDOUT, timeout=1800)
     if build.returncode:
         raise RuntimeError(f"Target build failed; see {evidence / 'build'}")
-    provenance = json.loads((evidence / "build" / "build-provenance.json").read_text(encoding="utf-8-sig"))
+    provenance = load(evidence / "build" / "build-provenance.json")
     dll = repo / "Vega/bin/Debug/net8.0-windows10.0.19041.0/win-x64/Vega.dll"
     if provenance["commit"] != manifest["head"] or hashlib.sha256(dll.read_bytes()).hexdigest().upper() != provenance["vegaDllSha256"].upper():
         raise RuntimeError("Build provenance mismatch")
     save(out / "build-reference.json", dict(path=str(evidence / "build" / "build-provenance.json"), **provenance))
-    env = os.environ.copy()
-    dotnet = Path(r"C:\AutoTest\runtime\dotnet\dotnet.exe")
-    env.update(VEGA_SW_ROOT=str(repo), DOTNET_ROOT=str(dotnet.parent),
-               NUGET_PACKAGES=r"C:\Users\Administrator\.nuget\packages",
-               GIT_CONFIG_COUNT="1", GIT_CONFIG_KEY_0="safe.directory", GIT_CONFIG_VALUE_0=repo.as_posix())
-    env["PATH"] = str(dotnet.parent) + os.pathsep + env["PATH"]
-    runner = ROOT / "runner" / "Vega.AutoTest.Runner" / "bin" / "Debug" / "net8.0-windows" / "Vega.AutoTest.Runner.dll"
-    # Locate by file name, to support the Runner project's target framework suffix.
-    if not runner.exists():
-        candidates = list((ROOT / "runner" / "Vega.AutoTest.Runner" / "bin" / "Debug").glob("*/Vega.AutoTest.Runner.dll"))
-        if len(candidates) != 1:
-            raise RuntimeError("Runner binary is missing/ambiguous; build the Runner first")
-        runner = candidates[0]
-    before = set((out / "runner").glob("*/result.json"))
-    log_path = out / ("runner-" + datetime.now(CN).strftime("%H%M%S") + ".log")
-    with log_path.open("w", encoding="utf-8") as log:
-        p = run_bounded([str(dotnet), str(runner), "verify", "--case", "daily-recent10", "--layers", "logic100,logic300,logic300-hwv2,logic500", "--repo-root", str(repo), "--runs-dir", str(out / "runner")],
-                           env=env, stdout=log, stderr=subprocess.STDOUT, timeout=1600, cwd=ROOT)
-    paths = list(set((out / "runner").glob("*/result.json")) - before)
-    save(out / "execution.json", dict(state="EXECUTED", exitCode=p.returncode, resultPaths=[str(p) for p in paths]))
-    if len(paths) != 1:
-        raise RuntimeError("Runner did not produce exactly one new result.json; inspect runner timestamped log")
-    result = json.loads(paths[0].read_text(encoding="utf-8-sig"))
-    save(out / "runner-reference.json", dict(path=str(paths[0]), sha256=hashlib.sha256(paths[0].read_bytes()).hexdigest(), runId=result["runId"]))
-    supplement_dir = out / "supplement-runner"
-    before_supplement = set(supplement_dir.glob("*/result.json"))
+    return repo, evidence
+
+
+def run_case(out, repo, log_dir, case_id, layers, phase, timeout, outcomes):
+    """One Runner verify call. The verdict is copied from result.json, never derived here."""
+    log_dir.mkdir(parents=True, exist_ok=True)
+    log_path = log_dir / f"runner-{phase}-{case_id}-{now_cn():%H%M%S}.log"
+    entry = dict(caseId=case_id, phase=phase, layers=layers, startedAt=now_cn().isoformat(), log=str(log_path))
     try:
-        with (evidence / "supplement-runner.log").open("w", encoding="utf-8") as log:
-            supplemental = run_bounded([str(dotnet), str(runner), "verify", "--case", "daily-supplement",
-                "--layers", "logic,logic-channels100", "--repo-root", str(repo), "--runs-dir", str(supplement_dir)],
-                env=env, stdout=log, stderr=subprocess.STDOUT, timeout=700, cwd=ROOT)
-        new_supplement = list(set(supplement_dir.glob("*/result.json")) - before_supplement)
-        if len(new_supplement) != 1:
-            raise RuntimeError("Supplement Runner did not produce exactly one result")
-        supplemental_result = json.loads(new_supplement[0].read_text(encoding="utf-8-sig"))
-        save(out / "supplement-reference.json", dict(path=str(new_supplement[0]),
-            sha256=hashlib.sha256(new_supplement[0].read_bytes()).hexdigest(),
-            runId=supplemental_result["runId"], verdict=supplemental_result["verdict"],
-            verdictCode=supplemental_result["verdictCode"], exitCode=supplemental.returncode))
-    except Exception as exc:
-        save(out / "supplement-reference.json", dict(state="ERROR", reason=str(exc)))
-    return result
+        with log_path.open("w", encoding="utf-8") as log:
+            p = run_bounded([str(DOTNET), str(runner_binary()), "verify", "--case", case_id, "--layers", ",".join(layers),
+                             "--repo-root", str(repo), "--runs-dir", str(out / "runner")],
+                            env=runner_env(repo), stdout=log, stderr=subprocess.STDOUT, timeout=timeout, cwd=ROOT)
+        entry["exitCode"] = p.returncode
+        lines = [l.strip() for l in log_path.read_text(encoding="utf-8", errors="replace").splitlines() if l.strip()]
+        result_path = Path(lines[-1]) if lines else None
+        if not result_path or result_path.name != "result.json" or not result_path.is_file():
+            raise RuntimeError("Runner 末行不是 result.json 路径")
+        result = load(result_path)
+        entry.update(runId=result["runId"], verdict=result["verdict"], verdictCode=result["verdictCode"],
+                     verdictReason=result.get("verdictReason"), summary=result.get("summary"),
+                     resultPath=str(result_path), reportPath=str(result_path.with_name("report.md")),
+                     sha256=hashlib.sha256(result_path.read_bytes()).hexdigest())
+    except Exception as exc:  # noqa: BLE001 — 记成工具异常，继续下一个用例
+        entry.update(verdict="ERROR", verdictCode="DAILY_RUNNER_INVOCATION", verdictReason=str(exc), runId=None)
+    entry["finishedAt"] = now_cn().isoformat()
+    outcomes["runs"].append(entry)
+    save(out / "outcomes.json", outcomes)
+    print(f"[{phase}] {case_id}: {entry['verdict']} / {entry['verdictCode']} runId={entry.get('runId')}", flush=True)
+    return entry
 
 
-def report(out, manifest, plan_data, result):
+def execute(out, manifest, plan_data, outcomes, budget_minutes):
+    if manifest["historyRewritten"]:
+        save(out / "execution.json", dict(state="BLOCKED", reason="remote history rewritten; retained for review"))
+        return
+    repo, evidence = prepare_target(out, manifest)
+    save(out / "execution.json", dict(state="HEADLESS", evidence=str(evidence)))
+    deadline = time.monotonic() + budget_minutes * 60
+    for item in plan_data["headless"]:
+        if time.monotonic() + item["timeoutSeconds"] > deadline:
+            outcomes["runs"].append(dict(caseId=item["caseId"], phase="headless", layers=item["layers"], runId=None,
+                                         verdict=None, verdictCode="NOT_RUN_BUDGET",
+                                         verdictReason=f"超出夜间无界面预算 {budget_minutes} 分钟，未执行",
+                                         finishedAt=now_cn().isoformat()))
+            save(out / "outcomes.json", outcomes)
+            continue
+        run_case(out, repo, evidence, item["caseId"], item["layers"], "headless", item["timeoutSeconds"], outcomes)
+    save(out / "execution.json", dict(state="HEADLESS_DONE", evidence=str(evidence),
+                                      pendingUiSlots=[s["id"] for s in plan_data["uiSlots"]]))
+
+
+def run_slot(out, manifest, plan_data, slot_id, session, outcomes):
+    slot = next((s for s in plan_data["uiSlots"] if s["id"] == slot_id), None)
+    if slot is None:
+        raise RuntimeError(f"plan.json 没有界面会话 {slot_id}；可选: {[s['id'] for s in plan_data['uiSlots']]}")
+    target = load(out / "execution-target.json")
+    if not target or not (out / "build-reference.json").exists():
+        raise RuntimeError("本批次尚未完成目标构建；先运行 --resume <batch> --execute")
+    repo = Path(target["repo"])
+    if git("rev-parse", "HEAD", repo=repo) != manifest["head"]:
+        raise RuntimeError("worktree HEAD 与 manifest 不一致")
+    log_dir = out / "slots" / f"{slot_id}_{now_cn():%Y%m%dT%H%M%S}"
+    log_dir.mkdir(parents=True, exist_ok=True)
+    try:
+        for item in slot["cases"]:
+            run_case(out, repo, log_dir, item["caseId"], item["layers"], slot_id, item["timeoutSeconds"], outcomes)
+    finally:
+        try:
+            subprocess.run([SHELL, "-NoProfile", "-File", str(ROOT / "daily" / "Stop-ManagedVega.ps1"),
+                            "-AuditPath", str(log_dir / "cleanup.json")], timeout=60)
+        except Exception as exc:  # noqa: BLE001 — 清理失败不能挡住配置恢复
+            save(log_dir / "cleanup-error.json", dict(reason=str(exc)))
+        if session:
+            restore = subprocess.run([SHELL, "-NoProfile", "-File", str(ROOT / "daily" / "Start-ModelValidation.ps1"),
+                                      "-Model", slot["model"], "-Profile", slot["profileArg"], "-RepoRoot", str(repo),
+                                      "-SessionPath", str(session), "-Action", "Restore"],
+                                     capture_output=True, encoding="utf-8", errors="replace", timeout=120)
+            save(log_dir / "restore.json", dict(exitCode=restore.returncode, output=(restore.stdout + restore.stderr)[-2000:]))
+            if restore.returncode:
+                raise RuntimeError(f"配置恢复失败，见 {log_dir / 'restore.json'}")
+
+
+# ────────────────────────────── 逐提交判定 ──────────────────────────────
+
+def latest_runs(outcomes):
+    latest = {}
+    for entry in outcomes["runs"]:
+        latest[(entry["caseId"], entry["phase"])] = entry
+    return latest
+
+
+def case_state(cid, plan_data, latest):
+    entries = [latest.get((cid, ph)) for ph in plan_data["casePhases"].get(cid, [])]
+    verdicts = [e.get("verdict") if e else None for e in entries]
+    worst = min(verdicts, key=lambda v: VERDICT_RANK.get(v, 3)) if verdicts else None
+    return worst, [e for e in entries if e]
+
+
+def evaluate(manifest, plan_data, outcomes, registry):
+    latest = latest_runs(outcomes)
+    partial = {c["id"] for c in registry["cases"] if "partial-acceptance" in c.get("tags", [])}
+    clusters = {c["id"]: c for c in plan_data["clusters"]}
+    phases = {}
+    for s in plan_data["uiSlots"]:
+        for item in s["cases"]:
+            phases.setdefault(item["caseId"], []).append(s["id"])
+    rows = []
+    for c in manifest["commits"]:
+        sha8 = c["sha"][:8]
+        mine = [cl for cl in clusters.values() if sha8 in cl["commits"]]
+        wi_clusters = [cl for cl in mine if cl["kind"] == "workItem"]
+        tag_cases = sorted({cid for cl in mine if cl["kind"] == "pathTag" for cid in cl["cases"]})
+        wi_cases = sorted({cid for cl in wi_clusters for cid in cl["cases"]})
+        cells = {cid: case_state(cid, plan_data, latest) for cid in wi_cases + tag_cases}
+        evidence = [dict(caseId=cid, verdict=cells[cid][0], runIds=[e.get("runId") for e in cells[cid][1]],
+                         codes=[e.get("verdictCode") for e in cells[cid][1]], partial=cid in partial)
+                    for cid in sorted(cells)]
+        if c.get("noProductChange"):
+            status, reason = "NOT_APPLICABLE", "仅文档改动"
+        elif any(cells[cid][0] == "FAIL" for cid in cells):
+            failed = [cid for cid in cells if cells[cid][0] == "FAIL"]
+            status, reason = "FAIL", f"用例失败: {', '.join(failed)}；同簇提交见计划，需隔离/二分"
+        elif any(cells[cid][0] == "ERROR" for cid in wi_cases):
+            status, reason = "ERROR", "验证工具异常"
+        elif any(cells[cid][0] == "BLOCKED" for cid in wi_cases):
+            status, reason = "BLOCKED", "前置/环境不满足，无法判定"
+        elif not wi_clusters:
+            status = "PARTIAL" if tag_cases else "NEEDS_CASE"
+            reason = ("提交说明无工作项号，只有路径候选探针（部分验收）" if tag_cases
+                      else "提交说明无工作项号，且无可映射用例；需人工/Agent 分析 diff 并补用例")
+        elif any(not cl["cases"] for cl in wi_clusters):
+            missing = [cl["label"] for cl in wi_clusters if not cl["cases"]]
+            status, reason = "NEEDS_CASE", f"{', '.join(missing)} 未在 registry.json 登记用例"
+        elif any(cells[cid][0] is None for cid in wi_cases):
+            waiting = sorted({ph for cid in wi_cases if cells[cid][0] is None for ph in phases.get(cid, ["headless"])})
+            status, reason = "PENDING", f"等待执行: {', '.join(waiting)}"
+        elif any(cid in partial for cid in wi_cases):
+            status, reason = "PARTIAL", "登记用例全部 PASS，但标记为 partial-acceptance"
+        else:
+            status, reason = "ACCEPTED", "工作项登记用例在目标 HEAD 的独立构建上全部 PASS"
+        if status in ("ACCEPTED", "PARTIAL") and any(cells[cid][0] in ("ERROR", "BLOCKED") for cid in tag_cases):
+            reason += "；关联路径探针未得出 PASS"
+        rows.append(dict(sha=c["sha"], sha8=sha8, title=c["title"], origin=c.get("origin", "carryover" if c.get("carryover") else "today"),
+                         workItems=c.get("workItems", []), clusters=[cl["id"] for cl in mine], status=status,
+                         reason=reason, evidence=evidence, unmappedFiles=c.get("unmappedFiles", [])))
+    return rows
+
+
+def acceptance_state(rows):
+    if not rows:
+        return "NO_COMMITS"
+    if any(r["status"] == "FAIL" for r in rows):
+        return "HAS_FAIL"
+    if all(r["status"] in CLOSED for r in rows):
+        return "COMPLETE"
+    return "INCOMPLETE"
+
+
+def update_pending(manifest, rows, out):
+    if manifest.get("mode") != "daily" or not STATE.exists():
+        return
+    state = load(STATE)
+    closed = {r["sha"]: r for r in rows if r["status"] in CLOSED}
+    if not closed:
+        return
+    state["pendingCommits"] = [s for s in state.get("pendingCommits", []) if s not in closed]
+    history = state.get("closedCommits", [])
+    history += [dict(sha=s, status=r["status"], batch=out.name, at=now_cn().isoformat(),
+                     runIds=[rid for e in r["evidence"] for rid in e["runIds"] if rid]) for s, r in closed.items()]
+    state["closedCommits"] = history[-500:]
+    save(STATE, state)
+
+
+def acknowledge(sha, reason):
+    if not reason:
+        raise ValueError("--ack 需要 --ack-reason 说明人工关闭理由")
+    state = load(STATE, {})
+    pending = state.get("pendingCommits", [])
+    matched = [s for s in pending if s.startswith(sha)]
+    if len(matched) != 1:
+        raise ValueError(f"pendingCommits 中匹配 {sha} 的提交数为 {len(matched)}，需唯一")
+    state["pendingCommits"] = [s for s in pending if s != matched[0]]
+    state.setdefault("closedCommits", []).append(dict(sha=matched[0], status="ACKNOWLEDGED", reason=reason, at=now_cn().isoformat()))
+    save(STATE, state)
+    print(json.dumps(dict(acknowledged=matched[0], reason=reason), ensure_ascii=False))
+
+
+# ────────────────────────────── 报告 ──────────────────────────────
+
+STATUS_TEXT = {"ACCEPTED": "已验收", "PARTIAL": "部分验收", "PENDING": "待执行", "NEEDS_CASE": "缺用例",
+               "FAIL": "失败", "ERROR": "工具异常", "BLOCKED": "无法判定", "NOT_APPLICABLE": "无需验证"}
+
+
+def md(text):
+    return str(text).replace("|", "/").replace("\n", " ")
+
+
+def report(out, manifest, plan_data, outcomes, rows):
+    latest = latest_runs(outcomes)
+    state = acceptance_state(rows)
     counts = {}
-    if result:
-        for a in result.get("assertions", []):
-            counts[a["result"]] = counts.get(a["result"], 0) + 1
-    data = dict(batchId=manifest["batchId"], acceptanceState="INCOMPLETE" if manifest["commits"] else "NO_COMMITS",
-                commitCount=len(manifest["commits"]), target=manifest["head"], remoteFresh=manifest["remoteFresh"],
-                runnerVerdict=result["verdict"] if result else None, runnerCode=result["verdictCode"] if result else None,
-                runId=result["runId"] if result else None, assertionCounts=counts,
-                builtFromCurrentSource=result["target"]["builtFromCurrentSource"] if result else False,
-                note="Acceptance completeness is separate from the unchanged Runner verdict. No commit is accepted solely from static inspection or partial probes.")
-    if (out / "supplement-reference.json").exists():
-        data["supplement"] = json.loads((out / "supplement-reference.json").read_text(encoding="utf-8"))
-    if (out / "supplement-report.md").exists():
-        data["uiSupplementReport"] = str(out / "supplement-report.md")
+    for r in rows:
+        counts[r["status"]] = counts.get(r["status"], 0) + 1
+    build = load(out / "build-reference.json")
+    data = dict(batchId=manifest["batchId"], acceptanceState=state, commitCount=len(rows), statusCounts=counts,
+                target=manifest["head"], remoteFresh=manifest["remoteFresh"], built=bool(build),
+                runs=[dict(caseId=e["caseId"], phase=e["phase"], runId=e.get("runId"), verdict=e.get("verdict"),
+                           verdictCode=e.get("verdictCode")) for e in latest.values()],
+                pendingUiSlots=[s["id"] for s in plan_data["uiSlots"]
+                                if any((i["caseId"], s["id"]) not in latest for i in s["cases"])],
+                commits=[dict(sha=r["sha"], status=r["status"], reason=r["reason"]) for r in rows],
+                note="acceptanceState 表示验收完整性，不是第二套 verdict；正式 verdict 只来自各 Runner result.json。")
     save(out / "summary.json", data)
-    lines = ["# Vega 提交批次总测试报告", "", f"批次 `{manifest['batchId']}`，目标 `{manifest['head']}`。", "",
-             f"收集 {len(manifest['commits'])} 个提交；远端刷新：{manifest['remoteFresh']}。总体验收：**{data['acceptanceState']}**。",
-             "", "## 正式执行结果", "",
-             f"Runner：{data['runnerVerdict']} / {data['runnerCode']}；runId `{data['runId']}`；断言 {counts}。",
-             "Runner 自身未重编产品（builtFromCurrentSource=false），正式结论仅对所记录 DLL 有效；若另行独立构建，以附录构建证据说明，不能改写 Runner 字段。链接的源文件另行标注。",
-             "四组为独立配置的无界面测试宿主（V100、V300 HWv1/HWv2、V500），不代表 Vega.exe 已启动验收。HWv2 探针使用显式能力 token，尚未验证完整 HardwareProfileProvider 装配。", "",
-             "## 提交覆盖清单", "", "| 提交 | 改动 | 合并批次 | 验收状态 |", "| --- | --- | --- | --- |"]
-    for c in reversed(manifest["commits"]):
-        lines.append(f"| {c['sha'][:8]} | {c['title'].replace('|','/')} | {', '.join(c['groups']) or '待分析'} | 未完整验收；见下述边界 |")
-    if "supplement" in data:
-        s = data["supplement"]
-        lines += ["", "## 补充正式 Runner", "",
-                  f"`{s.get('verdict', s.get('state'))}` / `{s.get('verdictCode')}`；runId `{s.get('runId')}`。原始结果：`{s.get('path', s.get('reason'))}`。",
-                  "覆盖 Binning 原始行为用例、Windows 交付计数/取消/超时/会话栅栏、V100 资源部署完整性与独立进程中的 LPD 通道过滤/裸键保存。不是 Linux 真机或完整桌面检测流程验收。"]
-    if "uiSupplementReport" in data:
-        lines += ["", "本批已有独立桌面补测记录：[完整补测矩阵与边界](supplement-report.md)。该记录是此前实际观察，不应被当成本次重跑的UI结果。"]
-    target_path = out / "execution-target.json"
-    if target_path.exists():
-        target = json.loads(target_path.read_text(encoding="utf-8"))
-        lines += ["", "## 无人值守构建与恢复证据", "",
-                  f"实际目录：`{target['repo']}`；目标：`{target['head']}`。",
-                  f"本次独立证据目录：`{target.get('evidence', '未记录')}`。cleanup.json 记录自动进程清理，build/build-provenance.json 仅在构建成功后生成；未使用 locked restore，NI 原生项目被 Simulator 构建排除。"]
-    lines += ["", "## 执行顺序", "", "在同一目标 HEAD 验证累积效果，不逐个 checkout。先处理依赖与安装配置，再运行所有无界面逻辑；依次按 Vega100 → Vega300 → Vega500，每机型最多启动一次并完成其所有界面检查。若已有目标机型会话，先复用可减少重启，最后恢复原配置。", "",
-              "| 顺序 | 批次 | 计划启动 | 内容 |", "| --- | --- | --- | --- |"]
-    for b in plan_data["batches"]:
-        lines.append(f"| {b['order']} | {b['id']} | {b['startupCount']} | {'；'.join(b['tasks'])} |")
-    lines += ["", "## Simulator 边界与未完成项", "",
-              ("以下探针范围仅针对本次 Runner 原始结果；不是完整提交验收。" if result else "本次未取得 Runner 结果，以下为已有探针的设计范围与待验边界，均不得视为本次已执行。"), "",
-              "- #3644：尺寸/转换/BFP辅助查询/空队列防御有核心探针；真实校准与完整调用链未覆盖。",
-              "- DN 优先：运行仓库原有回退行为测试；真实信号质量和对位完成需要设备数据。",
-              "- LoadPort：运行原有 GEMBase safe-default 和 GEMSim true/false 单调用透传测试；界面警告、连点与 SEPLAT/E87 仍待验证。",
-              "- AutoOptics：只验证真实二进制的机型+角色可见性谓词；未把它算作实际工具栏界面验收。",
-              "- BFP：验证配置工厂初始尺寸；视图历史配置恢复、实际光斑测量未覆盖。",
-              "- Run 隔离 #3660：检查真实 DLL 的不同 ID 缓存键隔离、集合编号分离、ID=0 同实例并发首访稳定性；失败取消链、跨会话栅栏、超时/短读记账与真实数据完整性尚未覆盖。",
-              "- IO #3655：检查 V300/V500 内置 Slit/W1FF 位号与能力 token 门控；JSON/用户旧副本的加载迁移、完整硬件 profile 装配与真实接线另行验证。",
-              "- AFS #3657：仅核对 MS 震荡余量常量 30 秒；AFS 采集中关页、UI 不死锁与残留帧仍需 Simulator 交互测试；MS 实际运动响应需真机。",
-              "- XY #3650：验证机型/扫描方向与 VM Notch 区域可见性谓词；旧配置自愈、Sim 注入三偏移恒零与真实 UI 仍需进一步执行。",
-              "- PMT 配置路径/条件表作为共享回归探针，不属于本次十提交的直接变更验收。",
-              "- NI 采集卡外部停止：Simulator 不使用真实 NI 驱动，硬件错误码与竞态不得计为通过。",
-              "- GEM Load TCS 握手：并发成功/失败/取消/超时/订阅先后顺序尚未执行；可新增 Simulator 压力用例，真实 Host/E87 另需联机。",
-              "- 若后续提交涉及 NuGet 锁文件或安装器，必须另执行 locked restore/build 或 Inno 真实生成校验；不得以本批探针代替。",
-              "- 三机型完整界面切换需匹配的启动授权和独立配置；自动官方认证恢复失败后该组保持 BLOCKED，继续其他组，不等待人工回复，不绕过登录/授权。", "",
-              "新增/未映射改动必须逐项分析，不自动沿用上述探针结论。manifest.json 保存全量文件，*.diff 保存原始改动，plan.json 保存批次，Runner 原始 result.json/report.md 保持不变。",
-              "", "## 每日收集规则", "",
-              "北京时间每天 23:30 执行。范围为当天 00:00 到执行时，按提交时间（committer time）收集，同时补收上次收集后新增的可达提交，覆盖昨日 23:30 后的提交与回填日期提交。集合按 SHA 去重；同日重跑展示当天完整集合。",
-              "收集游标与待验收队列分开：收集成功不会清除未通过/阻塞项目；历史重写报警，首次运行不追溯全部历史；本次最近十次为示例，不推进每日游标。远端获取失败不得宣称当天无提交。", ""]
-    (out / "report.md").write_text("\n".join(lines), encoding="utf-8")
+
+    L = ["# Vega 每日提交批次报告", "",
+         f"批次 `{manifest['batchId']}`；目标 HEAD `{manifest['head']}`；收集窗口 {manifest['windowStart'][:16]} ~ {manifest['windowEnd'][:16]}；远端刷新：{manifest['remoteFresh']}。",
+         "", f"总体验收：**{state}**。逐提交：" + ("、".join(f"{STATUS_TEXT.get(k, k)} {v}" for k, v in counts.items()) or "无提交") + "。", ""]
+    if manifest.get("historyRewritten"):
+        L += ["> 远端历史被改写，本批未执行，需人工审查。", ""]
+    if build:
+        L += [f"构建：独立 worktree，提交 `{build.get('commit')}`，Vega.dll SHA256 `{build.get('vegaDllSha256')}`。"
+              "Runner 未自行重编，`builtFromCurrentSource=false` 保持原样；本节构建证据说明这些 DLL 来自目标 HEAD。", ""]
+    else:
+        L += ["构建：本批尚无成功的目标构建，所有用例未执行。", ""]
+
+    L += ["## 逐提交结论", "", "| 提交 | 来源 | 标题 | 工作项 | 簇 | 用例 → 结论（runId） | 状态 |", "| --- | --- | --- | --- | --- | --- | --- |"]
+    origin_text = {"today": "当天", "carryover": "补收", "pending": "前批待验"}
+    for r in rows:
+        ev = "<br>".join(f"{e['caseId']}{'（部分）' if e['partial'] else ''} → {e['verdict'] or '未执行'}"
+                         f"（{', '.join(x for x in e['runIds'] if x) or '无'}）" for e in r["evidence"]) or "—"
+        L.append(f"| `{r['sha8']}` | {origin_text.get(r['origin'], r['origin'])} | {md(r['title'])} | "
+                 f"{', '.join('#' + str(w) for w in r['workItems']) or '—'} | {', '.join(r['clusters']) or '—'} | {ev} | "
+                 f"**{STATUS_TEXT.get(r['status'], r['status'])}**：{md(r['reason'])} |")
+
+    L += ["", "## 合并编排", "",
+          "同一目标 HEAD 只构建一次；同一用例被多个提交引用时只跑一次。以下顺序即执行顺序。", "",
+          "### 无界面（--execute 自动执行）", "", "| 顺序 | 用例 | 层（机型） | 覆盖提交 | 来源簇 | 结论 |", "| --- | --- | --- | --- | --- | --- |"]
+    for h in plan_data["headless"]:
+        e = latest.get((h["caseId"], "headless"))
+        verdict = f"{e.get('verdict') or '未执行'} / {e.get('verdictCode')} `{e.get('runId')}`" if e else "未执行"
+        L.append(f"| {h['order']} | {h['caseId']}{'（部分）' if h['partial'] else ''} | "
+                 f"{', '.join(f'{n}（{m}）' for n, m in zip(h['layers'], h['models']))} | {', '.join(h['commits']) or '底线'} | "
+                 f"{', '.join(h['clusters'])} | {verdict} |")
+    if not plan_data["headless"]:
+        L.append("| — | 无 | — | — | — | — |")
+
+    L += ["", "### 界面会话（按机型配置，一次配置切换覆盖同组全部用例）", ""]
+    if not plan_data["uiSlots"]:
+        L += ["当晚提交未关联任何界面用例，不启动界面会话。"]
+    target = load(out / "execution-target.json") or {}
+    for s in plan_data["uiSlots"]:
+        L += [f"**{s['order']}. `{s['id']}`**（{s['profile']}；覆盖提交 {', '.join(s['commits'])}）", ""]
+        for i in s["cases"]:
+            e = latest.get((i["caseId"], s["id"]))
+            note = "；未声明机型，挂在本会话执行，结论只代表该机型" if i["profileAssumed"] else ""
+            L.append(f"- {i['caseId']} [{', '.join(i['layers'])}] → "
+                     f"{(e.get('verdict') or '未执行') + ' / ' + str(e.get('verdictCode')) + ' `' + str(e.get('runId')) + '`' if e else '未执行'}{note}")
+        L += ["", "```powershell",
+              f"& .\\daily\\Start-ModelValidation.ps1 -Model {s['model']} -Profile {s['profileArg']} -RepoRoot {target.get('repo', '<worktree>')} -Action Prepare",
+              "# 官方认证器按 AGENTS.md 配置并确认能登录后：",
+              f"& $python .\\daily\\daily.py --resume {out} --run-slot {s['id']} --session <Prepare 输出的 SessionPath>",
+              "```", ""]
+    L += ["界面用例每条仍会自行拉起并关闭 Vega（L2TestBase 约定）；会话合并省的是机型配置切换与授权，不是进程启动次数。", ""]
+
+    if plan_data["needsCase"] or plan_data["unmapped"]:
+        L += ["## 需补用例 / 需分析", ""]
+        for cl in plan_data["needsCase"]:
+            L.append(f"- {cl['label']}：提交 {', '.join(cl['commits'])}，registry.json 无对应用例。")
+        for cl in plan_data["unmapped"]:
+            L.append(f"- {cl['label']}：提交 {', '.join(cl['commits'])}，路径规则未覆盖，需读 diff 判断影响面。")
+        L.append("")
+    if plan_data["hardware"]:
+        L += ["## 需真机验证", ""] + [f"- {h['tag']}（提交 {', '.join(h['commits'])}）：{h['note']}" for h in plan_data["hardware"]] + [""]
+    failed = [r for r in rows if r["status"] == "FAIL"]
+    if failed:
+        L += ["## 失败隔离建议", "", "多提交合并验证无法直接定位引入者。按失败用例所在簇的提交，从早到晚逐个在独立 worktree 上复跑同一用例。", ""]
+        for r in failed:
+            L.append(f"- `{r['sha8']}`：{md(r['reason'])}")
+        L.append("")
+    if manifest.get("unreachablePending"):
+        L += ["## 不可达的待验提交", "", "以下提交已不在当前 master 历史中，保留在待验队列，需人工确认：", ""]
+        L += [f"- `{s}`" for s in manifest["unreachablePending"]] + [""]
+    L += ["## 规则", "",
+          "- 收集：北京时间当天 00:00 至执行时刻按 committer time 取 master 全部可达提交，补收上次收集后新出现的提交，并把前批未验收的提交重新编入本批。",
+          "- 归簇：提交说明里的工作项号优先，同一工作项的提交合为一簇；无工作项号时用路径规则给出候选探针；未覆盖文件按模块成簇待分析。",
+          "- 验收：只有工作项登记用例（非 partial-acceptance）在目标 HEAD 上全部 PASS 才记“已验收”并移出待验队列；路径探针只算部分验收。",
+          "- 判定只来自 Runner result.json；本报告不改写任何 verdict。", ""]
+    (out / "report.md").write_text("\n".join(L), encoding="utf-8")
     return data
 
 
+# ────────────────────────────── 入口 ──────────────────────────────
+
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument("--last", type=int, default=0)
+    parser.add_argument("--last", type=int, default=0, help="示例模式：最近 N 个提交，不推进每日游标")
     parser.add_argument("--offline", action="store_true")
-    parser.add_argument("--execute", action="store_true")
+    parser.add_argument("--execute", action="store_true", help="构建目标 HEAD 并执行全部无界面用例")
     parser.add_argument("--resume", type=Path, help="Execute an existing immutable manifest after preparing its exact target")
+    parser.add_argument("--run-slot", help="执行 plan.json 中的一个界面会话（需 --resume，且该机型已准备并认证）")
+    parser.add_argument("--session", type=Path, help="Start-ModelValidation 的 SessionPath；会话结束后自动 Restore")
+    parser.add_argument("--plan-only", action="store_true", help="只重算计划与报告，不执行")
+    parser.add_argument("--ack", help="人工关闭一个待验提交（SHA 前缀）")
+    parser.add_argument("--ack-reason")
     args = parser.parse_args()
+    if args.ack:
+        acknowledge(args.ack, args.ack_reason)
+        return
+    if args.run_slot and not args.resume:
+        raise ValueError("--run-slot 需要 --resume <batch>")
     if args.resume:
         out = args.resume.resolve()
         if not out.is_relative_to((ROOT / "daily" / "runs").resolve()):
             raise ValueError("Resume path must be inside daily/runs")
-        manifest = json.loads((out / "manifest.json").read_text(encoding="utf-8"))
+        manifest = load(out / "manifest.json")
     else:
         out, manifest = collect(args.last, args.offline)
-    plan_data = plan(out, manifest)
+    registry = load(REGISTRY)
+    sched = load(SCHEDULING)
+    plan_data = plan(out, manifest, registry, sched)
     if (out / "report.md").exists():
-        stamp = datetime.now(CN).strftime("%Y%m%dT%H%M%S")
+        stamp = now_cn().strftime("%Y%m%dT%H%M%S")
         (out / ("report-before-" + stamp + ".md")).write_bytes((out / "report.md").read_bytes())
-    result = None
+    outcomes = load(out / "outcomes.json", dict(runs=[]))
     error = None
     try:
-        result = execute(out, manifest) if args.execute and manifest["commits"] else None
+        if args.plan_only:
+            pass
+        elif args.run_slot:
+            run_slot(out, manifest, plan_data, args.run_slot, args.session, outcomes)
+        elif args.execute and manifest["commits"]:
+            execute(out, manifest, plan_data, outcomes, sched.get("headlessBudgetMinutes", 150))
     except Exception as exc:
         error = str(exc)
-        save(out / "execution.json", dict(state="ERROR", reason=error, at=datetime.now(CN).isoformat()))
-    data = report(out, manifest, plan_data, result)
+        save(out / "execution.json", dict(state="ERROR", reason=error, at=now_cn().isoformat()))
+    rows = evaluate(manifest, plan_data, outcomes, registry)
+    data = report(out, manifest, plan_data, outcomes, rows)
+    update_pending(manifest, rows, out)
     if error:
         with (out / "report.md").open("a", encoding="utf-8") as stream:
             stream.write("\n## 执行失败（未等待人工）\n\n" + error + "\n")
-    print(json.dumps(dict(report=str(out / "report.md"), **data), ensure_ascii=False))
+    print(json.dumps(dict(report=str(out / "report.md"), **{k: data[k] for k in ("batchId", "acceptanceState", "statusCounts", "pendingUiSlots")}),
+                     ensure_ascii=False))
     if error:
         raise SystemExit(1)
 

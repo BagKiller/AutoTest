@@ -6,4 +6,6 @@
 
 只在这台验证机与本项目使用官方认证流程。不伪造/绕过授权，不猜密码，不将密钥、密码或 PAT 写入报告。遇到工具系统批准提示仍按工具要求获取权限。用户原配置必须备份，验证后恢复并核对 SHA256。
 
+界面验证只执行 `plan.json` 的 `uiSlots`：每个会话先 `Start-ModelValidation.ps1 -Action Prepare`，再完成认证，然后 `daily.py --resume <batch> --run-slot <slotId> --session <SessionPath>`。不要为 plan 之外的机型配置启动会话，也不要临场改用例或断言；没有登记用例的工作项只在报告中记“缺用例”。
+
 认证器资源目录必须与 Start-ModelValidation.ps1 的 userDataFolder 一致：ResourcesDaily_Vega100-PIC、ResourcesDaily_Vega300-HWv1、ResourcesDaily_Vega300-HWv2、ResourcesDaily_Vega500。所有组均为 Simulator=true、Gem=false、Gen2；生成日期/有效期以官方工具合法设置为准。密钥文件存在不等于启动已经通过，必须观察 Vega 的实际启动结果。
