@@ -1,0 +1,179 @@
+Window: "Vega100 (1.0.0.0, 2027-01-27) - su", App: Vega.exe.
+	0 窗口 Vega100 (1.0.0.0, 2027-01-27) - su Secondary Actions: Raise
+		191 窗口 Secondary Actions: Raise
+			192 工具提示 任务
+				193 文本 任务
+		7 标题栏 (settable, string) Value: Vega100 (1.0.0.0, 2027-01-27) - su
+			8 菜单栏 系统 ID: MenuBar
+				9 菜单项目 系统
+			10 按钮 最小化
+			11 按钮 最大化
+			12 按钮 关闭
+		13 菜单
+			14 菜单项 浏览 ID: ExplorerMenuItem
+				15 文本 浏览
+			16 菜单项 操作 ID: OperationMenuItem
+				17 文本 操作
+			18 菜单项 配方 ID: RecipeMenuItem
+				19 文本 配方
+			20 菜单项 展示管理 ID: GalleryMenuItem
+				21 文本 展示管理
+			22 菜单项 工具 ID: ToolsMenuItem
+				23 文本 工具
+			24 菜单项 帮助 ID: HelpMenuItem
+				25 文本 帮助
+		26 自定义
+			27 工具栏
+				28 按钮 Description: 保存 ID: SaveButton
+					29 image
+				30 按钮 Description: 全部保存 ID: SaveAllButton
+					31 image
+				32 按钮 Description: 另存为 ID: SaveAsButton
+					33 image
+				34 按钮 Description: 导出 ID: ExportButton
+					35 image
+				36 分隔符 (disabled)
+			37 工具栏
+				38 按钮 (disabled) Description: 中断当前任务 ID: AbortCurrentJobButton
+					39 image (disabled)
+				40 按钮 (disabled) Description: 中断所有任务 ID: AbortAllJobsButton
+					41 image (disabled)
+				42 按钮 (disabled) Description: 停止当前任务 ID: StopJobButton
+					43 image (disabled)
+				44 按钮 (disabled) Description: 停止所有任务 ID: StopAllJobsButton
+					45 image (disabled)
+				46 按钮 Description: 新建批次 ID: NewLotButton
+					47 image
+				48 分隔符 (disabled)
+			49 工具栏 (disabled)
+				50 按钮 (disabled) Description: 固定检测结果 ID: PinInspectionButton
+					51 image (disabled)
+				52 按钮 (disabled) Description: 附加检测 ID: AttachInspectionButton
+					53 image (disabled)
+				54 分隔符 (disabled)
+			55 工具栏 (disabled)
+				56 按钮 (disabled) Description: 应用 ID: ApplyButton
+					57 image (disabled)
+				58 按钮 (disabled) Description: 运行 ID: RunButton
+					59 image (disabled)
+				60 按钮 (disabled) Description: 中断 ID: AbortButton
+					61 image (disabled)
+		62 工具栏
+			63 按钮 ID: OverflowButton
+			64 缩略 ID: ToolBarThumb
+			65 按钮 Description: 开始任务 ID: StartJobButton
+				66 image
+			67 分隔符 (disabled)
+			68 按钮 Description: 检测 ID: InspectionButton
+				69 image
+			70 分隔符 (disabled)
+			71 按钮 Description: 任务 ID: JobButton
+				72 image
+			73 分隔符 (disabled)
+			74 按钮 Description: 校准 ID: CalibrationButton
+				75 image
+			76 分隔符 (disabled)
+			77 按钮 Description: 设备 ID: InstrumentButton
+				78 image
+			79 分隔符 (disabled)
+		80 选项卡
+			134 文本 任务
+			135 按钮 Description: 窗口位置 ID: MenuDropDownButton
+			136 按钮 Description: 自动隐藏 ID: PART_AutoHidePin
+			137 按钮 Description: 隐藏 ID: PART_HidePin
+			138 自定义
+				139 树视图 ID: JobExplorerView
+					140 树视图项 (selectable, settable, string) Vega.Data.Navigation.NavigationNode Value: Vega.Data.Navigation.NavigationNode ID: 任务工作区
+						141 树视图项 (selectable, settable, string) Vega.Data.Navigation.NavigationNode Value: Vega.Data.Navigation.NavigationNode ID: Default Job
+					142 树视图项 (selectable, settable, string) Vega.Data.Navigation.NavigationNode Value: Vega.Data.Navigation.NavigationNode ID: Job Library
+					143 树视图项 (selectable, settable, string) Vega.Data.Navigation.NavigationNode Value: Vega.Data.Navigation.NavigationNode ID: 任务队列
+		144 缩略
+		82 选项卡
+			145 选项卡项 (selectable) AvalonDock.Layout.LayoutDocument
+				146 文本 Default Job
+				147 自定义
+					148 组 任务摘要
+						149 文本 任务摘要
+						150 文本 展示
+							151 文本 展示
+						152 组合框 ID: JobSettingView_DisplayModeComboBox
+						153 组 导出设置
+							154 文本 导出设置
+							155 文本 导出
+								156 文本 导出
+							157 组合框 ID: JobSettingView_ExportModeComboBox
+							158 组
+								159 单选按钮 (selectable) 使用任务名 ID: JobSettingView_xStaticpropResourcesExportOptionsRadioButton
+									160 文本 使用任务名
+								161 单选按钮 (selectable) 使用任务名和数字后缀 ID: JobSettingView_xStaticpropResourcesExportOptionsRadioButton_1
+									162 文本 使用任务名和数字后缀
+								163 单选按钮 (selectable) 使用文件名 ID: JobSettingView_xStaticpropResourcesExportOptionsRadioButton_2
+									164 文本 使用文件名
+								165 单选按钮 (selectable) 使用文件名和数字后缀 ID: JobSettingView_xStaticpropResourcesExportOptionsRadioButton_3
+									166 文本 使用文件名和数字后缀
+								167 组 文件名
+									168 文本 文件名
+									169 文本 文件路径
+										170 文本 文件路径
+									171 编辑 (settable, string) Value: C:\Vega\Data ID: JobSettingView_ExportPathTextBox
+									172 文本 文件名
+										173 文本 文件名
+									174 编辑 (settable, string) Value: Default ID: JobSettingView_ExportFileNameTextBox
+									175 按钮 ... ID: JobSettingView_OpenFolderBrowserCommandButton
+										176 文本 ...
+					177 组 循环选项
+						178 文本 循环选项
+						179 单选按钮 (selectable) 无 ID: JobSettingView_xStaticpropResourcesRecycleOptionsRadioButton
+							180 文本 无
+						181 单选按钮 (selectable) 无限循环 ID: JobSettingView_xStaticpropResourcesRecycleOptionsRadioButton_1
+							182 文本 无限循环
+						183 单选按钮 (selectable) 循环 ID: JobSettingView_xStaticpropResourcesRecycleOptionsRadioButton_2
+							184 文本 循环
+						185 编辑 (settable, string) Value: 1 ID: JobSettingView_RecycleNumberTextBox
+						186 文本 通过JobQueue执行时循环设置不生效，如需使用循环功能，请直接在当前Job上右键选择"开始"
+					187 组 LotLevel / WaferLevel ID设置
+						188 文本 LotLevel / WaferLevel ID设置
+						189 按钮 修改LotLevel 和 WaferLevel ID ID: JobSettingView_OpenLevelIDModifyPageCommandButton
+							190 文本 修改LotLevel 和 WaferLevel ID
+		83 列表视图
+		84 列表视图
+		85 列表视图
+		86 列表视图
+		87 窗格
+		88 自定义
+			89 状态栏
+				90 按钮
+					91 image
+				92 按钮 Description: Clear Warnings
+					93 image
+				94 image
+				95 自定义 ID: AnnouncementBoard
+					96 文本 [CaliHelper],Cannot find correct ref OD and PMTVoltage. use ODp4 and 500mV as reference values ID: OldAnnouncement
+					97 文本 [HazeCaliResultHelper],No matching Key was found.Key-P-U-U.DN.Full.None.HighSensitivity ID: NewAnnouncement
+				98 分隔符 (disabled)
+				99 自定义
+				102 分隔符 (disabled)
+				103 按钮
+					104 image
+				105 按钮 Offline ID: StatusBarView_GemControlStateButton
+					106 文本 Offline
+				107 按钮 Local ID: StatusBarView_GemControlStateButton_1
+					108 文本 Local
+				109 分隔符 (disabled)
+				110 image
+				111 文本 设备状态
+				112 文本 空闲
+				113 image
+				114 文本 任务状态
+				115 文本 无
+				116 image
+				117 文本 批次状态
+				118 文本 无
+				119 image
+				120 文本 检测台晶圆状态
+				121 文本 无
+				122 image
+
+Document text: ```
+1
+```

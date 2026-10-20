@@ -19,6 +19,10 @@ auto-repro-*.md
 # 构建产物
 bin/
 obj/
+daily/cache.git/
+daily/build/
+daily/state.json
+daily/sessions/
 
 # IDE
 .vs/

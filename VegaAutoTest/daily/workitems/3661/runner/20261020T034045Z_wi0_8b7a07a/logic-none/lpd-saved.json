@@ -1,0 +1,13 @@
+{
+  "IsLPDAlgoEnabled": false,
+  "PIRNormFacDic": {
+    "DW1": 11.0,
+    "DW2": 7.0,
+    "DN": 6.0
+  },
+  "SIRNormFacDic": {
+    "DW1": 12.0,
+    "DW2": 8.0,
+    "DN": 6.0
+  }
+}

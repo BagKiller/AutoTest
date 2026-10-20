@@ -1,0 +1,291 @@
+{
+  "CollectionName": "WI3661",
+  "WaferScan": {
+    "Throughput": 2,
+    "SurfaceQuality": 14,
+    "InspectionSide": 0
+  },
+  "DarkField": {
+    "IncidenceFilterType": 0,
+    "SizingContent": {
+      "LPDUnit": 0,
+      "HazeUnit": 1,
+      "Incidence": 1,
+      "Polarization": 0,
+      "DefectNormStyle": 0,
+      "HazeNormStyle": 0,
+      "LaserPower": 100.0,
+      "CLPASettings": {
+        "IsCLPAEnabled": false,
+        "TargetRatio": 0.2,
+        "MinLaserPower": 2.0,
+        "InnerRadius": 20.0,
+        "OuterRadius": 20.0
+      },
+      "FilmName": "PSL_Standard",
+      "Thickness": 0.0
+    },
+    "InspectionRegionContent": {
+      "EdgeExclusion": 3.0,
+      "PriInspRegionStartRadius": 0.0,
+      "PriInspRegionEndRadius": 147.0,
+      "SecInspRegionWidth": 6.0,
+      "IsSecScanEnable": false
+    },
+    "ChannelSettingContent": {
+      "DW1": {
+        "ChannelMode": 7,
+        "IsEnabled": false,
+        "ThresMin": 0.111,
+        "ThresMinSIT": 0.00012,
+        "ThresMax": 3.0,
+        "ThresMaxXT": 3.0,
+        "ThresMaxHaze": 0.0,
+        "WMask": "Full",
+        "NMask": "Full",
+        "NPolarizer": 0,
+        "WPolarizer": 0,
+        "FFilter": 0,
+        "OpticalFilter": 0,
+        "PMTVolatge": 500.0,
+        "SurfImageOptimizers": [
+          {
+            "Resolution": 1,
+            "SamplingMethod": 0
+          },
+          {
+            "Resolution": 1,
+            "SamplingMethod": 2
+          },
+          {
+            "Resolution": 1,
+            "SamplingMethod": 3
+          },
+          {
+            "Resolution": 1,
+            "SamplingMethod": 1
+          },
+          {
+            "Resolution": 1,
+            "SamplingMethod": 0
+          },
+          {
+            "Resolution": 1,
+            "SamplingMethod": 2
+          },
+          {
+            "Resolution": 1,
+            "SamplingMethod": 3
+          },
+          {
+            "Resolution": 1,
+            "SamplingMethod": 1
+          }
+        ]
+      },
+      "DW2": {
+        "ChannelMode": 9,
+        "IsEnabled": true,
+        "ThresMin": 0.456,
+        "ThresMinSIT": 0.00012,
+        "ThresMax": 3.0,
+        "ThresMaxXT": 3.0,
+        "ThresMaxHaze": 0.0,
+        "WMask": "Full",
+        "NMask": "Full",
+        "NPolarizer": 0,
+        "WPolarizer": 0,
+        "FFilter": 0,
+        "OpticalFilter": 0,
+        "PMTVolatge": 500.0,
+        "SurfImageOptimizers": [
+          {
+            "Resolution": 1,
+            "SamplingMethod": 0
+          },
+          {
+            "Resolution": 1,
+            "SamplingMethod": 2
+          },
+          {
+            "Resolution": 1,
+            "SamplingMethod": 3
+          },
+          {
+            "Resolution": 1,
+            "SamplingMethod": 1
+          },
+          {
+            "Resolution": 1,
+            "SamplingMethod": 0
+          },
+          {
+            "Resolution": 1,
+            "SamplingMethod": 2
+          },
+          {
+            "Resolution": 1,
+            "SamplingMethod": 3
+          },
+          {
+            "Resolution": 1,
+            "SamplingMethod": 1
+          }
+        ]
+      },
+      "DN": {
+        "ChannelMode": 8,
+        "IsEnabled": true,
+        "ThresMin": 0.0001,
+        "ThresMinSIT": 0.00012,
+        "ThresMax": 3.0,
+        "ThresMaxXT": 3.0,
+        "ThresMaxHaze": 0.0,
+        "WMask": "Full",
+        "NMask": "Full",
+        "NPolarizer": 0,
+        "WPolarizer": 0,
+        "FFilter": 0,
+        "OpticalFilter": 0,
+        "PMTVolatge": 500.0,
+        "SurfImageOptimizers": [
+          {
+            "Resolution": 1,
+            "SamplingMethod": 0
+          },
+          {
+            "Resolution": 1,
+            "SamplingMethod": 2
+          },
+          {
+            "Resolution": 1,
+            "SamplingMethod": 3
+          },
+          {
+            "Resolution": 1,
+            "SamplingMethod": 1
+          },
+          {
+            "Resolution": 1,
+            "SamplingMethod": 0
+          },
+          {
+            "Resolution": 1,
+            "SamplingMethod": 2
+          },
+          {
+            "Resolution": 1,
+            "SamplingMethod": 3
+          },
+          {
+            "Resolution": 1,
+            "SamplingMethod": 1
+          }
+        ]
+      }
+    },
+    "IsExtendedEnabled": false,
+    "LPMStatusContent": {
+      "IsLPMEnabled": false,
+      "IsLPMW1Enabled": true,
+      "IsLPMW2Enabled": true,
+      "IsLPMNEnabled": true,
+      "UseUmLSEThreshold": false,
+      "LPMW1Threshold": 37000,
+      "LPMW2Threshold": 37000,
+      "LPMNThreshold": 37000,
+      "LPMW1ThresholdUmLSE": 0.0,
+      "LPMW2ThresholdUmLSE": 0.0,
+      "LPMNThresholdUmLSE": 0.0,
+      "LPMFactor": 1,
+      "LPMCurrDelay": 0,
+      "LPMMaxBg": 7000,
+      "LPMDist": 200,
+      "LPMOnDelay": 125,
+      "LPMOffDelay": 50,
+      "LPMPBOffDist": 0,
+      "IsLPMPEnabled": true,
+      "IsLPMW1PEnabled": true,
+      "IsLPMW2PEnabled": true,
+      "IsLPMNPEnabled": true,
+      "LPMPThreshold": 37000,
+      "LPMLeadOffset": 10,
+      "LPMPRedDelay": 0
+    },
+    "LPDAlgoContent": {
+      "IsLPDAlgoEnabled": false,
+      "PIRNormFacDic": {
+        "DW1": 6.0,
+        "DW2": 6.0,
+        "DN": 6.0
+      },
+      "SIRNormFacDic": {
+        "DW1": 6.0,
+        "DW2": 6.0,
+        "DN": 6.0
+      }
+    },
+    "HardwareParamsContent": {
+      "PreTrack": 26139.925,
+      "MainTrack": 26139.925,
+      "LPMThreshold": 0.2922,
+      "LaserPowerRange": "Full",
+      "RotationAngle": 25.1041,
+      "HardwareParamsDic": {
+        "DW1": {
+          "HazeNoise": 555.0,
+          "MinDefect": 0.01,
+          "MaxDefect": 555.0,
+          "MinSIT": 0.1,
+          "MaxXT": 555.0,
+          "RefMaxHazeNppm": 555.0,
+          "RefOD": 5,
+          "RefPMTVoltage": 550.0,
+          "SystemGain": 555.0,
+          "SingleThreshold": 111.0,
+          "SirSingleThreshold": 65535.0
+        },
+        "DW2": {
+          "HazeNoise": 555.0,
+          "MinDefect": 0.01,
+          "MaxDefect": 555.0,
+          "MinSIT": 0.1,
+          "MaxXT": 555.0,
+          "RefMaxHazeNppm": 555.0,
+          "RefOD": 5,
+          "RefPMTVoltage": 550.0,
+          "SystemGain": 555.0,
+          "SingleThreshold": 2345.0,
+          "SirSingleThreshold": 65535.0
+        },
+        "DN": {
+          "HazeNoise": 555.0,
+          "MinDefect": 0.01,
+          "MaxDefect": 555.0,
+          "MinSIT": 0.1,
+          "MaxXT": 555.0,
+          "RefMaxHazeNppm": 555.0,
+          "RefOD": 5,
+          "RefPMTVoltage": 550.0,
+          "SystemGain": 555.0,
+          "SingleThreshold": 65535.0,
+          "SirSingleThreshold": 65535.0
+        }
+      }
+    },
+    "BPSRODValue": null,
+    "ExposureTimeValue": 0
+  },
+  "BrightField": {
+    "IsDICEnabled": false,
+    "SizingUnit": 0,
+    "Reflectivity": 1,
+    "EdgeExclusion": 0.0,
+    "DIC": {
+      "ChannelMode": 4,
+      "Positive": 0.0,
+      "EIT": 0.0,
+      "SurfImageOptimizers": []
+    }
+  }
+}

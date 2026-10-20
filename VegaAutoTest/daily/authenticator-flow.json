@@ -1,0 +1,14 @@
+{
+  "authorization": "User explicitly authorized automatic use of the existing official Authenticator and Vega login for this validation task.",
+  "authenticatorExe": "C:\\AutoTest\\runtime\\AuthenticatorApp\\Authenticator.exe",
+  "common": {"simulator": true, "gem": false, "generation": "Gen2"},
+  "profiles": [
+    {"model": "Vega100", "hardwareProfile": "Vega100-PIC", "resourceFolder": "ResourcesDaily_Vega100-PIC"},
+    {"model": "Vega300", "hardwareProfile": "Vega300-HWv1", "resourceFolder": "ResourcesDaily_Vega300-HWv1"},
+    {"model": "Vega300", "hardwareProfile": "Vega300-HWv2", "resourceFolder": "ResourcesDaily_Vega300-HWv2"},
+    {"model": "Vega500", "hardwareProfile": "Vega500", "resourceFolder": "ResourcesDaily_Vega500"}
+  ],
+  "startupKeySteps": ["Observe the official window and select the exact model", "Verify Simulator checked, Gem unchecked and Gen2 selected", "Open 启动验证密钥", "Set 资源文件夹 to the profile resourceFolder", "Click 从本地加载", "Click 保存到本地", "Check file presence without exposing its content", "Start Vega and observe whether authorization actually succeeds"],
+  "loginSteps": ["Select the same model in Authenticator", "Open 超级用户密码 and use the configured machine ID", "Click the official generation button; retain the password in memory only", "Select VegaLoginWindow from sky.list_windows", "Click username field, type su, click password field, type generated password, click 确认", "Verify the Vega title contains su and device state is Idle"],
+  "notes": ["Do not log passwords or key text", "UIA set_value without normal focus/keyboard input did not reliably commit the login bindings; use click + type_text", "For PromptNotification transient dialogs use the matching transient screenshot's local coordinates; parent-window element indexes may not be actionable", "Refresh state after each action and after window bounds changes", "MachineConfiguration_Default contains section references; materialize General settings before first boot and replace D:\\Vega\\Data with this profile's writable data directory", "A valid startup key does not establish UI acceptance or hardware test coverage"]
+}

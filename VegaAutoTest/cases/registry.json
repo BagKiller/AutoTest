@@ -256,6 +256,176 @@
       "evidenceFiles": [
         "_gallery_nth_l2.txt"
       ]
+    },
+    {
+      "id": "wi3644-core",
+      "title": "#3644 核心尺寸逻辑（不含完整 UI/执行器验收）",
+      "workItems": [
+        3644
+      ],
+      "tags": [
+        "calibration",
+        "wafer-size",
+        "partial-acceptance"
+      ],
+      "layers": {
+        "logic500": {
+          "minAssertions": 33,
+          "requiresL1Api": false,
+          "filter": "FullyQualifiedName~WorkItem3644Logic",
+          "timeoutSeconds": 300,
+          "requiresVegaExe": true,
+          "project": "probes/Vega.AutoTest.CommitProbe/Vega.AutoTest.CommitProbe.csproj"
+        },
+        "logic100": {
+          "minAssertions": 33,
+          "requiresL1Api": false,
+          "filter": "FullyQualifiedName~WorkItem3644Logic",
+          "timeoutSeconds": 300,
+          "requiresVegaExe": true,
+          "project": "probes/Vega.AutoTest.CommitProbe/Vega.AutoTest.CommitProbe.csproj"
+        },
+        "logic-none": {
+          "minAssertions": 33,
+          "requiresL1Api": false,
+          "filter": "FullyQualifiedName~WorkItem3644Logic",
+          "timeoutSeconds": 300,
+          "requiresVegaExe": true,
+          "project": "probes/Vega.AutoTest.CommitProbe/Vega.AutoTest.CommitProbe.csproj"
+        }
+      },
+      "evidenceFiles": [
+        "_wi3644_logic.txt"
+      ]
+    },
+    {
+      "workItems": [],
+      "title": "每日提交批次核心探针：100/300/500（部分验收）",
+      "id": "daily-recent10",
+      "evidenceFiles": [
+        "_wi3644_logic.txt",
+        "_daily_batch.txt"
+      ],
+      "tags": [
+        "daily",
+        "partial-acceptance",
+        "headless"
+      ],
+      "layers": {
+        "logic100": {
+          "project": "probes/Vega.AutoTest.CommitProbe/Vega.AutoTest.CommitProbe.csproj",
+          "timeoutSeconds": 300,
+          "minAssertions": 80,
+          "requiresVegaExe": true,
+          "filter": "FullyQualifiedName~DailyCommitBatchLogic|FullyQualifiedName~WorkItem3644Logic",
+          "requiresL1Api": false
+        },
+        "logic500": {
+          "project": "probes/Vega.AutoTest.CommitProbe/Vega.AutoTest.CommitProbe.csproj",
+          "timeoutSeconds": 300,
+          "minAssertions": 80,
+          "requiresVegaExe": true,
+          "filter": "FullyQualifiedName~DailyCommitBatchLogic|FullyQualifiedName~WorkItem3644Logic",
+          "requiresL1Api": false
+        },
+        "logic300": {
+          "project": "probes/Vega.AutoTest.CommitProbe/Vega.AutoTest.CommitProbe.csproj",
+          "timeoutSeconds": 300,
+          "minAssertions": 80,
+          "requiresVegaExe": true,
+          "filter": "FullyQualifiedName~DailyCommitBatchLogic|FullyQualifiedName~WorkItem3644Logic",
+          "requiresL1Api": false
+        },
+        "logic300-hwv2": {
+          "project": "probes/Vega.AutoTest.CommitProbe/Vega.AutoTest.CommitProbe.csproj",
+          "timeoutSeconds": 300,
+          "minAssertions": 80,
+          "requiresVegaExe": true,
+          "filter": "FullyQualifiedName~DailyCommitBatchLogic|FullyQualifiedName~WorkItem3644Logic",
+          "requiresL1Api": false
+        }
+      }
+    },
+    {
+      "id": "daily-supplement",
+      "title": "Daily supplemental Binning, delivery, run fence and deployed Simulator asset",
+      "workItems": [
+        3652
+      ],
+      "tags": [
+        "daily",
+        "partial-acceptance"
+      ],
+      "layers": {
+        "logic": {
+          "project": "probes/Vega.AutoTest.CommitProbe/Vega.AutoTest.CommitProbe.csproj",
+          "filter": "FullyQualifiedName~DailySupplementLogic",
+          "timeoutSeconds": 300,
+          "minAssertions": 17,
+          "requiresVegaExe": true,
+          "requiresL1Api": false
+        },
+        "logic-channels100": {
+          "project": "probes/Vega.AutoTest.CommitProbe/Vega.AutoTest.CommitProbe.csproj",
+          "filter": "FullyQualifiedName~DailyChannelSaveLogic",
+          "timeoutSeconds": 300,
+          "minAssertions": 1,
+          "requiresVegaExe": true,
+          "requiresL1Api": false
+        }
+      },
+      "evidenceFiles": []
+    },
+    {
+      "id": "wi3661-acceptance",
+      "title": "#3661 Five display endpoints, filtering and bare-key save",
+      "workItems": [
+        3661
+      ],
+      "tags": [
+        "recipe",
+        "display",
+        "regression"
+      ],
+      "layers": {
+        "logic100": {
+          "project": "probes/Vega.AutoTest.CommitProbe/Vega.AutoTest.CommitProbe.csproj",
+          "filter": "FullyQualifiedName~WorkItem3661Logic",
+          "timeoutSeconds": 300,
+          "minAssertions": 45,
+          "requiresVegaExe": true,
+          "requiresL1Api": false
+        },
+        "logic300": {
+          "project": "probes/Vega.AutoTest.CommitProbe/Vega.AutoTest.CommitProbe.csproj",
+          "filter": "FullyQualifiedName~WorkItem3661Logic",
+          "timeoutSeconds": 300,
+          "minAssertions": 45,
+          "requiresVegaExe": true,
+          "requiresL1Api": false
+        },
+        "logic500": {
+          "project": "probes/Vega.AutoTest.CommitProbe/Vega.AutoTest.CommitProbe.csproj",
+          "filter": "FullyQualifiedName~WorkItem3661Logic",
+          "timeoutSeconds": 300,
+          "minAssertions": 45,
+          "requiresVegaExe": true,
+          "requiresL1Api": false
+        },
+        "logic-none": {
+          "project": "probes/Vega.AutoTest.CommitProbe/Vega.AutoTest.CommitProbe.csproj",
+          "filter": "FullyQualifiedName~WorkItem3661Logic",
+          "timeoutSeconds": 300,
+          "minAssertions": 45,
+          "requiresVegaExe": true,
+          "requiresL1Api": false
+        }
+      },
+      "evidenceFiles": [
+        "lpd-saved.json",
+        "hardware-saved.json",
+        "batch-saved-collection.json"
+      ]
     }
   ]
 }

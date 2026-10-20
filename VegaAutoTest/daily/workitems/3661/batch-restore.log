@@ -1,0 +1,25 @@
+  正在确定要还原的项目…
+  已还原 C:\AutoTest\workspaces\20261019T233014+0800_ddc509_20261020T101112_ee7047\Vega.Utility.Common\Vega.Utility.Common.csproj (用时 17.98 秒)。
+  已还原 C:\AutoTest\workspaces\20261019T233014+0800_ddc509_20261020T101112_ee7047\Vega.LD.WaferReceiver\Vega.LD.WaferReceiver.csproj (用时 17.98 秒)。
+  已还原 C:\AutoTest\workspaces\20261019T233014+0800_ddc509_20261020T101112_ee7047\Vega.Data.Commons\Vega.Data.Commons.csproj (用时 17.98 秒)。
+  已还原 C:\AutoTest\workspaces\20261019T233014+0800_ddc509_20261020T101112_ee7047\Vega.Utility.Helper\Vega.Utility.Helper.csproj (用时 17.97 秒)。
+  已还原 C:\AutoTest\workspaces\20261019T233014+0800_ddc509_20261020T101112_ee7047\Vega.Data.Jobs\Vega.Data.Jobs.csproj (用时 68 毫秒)。
+  已还原 C:\AutoTest\workspaces\20261019T233014+0800_ddc509_20261020T101112_ee7047\Vega.Data.Measurements\Vega.Data.Measurements.csproj (用时 122 毫秒)。
+  已还原 C:\AutoTest\workspaces\20261019T233014+0800_ddc509_20261020T101112_ee7047\Vega.Data.Interaction\Vega.Data.Interaction.csproj (用时 120 毫秒)。
+  已还原 C:\AutoTest\workspaces\20261019T233014+0800_ddc509_20261020T101112_ee7047\Vega.Data.Defects\Vega.Data.Defects.csproj (用时 76 毫秒)。
+  已还原 C:\AutoTest\workspaces\20261019T233014+0800_ddc509_20261020T101112_ee7047\Vega.Data.Analysis\Vega.Data.Analysis.csproj (用时 49 毫秒)。
+  已还原 C:\AutoTest\workspaces\20261019T233014+0800_ddc509_20261020T101112_ee7047\Vega.Data.Calibration\Vega.Data.Calibration.csproj (用时 88 毫秒)。
+  已还原 C:\AutoTest\workspaces\20261019T233014+0800_ddc509_20261020T101112_ee7047\Vega.Algo.Imaging\Vega.Algo.Imaging.csproj (用时 31 毫秒)。
+  已还原 C:\AutoTest\workspaces\20261019T233014+0800_ddc509_20261020T101112_ee7047\Vega.CD.IConnection\Vega.CD.IConnection.csproj (用时 113 毫秒)。
+  已还原 C:\AutoTest\workspaces\20261019T233014+0800_ddc509_20261020T101112_ee7047\Vega.Platform.IDatabase\Vega.Platform.IDatabase.csproj (用时 54 毫秒)。
+  已还原 C:\AutoTest\workspaces\20261019T233014+0800_ddc509_20261020T101112_ee7047\Vega.BL.IWaferHandler\Vega.BL.IWaferHandler.csproj (用时 260 毫秒)。
+  已还原 C:\AutoTest\workspaces\20261019T233014+0800_ddc509_20261020T101112_ee7047\Vega.PD.IWaferDoorDevice\Vega.PD.IWaferDoorDevice.csproj (用时 48 毫秒)。
+  已还原 C:\AutoTest\workspaces\20261019T233014+0800_ddc509_20261020T101112_ee7047\Vega.PD.IMotion\Vega.PD.IMotionDevice.csproj (用时 45 毫秒)。
+  已还原 C:\AutoTest\workspaces\20261019T233014+0800_ddc509_20261020T101112_ee7047\Vega.LD.IWaferReceiver\Vega.LD.IWaferReceiver.csproj (用时 23 毫秒)。
+C:\AutoTest\workspaces\20261019T233014+0800_ddc509_20261020T101112_ee7047\Vega.UI.Common\Vega.UI.Common.csproj : warning NU1903: 包 "AutoMapper" 13.0.1 具有已知的 高 严重性漏洞，https://github.com/advisories/GHSA-rvv3-g6hj-g44x [C:\AutoTest\workspaces\20261019T233014+0800_ddc509_20261020T101112_ee7047\Vega.UI.RecipeBatchEditor\Vega.UI.RecipeBatchEditor.csproj]
+  已还原 C:\AutoTest\workspaces\20261019T233014+0800_ddc509_20261020T101112_ee7047\Vega.Facade.IGEM\Vega.Facade.IGEM.csproj (用时 90 毫秒)。
+  已还原 C:\AutoTest\workspaces\20261019T233014+0800_ddc509_20261020T101112_ee7047\Vega.ErrorHandling\Vega.ErrorHandling.csproj (用时 119 毫秒)。
+  已还原 C:\AutoTest\workspaces\20261019T233014+0800_ddc509_20261020T101112_ee7047\Vega.Data.Recipes\Vega.Data.Recipes.csproj (用时 74 毫秒)。
+  已还原 C:\AutoTest\workspaces\20261019T233014+0800_ddc509_20261020T101112_ee7047\Vega.Data.Navigation\Vega.Data.Navigation.csproj (用时 59 毫秒)。
+  已还原 C:\AutoTest\workspaces\20261019T233014+0800_ddc509_20261020T101112_ee7047\Vega.UI.Common\Vega.UI.Common.csproj (用时 625 毫秒)。
+  已还原 C:\AutoTest\workspaces\20261019T233014+0800_ddc509_20261020T101112_ee7047\Vega.UI.RecipeBatchEditor\Vega.UI.RecipeBatchEditor.csproj (用时 3.03 秒)。

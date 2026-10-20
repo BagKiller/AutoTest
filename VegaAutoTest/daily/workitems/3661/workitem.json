@@ -1,0 +1,163 @@
+{
+  "id": 3661,
+  "rev": 5,
+  "fields": {
+    "System.Id": 3661,
+    "System.AreaId": 9,
+    "System.AreaPath": "Vega_SW",
+    "System.TeamProject": "Vega_SW",
+    "System.NodeName": "Vega_SW",
+    "System.AreaLevel1": "Vega_SW",
+    "System.Rev": 5,
+    "System.AuthorizedDate": "2026-10-19T09:12:02.74Z",
+    "System.RevisedDate": "9999-01-01T00:00:00Z",
+    "System.IterationId": 123,
+    "System.IterationPath": "Vega_SW\\sprint17",
+    "System.IterationLevel1": "Vega_SW",
+    "System.IterationLevel2": "sprint17",
+    "System.WorkItemType": "Bug",
+    "System.State": "已提交",
+    "System.Reason": "已由团队提交",
+    "System.AssignedTo": {
+      "displayName": "Han, Wang",
+      "url": "http://win-devops:8080/DefaultCollection/_apis/Identities/a0479cb0-78f0-4b8f-a4fd-deefc46e3a96",
+      "_links": {
+        "avatar": {
+          "href": "http://win-devops:8080/DefaultCollection/_apis/GraphProfile/MemberAvatars/win.Uy0xLTUtMjEtMjA1NDQ3MDY4My02NzI1NTk1NjMtMjM4MDIzOTI0MS0xMTMx"
+        }
+      },
+      "id": "a0479cb0-78f0-4b8f-a4fd-deefc46e3a96",
+      "uniqueName": "VEGA-SH\\hwang",
+      "imageUrl": "http://win-devops:8080/DefaultCollection/_apis/GraphProfile/MemberAvatars/win.Uy0xLTUtMjEtMjA1NDQ3MDY4My02NzI1NTk1NjMtMjM4MDIzOTI0MS0xMTMx",
+      "descriptor": "win.Uy0xLTUtMjEtMjA1NDQ3MDY4My02NzI1NTk1NjMtMjM4MDIzOTI0MS0xMTMx"
+    },
+    "System.CreatedDate": "2026-10-19T05:34:02.833Z",
+    "System.CreatedBy": {
+      "displayName": "Han, Wang",
+      "url": "http://win-devops:8080/DefaultCollection/_apis/Identities/a0479cb0-78f0-4b8f-a4fd-deefc46e3a96",
+      "_links": {
+        "avatar": {
+          "href": "http://win-devops:8080/DefaultCollection/_apis/GraphProfile/MemberAvatars/win.Uy0xLTUtMjEtMjA1NDQ3MDY4My02NzI1NTk1NjMtMjM4MDIzOTI0MS0xMTMx"
+        }
+      },
+      "id": "a0479cb0-78f0-4b8f-a4fd-deefc46e3a96",
+      "uniqueName": "VEGA-SH\\hwang",
+      "imageUrl": "http://win-devops:8080/DefaultCollection/_apis/GraphProfile/MemberAvatars/win.Uy0xLTUtMjEtMjA1NDQ3MDY4My02NzI1NTk1NjMtMjM4MDIzOTI0MS0xMTMx",
+      "descriptor": "win.Uy0xLTUtMjEtMjA1NDQ3MDY4My02NzI1NTk1NjMtMjM4MDIzOTI0MS0xMTMx"
+    },
+    "System.ChangedDate": "2026-10-19T09:12:02.74Z",
+    "System.ChangedBy": {
+      "displayName": "Lin, Xin",
+      "url": "http://win-devops:8080/DefaultCollection/_apis/Identities/1396b723-7a88-47f9-83c6-db709965b212",
+      "_links": {
+        "avatar": {
+          "href": "http://win-devops:8080/DefaultCollection/_apis/GraphProfile/MemberAvatars/win.Uy0xLTUtMjEtMjA1NDQ3MDY4My02NzI1NTk1NjMtMjM4MDIzOTI0MS0xMTI4"
+        }
+      },
+      "id": "1396b723-7a88-47f9-83c6-db709965b212",
+      "uniqueName": "VEGA-SH\\xlin",
+      "imageUrl": "http://win-devops:8080/DefaultCollection/_apis/GraphProfile/MemberAvatars/win.Uy0xLTUtMjEtMjA1NDQ3MDY4My02NzI1NTk1NjMtMjM4MDIzOTI0MS0xMTI4",
+      "descriptor": "win.Uy0xLTUtMjEtMjA1NDQ3MDY4My02NzI1NTk1NjMtMjM4MDIzOTI0MS0xMTI4"
+    },
+    "System.AuthorizedAs": {
+      "displayName": "Lin, Xin",
+      "url": "http://win-devops:8080/DefaultCollection/_apis/Identities/1396b723-7a88-47f9-83c6-db709965b212",
+      "_links": {
+        "avatar": {
+          "href": "http://win-devops:8080/DefaultCollection/_apis/GraphProfile/MemberAvatars/win.Uy0xLTUtMjEtMjA1NDQ3MDY4My02NzI1NTk1NjMtMjM4MDIzOTI0MS0xMTI4"
+        }
+      },
+      "id": "1396b723-7a88-47f9-83c6-db709965b212",
+      "uniqueName": "VEGA-SH\\xlin",
+      "imageUrl": "http://win-devops:8080/DefaultCollection/_apis/GraphProfile/MemberAvatars/win.Uy0xLTUtMjEtMjA1NDQ3MDY4My02NzI1NTk1NjMtMjM4MDIzOTI0MS0xMTI4",
+      "descriptor": "win.Uy0xLTUtMjEtMjA1NDQ3MDY4My02NzI1NTk1NjMtMjM4MDIzOTI0MS0xMTI4"
+    },
+    "System.PersonId": 3657,
+    "System.Watermark": 31169,
+    "System.CommentCount": 1,
+    "System.Title": "【Vega100 Recipe/结果页】通道名去编号遗漏：多处参数表仍显示 DW1/DW2 编号",
+    "System.BoardColumn": "已提交",
+    "System.BoardColumnDone": false,
+    "Microsoft.VSTS.Common.StateChangeDate": "2026-10-19T05:36:05.19Z",
+    "Microsoft.VSTS.Common.ActivatedDate": "2026-10-19T05:36:05.19Z",
+    "Microsoft.VSTS.Common.ActivatedBy": {
+      "displayName": "Han, Wang",
+      "url": "http://win-devops:8080/DefaultCollection/_apis/Identities/a0479cb0-78f0-4b8f-a4fd-deefc46e3a96",
+      "_links": {
+        "avatar": {
+          "href": "http://win-devops:8080/DefaultCollection/_apis/GraphProfile/MemberAvatars/win.Uy0xLTUtMjEtMjA1NDQ3MDY4My02NzI1NTk1NjMtMjM4MDIzOTI0MS0xMTMx"
+        }
+      },
+      "id": "a0479cb0-78f0-4b8f-a4fd-deefc46e3a96",
+      "uniqueName": "VEGA-SH\\hwang",
+      "imageUrl": "http://win-devops:8080/DefaultCollection/_apis/GraphProfile/MemberAvatars/win.Uy0xLTUtMjEtMjA1NDQ3MDY4My02NzI1NTk1NjMtMjM4MDIzOTI0MS0xMTMx",
+      "descriptor": "win.Uy0xLTUtMjEtMjA1NDQ3MDY4My02NzI1NTk1NjMtMjM4MDIzOTI0MS0xMTMx"
+    },
+    "Microsoft.VSTS.Common.Priority": 2,
+    "Microsoft.VSTS.Common.Severity": "3 - 中",
+    "Microsoft.VSTS.Common.ValueArea": "业务",
+    "Microsoft.VSTS.Common.BacklogPriority": 1999889259.0,
+    "WEF_CCDA5C2107984103885135DDD7ABA36F_System.ExtensionMarker": true,
+    "WEF_CCDA5C2107984103885135DDD7ABA36F_Kanban.Column": "已提交",
+    "WEF_CCDA5C2107984103885135DDD7ABA36F_Kanban.Column.Done": false,
+    "Microsoft.VSTS.TCM.ReproSteps": "<div style=\"box-sizing:border-box;\">\n<div style=\"box-sizing:border-box;\">【前置条件】：Vega100 机型（单宽宽通道配置，本机无 DW1 通道）。 </div>\n<div style=\"box-sizing:border-box;\">【复现流程】：主程序打开任一 Recipe，进入 DarkField 采集设置区域： </div>\n<div style=\"box-sizing:border-box;\">&nbsp;&nbsp;&nbsp;&nbsp;1. 打开“LPD增强算法”弹窗，查看参数表通道列； </div>\n<div style=\"box-sizing:border-box;\">&nbsp;&nbsp;&nbsp;&nbsp;2. 打开“硬件参数”弹窗，查看通道列； </div>\n<div style=\"box-sizing:border-box;\">&nbsp;&nbsp;&nbsp;&nbsp;3. 打开“硬件参数计算器”，查看通道列； </div>\n<div style=\"box-sizing:border-box;\">&nbsp;&nbsp;&nbsp;&nbsp;4. Wafer Run 完成后查看结果页晶圆摘要表（Wafer Summary）的行标签。 </div>\n<div style=\"box-sizing:border-box;\">【预期结果】： </div>\n<div style=\"box-sizing:border-box;\">&nbsp;&nbsp;&nbsp;&nbsp;1~3：通道名不带编号（DW2 显示为 DW），且不出现本机未启用的 DW1 行（与第一批已修页面行为一致）； </div>\n<div style=\"box-sizing:border-box;\">&nbsp;&nbsp;&nbsp;&nbsp;4：摘要标签显示“DW Mask / DW Polarizer / DW Ideal Gain”。 </div>\n<div style=\"box-sizing:border-box;\">【实际结果】： </div>\n<div style=\"box-sizing:border-box;\">&nbsp;&nbsp;&nbsp;&nbsp;1~3：通道列仍显示 DW1/DW2 带编号，且弹窗中出现本机不存在的 DW1 行； </div>\n<div style=\"box-sizing:border-box;\">&nbsp;&nbsp;&nbsp;&nbsp;4：摘要标签显示“DW2 Mask / DW2 Polarizer / DW2 Ideal Gain”。 </div>\n<div style=\"box-sizing:border-box;\"><br> </div>\n<div style=\"box-sizing:border-box;\"><b>根本原因分析：</b> </div>\n<div style=\"box-sizing:border-box;\">第一批通道名去编号改造（PR 4930，覆盖校准/诊断/部分结果页）遗漏了上述显示入口：这些位置未接入通道显示名转换，加载时也未按机型过滤未启用通道。 </div>\n<div style=\"box-sizing:border-box;\">代码层：WaferSummaryView / LPDAlgoView / DFHardwareParametersView / DFHardwareParamsCalculatorView 的 Channel/Key 列直接绑定裸通道键；对应 ViewModel 及批量编辑器 CollectionViewViewModel 加载字典时未按 IsCollectorNameEnabled 过滤，Vega100 上未启用的 DW1 行进入列表。 </div>\n<div style=\"box-sizing:border-box;\"><b>修复建议：</b> </div>\n<div style=\"box-sizing:border-box;\">为本批显示入口统一挂通道显示名转换（DW2→DW）并按机型过滤未启用通道行；数据层保持裸键不变，保存写回不受影响。 </div>\n<div style=\"box-sizing:border-box;\">代码层：已在分支 Vega100DWUIDisplay 实现（commit 4eeb6a66）：显示列挂 ExternalChannelNameConverter / ExternalWideTokenTextConverter，加载处按 IsCollectorNameEnabled 过滤；写回链仍按裸键，被滤行不参与写回、原数据保留。批量编辑器为跨机型工具，过滤按默认条件放行，行为不变，仅与主程序逻辑对齐。 </div>\n<div style=\"box-sizing:border-box;\">相关提交：166c6ae7 PR 4930（第一批去编号）；4eeb6a66 DW display（本修复）。 </div>\n<div style=\"box-sizing:border-box;\">最近改动者：Chen, Liuren / Chen, Shuo / Ma, Junyan / Yuan, Fangda（各涉及文件在本修复前的最近修改者）。 </div>\n<span style=\"box-sizing:border-box;display:inline !important;\">【版本】：（待补） </span>\n</div>"
+  },
+  "relations": [
+    {
+      "rel": "System.LinkTypes.Related",
+      "url": "http://win-devops:8080/DefaultCollection/8dbcd5b4-eeb3-44c5-ac52-dcec2c44d052/_apis/wit/workItems/3633",
+      "attributes": {
+        "isLocked": false,
+        "name": "相关"
+      }
+    },
+    {
+      "rel": "ArtifactLink",
+      "url": "vstfs:///Git/PullRequestId/8dbcd5b4-eeb3-44c5-ac52-dcec2c44d052%2Fa9010300-dcb2-4e66-b195-767c1741515d%2F4962",
+      "attributes": {
+        "authorizedDate": "2026-10-19T05:36:05.19Z",
+        "id": 73013,
+        "resourceCreatedDate": "2026-10-19T05:36:05.19Z",
+        "resourceModifiedDate": "2026-10-19T05:36:05.19Z",
+        "revisedDate": "9999-01-01T00:00:00Z",
+        "name": "Pull Request"
+      }
+    },
+    {
+      "rel": "ArtifactLink",
+      "url": "vstfs:///Git/Commit/8dbcd5b4-eeb3-44c5-ac52-dcec2c44d052%2fa9010300-dcb2-4e66-b195-767c1741515d%2f0d154c775519241d0ffa1908188cb6d7ade010fb",
+      "attributes": {
+        "authorizedDate": "2026-10-19T07:57:04.883Z",
+        "id": 73071,
+        "resourceCreatedDate": "2026-10-19T07:57:04.883Z",
+        "resourceModifiedDate": "2026-10-19T07:57:04.883Z",
+        "revisedDate": "9999-01-01T00:00:00Z",
+        "name": "Fixed in Commit"
+      }
+    }
+  ],
+  "_links": {
+    "self": {
+      "href": "http://win-devops:8080/DefaultCollection/8dbcd5b4-eeb3-44c5-ac52-dcec2c44d052/_apis/wit/workItems/3661"
+    },
+    "workItemUpdates": {
+      "href": "http://win-devops:8080/DefaultCollection/8dbcd5b4-eeb3-44c5-ac52-dcec2c44d052/_apis/wit/workItems/3661/updates"
+    },
+    "workItemRevisions": {
+      "href": "http://win-devops:8080/DefaultCollection/8dbcd5b4-eeb3-44c5-ac52-dcec2c44d052/_apis/wit/workItems/3661/revisions"
+    },
+    "workItemComments": {
+      "href": "http://win-devops:8080/DefaultCollection/8dbcd5b4-eeb3-44c5-ac52-dcec2c44d052/_apis/wit/workItems/3661/comments"
+    },
+    "html": {
+      "href": "http://win-devops:8080/DefaultCollection/8dbcd5b4-eeb3-44c5-ac52-dcec2c44d052/_workitems/edit/3661"
+    },
+    "workItemType": {
+      "href": "http://win-devops:8080/DefaultCollection/8dbcd5b4-eeb3-44c5-ac52-dcec2c44d052/_apis/wit/workItemTypes/Bug"
+    },
+    "fields": {
+      "href": "http://win-devops:8080/DefaultCollection/8dbcd5b4-eeb3-44c5-ac52-dcec2c44d052/_apis/wit/fields"
+    }
+  },
+  "url": "http://win-devops:8080/DefaultCollection/8dbcd5b4-eeb3-44c5-ac52-dcec2c44d052/_apis/wit/workItems/3661"
+}

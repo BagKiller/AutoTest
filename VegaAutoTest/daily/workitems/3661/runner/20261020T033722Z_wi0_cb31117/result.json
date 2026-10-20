@@ -1,0 +1,450 @@
+{
+  "schemaVersion": "1.0",
+  "runId": "20261020T033722Z_wi0_cb31117",
+  "workItemId": 0,
+  "caseId": "wi3661-acceptance",
+  "verdict": "ERROR",
+  "verdictReason": "契约自检违例：channels.l2Uia.available=false 但存在通过的断言（检查字段是否被复用） ｜ 原判定 ERROR/HARNESS_EXCEPTION: HARNESS_EXCEPTION: 2 个用例异常（非断言失败）",
+  "verdictCode": "CONTRACT_VIOLATION",
+  "startedAt": "2026-10-20T11:37:22+08:00",
+  "finishedAt": "2026-10-20T11:37:40+08:00",
+  "durationMs": 18186,
+  "target": {
+    "repoRoot": "C:\\AutoTest\\workspaces\\20261019T233014+0800_ddc509_20261020T101112_ee7047",
+    "gitCommit": "985a08aaa9596e259e46f998cdd2ecc79667c81b",
+    "gitBranch": "HEAD",
+    "gitDirty": false,
+    "vegaExe": "C:\\AutoTest\\workspaces\\20261019T233014+0800_ddc509_20261020T101112_ee7047\\Vega\\bin\\Debug\\net8.0-windows10.0.19041.0\\win-x64\\Vega.exe",
+    "vegaExeBuiltAt": "2026-10-20T10:16:19+08:00",
+    "rebuilt": false,
+    "builtFromCurrentSource": false
+  },
+  "channels": {
+    "l1Api": {
+      "available": false,
+      "baseUrl": "http://localhost:18901/vega-agent/",
+      "reason": "用例未产出 oracle-crosscheck 断言（本次层: logic100）"
+    },
+    "l2Uia": {
+      "available": false,
+      "baseUrl": null,
+      "reason": "本次未请求 uia 层"
+    },
+    "assertions": {
+      "available": true,
+      "baseUrl": null,
+      "reason": null
+    }
+  },
+  "assertions": [
+    {
+      "id": "wi3661.summary.render.DW2 Mask",
+      "kind": "logic",
+      "description": "summary.render.DW2 Mask",
+      "expected": "\"DW Mask\"",
+      "actual": "\"DW Mask\"",
+      "delta": null,
+      "tolerance": null,
+      "result": "PASS"
+    },
+    {
+      "id": "wi3661.summary.render.DW2 Polarizer",
+      "kind": "logic",
+      "description": "summary.render.DW2 Polarizer",
+      "expected": "\"DW Polarizer\"",
+      "actual": "\"DW Polarizer\"",
+      "delta": null,
+      "tolerance": null,
+      "result": "PASS"
+    },
+    {
+      "id": "wi3661.summary.render.DW2 Ideal Gain",
+      "kind": "logic",
+      "description": "summary.render.DW2 Ideal Gain",
+      "expected": "\"DW Ideal Gain\"",
+      "actual": "\"DW Ideal Gain\"",
+      "delta": null,
+      "tolerance": null,
+      "result": "PASS"
+    },
+    {
+      "id": "wi3661.summary.render.DW2-0",
+      "kind": "logic",
+      "description": "summary.render.DW2-0",
+      "expected": "\"DW-0\"",
+      "actual": "\"DW-0\"",
+      "delta": null,
+      "tolerance": null,
+      "result": "PASS"
+    },
+    {
+      "id": "wi3661.summary.render.DN Mask",
+      "kind": "logic",
+      "description": "summary.render.DN Mask",
+      "expected": "\"DN Mask\"",
+      "actual": "\"DN Mask\"",
+      "delta": null,
+      "tolerance": null,
+      "result": "PASS"
+    },
+    {
+      "id": "wi3661.summary.bare-keys-unchanged",
+      "kind": "logic",
+      "description": "summary.bare-keys-unchanged",
+      "expected": "\"{\\\"BaseSummaryDic\\\":{\\\"DW2 Mask\\\":\\\"Full\\\",\\\"DW2 Polarizer\\\":\\\"P\\\",\\\"DW2 Ideal Gain\\\":\\\"123\\\",\\\"DW2-0\\\":\\\"4\\\",\\\"DN Mask\\\":\\\"Full\\\"},\\\"CollectionsSummary\\\":[],\\\"ResultSummary\\\":{\\\"ResultSummaryDic\\\":{\\\"Results\\\":\\\"\\\",\\\"Grade\\\":\\\"Rejected\\\"}},\\\"Title\\\":\\\"Pre Scan Info\\\",\\\"SummaryType\\\":1}\"",
+      "actual": "\"{\\\"BaseSummaryDic\\\":{\\\"DW2 Mask\\\":\\\"Full\\\",\\\"DW2 Polarizer\\\":\\\"P\\\",\\\"DW2 Ideal Gain\\\":\\\"123\\\",\\\"DW2-0\\\":\\\"4\\\",\\\"DN Mask\\\":\\\"Full\\\"},\\\"CollectionsSummary\\\":[],\\\"ResultSummary\\\":{\\\"ResultSummaryDic\\\":{\\\"Results\\\":\\\"\\\",\\\"Grade\\\":\\\"Rejected\\\"}},\\\"Title\\\":\\\"Pre Scan Info\\\",\\\"SummaryType\\\":1}\"",
+      "delta": null,
+      "tolerance": null,
+      "result": "PASS"
+    },
+    {
+      "id": "wi3661.hardware.bare-DW2",
+      "kind": "logic",
+      "description": "hardware.bare-DW2",
+      "expected": "true",
+      "actual": "true",
+      "delta": null,
+      "tolerance": null,
+      "result": "PASS"
+    },
+    {
+      "id": "wi3661.hardware.DW1-filter",
+      "kind": "logic",
+      "description": "hardware.DW1-filter",
+      "expected": "false",
+      "actual": "false",
+      "delta": null,
+      "tolerance": null,
+      "result": "PASS"
+    },
+    {
+      "id": "wi3661.hardware.DN",
+      "kind": "logic",
+      "description": "hardware.DN",
+      "expected": "true",
+      "actual": "true",
+      "delta": null,
+      "tolerance": null,
+      "result": "PASS"
+    },
+    {
+      "id": "wi3661.hardware.render",
+      "kind": "logic",
+      "description": "hardware.render",
+      "expected": "\"DW\"",
+      "actual": "\"DW\"",
+      "delta": null,
+      "tolerance": null,
+      "result": "PASS"
+    },
+    {
+      "id": "wi3661.hardware.save-DW2",
+      "kind": "logic",
+      "description": "hardware.save-DW2",
+      "expected": "0.123",
+      "actual": "0.123",
+      "delta": null,
+      "tolerance": null,
+      "result": "PASS"
+    },
+    {
+      "id": "wi3661.hardware.hidden-preserved",
+      "kind": "logic",
+      "description": "hardware.hidden-preserved",
+      "expected": "\"{\\\"HazeNoise\\\":555.0,\\\"MinDefect\\\":11.0,\\\"MaxDefect\\\":555.0,\\\"MinSIT\\\":0.1,\\\"MaxXT\\\":555.0,\\\"RefMaxHazeNppm\\\":555.0,\\\"RefOD\\\":5,\\\"RefPMTVoltage\\\":550.0,\\\"SystemGain\\\":555.0,\\\"SingleThreshold\\\":65535.0,\\\"SirSingleThreshold\\\":65535.0}\"",
+      "actual": "\"{\\\"HazeNoise\\\":555.0,\\\"MinDefect\\\":11.0,\\\"MaxDefect\\\":555.0,\\\"MinSIT\\\":0.1,\\\"MaxXT\\\":555.0,\\\"RefMaxHazeNppm\\\":555.0,\\\"RefOD\\\":5,\\\"RefPMTVoltage\\\":550.0,\\\"SystemGain\\\":555.0,\\\"SingleThreshold\\\":65535.0,\\\"SirSingleThreshold\\\":65535.0}\"",
+      "delta": null,
+      "tolerance": null,
+      "result": "PASS"
+    },
+    {
+      "id": "wi3661.hardware.no-display-key",
+      "kind": "logic",
+      "description": "hardware.no-display-key",
+      "expected": "false",
+      "actual": "false",
+      "delta": null,
+      "tolerance": null,
+      "result": "PASS"
+    },
+    {
+      "id": "wi3661.calculator.bare-DW2",
+      "kind": "logic",
+      "description": "calculator.bare-DW2",
+      "expected": "true",
+      "actual": "true",
+      "delta": null,
+      "tolerance": null,
+      "result": "PASS"
+    },
+    {
+      "id": "wi3661.calculator.DW1-filter",
+      "kind": "logic",
+      "description": "calculator.DW1-filter",
+      "expected": "false",
+      "actual": "false",
+      "delta": null,
+      "tolerance": null,
+      "result": "PASS"
+    },
+    {
+      "id": "wi3661.calculator.DN",
+      "kind": "logic",
+      "description": "calculator.DN",
+      "expected": "true",
+      "actual": "true",
+      "delta": null,
+      "tolerance": null,
+      "result": "PASS"
+    },
+    {
+      "id": "wi3661.calculator.render",
+      "kind": "logic",
+      "description": "calculator.render",
+      "expected": "\"DW\"",
+      "actual": "\"DW\"",
+      "delta": null,
+      "tolerance": null,
+      "result": "PASS"
+    },
+    {
+      "id": "wi3661.calculator",
+      "kind": "logic",
+      "description": "calculator",
+      "expected": "scenario completes",
+      "actual": "System.NullReferenceException: Object reference not set to an instance of an object.\r\n   at Vega.UI.Inspection.HardwareParamsItem.OnMinDefectChanged(Double value) in C:\\AutoTest\\workspaces\\20261019T233014+0800_ddc509_20261020T101112_ee7047\\Vega.UI.Inspection\\Recipe\\Elements\\CollectionsSections\\SubWindows\\DFHardwareParametersViewModel.cs:line 162\r\n   at Vega.UI.Inspection.HardwareParamsItem.set_MinDefect(Double value) in C:\\AutoTest\\workspaces\\20261019T233014+0800_ddc509_20261020T101112_ee7047\\Vega.UI.Inspection\\obj\\Debug\\net8.0-windows\\CommunityToolkit.Mvvm.SourceGenerators\\CommunityToolkit.Mvvm.SourceGenerators.ObservablePropertyGenerator\\Vega.UI.Inspection.HardwareParamsItem.g.cs:line 66\r\n   at Vega.UI.Inspection.HardwareParamsItem.OnSingleThresholdChanged(Double value) in C:\\AutoTest\\workspaces\\20261019T233014+0800_ddc509_20261020T101112_ee7047\\Vega.UI.Inspection\\Recipe\\Elements\\CollectionsSections\\SubWindows\\DFHardwareParametersViewModel.cs:line 124\r\n   at Vega.UI.Inspection.HardwareParamsItem.set_SingleThreshold(Double value) in C:\\AutoTest\\workspaces\\20261019T233014+0800_ddc509_20261020T101112_ee7047\\Vega.UI.Inspection\\obj\\Debug\\net8.0-windows\\CommunityToolkit.Mvvm.SourceGenerators\\CommunityToolkit.Mvvm.SourceGenerators.ObservablePropertyGenerator\\Vega.UI.Inspection.HardwareParamsItem.g.cs:line 234\r\n   at Vega.AutoTest.CommitProbe.WorkItem3661Logic.<>c.<Calculator_CompiledView_FilterAndNoWriteBack>b__16_0() in C:\\AutoTest\\AutoTest\\VegaAutoTest\\probes\\Vega.AutoTest.CommitProbe\\WorkItem3661Logic.cs:line 174\r\n   at Vega.AutoTest.CommitProbe.WorkItem3661Logic.<>c__DisplayClass5_0.<Run>b__0() in C:\\AutoTest\\AutoTest\\VegaAutoTest\\probes\\Vega.AutoTest.CommitProbe\\WorkItem3661Logic.cs:line 77\r\n   at System.Windows.Threading.DispatcherOperation.InvokeDelegateCore()\r\n   at System.Windows.Threading.DispatcherOperation.InvokeImpl()\r\n--- End of stack trace from previous location ---\r\n   at System.Windows.Threading.DispatcherOperation.Wait(TimeSpan timeout)\r\n   at System.Windows.Threading.Dispatcher.InvokeImpl(DispatcherOperation operation, CancellationToken cancellationToken, TimeSpan timeout)\r\n   at System.Windows.Threading.Dispatcher.Invoke(Action callback, DispatcherPriority priority, CancellationToken cancellationToken, TimeSpan timeout)\r\n   at System.Windows.Threading.Dispatcher.Invoke(Action callback)\r\n   at Vega.AutoTest.CommitProbe.Wi3661Dispatcher.Run(Action action) in C:\\AutoTest\\AutoTest\\VegaAutoTest\\probes\\Vega.AutoTest.CommitProbe\\WorkItem3661Logic.cs:line 48\r\n   at Vega.AutoTest.CommitProbe.WorkItem3661Logic.Run(String id, Action action) in C:\\AutoTest\\AutoTest\\VegaAutoTest\\probes\\Vega.AutoTest.CommitProbe\\WorkItem3661Logic.cs:line 77",
+      "delta": null,
+      "tolerance": null,
+      "result": "FAIL"
+    },
+    {
+      "id": "wi3661.lpd.pir.bare-DW2",
+      "kind": "logic",
+      "description": "lpd.pir.bare-DW2",
+      "expected": "true",
+      "actual": "true",
+      "delta": null,
+      "tolerance": null,
+      "result": "PASS"
+    },
+    {
+      "id": "wi3661.lpd.pir.DW1-filter",
+      "kind": "logic",
+      "description": "lpd.pir.DW1-filter",
+      "expected": "false",
+      "actual": "false",
+      "delta": null,
+      "tolerance": null,
+      "result": "PASS"
+    },
+    {
+      "id": "wi3661.lpd.pir.DN",
+      "kind": "logic",
+      "description": "lpd.pir.DN",
+      "expected": "true",
+      "actual": "true",
+      "delta": null,
+      "tolerance": null,
+      "result": "PASS"
+    },
+    {
+      "id": "wi3661.lpd.sir.bare-DW2",
+      "kind": "logic",
+      "description": "lpd.sir.bare-DW2",
+      "expected": "true",
+      "actual": "true",
+      "delta": null,
+      "tolerance": null,
+      "result": "PASS"
+    },
+    {
+      "id": "wi3661.lpd.sir.DW1-filter",
+      "kind": "logic",
+      "description": "lpd.sir.DW1-filter",
+      "expected": "false",
+      "actual": "false",
+      "delta": null,
+      "tolerance": null,
+      "result": "PASS"
+    },
+    {
+      "id": "wi3661.lpd.sir.DN",
+      "kind": "logic",
+      "description": "lpd.sir.DN",
+      "expected": "true",
+      "actual": "true",
+      "delta": null,
+      "tolerance": null,
+      "result": "PASS"
+    },
+    {
+      "id": "wi3661.lpd.pir.render",
+      "kind": "logic",
+      "description": "lpd.pir.render",
+      "expected": "\"DW\"",
+      "actual": "\"DW\"",
+      "delta": null,
+      "tolerance": null,
+      "result": "PASS"
+    },
+    {
+      "id": "wi3661.lpd.sir.render",
+      "kind": "logic",
+      "description": "lpd.sir.render",
+      "expected": "\"DW\"",
+      "actual": "\"DW\"",
+      "delta": null,
+      "tolerance": null,
+      "result": "PASS"
+    },
+    {
+      "id": "wi3661.lpd.save.pir-DW2",
+      "kind": "logic",
+      "description": "lpd.save.pir-DW2",
+      "expected": "7.0",
+      "actual": "7.0",
+      "delta": null,
+      "tolerance": null,
+      "result": "PASS"
+    },
+    {
+      "id": "wi3661.lpd.save.sir-DW2",
+      "kind": "logic",
+      "description": "lpd.save.sir-DW2",
+      "expected": "8.0",
+      "actual": "8.0",
+      "delta": null,
+      "tolerance": null,
+      "result": "PASS"
+    },
+    {
+      "id": "wi3661.lpd.hidden.pir-DW1",
+      "kind": "logic",
+      "description": "lpd.hidden.pir-DW1",
+      "expected": "11.0",
+      "actual": "11.0",
+      "delta": null,
+      "tolerance": null,
+      "result": "PASS"
+    },
+    {
+      "id": "wi3661.lpd.hidden.sir-DW1",
+      "kind": "logic",
+      "description": "lpd.hidden.sir-DW1",
+      "expected": "12.0",
+      "actual": "12.0",
+      "delta": null,
+      "tolerance": null,
+      "result": "PASS"
+    },
+    {
+      "id": "wi3661.lpd.no-display-key",
+      "kind": "logic",
+      "description": "lpd.no-display-key",
+      "expected": "false",
+      "actual": "false",
+      "delta": null,
+      "tolerance": null,
+      "result": "PASS"
+    },
+    {
+      "id": "wi3661.batch.hardware.bare-DW2",
+      "kind": "logic",
+      "description": "batch.hardware.bare-DW2",
+      "expected": "true",
+      "actual": "true",
+      "delta": null,
+      "tolerance": null,
+      "result": "PASS"
+    },
+    {
+      "id": "wi3661.batch.hardware.DW1-filter",
+      "kind": "logic",
+      "description": "batch.hardware.DW1-filter",
+      "expected": "false",
+      "actual": "false",
+      "delta": null,
+      "tolerance": null,
+      "result": "PASS"
+    },
+    {
+      "id": "wi3661.batch.hardware.DN",
+      "kind": "logic",
+      "description": "batch.hardware.DN",
+      "expected": "true",
+      "actual": "true",
+      "delta": null,
+      "tolerance": null,
+      "result": "PASS"
+    },
+    {
+      "id": "wi3661.batch.channels.bare-DW2",
+      "kind": "logic",
+      "description": "batch.channels.bare-DW2",
+      "expected": "true",
+      "actual": "false",
+      "delta": null,
+      "tolerance": null,
+      "result": "FAIL"
+    },
+    {
+      "id": "wi3661.batch",
+      "kind": "logic",
+      "description": "batch",
+      "expected": "scenario completes",
+      "actual": "Xunit.Sdk.EqualException: Assert.Equal() Failure: Values differ\r\nExpected: True\r\nActual:   False\r\n   at Xunit.Assert.Equal[T](T expected, T actual, IEqualityComparer`1 comparer) in /_/src/xunit.assert/Asserts/EqualityAsserts.cs:line 137\r\n   at Xunit.Assert.Equal[T](T expected, T actual) in /_/src/xunit.assert/Asserts/EqualityAsserts.cs:line 82\r\n   at Vega.AutoTest.CommitProbe.WorkItem3661Logic.Eq[T](String id, T expected, T actual) in C:\\AutoTest\\AutoTest\\VegaAutoTest\\probes\\Vega.AutoTest.CommitProbe\\WorkItem3661Logic.cs:line 73\r\n   at Vega.AutoTest.CommitProbe.WorkItem3661Logic.Channels(String id, IEnumerable`1 names) in C:\\AutoTest\\AutoTest\\VegaAutoTest\\probes\\Vega.AutoTest.CommitProbe\\WorkItem3661Logic.cs:line 116\r\n   at Vega.AutoTest.CommitProbe.WorkItem3661Logic.<>c.<BatchEditor_CompiledWindow_FilterSaveAndJsonRoundTrip>b__17_0() in C:\\AutoTest\\AutoTest\\VegaAutoTest\\probes\\Vega.AutoTest.CommitProbe\\WorkItem3661Logic.cs:line 184\r\n   at Vega.AutoTest.CommitProbe.WorkItem3661Logic.<>c__DisplayClass5_0.<Run>b__0() in C:\\AutoTest\\AutoTest\\VegaAutoTest\\probes\\Vega.AutoTest.CommitProbe\\WorkItem3661Logic.cs:line 77\r\n   at System.Windows.Threading.DispatcherOperation.InvokeDelegateCore()\r\n   at System.Windows.Threading.DispatcherOperation.InvokeImpl()\r\n--- End of stack trace from previous location ---\r\n   at System.Windows.Threading.DispatcherOperation.Wait(TimeSpan timeout)\r\n   at System.Windows.Threading.Dispatcher.InvokeImpl(DispatcherOperation operation, CancellationToken cancellationToken, TimeSpan timeout)\r\n   at System.Windows.Threading.Dispatcher.Invoke(Action callback, DispatcherPriority priority, CancellationToken cancellationToken, TimeSpan timeout)\r\n   at System.Windows.Threading.Dispatcher.Invoke(Action callback)\r\n   at Vega.AutoTest.CommitProbe.Wi3661Dispatcher.Run(Action action) in C:\\AutoTest\\AutoTest\\VegaAutoTest\\probes\\Vega.AutoTest.CommitProbe\\WorkItem3661Logic.cs:line 48\r\n   at Vega.AutoTest.CommitProbe.WorkItem3661Logic.Run(String id, Action action) in C:\\AutoTest\\AutoTest\\VegaAutoTest\\probes\\Vega.AutoTest.CommitProbe\\WorkItem3661Logic.cs:line 77",
+      "delta": null,
+      "tolerance": null,
+      "result": "FAIL"
+    }
+  ],
+  "summary": {
+    "total": 36,
+    "passed": 33,
+    "failed": 3,
+    "skipped": 0
+  },
+  "tests": [
+    {
+      "name": "Vega.AutoTest.CommitProbe.WorkItem3661Logic.ResultSummary_CompiledView_RendersLabelsWithoutChangingKeys",
+      "outcome": "Passed",
+      "durationMs": 1378,
+      "message": null
+    },
+    {
+      "name": "Vega.AutoTest.CommitProbe.WorkItem3661Logic.Lpd_PirSir_CompiledView_FilterEditSaveAndHiddenData",
+      "outcome": "Passed",
+      "durationMs": 109,
+      "message": null
+    },
+    {
+      "name": "Vega.AutoTest.CommitProbe.WorkItem3661Logic.Calculator_CompiledView_FilterAndNoWriteBack",
+      "outcome": "Failed",
+      "durationMs": 528,
+      "message": "System.NullReferenceException : Object reference not set to an instance of an object.\r\nat Vega.UI.Inspection.HardwareParamsItem.OnMinDefectChanged(Double value) in C:\\AutoTest\\workspaces\\20261019T233014+0800_ddc509_20261020T101112_ee7047\\Vega.UI.Inspection\\Recipe\\Elements\\CollectionsSections\\SubWindows\\DFHardwareParametersViewModel.cs:line 162\r\n   at Vega.UI.Inspection.HardwareParamsItem.set_MinDefect(Double value) in C:\\AutoTest\\workspaces\\20261019T233014+0800_ddc509_20261020T101112_ee7047\\Vega.UI.Inspection\\obj\\Debug\\net8.0-windows\\CommunityToolkit.Mvvm.SourceGenerators\\CommunityToolkit.Mvvm.SourceGenerators.ObservablePropertyGenerator\\Vega.UI.Inspection.HardwareParamsItem.g.cs:line 66\r\n   at Vega.UI.Inspection.HardwareParamsItem.OnSingleThresholdChanged(Double value) in C:\\AutoTest\\workspaces\\20261019T233014+0800_ddc509_20261020T101112_ee7047\\Vega.UI.Inspection\\Recipe\\Elements\\CollectionsSections\\SubWindows\\DFHardwareParametersViewModel.cs:line 124\r\n   at Vega.UI.Inspection.HardwareParamsItem.set_SingleThreshold(Double value) in C:\\AutoTest\\workspaces\\20261019T233014+...(truncated, 3013 chars)"
+    },
+    {
+      "name": "Vega.AutoTest.CommitProbe.WorkItem3661Logic.BatchEditor_CompiledWindow_FilterSaveAndJsonRoundTrip",
+      "outcome": "Failed",
+      "durationMs": 336,
+      "message": "Assert.Equal() Failure: Values differ\r\nExpected: True\r\nActual:   False\r\nat Vega.AutoTest.CommitProbe.WorkItem3661Logic.Eq[T](String id, T expected, T actual) in C:\\AutoTest\\AutoTest\\VegaAutoTest\\probes\\Vega.AutoTest.CommitProbe\\WorkItem3661Logic.cs:line 73\r\n   at Vega.AutoTest.CommitProbe.WorkItem3661Logic.Channels(String id, IEnumerable`1 names) in C:\\AutoTest\\AutoTest\\VegaAutoTest\\probes\\Vega.AutoTest.CommitProbe\\WorkItem3661Logic.cs:line 116\r\n   at Vega.AutoTest.CommitProbe.WorkItem3661Logic.<>c.<BatchEditor_CompiledWindow_FilterSaveAndJsonRoundTrip>b__17_0() in C:\\AutoTest\\AutoTest\\VegaAutoTest\\probes\\Vega.AutoTest.CommitProbe\\WorkItem3661Logic.cs:line 184\r\n   at Vega.AutoTest.CommitProbe.WorkItem3661Logic.<>c__DisplayClass5_0.<Run>b__0() in C:\\AutoTest\\AutoTest\\VegaAutoTest\\probes\\Vega.AutoTest.CommitProbe\\WorkItem3661Logic.cs:line 77\r\n   at System.Windows.Threading.DispatcherOperation.InvokeDelegateCore()\r\n   at System.Windows.Threading.DispatcherOperation.InvokeImpl()\r\n--- End of stack trace from previous location ---\r\n   at System.Windows.Threading...(truncated, 2171 chars)"
+    },
+    {
+      "name": "Vega.AutoTest.CommitProbe.WorkItem3661Logic.HardwareParameters_CompiledView_FilterAndSaveBareKeys",
+      "outcome": "Passed",
+      "durationMs": 175,
+      "message": null
+    }
+  ],
+  "evidence": {
+    "dir": "C:\\AutoTest\\AutoTest\\VegaAutoTest\\daily\\workitems\\3661\\runner\\20261020T033722Z_wi0_cb31117",
+    "files": [
+      "logic100/trx/logic100.trx",
+      "logic100/trx/logic100.testhost.log",
+      "logic100/lpd-saved.json",
+      "logic100/hardware-saved.json",
+      "report.md"
+    ]
+  },
+  "exitCode": 3
+}

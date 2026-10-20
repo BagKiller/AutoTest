@@ -1,0 +1,62 @@
+{
+  "schemaVersion": "1.0",
+  "runId": "20261020T033422Z_wi0_25df537",
+  "workItemId": 0,
+  "caseId": "wi3661-acceptance",
+  "verdict": "ERROR",
+  "verdictReason": "TEST_HOST_FAILED: 测试工程未能启动（编译失败或宿主退出且没有 trx）。 | TEST_HOST_FAILED: 测试工程未能启动（编译失败或宿主退出且没有 trx）。 | TEST_HOST_FAILED: 测试工程未能启动（编译失败或宿主退出且没有 trx）。 | TEST_HOST_FAILED: 测试工程未能启动（编译失败或宿主退出且没有 trx）。",
+  "verdictCode": "TEST_HOST_FAILED",
+  "startedAt": "2026-10-20T11:34:21+08:00",
+  "finishedAt": "2026-10-20T11:35:04+08:00",
+  "durationMs": 42463,
+  "target": {
+    "repoRoot": "C:\\AutoTest\\workspaces\\20261019T233014+0800_ddc509_20261020T101112_ee7047",
+    "gitCommit": "985a08aaa9596e259e46f998cdd2ecc79667c81b",
+    "gitBranch": "HEAD",
+    "gitDirty": false,
+    "vegaExe": "C:\\AutoTest\\workspaces\\20261019T233014+0800_ddc509_20261020T101112_ee7047\\Vega\\bin\\Debug\\net8.0-windows10.0.19041.0\\win-x64\\Vega.exe",
+    "vegaExeBuiltAt": "2026-10-20T10:16:19+08:00",
+    "rebuilt": false,
+    "builtFromCurrentSource": false
+  },
+  "channels": {
+    "l1Api": {
+      "available": false,
+      "baseUrl": "http://localhost:18901/vega-agent/",
+      "reason": "用例未产出 oracle-crosscheck 断言（本次层: logic100,logic300,logic500,logic-none）"
+    },
+    "l2Uia": {
+      "available": false,
+      "baseUrl": null,
+      "reason": "本次未请求 uia 层"
+    },
+    "assertions": {
+      "available": true,
+      "baseUrl": null,
+      "reason": null
+    }
+  },
+  "assertions": [],
+  "summary": {
+    "total": 0,
+    "passed": 0,
+    "failed": 0,
+    "skipped": 0
+  },
+  "tests": [],
+  "evidence": {
+    "dir": "C:\\AutoTest\\AutoTest\\VegaAutoTest\\daily\\workitems\\3661\\runner\\20261020T033422Z_wi0_25df537",
+    "files": [
+      "logic100/trx/logic100.trx",
+      "logic100/trx/logic100.testhost.log",
+      "logic300/trx/logic300.trx",
+      "logic300/trx/logic300.testhost.log",
+      "logic500/trx/logic500.trx",
+      "logic500/trx/logic500.testhost.log",
+      "logic-none/trx/logic-none.trx",
+      "logic-none/trx/logic-none.testhost.log",
+      "report.md"
+    ]
+  },
+  "exitCode": 3
+}

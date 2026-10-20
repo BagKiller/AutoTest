@@ -1,0 +1,307 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TestRun id="1302aa65-63d0-442e-a3ed-b006b00adf40" name="Administrator@WIN-5NPN6Q8PL1B 2026-10-20 11:35:47" runUser="WIN-5NPN6Q8PL1B\Administrator" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <Times creation="2026-10-20T11:35:47.6615283+08:00" queuing="2026-10-20T11:35:47.6615286+08:00" start="2026-10-20T11:35:42.8090979+08:00" finish="2026-10-20T11:35:49.2526093+08:00" />
+  <TestSettings name="default" id="a6c5fab2-421b-482f-9e24-bb56a615a50f">
+    <Deployment runDeploymentRoot="Administrator_WIN-5NPN6Q8PL1B_2026-10-20_11_35_47" />
+  </TestSettings>
+  <Results>
+    <UnitTestResult executionId="878fc8d4-742e-451e-b5a1-2161bacb33ae" testId="acee808e-e3b0-a31c-d7e5-e69c8e25eb30" testName="Vega.AutoTest.CommitProbe.WorkItem3661Logic.HardwareParameters_CompiledView_FilterAndSaveBareKeys" computerName="WIN-5NPN6Q8PL1B" duration="00:00:00.5588746" startTime="2026-10-20T11:35:48.1275645+08:00" endTime="2026-10-20T11:35:48.1275648+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="878fc8d4-742e-451e-b5a1-2161bacb33ae">
+      <Output>
+        <ErrorInfo>
+          <Message>System.Windows.Markup.XamlParseException : 'Provide value on 'System.Windows.StaticResourceExtension' threw an exception.' Line number '38' and line position '41'.&#xD;
+---- System.Exception : Cannot find resource named 'Border_ReadOnlyStyle'. Resource names are case sensitive.</Message>
+          <StackTrace>   at System.Windows.Markup.XamlReader.RewrapException(Exception e, IXamlLineInfo lineInfo, Uri baseUri)&#xD;
+   at System.Windows.Markup.WpfXamlLoader.Load(XamlReader xamlReader, IXamlObjectWriterFactory writerFactory, Boolean skipJournaledProperties, Object rootObject, XamlObjectWriterSettings settings, Uri baseUri)&#xD;
+   at System.Windows.Markup.WpfXamlLoader.LoadBaml(XamlReader xamlReader, Boolean skipJournaledProperties, Object rootObject, XamlAccessLevel accessLevel, Uri baseUri)&#xD;
+   at System.Windows.Markup.XamlReader.LoadBaml(Stream stream, ParserContext parserContext, Object parent, Boolean closeStream)&#xD;
+   at System.Windows.Application.LoadComponent(Object component, Uri resourceLocator)&#xD;
+   at Vega.UI.Inspection.DFHardwareParametersView.InitializeComponent() in C:\AutoTest\workspaces\20261019T233014+0800_ddc509_20261020T101112_ee7047\Vega.UI.Inspection\Recipe\Elements\CollectionsSections\SubWindows\DFHardwareParametersView.xaml:line 1&#xD;
+   at Vega.UI.Inspection.DFHardwareParametersView..ctor() in C:\AutoTest\workspaces\20261019T233014+0800_ddc509_20261020T101112_ee7047\Vega.UI.Inspection\Recipe\Elements\CollectionsSections\SubWindows\DFHardwareParametersView.xaml.cs:line 24&#xD;
+   at Vega.AutoTest.CommitProbe.WorkItem3661Logic.&lt;&gt;c.&lt;HardwareParameters_CompiledView_FilterAndSaveBareKeys&gt;b__15_0() in C:\AutoTest\AutoTest\VegaAutoTest\probes\Vega.AutoTest.CommitProbe\WorkItem3661Logic.cs:line 149&#xD;
+   at Vega.AutoTest.CommitProbe.WorkItem3661Logic.&lt;&gt;c__DisplayClass5_0.&lt;Run&gt;b__0() in C:\AutoTest\AutoTest\VegaAutoTest\probes\Vega.AutoTest.CommitProbe\WorkItem3661Logic.cs:line 75&#xD;
+   at System.Windows.Threading.DispatcherOperation.InvokeDelegateCore()&#xD;
+   at System.Windows.Threading.DispatcherOperation.InvokeImpl()&#xD;
+--- End of stack trace from previous location ---&#xD;
+   at System.Windows.Threading.DispatcherOperation.Wait(TimeSpan timeout)&#xD;
+   at System.Windows.Threading.Dispatcher.InvokeImpl(DispatcherOperation operation, CancellationToken cancellationToken, TimeSpan timeout)&#xD;
+   at System.Windows.Threading.Dispatcher.Invoke(Action callback, DispatcherPriority priority, CancellationToken cancellationToken, TimeSpan timeout)&#xD;
+   at System.Windows.Threading.Dispatcher.Invoke(Action callback)&#xD;
+   at Vega.AutoTest.CommitProbe.Wi3661Dispatcher.Run(Action action) in C:\AutoTest\AutoTest\VegaAutoTest\probes\Vega.AutoTest.CommitProbe\WorkItem3661Logic.cs:line 46&#xD;
+   at Vega.AutoTest.CommitProbe.WorkItem3661Logic.Run(String id, Action action) in C:\AutoTest\AutoTest\VegaAutoTest\probes\Vega.AutoTest.CommitProbe\WorkItem3661Logic.cs:line 75&#xD;
+   at Vega.AutoTest.CommitProbe.WorkItem3661Logic.HardwareParameters_CompiledView_FilterAndSaveBareKeys() in C:\AutoTest\AutoTest\VegaAutoTest\probes\Vega.AutoTest.CommitProbe\WorkItem3661Logic.cs:line 145&#xD;
+   at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)&#xD;
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)&#xD;
+----- Inner Stack Trace -----&#xD;
+   at System.Windows.StaticResourceExtension.ProvideValueInternal(IServiceProvider serviceProvider, Boolean allowDeferredReference)&#xD;
+   at MS.Internal.Xaml.Runtime.ClrObjectRuntime.CallProvideValue(MarkupExtension me, IServiceProvider serviceProvider)</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="1d54fc71-d066-483e-87b5-622e2ce519fc" testId="f2591e0e-f8f3-62ab-2751-80f97e140abb" testName="Vega.AutoTest.CommitProbe.WorkItem3661Logic.ResultSummary_CompiledView_RendersLabelsWithoutChangingKeys" computerName="WIN-5NPN6Q8PL1B" duration="00:00:01.5175647" startTime="2026-10-20T11:35:47.5708414+08:00" endTime="2026-10-20T11:35:47.5708650+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="1d54fc71-d066-483e-87b5-622e2ce519fc">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Equal() Failure: Values differ&#xD;
+Expected: DW Mask&#xD;
+Actual:   </Message>
+          <StackTrace>   at Vega.AutoTest.CommitProbe.WorkItem3661Logic.Eq[T](String id, T expected, T actual) in C:\AutoTest\AutoTest\VegaAutoTest\probes\Vega.AutoTest.CommitProbe\WorkItem3661Logic.cs:line 71&#xD;
+   at Vega.AutoTest.CommitProbe.WorkItem3661Logic.&lt;&gt;c.&lt;ResultSummary_CompiledView_RendersLabelsWithoutChangingKeys&gt;b__13_0() in C:\AutoTest\AutoTest\VegaAutoTest\probes\Vega.AutoTest.CommitProbe\WorkItem3661Logic.cs:line 125&#xD;
+   at Vega.AutoTest.CommitProbe.WorkItem3661Logic.&lt;&gt;c__DisplayClass5_0.&lt;Run&gt;b__0() in C:\AutoTest\AutoTest\VegaAutoTest\probes\Vega.AutoTest.CommitProbe\WorkItem3661Logic.cs:line 75&#xD;
+   at System.Windows.Threading.DispatcherOperation.InvokeDelegateCore()&#xD;
+   at System.Windows.Threading.DispatcherOperation.InvokeImpl()&#xD;
+--- End of stack trace from previous location ---&#xD;
+   at System.Windows.Threading.DispatcherOperation.Wait(TimeSpan timeout)&#xD;
+   at System.Windows.Threading.Dispatcher.InvokeImpl(DispatcherOperation operation, CancellationToken cancellationToken, TimeSpan timeout)&#xD;
+   at System.Windows.Threading.Dispatcher.Invoke(Action callback, DispatcherPriority priority, CancellationToken cancellationToken, TimeSpan timeout)&#xD;
+   at System.Windows.Threading.Dispatcher.Invoke(Action callback)&#xD;
+   at Vega.AutoTest.CommitProbe.Wi3661Dispatcher.Run(Action action) in C:\AutoTest\AutoTest\VegaAutoTest\probes\Vega.AutoTest.CommitProbe\WorkItem3661Logic.cs:line 46&#xD;
+   at Vega.AutoTest.CommitProbe.WorkItem3661Logic.Run(String id, Action action) in C:\AutoTest\AutoTest\VegaAutoTest\probes\Vega.AutoTest.CommitProbe\WorkItem3661Logic.cs:line 75&#xD;
+   at Vega.AutoTest.CommitProbe.WorkItem3661Logic.ResultSummary_CompiledView_RendersLabelsWithoutChangingKeys() in C:\AutoTest\AutoTest\VegaAutoTest\probes\Vega.AutoTest.CommitProbe\WorkItem3661Logic.cs:line 117&#xD;
+   at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)&#xD;
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="fa1155a9-5e12-4b8a-8757-513531517d83" testId="c5a2f999-6cd7-2920-ebed-c1b967c69ccc" testName="Vega.AutoTest.CommitProbe.WorkItem3661Logic.BatchEditor_CompiledWindow_FilterSaveAndJsonRoundTrip" computerName="WIN-5NPN6Q8PL1B" duration="00:00:00.3442392" startTime="2026-10-20T11:35:48.6845536+08:00" endTime="2026-10-20T11:35:48.6845541+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="fa1155a9-5e12-4b8a-8757-513531517d83">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Equal() Failure: Values differ&#xD;
+Expected: True&#xD;
+Actual:   False</Message>
+          <StackTrace>   at Vega.AutoTest.CommitProbe.WorkItem3661Logic.Eq[T](String id, T expected, T actual) in C:\AutoTest\AutoTest\VegaAutoTest\probes\Vega.AutoTest.CommitProbe\WorkItem3661Logic.cs:line 71&#xD;
+   at Vega.AutoTest.CommitProbe.WorkItem3661Logic.Channels(String id, IEnumerable`1 names) in C:\AutoTest\AutoTest\VegaAutoTest\probes\Vega.AutoTest.CommitProbe\WorkItem3661Logic.cs:line 110&#xD;
+   at Vega.AutoTest.CommitProbe.WorkItem3661Logic.&lt;&gt;c.&lt;BatchEditor_CompiledWindow_FilterSaveAndJsonRoundTrip&gt;b__17_0() in C:\AutoTest\AutoTest\VegaAutoTest\probes\Vega.AutoTest.CommitProbe\WorkItem3661Logic.cs:line 178&#xD;
+   at Vega.AutoTest.CommitProbe.WorkItem3661Logic.&lt;&gt;c__DisplayClass5_0.&lt;Run&gt;b__0() in C:\AutoTest\AutoTest\VegaAutoTest\probes\Vega.AutoTest.CommitProbe\WorkItem3661Logic.cs:line 75&#xD;
+   at System.Windows.Threading.DispatcherOperation.InvokeDelegateCore()&#xD;
+   at System.Windows.Threading.DispatcherOperation.InvokeImpl()&#xD;
+--- End of stack trace from previous location ---&#xD;
+   at System.Windows.Threading.DispatcherOperation.Wait(TimeSpan timeout)&#xD;
+   at System.Windows.Threading.Dispatcher.InvokeImpl(DispatcherOperation operation, CancellationToken cancellationToken, TimeSpan timeout)&#xD;
+   at System.Windows.Threading.Dispatcher.Invoke(Action callback, DispatcherPriority priority, CancellationToken cancellationToken, TimeSpan timeout)&#xD;
+   at System.Windows.Threading.Dispatcher.Invoke(Action callback)&#xD;
+   at Vega.AutoTest.CommitProbe.Wi3661Dispatcher.Run(Action action) in C:\AutoTest\AutoTest\VegaAutoTest\probes\Vega.AutoTest.CommitProbe\WorkItem3661Logic.cs:line 46&#xD;
+   at Vega.AutoTest.CommitProbe.WorkItem3661Logic.Run(String id, Action action) in C:\AutoTest\AutoTest\VegaAutoTest\probes\Vega.AutoTest.CommitProbe\WorkItem3661Logic.cs:line 75&#xD;
+   at Vega.AutoTest.CommitProbe.WorkItem3661Logic.BatchEditor_CompiledWindow_FilterSaveAndJsonRoundTrip() in C:\AutoTest\AutoTest\VegaAutoTest\probes\Vega.AutoTest.CommitProbe\WorkItem3661Logic.cs:line 173&#xD;
+   at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)&#xD;
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="69f680ad-92b7-40eb-9674-7496f2ff1619" testId="0b37431b-2b20-63c9-2340-10259b3c6dc7" testName="Vega.AutoTest.CommitProbe.WorkItem3661Logic.Calculator_CompiledView_FilterAndNoWriteBack" computerName="WIN-5NPN6Q8PL1B" duration="00:00:00.0892714" startTime="2026-10-20T11:35:48.2335707+08:00" endTime="2026-10-20T11:35:48.2335710+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="69f680ad-92b7-40eb-9674-7496f2ff1619">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Equal() Failure: Values differ&#xD;
+Expected: DW&#xD;
+Actual:   </Message>
+          <StackTrace>   at Vega.AutoTest.CommitProbe.WorkItem3661Logic.Eq[T](String id, T expected, T actual) in C:\AutoTest\AutoTest\VegaAutoTest\probes\Vega.AutoTest.CommitProbe\WorkItem3661Logic.cs:line 71&#xD;
+   at Vega.AutoTest.CommitProbe.WorkItem3661Logic.&lt;&gt;c.&lt;Calculator_CompiledView_FilterAndNoWriteBack&gt;b__16_0() in C:\AutoTest\AutoTest\VegaAutoTest\probes\Vega.AutoTest.CommitProbe\WorkItem3661Logic.cs:line 167&#xD;
+   at Vega.AutoTest.CommitProbe.WorkItem3661Logic.&lt;&gt;c__DisplayClass5_0.&lt;Run&gt;b__0() in C:\AutoTest\AutoTest\VegaAutoTest\probes\Vega.AutoTest.CommitProbe\WorkItem3661Logic.cs:line 75&#xD;
+   at System.Windows.Threading.DispatcherOperation.InvokeDelegateCore()&#xD;
+   at System.Windows.Threading.DispatcherOperation.InvokeImpl()&#xD;
+--- End of stack trace from previous location ---&#xD;
+   at System.Windows.Threading.DispatcherOperation.Wait(TimeSpan timeout)&#xD;
+   at System.Windows.Threading.Dispatcher.InvokeImpl(DispatcherOperation operation, CancellationToken cancellationToken, TimeSpan timeout)&#xD;
+   at System.Windows.Threading.Dispatcher.Invoke(Action callback, DispatcherPriority priority, CancellationToken cancellationToken, TimeSpan timeout)&#xD;
+   at System.Windows.Threading.Dispatcher.Invoke(Action callback)&#xD;
+   at Vega.AutoTest.CommitProbe.Wi3661Dispatcher.Run(Action action) in C:\AutoTest\AutoTest\VegaAutoTest\probes\Vega.AutoTest.CommitProbe\WorkItem3661Logic.cs:line 46&#xD;
+   at Vega.AutoTest.CommitProbe.WorkItem3661Logic.Run(String id, Action action) in C:\AutoTest\AutoTest\VegaAutoTest\probes\Vega.AutoTest.CommitProbe\WorkItem3661Logic.cs:line 75&#xD;
+   at Vega.AutoTest.CommitProbe.WorkItem3661Logic.Calculator_CompiledView_FilterAndNoWriteBack() in C:\AutoTest\AutoTest\VegaAutoTest\probes\Vega.AutoTest.CommitProbe\WorkItem3661Logic.cs:line 161&#xD;
+   at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)&#xD;
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="fe3a517d-2f02-4e9a-be72-742ccedaeb1f" testId="5294fddc-2fe9-42ec-b7b7-519d39492953" testName="Vega.AutoTest.CommitProbe.WorkItem3661Logic.Lpd_PirSir_CompiledView_FilterEditSaveAndHiddenData" computerName="WIN-5NPN6Q8PL1B" duration="00:00:00.1281712" startTime="2026-10-20T11:35:48.3484548+08:00" endTime="2026-10-20T11:35:48.3484551+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="fe3a517d-2f02-4e9a-be72-742ccedaeb1f">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Equal() Failure: Values differ&#xD;
+Expected: DW&#xD;
+Actual:   </Message>
+          <StackTrace>   at Vega.AutoTest.CommitProbe.WorkItem3661Logic.Eq[T](String id, T expected, T actual) in C:\AutoTest\AutoTest\VegaAutoTest\probes\Vega.AutoTest.CommitProbe\WorkItem3661Logic.cs:line 71&#xD;
+   at Vega.AutoTest.CommitProbe.WorkItem3661Logic.&lt;&gt;c.&lt;Lpd_PirSir_CompiledView_FilterEditSaveAndHiddenData&gt;b__14_0() in C:\AutoTest\AutoTest\VegaAutoTest\probes\Vega.AutoTest.CommitProbe\WorkItem3661Logic.cs:line 135&#xD;
+   at Vega.AutoTest.CommitProbe.WorkItem3661Logic.&lt;&gt;c__DisplayClass5_0.&lt;Run&gt;b__0() in C:\AutoTest\AutoTest\VegaAutoTest\probes\Vega.AutoTest.CommitProbe\WorkItem3661Logic.cs:line 75&#xD;
+   at System.Windows.Threading.DispatcherOperation.InvokeDelegateCore()&#xD;
+   at System.Windows.Threading.DispatcherOperation.InvokeImpl()&#xD;
+--- End of stack trace from previous location ---&#xD;
+   at System.Windows.Threading.DispatcherOperation.Wait(TimeSpan timeout)&#xD;
+   at System.Windows.Threading.Dispatcher.InvokeImpl(DispatcherOperation operation, CancellationToken cancellationToken, TimeSpan timeout)&#xD;
+   at System.Windows.Threading.Dispatcher.Invoke(Action callback, DispatcherPriority priority, CancellationToken cancellationToken, TimeSpan timeout)&#xD;
+   at System.Windows.Threading.Dispatcher.Invoke(Action callback)&#xD;
+   at Vega.AutoTest.CommitProbe.Wi3661Dispatcher.Run(Action action) in C:\AutoTest\AutoTest\VegaAutoTest\probes\Vega.AutoTest.CommitProbe\WorkItem3661Logic.cs:line 46&#xD;
+   at Vega.AutoTest.CommitProbe.WorkItem3661Logic.Run(String id, Action action) in C:\AutoTest\AutoTest\VegaAutoTest\probes\Vega.AutoTest.CommitProbe\WorkItem3661Logic.cs:line 75&#xD;
+   at Vega.AutoTest.CommitProbe.WorkItem3661Logic.Lpd_PirSir_CompiledView_FilterEditSaveAndHiddenData() in C:\AutoTest\AutoTest\VegaAutoTest\probes\Vega.AutoTest.CommitProbe\WorkItem3661Logic.cs:line 130&#xD;
+   at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)&#xD;
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+  </Results>
+  <TestDefinitions>
+    <UnitTest name="Vega.AutoTest.CommitProbe.WorkItem3661Logic.Calculator_CompiledView_FilterAndNoWriteBack" storage="c:\autotest\autotest\vegaautotest\probes\vega.autotest.commitprobe\bin\debug\net8.0-windows10.0.19041.0\vega.autotest.commitprobe.dll" id="0b37431b-2b20-63c9-2340-10259b3c6dc7">
+      <Execution id="69f680ad-92b7-40eb-9674-7496f2ff1619" />
+      <TestMethod codeBase="C:\AutoTest\AutoTest\VegaAutoTest\probes\Vega.AutoTest.CommitProbe\bin\Debug\net8.0-windows10.0.19041.0\Vega.AutoTest.CommitProbe.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Vega.AutoTest.CommitProbe.WorkItem3661Logic" name="Calculator_CompiledView_FilterAndNoWriteBack" />
+    </UnitTest>
+    <UnitTest name="Vega.AutoTest.CommitProbe.WorkItem3661Logic.ResultSummary_CompiledView_RendersLabelsWithoutChangingKeys" storage="c:\autotest\autotest\vegaautotest\probes\vega.autotest.commitprobe\bin\debug\net8.0-windows10.0.19041.0\vega.autotest.commitprobe.dll" id="f2591e0e-f8f3-62ab-2751-80f97e140abb">
+      <Execution id="1d54fc71-d066-483e-87b5-622e2ce519fc" />
+      <TestMethod codeBase="C:\AutoTest\AutoTest\VegaAutoTest\probes\Vega.AutoTest.CommitProbe\bin\Debug\net8.0-windows10.0.19041.0\Vega.AutoTest.CommitProbe.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Vega.AutoTest.CommitProbe.WorkItem3661Logic" name="ResultSummary_CompiledView_RendersLabelsWithoutChangingKeys" />
+    </UnitTest>
+    <UnitTest name="Vega.AutoTest.CommitProbe.WorkItem3661Logic.BatchEditor_CompiledWindow_FilterSaveAndJsonRoundTrip" storage="c:\autotest\autotest\vegaautotest\probes\vega.autotest.commitprobe\bin\debug\net8.0-windows10.0.19041.0\vega.autotest.commitprobe.dll" id="c5a2f999-6cd7-2920-ebed-c1b967c69ccc">
+      <Execution id="fa1155a9-5e12-4b8a-8757-513531517d83" />
+      <TestMethod codeBase="C:\AutoTest\AutoTest\VegaAutoTest\probes\Vega.AutoTest.CommitProbe\bin\Debug\net8.0-windows10.0.19041.0\Vega.AutoTest.CommitProbe.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Vega.AutoTest.CommitProbe.WorkItem3661Logic" name="BatchEditor_CompiledWindow_FilterSaveAndJsonRoundTrip" />
+    </UnitTest>
+    <UnitTest name="Vega.AutoTest.CommitProbe.WorkItem3661Logic.Lpd_PirSir_CompiledView_FilterEditSaveAndHiddenData" storage="c:\autotest\autotest\vegaautotest\probes\vega.autotest.commitprobe\bin\debug\net8.0-windows10.0.19041.0\vega.autotest.commitprobe.dll" id="5294fddc-2fe9-42ec-b7b7-519d39492953">
+      <Execution id="fe3a517d-2f02-4e9a-be72-742ccedaeb1f" />
+      <TestMethod codeBase="C:\AutoTest\AutoTest\VegaAutoTest\probes\Vega.AutoTest.CommitProbe\bin\Debug\net8.0-windows10.0.19041.0\Vega.AutoTest.CommitProbe.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Vega.AutoTest.CommitProbe.WorkItem3661Logic" name="Lpd_PirSir_CompiledView_FilterEditSaveAndHiddenData" />
+    </UnitTest>
+    <UnitTest name="Vega.AutoTest.CommitProbe.WorkItem3661Logic.HardwareParameters_CompiledView_FilterAndSaveBareKeys" storage="c:\autotest\autotest\vegaautotest\probes\vega.autotest.commitprobe\bin\debug\net8.0-windows10.0.19041.0\vega.autotest.commitprobe.dll" id="acee808e-e3b0-a31c-d7e5-e69c8e25eb30">
+      <Execution id="878fc8d4-742e-451e-b5a1-2161bacb33ae" />
+      <TestMethod codeBase="C:\AutoTest\AutoTest\VegaAutoTest\probes\Vega.AutoTest.CommitProbe\bin\Debug\net8.0-windows10.0.19041.0\Vega.AutoTest.CommitProbe.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Vega.AutoTest.CommitProbe.WorkItem3661Logic" name="HardwareParameters_CompiledView_FilterAndSaveBareKeys" />
+    </UnitTest>
+  </TestDefinitions>
+  <TestEntries>
+    <TestEntry testId="acee808e-e3b0-a31c-d7e5-e69c8e25eb30" executionId="878fc8d4-742e-451e-b5a1-2161bacb33ae" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="f2591e0e-f8f3-62ab-2751-80f97e140abb" executionId="1d54fc71-d066-483e-87b5-622e2ce519fc" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="c5a2f999-6cd7-2920-ebed-c1b967c69ccc" executionId="fa1155a9-5e12-4b8a-8757-513531517d83" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="0b37431b-2b20-63c9-2340-10259b3c6dc7" executionId="69f680ad-92b7-40eb-9674-7496f2ff1619" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="5294fddc-2fe9-42ec-b7b7-519d39492953" executionId="fe3a517d-2f02-4e9a-be72-742ccedaeb1f" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </TestEntries>
+  <TestLists>
+    <TestList name="Results Not in a List" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestList name="All Loaded Results" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </TestLists>
+  <ResultSummary outcome="Failed">
+    <Counters total="5" executed="5" passed="0" failed="5" error="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+    <Output>
+      <StdOut>[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.5.3.1+6b60a9e56a (64-bit .NET 8.0.32)&#xD;
+[xUnit.net 00:00:00.44]   Discovering: Vega.AutoTest.CommitProbe&#xD;
+[xUnit.net 00:00:00.62]   Discovered:  Vega.AutoTest.CommitProbe&#xD;
+[xUnit.net 00:00:00.63]   Starting:    Vega.AutoTest.CommitProbe&#xD;
+info: Vega.UI.RecipeBatchEditor.App[0]&#xD;
+      Recipe Batch Editor starting up...&#xD;
+[xUnit.net 00:00:02.91]       Assert.Equal() Failure: Values differ&#xD;
+[xUnit.net 00:00:02.91]       Expected: DW Mask&#xD;
+[xUnit.net 00:00:02.91]       Actual:   &#xD;
+[xUnit.net 00:00:02.91]       Stack Trace:&#xD;
+[xUnit.net 00:00:02.91]         C:\AutoTest\AutoTest\VegaAutoTest\probes\Vega.AutoTest.CommitProbe\WorkItem3661Logic.cs(71,0): at Vega.AutoTest.CommitProbe.WorkItem3661Logic.Eq[T](String id, T expected, T actual)&#xD;
+[xUnit.net 00:00:02.92]         C:\AutoTest\AutoTest\VegaAutoTest\probes\Vega.AutoTest.CommitProbe\WorkItem3661Logic.cs(125,0): at Vega.AutoTest.CommitProbe.WorkItem3661Logic.&lt;&gt;c.&lt;ResultSummary_CompiledView_RendersLabelsWithoutChangingKeys&gt;b__13_0()&#xD;
+[xUnit.net 00:00:02.92]         C:\AutoTest\AutoTest\VegaAutoTest\probes\Vega.AutoTest.CommitProbe\WorkItem3661Logic.cs(75,0): at Vega.AutoTest.CommitProbe.WorkItem3661Logic.&lt;&gt;c__DisplayClass5_0.&lt;Run&gt;b__0()&#xD;
+[xUnit.net 00:00:02.92]            at System.Windows.Threading.DispatcherOperation.InvokeDelegateCore()&#xD;
+[xUnit.net 00:00:02.92]            at System.Windows.Threading.DispatcherOperation.InvokeImpl()&#xD;
+[xUnit.net 00:00:02.92]         --- End of stack trace from previous location ---&#xD;
+[xUnit.net 00:00:02.92]            at System.Windows.Threading.DispatcherOperation.Wait(TimeSpan timeout)&#xD;
+[xUnit.net 00:00:02.92]            at System.Windows.Threading.Dispatcher.InvokeImpl(DispatcherOperation operation, CancellationToken cancellationToken, TimeSpan timeout)&#xD;
+[xUnit.net 00:00:02.92]            at System.Windows.Threading.Dispatcher.Invoke(Action callback, DispatcherPriority priority, CancellationToken cancellationToken, TimeSpan timeout)&#xD;
+[xUnit.net 00:00:02.92]            at System.Windows.Threading.Dispatcher.Invoke(Action callback)&#xD;
+[xUnit.net 00:00:02.92]         C:\AutoTest\AutoTest\VegaAutoTest\probes\Vega.AutoTest.CommitProbe\WorkItem3661Logic.cs(46,0): at Vega.AutoTest.CommitProbe.Wi3661Dispatcher.Run(Action action)&#xD;
+[xUnit.net 00:00:02.92]         C:\AutoTest\AutoTest\VegaAutoTest\probes\Vega.AutoTest.CommitProbe\WorkItem3661Logic.cs(75,0): at Vega.AutoTest.CommitProbe.WorkItem3661Logic.Run(String id, Action action)&#xD;
+[xUnit.net 00:00:02.92]         C:\AutoTest\AutoTest\VegaAutoTest\probes\Vega.AutoTest.CommitProbe\WorkItem3661Logic.cs(117,0): at Vega.AutoTest.CommitProbe.WorkItem3661Logic.ResultSummary_CompiledView_RendersLabelsWithoutChangingKeys()&#xD;
+[xUnit.net 00:00:02.92]            at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)&#xD;
+[xUnit.net 00:00:02.92]            at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)&#xD;
+[xUnit.net 00:00:03.47]       System.Windows.Markup.XamlParseException : 'Provide value on 'System.Windows.StaticResourceExtension' threw an exception.' Line number '38' and line position '41'.&#xD;
+[xUnit.net 00:00:03.47]       ---- System.Exception : Cannot find resource named 'Border_ReadOnlyStyle'. Resource names are case sensitive.&#xD;
+[xUnit.net 00:00:03.47]       Stack Trace:&#xD;
+[xUnit.net 00:00:03.47]            at System.Windows.Markup.XamlReader.RewrapException(Exception e, IXamlLineInfo lineInfo, Uri baseUri)&#xD;
+[xUnit.net 00:00:03.47]            at System.Windows.Markup.WpfXamlLoader.Load(XamlReader xamlReader, IXamlObjectWriterFactory writerFactory, Boolean skipJournaledProperties, Object rootObject, XamlObjectWriterSettings settings, Uri baseUri)&#xD;
+[xUnit.net 00:00:03.47]            at System.Windows.Markup.WpfXamlLoader.LoadBaml(XamlReader xamlReader, Boolean skipJournaledProperties, Object rootObject, XamlAccessLevel accessLevel, Uri baseUri)&#xD;
+[xUnit.net 00:00:03.47]            at System.Windows.Markup.XamlReader.LoadBaml(Stream stream, ParserContext parserContext, Object parent, Boolean closeStream)&#xD;
+[xUnit.net 00:00:03.47]            at System.Windows.Application.LoadComponent(Object component, Uri resourceLocator)&#xD;
+[xUnit.net 00:00:03.47]         C:\AutoTest\workspaces\20261019T233014+0800_ddc509_20261020T101112_ee7047\Vega.UI.Inspection\Recipe\Elements\CollectionsSections\SubWindows\DFHardwareParametersView.xaml(1,0): at Vega.UI.Inspection.DFHardwareParametersView.InitializeComponent()&#xD;
+[xUnit.net 00:00:03.47]         C:\AutoTest\workspaces\20261019T233014+0800_ddc509_20261020T101112_ee7047\Vega.UI.Inspection\Recipe\Elements\CollectionsSections\SubWindows\DFHardwareParametersView.xaml.cs(24,0): at Vega.UI.Inspection.DFHardwareParametersView..ctor()&#xD;
+[xUnit.net 00:00:03.47]         C:\AutoTest\AutoTest\VegaAutoTest\probes\Vega.AutoTest.CommitProbe\WorkItem3661Logic.cs(149,0): at Vega.AutoTest.CommitProbe.WorkItem3661Logic.&lt;&gt;c.&lt;HardwareParameters_CompiledView_FilterAndSaveBareKeys&gt;b__15_0()&#xD;
+[xUnit.net 00:00:03.47]         C:\AutoTest\AutoTest\VegaAutoTest\probes\Vega.AutoTest.CommitProbe\WorkItem3661Logic.cs(75,0): at Vega.AutoTest.CommitProbe.WorkItem3661Logic.&lt;&gt;c__DisplayClass5_0.&lt;Run&gt;b__0()&#xD;
+[xUnit.net 00:00:03.47]            at System.Windows.Threading.DispatcherOperation.InvokeDelegateCore()&#xD;
+[xUnit.net 00:00:03.47]            at System.Windows.Threading.DispatcherOperation.InvokeImpl()&#xD;
+[xUnit.net 00:00:03.47]         --- End of stack trace from previous location ---&#xD;
+[xUnit.net 00:00:03.47]            at System.Windows.Threading.DispatcherOperation.Wait(TimeSpan timeout)&#xD;
+[xUnit.net 00:00:03.47]            at System.Windows.Threading.Dispatcher.InvokeImpl(DispatcherOperation operation, CancellationToken cancellationToken, TimeSpan timeout)&#xD;
+[xUnit.net 00:00:03.47]            at System.Windows.Threading.Dispatcher.Invoke(Action callback, DispatcherPriority priority, CancellationToken cancellationToken, TimeSpan timeout)&#xD;
+[xUnit.net 00:00:03.47]            at System.Windows.Threading.Dispatcher.Invoke(Action callback)&#xD;
+[xUnit.net 00:00:03.47]         C:\AutoTest\AutoTest\VegaAutoTest\probes\Vega.AutoTest.CommitProbe\WorkItem3661Logic.cs(46,0): at Vega.AutoTest.CommitProbe.Wi3661Dispatcher.Run(Action action)&#xD;
+[xUnit.net 00:00:03.47]         C:\AutoTest\AutoTest\VegaAutoTest\probes\Vega.AutoTest.CommitProbe\WorkItem3661Logic.cs(75,0): at Vega.AutoTest.CommitProbe.WorkItem3661Logic.Run(String id, Action action)&#xD;
+[xUnit.net 00:00:03.47]         C:\AutoTest\AutoTest\VegaAutoTest\probes\Vega.AutoTest.CommitProbe\WorkItem3661Logic.cs(145,0): at Vega.AutoTest.CommitProbe.WorkItem3661Logic.HardwareParameters_CompiledView_FilterAndSaveBareKeys()&#xD;
+[xUnit.net 00:00:03.47]            at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)&#xD;
+[xUnit.net 00:00:03.47]            at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)&#xD;
+[xUnit.net 00:00:03.47]         ----- Inner Stack Trace -----&#xD;
+[xUnit.net 00:00:03.47]            at System.Windows.StaticResourceExtension.ProvideValueInternal(IServiceProvider serviceProvider, Boolean allowDeferredReference)&#xD;
+[xUnit.net 00:00:03.47]            at MS.Internal.Xaml.Runtime.ClrObjectRuntime.CallProvideValue(MarkupExtension me, IServiceProvider serviceProvider)&#xD;
+[xUnit.net 00:00:03.58]       Assert.Equal() Failure: Values differ&#xD;
+[xUnit.net 00:00:03.58]       Expected: DW&#xD;
+[xUnit.net 00:00:03.58]       Actual:   &#xD;
+[xUnit.net 00:00:03.58]       Stack Trace:&#xD;
+[xUnit.net 00:00:03.58]         C:\AutoTest\AutoTest\VegaAutoTest\probes\Vega.AutoTest.CommitProbe\WorkItem3661Logic.cs(71,0): at Vega.AutoTest.CommitProbe.WorkItem3661Logic.Eq[T](String id, T expected, T actual)&#xD;
+[xUnit.net 00:00:03.58]         C:\AutoTest\AutoTest\VegaAutoTest\probes\Vega.AutoTest.CommitProbe\WorkItem3661Logic.cs(167,0): at Vega.AutoTest.CommitProbe.WorkItem3661Logic.&lt;&gt;c.&lt;Calculator_CompiledView_FilterAndNoWriteBack&gt;b__16_0()&#xD;
+[xUnit.net 00:00:03.58]         C:\AutoTest\AutoTest\VegaAutoTest\probes\Vega.AutoTest.CommitProbe\WorkItem3661Logic.cs(75,0): at Vega.AutoTest.CommitProbe.WorkItem3661Logic.&lt;&gt;c__DisplayClass5_0.&lt;Run&gt;b__0()&#xD;
+[xUnit.net 00:00:03.58]            at System.Windows.Threading.DispatcherOperation.InvokeDelegateCore()&#xD;
+[xUnit.net 00:00:03.58]            at System.Windows.Threading.DispatcherOperation.InvokeImpl()&#xD;
+[xUnit.net 00:00:03.58]         --- End of stack trace from previous location ---&#xD;
+[xUnit.net 00:00:03.58]            at System.Windows.Threading.DispatcherOperation.Wait(TimeSpan timeout)&#xD;
+[xUnit.net 00:00:03.58]            at System.Windows.Threading.Dispatcher.InvokeImpl(DispatcherOperation operation, CancellationToken cancellationToken, TimeSpan timeout)&#xD;
+[xUnit.net 00:00:03.58]            at System.Windows.Threading.Dispatcher.Invoke(Action callback, DispatcherPriority priority, CancellationToken cancellationToken, TimeSpan timeout)&#xD;
+[xUnit.net 00:00:03.58]            at System.Windows.Threading.Dispatcher.Invoke(Action callback)&#xD;
+[xUnit.net 00:00:03.58]         C:\AutoTest\AutoTest\VegaAutoTest\probes\Vega.AutoTest.CommitProbe\WorkItem3661Logic.cs(46,0): at Vega.AutoTest.CommitProbe.Wi3661Dispatcher.Run(Action action)&#xD;
+[xUnit.net 00:00:03.58]         C:\AutoTest\AutoTest\VegaAutoTest\probes\Vega.AutoTest.CommitProbe\WorkItem3661Logic.cs(75,0): at Vega.AutoTest.CommitProbe.WorkItem3661Logic.Run(String id, Action action)&#xD;
+[xUnit.net 00:00:03.58]         C:\AutoTest\AutoTest\VegaAutoTest\probes\Vega.AutoTest.CommitProbe\WorkItem3661Logic.cs(161,0): at Vega.AutoTest.CommitProbe.WorkItem3661Logic.Calculator_CompiledView_FilterAndNoWriteBack()&#xD;
+[xUnit.net 00:00:03.58]            at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)&#xD;
+[xUnit.net 00:00:03.58]            at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)&#xD;
+[xUnit.net 00:00:03.69]       Assert.Equal() Failure: Values differ&#xD;
+[xUnit.net 00:00:03.69]       Expected: DW&#xD;
+[xUnit.net 00:00:03.69]       Actual:   &#xD;
+[xUnit.net 00:00:03.69]       Stack Trace:&#xD;
+[xUnit.net 00:00:03.69]         C:\AutoTest\AutoTest\VegaAutoTest\probes\Vega.AutoTest.CommitProbe\WorkItem3661Logic.cs(71,0): at Vega.AutoTest.CommitProbe.WorkItem3661Logic.Eq[T](String id, T expected, T actual)&#xD;
+[xUnit.net 00:00:03.69]         C:\AutoTest\AutoTest\VegaAutoTest\probes\Vega.AutoTest.CommitProbe\WorkItem3661Logic.cs(135,0): at Vega.AutoTest.CommitProbe.WorkItem3661Logic.&lt;&gt;c.&lt;Lpd_PirSir_CompiledView_FilterEditSaveAndHiddenData&gt;b__14_0()&#xD;
+[xUnit.net 00:00:03.69]         C:\AutoTest\AutoTest\VegaAutoTest\probes\Vega.AutoTest.CommitProbe\WorkItem3661Logic.cs(75,0): at Vega.AutoTest.CommitProbe.WorkItem3661Logic.&lt;&gt;c__DisplayClass5_0.&lt;Run&gt;b__0()&#xD;
+[xUnit.net 00:00:03.69]            at System.Windows.Threading.DispatcherOperation.InvokeDelegateCore()&#xD;
+[xUnit.net 00:00:03.69]            at System.Windows.Threading.DispatcherOperation.InvokeImpl()&#xD;
+[xUnit.net 00:00:03.69]         --- End of stack trace from previous location ---&#xD;
+[xUnit.net 00:00:03.69]            at System.Windows.Threading.DispatcherOperation.Wait(TimeSpan timeout)&#xD;
+[xUnit.net 00:00:03.69]            at System.Windows.Threading.Dispatcher.InvokeImpl(DispatcherOperation operation, CancellationToken cancellationToken, TimeSpan timeout)&#xD;
+[xUnit.net 00:00:03.69]            at System.Windows.Threading.Dispatcher.Invoke(Action callback, DispatcherPriority priority, CancellationToken cancellationToken, TimeSpan timeout)&#xD;
+[xUnit.net 00:00:03.69]            at System.Windows.Threading.Dispatcher.Invoke(Action callback)&#xD;
+[xUnit.net 00:00:03.69]         C:\AutoTest\AutoTest\VegaAutoTest\probes\Vega.AutoTest.CommitProbe\WorkItem3661Logic.cs(46,0): at Vega.AutoTest.CommitProbe.Wi3661Dispatcher.Run(Action action)&#xD;
+[xUnit.net 00:00:03.69]         C:\AutoTest\AutoTest\VegaAutoTest\probes\Vega.AutoTest.CommitProbe\WorkItem3661Logic.cs(75,0): at Vega.AutoTest.CommitProbe.WorkItem3661Logic.Run(String id, Action action)&#xD;
+[xUnit.net 00:00:03.69]         C:\AutoTest\AutoTest\VegaAutoTest\probes\Vega.AutoTest.CommitProbe\WorkItem3661Logic.cs(130,0): at Vega.AutoTest.CommitProbe.WorkItem3661Logic.Lpd_PirSir_CompiledView_FilterEditSaveAndHiddenData()&#xD;
+[xUnit.net 00:00:03.69]            at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)&#xD;
+[xUnit.net 00:00:03.69]            at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)&#xD;
+info: Vega.UI.RecipeBatchEditor.ViewModels.CollectionViewViewModel[0]&#xD;
+      CollectionViewViewModel initialized for Recipe: WI3661, Collection: WI3661&#xD;
+[xUnit.net 00:00:04.03]       Assert.Equal() Failure: Values differ&#xD;
+[xUnit.net 00:00:04.03]       Expected: True&#xD;
+[xUnit.net 00:00:04.03]       Actual:   False&#xD;
+[xUnit.net 00:00:04.03]       Stack Trace:&#xD;
+[xUnit.net 00:00:04.03]         C:\AutoTest\AutoTest\VegaAutoTest\probes\Vega.AutoTest.CommitProbe\WorkItem3661Logic.cs(71,0): at Vega.AutoTest.CommitProbe.WorkItem3661Logic.Eq[T](String id, T expected, T actual)&#xD;
+[xUnit.net 00:00:04.03]         C:\AutoTest\AutoTest\VegaAutoTest\probes\Vega.AutoTest.CommitProbe\WorkItem3661Logic.cs(110,0): at Vega.AutoTest.CommitProbe.WorkItem3661Logic.Channels(String id, IEnumerable`1 names)&#xD;
+[xUnit.net 00:00:04.03]         C:\AutoTest\AutoTest\VegaAutoTest\probes\Vega.AutoTest.CommitProbe\WorkItem3661Logic.cs(178,0): at Vega.AutoTest.CommitProbe.WorkItem3661Logic.&lt;&gt;c.&lt;BatchEditor_CompiledWindow_FilterSaveAndJsonRoundTrip&gt;b__17_0()&#xD;
+[xUnit.net 00:00:04.03]         C:\AutoTest\AutoTest\VegaAutoTest\probes\Vega.AutoTest.CommitProbe\WorkItem3661Logic.cs(75,0): at Vega.AutoTest.CommitProbe.WorkItem3661Logic.&lt;&gt;c__DisplayClass5_0.&lt;Run&gt;b__0()&#xD;
+[xUnit.net 00:00:04.03]            at System.Windows.Threading.DispatcherOperation.InvokeDelegateCore()&#xD;
+[xUnit.net 00:00:04.03]            at System.Windows.Threading.DispatcherOperation.InvokeImpl()&#xD;
+[xUnit.net 00:00:04.03]         --- End of stack trace from previous location ---&#xD;
+[xUnit.net 00:00:04.03]            at System.Windows.Threading.DispatcherOperation.Wait(TimeSpan timeout)&#xD;
+[xUnit.net 00:00:04.03]            at System.Windows.Threading.Dispatcher.InvokeImpl(DispatcherOperation operation, CancellationToken cancellationToken, TimeSpan timeout)&#xD;
+[xUnit.net 00:00:04.03]            at System.Windows.Threading.Dispatcher.Invoke(Action callback, DispatcherPriority priority, CancellationToken cancellationToken, TimeSpan timeout)&#xD;
+[xUnit.net 00:00:04.03]            at System.Windows.Threading.Dispatcher.Invoke(Action callback)&#xD;
+[xUnit.net 00:00:04.03]         C:\AutoTest\AutoTest\VegaAutoTest\probes\Vega.AutoTest.CommitProbe\WorkItem3661Logic.cs(46,0): at Vega.AutoTest.CommitProbe.Wi3661Dispatcher.Run(Action action)&#xD;
+[xUnit.net 00:00:04.03]         C:\AutoTest\AutoTest\VegaAutoTest\probes\Vega.AutoTest.CommitProbe\WorkItem3661Logic.cs(75,0): at Vega.AutoTest.CommitProbe.WorkItem3661Logic.Run(String id, Action action)&#xD;
+[xUnit.net 00:00:04.03]         C:\AutoTest\AutoTest\VegaAutoTest\probes\Vega.AutoTest.CommitProbe\WorkItem3661Logic.cs(173,0): at Vega.AutoTest.CommitProbe.WorkItem3661Logic.BatchEditor_CompiledWindow_FilterSaveAndJsonRoundTrip()&#xD;
+[xUnit.net 00:00:04.03]            at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)&#xD;
+[xUnit.net 00:00:04.03]            at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)&#xD;
+[xUnit.net 00:00:04.23]   Finished:    Vega.AutoTest.CommitProbe&#xD;
+</StdOut>
+    </Output>
+    <RunInfos>
+      <RunInfo computerName="WIN-5NPN6Q8PL1B" outcome="Error" timestamp="2026-10-20T11:35:47.5677397+08:00">
+        <Text>[xUnit.net 00:00:02.91]     Vega.AutoTest.CommitProbe.WorkItem3661Logic.ResultSummary_CompiledView_RendersLabelsWithoutChangingKeys [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="WIN-5NPN6Q8PL1B" outcome="Error" timestamp="2026-10-20T11:35:48.1263851+08:00">
+        <Text>[xUnit.net 00:00:03.47]     Vega.AutoTest.CommitProbe.WorkItem3661Logic.HardwareParameters_CompiledView_FilterAndSaveBareKeys [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="WIN-5NPN6Q8PL1B" outcome="Error" timestamp="2026-10-20T11:35:48.2338343+08:00">
+        <Text>[xUnit.net 00:00:03.58]     Vega.AutoTest.CommitProbe.WorkItem3661Logic.Calculator_CompiledView_FilterAndNoWriteBack [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="WIN-5NPN6Q8PL1B" outcome="Error" timestamp="2026-10-20T11:35:48.3460387+08:00">
+        <Text>[xUnit.net 00:00:03.68]     Vega.AutoTest.CommitProbe.WorkItem3661Logic.Lpd_PirSir_CompiledView_FilterEditSaveAndHiddenData [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="WIN-5NPN6Q8PL1B" outcome="Error" timestamp="2026-10-20T11:35:48.6821362+08:00">
+        <Text>[xUnit.net 00:00:04.03]     Vega.AutoTest.CommitProbe.WorkItem3661Logic.BatchEditor_CompiledWindow_FilterSaveAndJsonRoundTrip [FAIL]</Text>
+      </RunInfo>
+    </RunInfos>
+  </ResultSummary>
+</TestRun>
