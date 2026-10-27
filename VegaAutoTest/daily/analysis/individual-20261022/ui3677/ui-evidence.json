@@ -1,0 +1,7 @@
+{
+  "workItem":3677,
+  "stages":{},
+  "incompleteReason":"Computer Use launch_app timed out; list_windows also timed out; after resetting the JavaScript kernel, reimporting @oai/sky and retrying list_windows, the same timeout persisted. Required desktop operations cannot be performed with the current helper connection. No successful login/import/job/postprocess evidence is available.",
+  "computerUseAttempts":["launch_app Authenticator: request timed out","list_windows: request timed out","node_repl kernel reset and @oai/sky reinitialization","list_windows after reset: request timed out"],
+  "fullUiAcceptance":false
+}

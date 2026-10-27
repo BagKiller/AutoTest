@@ -25,7 +25,22 @@ try {
 }
 & "$env:DOTNET_ROOT\dotnet.exe" build $project --no-restore @common -v:minimal *> (Join-Path $runRoot 'build.log')
 if($LASTEXITCODE -ne 0){throw 'Product build failed; see daily/build/build.log'}
+# CommitProbe references the separate editor binary. A fresh worktree has no
+# editor output; building Vega alone otherwise leaves every probe uncompilable.
+$batchProject=Join-Path $RepoRoot 'Vega.UI.RecipeBatchEditor\Vega.UI.RecipeBatchEditor.csproj'
+$env:NuGetPackageSourceCredentials_Galaxy='Username=vega;Password='+$settings.azure_devops.pat+';ValidAuthenticationTypes=Basic'
+$env:NuGetPackageSourceCredentials_EFEM=$env:NuGetPackageSourceCredentials_Galaxy
+try {
+    & "$env:DOTNET_ROOT\dotnet.exe" restore $batchProject --configfile C:\AutoTest\setup\NuGet.Config --disable-parallel @common *> (Join-Path $runRoot 'restore-batch-editor.log')
+    if($LASTEXITCODE -ne 0){throw 'Batch editor restore failed; see restore-batch-editor.log'}
+} finally {
+    Remove-Item Env:NuGetPackageSourceCredentials_Galaxy,Env:NuGetPackageSourceCredentials_EFEM -ErrorAction SilentlyContinue
+}
+& "$env:DOTNET_ROOT\dotnet.exe" build $batchProject --no-restore --no-dependencies @common -v:minimal *> (Join-Path $runRoot 'build-batch-editor.log')
+if($LASTEXITCODE -ne 0){throw 'Batch editor build failed; see build-batch-editor.log'}
+$batchDll=Join-Path (Split-Path $project) 'bin\Debug\net8.0-windows10.0.19041.0\win-x64\RecipeBatchEditor\RecipeBatchEditor.dll'
+if(-not (Test-Path -LiteralPath $batchDll)){throw 'Batch editor output missing after build'}
 $head= & git -c "safe.directory=$RepoRoot" -C $RepoRoot rev-parse HEAD
 $dll=Join-Path $RepoRoot 'Vega\bin\Debug\net8.0-windows10.0.19041.0\win-x64\Vega.dll'
-@{commit=$head;builtAt=(Get-Date).ToString('o');repo=$RepoRoot;vegaDllSha256=(Get-FileHash -LiteralPath $dll).Hash;hardwareNativeNiProjectExcluded=$true;lockedRestore=$false} | ConvertTo-Json | Set-Content (Join-Path $runRoot 'build-provenance.json')
+@{commit=$head;builtAt=(Get-Date).ToString('o');repo=$RepoRoot;vegaDllSha256=(Get-FileHash -LiteralPath $dll).Hash;batchEditorDllSha256=(Get-FileHash -LiteralPath $batchDll).Hash;hardwareNativeNiProjectExcluded=$true;lockedRestore=$false} | ConvertTo-Json | Set-Content (Join-Path $runRoot 'build-provenance.json')
 Get-Content (Join-Path $runRoot 'build.log') -Tail 5

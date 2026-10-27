@@ -1,0 +1,218 @@
+{
+  "schemaVersion": "1.0",
+  "runId": "20261023T081231Z_wi0_35eec62",
+  "workItemId": 0,
+  "caseId": "wi3672-logic",
+  "verdict": "PASS",
+  "verdictReason": "OK: 10/10 断言通过",
+  "verdictCode": "OK",
+  "startedAt": "2026-10-23T16:12:31+08:00",
+  "finishedAt": "2026-10-23T16:12:36+08:00",
+  "durationMs": 5196,
+  "target": {
+    "repoRoot": "C:\\AutoTest\\workspaces\\individual-20261022-20261023",
+    "gitCommit": "10c33df5e69aa932bea8d843a29d8f6530d1fd73",
+    "gitBranch": "HEAD",
+    "gitDirty": true,
+    "vegaExe": "C:\\AutoTest\\workspaces\\individual-20261022-20261023\\Vega\\bin\\Debug\\net8.0-windows10.0.19041.0\\win-x64\\Vega.exe",
+    "vegaExeBuiltAt": null,
+    "rebuilt": false,
+    "builtFromCurrentSource": false
+  },
+  "channels": {
+    "l1Api": {
+      "available": false,
+      "baseUrl": "http://localhost:18901/vega-agent/",
+      "reason": "用例未产出 oracle-crosscheck 断言（本次层: logic）"
+    },
+    "l2Uia": {
+      "available": false,
+      "baseUrl": null,
+      "reason": "本次未请求 uia 层"
+    },
+    "assertions": {
+      "available": true,
+      "baseUrl": null,
+      "reason": null
+    }
+  },
+  "assertions": [
+    {
+      "id": "wi3672.small-2",
+      "kind": "logic",
+      "description": "wi3672.small-2",
+      "expected": "specified behavior",
+      "actual": "matched",
+      "delta": null,
+      "tolerance": null,
+      "result": "PASS"
+    },
+    {
+      "id": "wi3672.small-1",
+      "kind": "logic",
+      "description": "wi3672.small-1",
+      "expected": "specified behavior",
+      "actual": "matched",
+      "delta": null,
+      "tolerance": null,
+      "result": "PASS"
+    },
+    {
+      "id": "wi3672.small-0",
+      "kind": "logic",
+      "description": "wi3672.small-0",
+      "expected": "specified behavior",
+      "actual": "matched",
+      "delta": null,
+      "tolerance": null,
+      "result": "PASS"
+    },
+    {
+      "id": "wi3672.actual-service-repeat-10",
+      "kind": "logic",
+      "description": "wi3672.actual-service-repeat-10",
+      "expected": "specified behavior",
+      "actual": "matched",
+      "delta": null,
+      "tolerance": null,
+      "result": "PASS"
+    },
+    {
+      "id": "wi3672.circle-known-center",
+      "kind": "logic",
+      "description": "wi3672.circle-known-center",
+      "expected": "specified behavior",
+      "actual": "matched",
+      "delta": null,
+      "tolerance": null,
+      "result": "PASS"
+    },
+    {
+      "id": "wi3672.actual-service-small",
+      "kind": "logic",
+      "description": "wi3672.actual-service-small",
+      "expected": "specified behavior",
+      "actual": "matched",
+      "delta": null,
+      "tolerance": null,
+      "result": "PASS"
+    },
+    {
+      "id": "wi3672.no-consensus",
+      "kind": "logic",
+      "description": "wi3672.no-consensus",
+      "expected": "specified behavior",
+      "actual": "matched",
+      "delta": null,
+      "tolerance": null,
+      "result": "PASS"
+    },
+    {
+      "id": "wi3672.ransac-repeat-30",
+      "kind": "logic",
+      "description": "wi3672.ransac-repeat-30",
+      "expected": "specified behavior",
+      "actual": "matched",
+      "delta": null,
+      "tolerance": null,
+      "result": "PASS"
+    },
+    {
+      "id": "wi3672.collinear",
+      "kind": "logic",
+      "description": "wi3672.collinear",
+      "expected": "specified behavior",
+      "actual": "matched",
+      "delta": null,
+      "tolerance": null,
+      "result": "PASS"
+    },
+    {
+      "id": "wi3672.four-short-arcs",
+      "kind": "logic",
+      "description": "wi3672.four-short-arcs",
+      "expected": "specified behavior",
+      "actual": "matched",
+      "delta": null,
+      "tolerance": null,
+      "result": "PASS"
+    }
+  ],
+  "summary": {
+    "total": 10,
+    "passed": 10,
+    "failed": 0,
+    "skipped": 0
+  },
+  "tests": [
+    {
+      "name": "Vega.AutoTest.IndividualCommits.WorkItem3672Logic.FewerThanThreePointsHasExplicitFallback(count: 2)",
+      "outcome": "Passed",
+      "durationMs": 50,
+      "message": null
+    },
+    {
+      "name": "Vega.AutoTest.IndividualCommits.WorkItem3672Logic.CollinearInputDoesNotInventCircle",
+      "outcome": "Passed",
+      "durationMs": 0,
+      "message": null
+    },
+    {
+      "name": "Vega.AutoTest.IndividualCommits.WorkItem3672Logic.FourShortArcsRecoverKnownCenter",
+      "outcome": "Passed",
+      "durationMs": 1,
+      "message": null
+    },
+    {
+      "name": "Vega.AutoTest.IndividualCommits.WorkItem3672Logic.ActualServiceRepeatedCircleFitDoesNotJump",
+      "outcome": "Passed",
+      "durationMs": 492,
+      "message": null
+    },
+    {
+      "name": "Vega.AutoTest.IndividualCommits.WorkItem3672Logic.NoConsensusIsMarkedAsFallback",
+      "outcome": "Passed",
+      "durationMs": 1,
+      "message": null
+    },
+    {
+      "name": "Vega.AutoTest.IndividualCommits.WorkItem3672Logic.AlgebraicCircleRecoversKnownCenter",
+      "outcome": "Passed",
+      "durationMs": 2,
+      "message": null
+    },
+    {
+      "name": "Vega.AutoTest.IndividualCommits.WorkItem3672Logic.FewerThanThreePointsHasExplicitFallback(count: 0)",
+      "outcome": "Passed",
+      "durationMs": 1,
+      "message": null
+    },
+    {
+      "name": "Vega.AutoTest.IndividualCommits.WorkItem3672Logic.RepeatedRansacIsDeterministicWithOutliers",
+      "outcome": "Passed",
+      "durationMs": 158,
+      "message": null
+    },
+    {
+      "name": "Vega.AutoTest.IndividualCommits.WorkItem3672Logic.ActualServiceTooFewPointsReturnsNaN",
+      "outcome": "Passed",
+      "durationMs": 1,
+      "message": null
+    },
+    {
+      "name": "Vega.AutoTest.IndividualCommits.WorkItem3672Logic.FewerThanThreePointsHasExplicitFallback(count: 1)",
+      "outcome": "Passed",
+      "durationMs": 0,
+      "message": null
+    }
+  ],
+  "evidence": {
+    "dir": "C:\\AutoTest\\AutoTest\\VegaAutoTest\\daily\\analysis\\individual-20261022\\wi3672-logic\\20261023T081231Z_wi0_35eec62",
+    "files": [
+      "logic/trx/logic.trx",
+      "logic/trx/logic.testhost.log",
+      "report.md"
+    ]
+  },
+  "exitCode": 0
+}

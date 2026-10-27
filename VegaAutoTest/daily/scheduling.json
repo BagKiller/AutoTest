@@ -16,6 +16,7 @@
   },
   "baselineCases": ["daily-recent10", "daily-supplement"],
   "caseProfiles": {
+    "wi3677-ui-evidence": ["Vega300-HWv1"],
     "wi3579": ["Vega100-PIC"],
     "wi3611": ["Vega100-PIC"]
   },

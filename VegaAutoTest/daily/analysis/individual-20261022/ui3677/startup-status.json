@@ -1,0 +1,30 @@
+{
+  "machineRestoredHash": "EADE615A9C6712B6540DD132837F9A993A9FC5037362AC83D8A639879514B6C6",
+  "profile": "HWv1",
+  "sessionPath": "C:\\AutoTest\\AutoTest\\VegaAutoTest\\daily\\sessions\\20261023T173130_Vega300-HWv1_6476e7",
+  "actualUiWorkflowCompleted": false,
+  "model": "Vega300",
+  "startedAt": "2026-10-23T17:31:26.3658477+08:00",
+  "process": {
+    "startedAt": "2026-10-23T17:31:39.063162+08:00",
+    "pid": 8388,
+    "image": "C:\\AutoTest\\workspaces\\individual-20261022-20261023\\Vega\\bin\\Debug\\net8.0-windows10.0.19041.0\\win-x64\\Vega.exe"
+  },
+  "machineOriginalHash": "EADE615A9C6712B6540DD132837F9A993A9FC5037362AC83D8A639879514B6C6",
+  "note": "Actual Simulator startup check only. Login and required UI postprocess were not completed; process metadata is not UI acceptance.",
+  "stopCompleted": true,
+  "finishedAt": "2026-10-23T17:32:04.7307673+08:00",
+  "desktopBlocker": "Computer Use helper timeouts persisted after kernel reset",
+  "restoreCompleted": true,
+  "processStillRunning": true,
+  "responding": false,
+  "restoration": {
+    "componentActual": "C673B1F02ADCE40F5E853EDE4424948AF3B8F93EF5A1CC20438E55A69DCC0F6E",
+    "state": "RESTORED",
+    "componentExpected": "C673B1F02ADCE40F5E853EDE4424948AF3B8F93EF5A1CC20438E55A69DCC0F6E",
+    "hardwareExpected": "12B209402071FA6297F00A8FDCB2A67A244DF0B87C3FA71FF8F3C57FB5B510AA",
+    "hardwareActual": "12B209402071FA6297F00A8FDCB2A67A244DF0B87C3FA71FF8F3C57FB5B510AA"
+  },
+  "mainWindowTitle": "",
+  "targetHead": "10c33df5e69aa932bea8d843a29d8f6530d1fd73"
+}

@@ -1,6 +1,46 @@
 {
   "schemaVersion": "1.0",
   "cases": [
+    {"id":"wi3688-disk-full","title":"3688 actual isolated disk-full raw-copy behavior","workItems":[3688],"tags":["partial-acceptance"],"layers":{"logic":{"project":"probes/Vega.AutoTest.Wi3688/Vega.AutoTest.Wi3688.csproj","filter":"FullyQualifiedName~WorkItem3688Logic","timeoutSeconds":180,"minAssertions":6,"requiresVegaExe":false,"requiresL1Api":false},"uia":{"project":"probes/Vega.AutoTest.Wi3688/Vega.AutoTest.Wi3688.csproj","filter":"FullyQualifiedName~WorkItem3688L2Evidence","timeoutSeconds":180,"minAssertions":5,"requiresVegaExe":true,"requiresL1Api":false}},"evidenceFiles":[]},
+    {"id":"wi3689-exporter-partial","title":"3689 source-linked exporter and actual desktop evidence (partial)","workItems":[3689],"tags":["partial-acceptance"],"layers":{"logic":{"project":"probes/Vega.AutoTest.Wi3689/Vega.AutoTest.Wi3689.csproj","filter":"FullyQualifiedName~WorkItem3689Logic","timeoutSeconds":300,"minAssertions":5,"requiresVegaExe":false,"requiresL1Api":false},"uia":{"project":"probes/Vega.AutoTest.Wi3689/Vega.AutoTest.Wi3689.csproj","filter":"FullyQualifiedName~WorkItem3689L2Evidence","timeoutSeconds":180,"minAssertions":8,"requiresVegaExe":true,"requiresL1Api":false}},"evidenceFiles":[]},
+    {
+      "id":"wi3677-ui-evidence",
+      "title":"#3677 Actual Vega desktop postprocess and produced pitch evidence",
+      "workItems":[3677],
+      "tags":["uia","offline","partial-acceptance"],
+      "layers":{"uia":{"project":"l2/Vega.AutoTest.Wi3677UiEvidence/Vega.AutoTest.Wi3677UiEvidence.csproj","filter":"FullyQualifiedName~WorkItem3677L2","timeoutSeconds":180,"minAssertions":6,"requiresVegaExe":true,"requiresL1Api":false}},
+      "evidenceFiles":[]
+    },
+    {
+      "id": "wi3672-logic",
+      "title": "#3672 deterministic circle/RANSAC mathematical regression (partial acceptance)",
+      "workItems": [3672],
+      "tags": ["partial-acceptance", "headless", "alignment"],
+      "layers": {
+        "logic": {"project": "probes/Vega.AutoTest.IndividualCommits/Vega.AutoTest.IndividualCommits.csproj", "filter": "FullyQualifiedName~WorkItem3672Logic", "timeoutSeconds": 600, "minAssertions": 10, "requiresVegaExe": false, "requiresL1Api": false}
+      },
+      "evidenceFiles": []
+    },
+    {
+      "id": "commit-8d088291-logic",
+      "title": "PR4975 original Notch regression cases with structured evidence (partial acceptance)",
+      "workItems": [],
+      "tags": ["partial-acceptance", "headless", "alignment"],
+      "layers": {
+        "logic": {"project": "probes/Vega.AutoTest.IndividualCommits/Vega.AutoTest.IndividualCommits.csproj", "filter": "FullyQualifiedName~Commit8d088291Logic", "timeoutSeconds": 600, "minAssertions": 27, "requiresVegaExe": false, "requiresL1Api": false}
+      },
+      "evidenceFiles": []
+    },
+    {
+      "id": "wi3677-logic",
+      "title": "#3677 JSON pitch validation, precedence and fallback retention (partial acceptance)",
+      "workItems": [3677],
+      "tags": ["partial-acceptance", "headless", "offline"],
+      "layers": {
+        "logic": {"project": "probes/Vega.AutoTest.IndividualCommits/Vega.AutoTest.IndividualCommits.csproj", "filter": "FullyQualifiedName~WorkItem3677Logic", "timeoutSeconds": 600, "minAssertions": 22, "requiresVegaExe": false, "requiresL1Api": false}
+      },
+      "evidenceFiles": []
+    },
     {
       "id": "wi3478",
       "title": "Inspection 检测区域参数联动",

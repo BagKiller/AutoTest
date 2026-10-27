@@ -14,6 +14,8 @@ import re
 import subprocess
 import time
 import uuid
+import individual
+import coverage_preparation as coverage_contract
 
 ROOT = Path(__file__).resolve().parents[1]
 REPO = Path(os.environ.get("VEGA_SW_ROOT", r"C:\Vega\Vega_SW"))
@@ -174,40 +176,31 @@ def collect(last, offline):
         if not last and not (is_today or sha in unseen):
             continue
         commits.append(describe(row, source, start, now, "window"))
-    # Earlier commits that never reached acceptance are re-planned against tonight's HEAD.
-    unreachable = []
-    if not last:
-        seen = {c["sha"] for c in commits}
-        for sha in old.get("pendingCommits", []):
-            if sha in seen:
-                continue
-            try:
-                git("merge-base", "--is-ancestor", sha, head, repo=source)
-                row = git("show", "-s", f"--format={LOG_FORMAT}", sha, repo=source).strip("\x1e\n")
-            except RuntimeError:
-                unreachable.append(sha)
-                continue
-            commits.append(describe(row, source, start, now, "pending"))
+    # A daily batch validates only new commits selected for this collection. Historical
+    # NEEDS_CASE/ERROR records remain in their original reports and are never re-planned.
+    retired_pending = old.get("pendingCommits", []) if not last else []
     batch_id = now.strftime("%Y%m%dT%H%M%S%z") + "_" + uuid.uuid4().hex[:6]
     out = ROOT / "daily" / "runs" / batch_id
     out.mkdir(parents=True)
     manifest = dict(schemaVersion=2, batchId=batch_id, collectedAt=now.isoformat(), timezone="Asia/Shanghai",
                     mode="recent-example" if last else "daily", source=str(source), remoteFresh=not offline,
-                    selection="all reachable DAG commits; committer date today plus newly reachable carryover plus unaccepted pending",
+                    selection="all reachable DAG commits; committer date today plus newly reachable carryover; no historical pending replay",
                     windowStart=start.isoformat(), windowEnd=now.isoformat(), head=head,
                     previousCollectedHead=previous_head, historyRewritten=history_changed,
                     localHead=git("rev-parse", "HEAD"), localDirty=bool(git("status", "--porcelain")),
-                    pendingFromEarlierCollections=old.get("pendingCommits", []), unreachablePending=unreachable,
+                    retiredPendingFromEarlierCollections=retired_pending, unreachablePending=[],
                     commits=commits)
     for commit in commits:
         diff = git("show", "--format=fuller", "--first-parent", "--no-ext-diff", commit["sha"], repo=source)
         (out / (commit["sha"][:8] + ".diff")).write_text(diff, encoding="utf-8")
     save(out / "manifest.json", manifest)
     if not last and not offline and not history_changed:
-        # Collection checkpoint is separate from acceptance: blocked items remain pending.
-        pending = list(dict.fromkeys(old.get("pendingCommits", []) + [c["sha"] for c in commits]))
-        save(STATE, dict(old, collectedHead=head, collectedAt=now.isoformat(), pendingCommits=pending,
-                         previousBatch=str(out), note="Collection is not acceptance. Pending commits require verified closure."))
+        # Do not retain an acceptance backlog. Reports preserve unresolved evidence,
+        # while later daily runs are scoped only to newly collected commits.
+        retired = old.get("retiredPendingCommits", []) + retired_pending
+        save(STATE, dict(old, collectedHead=head, collectedAt=now.isoformat(), pendingCommits=[],
+                         retiredPendingCommits=list(dict.fromkeys(retired))[-500:], previousBatch=str(out),
+                         note="Daily collection has no replay queue; unresolved results remain in their original batch reports."))
     return out, manifest
 
 
@@ -245,6 +238,8 @@ def plan(out, manifest, registry, sched):
         wis = c.get("workItems") or work_items(c["title"] + "\n" + c.get("message", ""))
         for wi in wis:
             add(f"wi:{wi}", "workItem", f"工作项 #{wi}", c["sha"], by_wi.get(wi, []))
+        if not wis and manifest.get('reviewCaseIds'):
+            add('review:' + c['sha'][:8], 'workItem', '经 diff 需求审核的提交用例', c['sha'], manifest['reviewCaseIds'])
         for tag in c.get("groups", []):
             add(f"tag:{tag}", "pathTag", f"路径候选 {tag}", c["sha"], sched["tagCases"].get(tag, []))
         if not wis:
@@ -505,6 +500,9 @@ def evaluate(manifest, plan_data, outcomes, registry):
             status, reason = "ERROR", "验证工具异常"
         elif any(cells[cid][0] == "BLOCKED" for cid in wi_cases):
             status, reason = "BLOCKED", "前置/环境不满足，无法判定"
+        elif any(r.get('gaps') for r in plan_data.get('coverageRequirements', [])):
+            status, reason = 'NEEDS_CASE', '需求覆盖未齐：' + '; '.join(
+                gap for r in plan_data['coverageRequirements'] for gap in r.get('gaps', []))
         elif not wi_clusters:
             status = "PARTIAL" if tag_cases else "NEEDS_CASE"
             reason = ("提交说明无工作项号，只有路径候选探针（部分验收）" if tag_cases
@@ -627,7 +625,7 @@ def report(out, manifest, plan_data, outcomes, rows):
 
     L += ["", "### 界面会话（按机型配置，一次配置切换覆盖同组全部用例）", ""]
     if not plan_data["uiSlots"]:
-        L += ["当晚提交未关联任何界面用例，不启动界面会话。"]
+        L += ["当前计划未关联界面用例；不能据此推断无需 UI。必需 UI 缺口见需求覆盖审核，未覆盖不得完整验收。"]
     target = load(out / "execution-target.json") or {}
     for s in plan_data["uiSlots"]:
         L += [f"**{s['order']}. `{s['id']}`**（{s['profile']}；覆盖提交 {', '.join(s['commits'])}）", ""]
@@ -650,6 +648,11 @@ def report(out, manifest, plan_data, outcomes, rows):
         for cl in plan_data["unmapped"]:
             L.append(f"- {cl['label']}：提交 {', '.join(cl['commits'])}，路径规则未覆盖，需读 diff 判断影响面。")
         L.append("")
+    if plan_data.get('coverageRequirements'):
+        L += ['## 冻结前需求覆盖审核', '', '| 场景 | 必需 UI | 用例 | 未覆盖原因 |', '| --- | --- | --- | --- |']
+        for requirement in plan_data['coverageRequirements']:
+            L.append(f"| {md(requirement['id'])} | {requirement['uiRequired']} | {md(', '.join(requirement.get('caseIds', [])))} | {md('; '.join(requirement.get('gaps', []))) or '无已声明缺口，仍须实跑'} |")
+        L += ['', '审核/登记不是测试通过证明；正式结论仍须本提交 Runner 原始结果。', '']
     if plan_data["hardware"]:
         L += ["## 需真机验证", ""] + [f"- {h['tag']}（提交 {', '.join(h['commits'])}）：{h['note']}" for h in plan_data["hardware"]] + [""]
     failed = [r for r in rows if r["status"] == "FAIL"]
@@ -662,7 +665,7 @@ def report(out, manifest, plan_data, outcomes, rows):
         L += ["## 不可达的待验提交", "", "以下提交已不在当前 master 历史中，保留在待验队列，需人工确认：", ""]
         L += [f"- `{s}`" for s in manifest["unreachablePending"]] + [""]
     L += ["## 规则", "",
-          "- 收集：北京时间当天 00:00 至执行时刻按 committer time 取 master 全部可达提交，补收上次收集后新出现的提交，并把前批未验收的提交重新编入本批。",
+          "- 收集：北京时间当天 00:00 至执行时刻按 committer time 取 master 全部可达提交，补收上次收集后新出现的提交；历史未验收提交只留在原报告，不重新编入或重放。",
           "- 归簇：提交说明里的工作项号优先，同一工作项的提交合为一簇；无工作项号时用路径规则给出候选探针；未覆盖文件按模块成簇待分析。",
           "- 验收：只有工作项登记用例（非 partial-acceptance）在目标 HEAD 上全部 PASS 才记“已验收”并移出待验队列；路径探针只算部分验收。",
           "- 判定只来自 Runner result.json；本报告不改写任何 verdict。", ""]
@@ -672,11 +675,26 @@ def report(out, manifest, plan_data, outcomes, rows):
 
 # ────────────────────────────── 入口 ──────────────────────────────
 
+def resolve_strategy(requested, existing_manifest):
+    # Existing manifests without a mode marker are legacy merged batches.
+    stored = existing_manifest.get("strategy", "merged") if existing_manifest is not None else None
+    if requested and stored and requested != stored:
+        raise ValueError("Cannot switch strategy for an existing batch; create a new batch")
+    return requested or stored or "individual"
+
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--last", type=int, default=0, help="示例模式：最近 N 个提交，不推进每日游标")
     parser.add_argument("--offline", action="store_true")
-    parser.add_argument("--execute", action="store_true", help="构建目标 HEAD 并执行全部无界面用例")
+    parser.add_argument("--execute", action="store_true", help="新 individual 批次仅收集候选队列；配合 --run-commit 才构建/执行该 SHA；merged 执行无界面")
+    parser.add_argument("--strategy", choices=("individual", "merged"), help="新批默认逐提交；merged 保留原总体编排，历史批次沿用原模式")
+    parser.add_argument("--run-commit", help="逐提交队列中执行一项的独立构建及无界面测试（需 --resume --execute）")
+    parser.add_argument("--finish-commit", help="记录一项流程已收尾（含失败/未验范围和恢复证据），再允许下一项")
+    parser.add_argument("--completion-reason")
+    parser.add_argument('--prepare-commit', help='读取工作项并准备候选覆盖；此时允许补写用例，尚未冻结')
+    parser.add_argument('--freeze-commit', help='审核真实用例/必需 UI 后冻结一个提交计划（需 --review-file）')
+    parser.add_argument('--review-file', type=Path, help='逐场景的需求覆盖审核 JSON，见 daily/README.md')
     parser.add_argument("--resume", type=Path, help="Execute an existing immutable manifest after preparing its exact target")
     parser.add_argument("--run-slot", help="执行 plan.json 中的一个界面会话（需 --resume，且该机型已准备并认证）")
     parser.add_argument("--session", type=Path, help="Start-ModelValidation 的 SessionPath；会话结束后自动 Restore")
@@ -684,21 +702,63 @@ def main():
     parser.add_argument("--ack", help="人工关闭一个待验提交（SHA 前缀）")
     parser.add_argument("--ack-reason")
     args = parser.parse_args()
+    actions = [args.run_commit, args.finish_commit, args.prepare_commit, args.freeze_commit, args.run_slot, args.plan_only]
+    if sum(bool(x) for x in actions) > 1:
+        raise ValueError('Select only one preparation/execution/completion action per invocation')
+    if (args.prepare_commit or args.freeze_commit) and not args.resume:
+        raise ValueError('Preparation actions require --resume <individual root batch>')
+    if bool(args.review_file) != bool(args.freeze_commit):
+        raise ValueError('--review-file is required only with --freeze-commit')
     if args.ack:
         acknowledge(args.ack, args.ack_reason)
         return
     if args.run_slot and not args.resume:
         raise ValueError("--run-slot 需要 --resume <batch>")
+    if (args.run_commit or args.finish_commit) and not args.resume:
+        raise ValueError("--run-commit/--finish-commit require --resume <individual batch>")
+    if args.run_commit and (not args.execute or args.finish_commit or args.run_slot or args.plan_only):
+        raise ValueError("--run-commit requires --execute and cannot be combined with other actions")
     if args.resume:
         out = args.resume.resolve()
         if not out.is_relative_to((ROOT / "daily" / "runs").resolve()):
             raise ValueError("Resume path must be inside daily/runs")
         manifest = load(out / "manifest.json")
+        strategy = resolve_strategy(args.strategy, manifest)
     else:
+        strategy = resolve_strategy(args.strategy, None)
         out, manifest = collect(args.last, args.offline)
+        manifest["strategy"] = strategy
+        save(out / "manifest.json", manifest)
     registry = load(REGISTRY)
     sched = load(SCHEDULING)
-    plan_data = plan(out, manifest, registry, sched)
+    if strategy == "individual":
+        if args.run_slot:
+            raise ValueError("Resume the commit child directory to run a UI slot, not the queue root")
+        plan_data = individual.prepare(__import__(__name__), out, manifest, registry, sched)
+        if args.prepare_commit:
+            individual.prepare_one(__import__(__name__), plan_data, args.prepare_commit, registry, sched)
+        if args.freeze_commit:
+            individual.freeze_one(__import__(__name__), plan_data, args.freeze_commit, registry, sched, args.review_file)
+        if args.run_commit:
+            individual.run_one(__import__(__name__), out, plan_data, args.run_commit, registry, sched)
+        if args.finish_commit:
+            individual.finish_one(__import__(__name__), out, plan_data, args.finish_commit, args.completion_reason)
+        data = individual.aggregate(__import__(__name__), out, manifest, plan_data, registry)
+        print(json.dumps(data, ensure_ascii=False))
+        return
+    if args.run_commit or args.finish_commit or args.prepare_commit or args.freeze_commit:
+        raise ValueError("Commit queue actions require an individual root batch")
+    # A resumed execution uses its frozen plan; explicit --plan-only prepares a new plan.
+    if strategy == 'individual-commit':
+        if args.plan_only:
+            raise ValueError('Frozen child plans cannot be recalculated; prepare a separate targeted campaign')
+        frozen = load(out / 'plan.json')
+        if frozen is None:
+            raise ValueError('Freeze reviewed coverage via the parent queue before executing a child')
+        if frozen.get('coverageReviewed'):
+            coverage_contract.verify_frozen(__import__(__name__), out, frozen, registry, sched)
+    plan_data = load(out / "plan.json") if args.resume and not args.plan_only else None
+    plan_data = plan_data or plan(out, manifest, registry, sched)
     if (out / "report.md").exists():
         stamp = now_cn().strftime("%Y%m%dT%H%M%S")
         (out / ("report-before-" + stamp + ".md")).write_bytes((out / "report.md").read_bytes())
@@ -714,7 +774,8 @@ def main():
     except Exception as exc:
         error = str(exc)
         save(out / "execution.json", dict(state="ERROR", reason=error, at=now_cn().isoformat()))
-    rows = evaluate(manifest, plan_data, outcomes, registry)
+    evaluation_registry = dict(cases=plan_data['frozenCases']['cases']) if 'frozenCases' in plan_data else registry
+    rows = evaluate(manifest, plan_data, outcomes, evaluation_registry)
     data = report(out, manifest, plan_data, outcomes, rows)
     update_pending(manifest, rows, out)
     if error:

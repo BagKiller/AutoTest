@@ -1,0 +1,142 @@
+{
+  "id": 3672,
+  "rev": 7,
+  "fields": {
+    "System.AreaPath": "Vega_SW",
+    "System.TeamProject": "Vega_SW",
+    "System.IterationPath": "Vega_SW",
+    "System.WorkItemType": "Bug",
+    "System.State": "完成",
+    "System.Reason": "工作已完成",
+    "System.AssignedTo": {
+      "displayName": "Di, Fei",
+      "url": "http://win-devops:8080/DefaultCollection/_apis/Identities/b85b55e5-32e1-46e0-bb05-bba923236f29",
+      "_links": {
+        "avatar": {
+          "href": "http://win-devops:8080/DefaultCollection/_apis/GraphProfile/MemberAvatars/win.Uy0xLTUtMjEtMjA1NDQ3MDY4My02NzI1NTk1NjMtMjM4MDIzOTI0MS0xMTM4"
+        }
+      },
+      "id": "b85b55e5-32e1-46e0-bb05-bba923236f29",
+      "uniqueName": "VEGA-SH\\fdi",
+      "imageUrl": "http://win-devops:8080/DefaultCollection/_apis/GraphProfile/MemberAvatars/win.Uy0xLTUtMjEtMjA1NDQ3MDY4My02NzI1NTk1NjMtMjM4MDIzOTI0MS0xMTM4",
+      "descriptor": "win.Uy0xLTUtMjEtMjA1NDQ3MDY4My02NzI1NTk1NjMtMjM4MDIzOTI0MS0xMTM4"
+    },
+    "System.CreatedDate": "2026-10-21T07:33:40.493Z",
+    "System.CreatedBy": {
+      "displayName": "Di, Fei",
+      "url": "http://win-devops:8080/DefaultCollection/_apis/Identities/b85b55e5-32e1-46e0-bb05-bba923236f29",
+      "_links": {
+        "avatar": {
+          "href": "http://win-devops:8080/DefaultCollection/_apis/GraphProfile/MemberAvatars/win.Uy0xLTUtMjEtMjA1NDQ3MDY4My02NzI1NTk1NjMtMjM4MDIzOTI0MS0xMTM4"
+        }
+      },
+      "id": "b85b55e5-32e1-46e0-bb05-bba923236f29",
+      "uniqueName": "VEGA-SH\\fdi",
+      "imageUrl": "http://win-devops:8080/DefaultCollection/_apis/GraphProfile/MemberAvatars/win.Uy0xLTUtMjEtMjA1NDQ3MDY4My02NzI1NTk1NjMtMjM4MDIzOTI0MS0xMTM4",
+      "descriptor": "win.Uy0xLTUtMjEtMjA1NDQ3MDY4My02NzI1NTk1NjMtMjM4MDIzOTI0MS0xMTM4"
+    },
+    "System.ChangedDate": "2026-10-23T06:49:59.623Z",
+    "System.ChangedBy": {
+      "displayName": "Lin, Xin",
+      "url": "http://win-devops:8080/DefaultCollection/_apis/Identities/1396b723-7a88-47f9-83c6-db709965b212",
+      "_links": {
+        "avatar": {
+          "href": "http://win-devops:8080/DefaultCollection/_apis/GraphProfile/MemberAvatars/win.Uy0xLTUtMjEtMjA1NDQ3MDY4My02NzI1NTk1NjMtMjM4MDIzOTI0MS0xMTI4"
+        }
+      },
+      "id": "1396b723-7a88-47f9-83c6-db709965b212",
+      "uniqueName": "VEGA-SH\\xlin",
+      "imageUrl": "http://win-devops:8080/DefaultCollection/_apis/GraphProfile/MemberAvatars/win.Uy0xLTUtMjEtMjA1NDQ3MDY4My02NzI1NTk1NjMtMjM4MDIzOTI0MS0xMTI4",
+      "descriptor": "win.Uy0xLTUtMjEtMjA1NDQ3MDY4My02NzI1NTk1NjMtMjM4MDIzOTI0MS0xMTI4"
+    },
+    "System.CommentCount": 1,
+    "System.Title": "Edge Chuck的巡边，cow 拟合出线结果跳变的情况",
+    "System.BoardColumn": "完成",
+    "System.BoardColumnDone": false,
+    "Microsoft.VSTS.Common.StateChangeDate": "2026-10-23T06:49:59.623Z",
+    "Microsoft.VSTS.Common.ActivatedDate": "2026-10-21T07:43:45.7Z",
+    "Microsoft.VSTS.Common.ActivatedBy": {
+      "displayName": "Di, Fei",
+      "url": "http://win-devops:8080/DefaultCollection/_apis/Identities/b85b55e5-32e1-46e0-bb05-bba923236f29",
+      "_links": {
+        "avatar": {
+          "href": "http://win-devops:8080/DefaultCollection/_apis/GraphProfile/MemberAvatars/win.Uy0xLTUtMjEtMjA1NDQ3MDY4My02NzI1NTk1NjMtMjM4MDIzOTI0MS0xMTM4"
+        }
+      },
+      "id": "b85b55e5-32e1-46e0-bb05-bba923236f29",
+      "uniqueName": "VEGA-SH\\fdi",
+      "imageUrl": "http://win-devops:8080/DefaultCollection/_apis/GraphProfile/MemberAvatars/win.Uy0xLTUtMjEtMjA1NDQ3MDY4My02NzI1NTk1NjMtMjM4MDIzOTI0MS0xMTM4",
+      "descriptor": "win.Uy0xLTUtMjEtMjA1NDQ3MDY4My02NzI1NTk1NjMtMjM4MDIzOTI0MS0xMTM4"
+    },
+    "Microsoft.VSTS.Common.ClosedDate": "2026-10-23T06:49:59.623Z",
+    "Microsoft.VSTS.Common.ClosedBy": {
+      "displayName": "Lin, Xin",
+      "url": "http://win-devops:8080/DefaultCollection/_apis/Identities/1396b723-7a88-47f9-83c6-db709965b212",
+      "_links": {
+        "avatar": {
+          "href": "http://win-devops:8080/DefaultCollection/_apis/GraphProfile/MemberAvatars/win.Uy0xLTUtMjEtMjA1NDQ3MDY4My02NzI1NTk1NjMtMjM4MDIzOTI0MS0xMTI4"
+        }
+      },
+      "id": "1396b723-7a88-47f9-83c6-db709965b212",
+      "uniqueName": "VEGA-SH\\xlin",
+      "imageUrl": "http://win-devops:8080/DefaultCollection/_apis/GraphProfile/MemberAvatars/win.Uy0xLTUtMjEtMjA1NDQ3MDY4My02NzI1NTk1NjMtMjM4MDIzOTI0MS0xMTI4",
+      "descriptor": "win.Uy0xLTUtMjEtMjA1NDQ3MDY4My02NzI1NTk1NjMtMjM4MDIzOTI0MS0xMTI4"
+    },
+    "Microsoft.VSTS.Common.Priority": 2,
+    "Microsoft.VSTS.Common.Severity": "3 - 中",
+    "Microsoft.VSTS.Common.ValueArea": "业务",
+    "WEF_CCDA5C2107984103885135DDD7ABA36F_Kanban.Column": "完成",
+    "WEF_CCDA5C2107984103885135DDD7ABA36F_Kanban.Column.Done": false,
+    "Microsoft.VSTS.TCM.ReproSteps": "<div>如下图，同一组Edge data， 再分析多次， cow 在相差20+um的两点之间跳动， 导致notch theta 也会出现偏差（相当于坐标原点变动） </div><div><img src=\"http://win-devops:8080/DefaultCollection/8dbcd5b4-eeb3-44c5-ac52-dcec2c44d052/_apis/wit/attachments/fe71e409-91f2-4fc4-adc8-07339345da7f?fileName=2a5c8d9898036f15edfcac8b6b4d3f61.png\" alt=\"图像\"><br> </div><div>原因是RANSAC 在Edge Data较差的情况下，经常失败，修改代码之后， 如下图： notch theta offset 趋于稳定。 </div><div><img src=\"http://win-devops:8080/DefaultCollection/8dbcd5b4-eeb3-44c5-ac52-dcec2c44d052/_apis/wit/attachments/07e01625-23cc-4027-a929-3eac62c01e17?fileName=cfe108a5d33f9a8085db5b6b65770c27.png\" alt=\"图像\"><br> </div>"
+  },
+  "relations": [
+    {
+      "rel": "ArtifactLink",
+      "url": "vstfs:///Git/Commit/8dbcd5b4-eeb3-44c5-ac52-dcec2c44d052%2fa9010300-dcb2-4e66-b195-767c1741515d%2f8c8583d50d3592ed718b8223bf415a54076bb1c5",
+      "attributes": {
+        "authorizedDate": "2026-10-22T08:24:35.337Z",
+        "id": 73160,
+        "resourceCreatedDate": "2026-10-22T08:24:35.337Z",
+        "resourceModifiedDate": "2026-10-22T08:24:35.337Z",
+        "revisedDate": "9999-01-01T00:00:00Z",
+        "name": "Fixed in Commit"
+      }
+    },
+    {
+      "rel": "ArtifactLink",
+      "url": "vstfs:///Git/PullRequestId/8dbcd5b4-eeb3-44c5-ac52-dcec2c44d052%2Fa9010300-dcb2-4e66-b195-767c1741515d%2F4976",
+      "attributes": {
+        "authorizedDate": "2026-10-21T07:38:38.467Z",
+        "id": 73148,
+        "resourceCreatedDate": "2026-10-21T07:38:38.467Z",
+        "resourceModifiedDate": "2026-10-21T07:38:38.467Z",
+        "revisedDate": "9999-01-01T00:00:00Z",
+        "name": "Pull Request"
+      }
+    }
+  ],
+  "_links": {
+    "self": {
+      "href": "http://win-devops:8080/DefaultCollection/8dbcd5b4-eeb3-44c5-ac52-dcec2c44d052/_apis/wit/workItems/3672"
+    },
+    "workItemUpdates": {
+      "href": "http://win-devops:8080/DefaultCollection/8dbcd5b4-eeb3-44c5-ac52-dcec2c44d052/_apis/wit/workItems/3672/updates"
+    },
+    "workItemRevisions": {
+      "href": "http://win-devops:8080/DefaultCollection/8dbcd5b4-eeb3-44c5-ac52-dcec2c44d052/_apis/wit/workItems/3672/revisions"
+    },
+    "workItemComments": {
+      "href": "http://win-devops:8080/DefaultCollection/8dbcd5b4-eeb3-44c5-ac52-dcec2c44d052/_apis/wit/workItems/3672/comments"
+    },
+    "html": {
+      "href": "http://win-devops:8080/DefaultCollection/8dbcd5b4-eeb3-44c5-ac52-dcec2c44d052/_workitems/edit/3672"
+    },
+    "workItemType": {
+      "href": "http://win-devops:8080/DefaultCollection/8dbcd5b4-eeb3-44c5-ac52-dcec2c44d052/_apis/wit/workItemTypes/Bug"
+    },
+    "fields": {
+      "href": "http://win-devops:8080/DefaultCollection/8dbcd5b4-eeb3-44c5-ac52-dcec2c44d052/_apis/wit/fields"
+    }
+  },
+  "url": "http://win-devops:8080/DefaultCollection/8dbcd5b4-eeb3-44c5-ac52-dcec2c44d052/_apis/wit/workItems/3672"
+}

@@ -1,0 +1,124 @@
+{
+  "schemaVersion": "1.0",
+  "runId": "20261023T093343Z_wi0_8f37b7f",
+  "workItemId": 0,
+  "caseId": "wi3677-ui-evidence",
+  "verdict": "BLOCKED",
+  "verdictReason": "ZERO_ASSERTIONS_MATCHED: 仅命中 0/6 条断言，未真正到达目标界面",
+  "verdictCode": "ZERO_ASSERTIONS_MATCHED",
+  "startedAt": "2026-10-23T17:33:43+08:00",
+  "finishedAt": "2026-10-23T17:34:02+08:00",
+  "durationMs": 18476,
+  "target": {
+    "repoRoot": "C:\\AutoTest\\workspaces\\individual-20261022-20261023",
+    "gitCommit": "10c33df5e69aa932bea8d843a29d8f6530d1fd73",
+    "gitBranch": "HEAD",
+    "gitDirty": true,
+    "vegaExe": "C:\\AutoTest\\workspaces\\individual-20261022-20261023\\Vega\\bin\\Debug\\net8.0-windows10.0.19041.0\\win-x64\\Vega.exe",
+    "vegaExeBuiltAt": "2026-10-23T17:27:03+08:00",
+    "rebuilt": false,
+    "builtFromCurrentSource": false
+  },
+  "channels": {
+    "l1Api": {
+      "available": false,
+      "baseUrl": "http://localhost:18901/vega-agent/",
+      "reason": "用例未产出 oracle-crosscheck 断言（本次层: uia）"
+    },
+    "l2Uia": {
+      "available": true,
+      "baseUrl": null,
+      "reason": null
+    },
+    "assertions": {
+      "available": true,
+      "baseUrl": null,
+      "reason": null
+    }
+  },
+  "assertions": [
+    {
+      "id": "wi3677.ui.loggedIn",
+      "kind": "ui-expect",
+      "description": "loggedIn",
+      "expected": "Computer Use launch_app timed out; list_windows also timed out; after resetting the JavaScript kernel, reimporting @oai/sky and retrying list_windows, the same timeout persisted. Required desktop operations cannot be performed with the current helper connection. No successful login/import/job/postprocess evidence is available.",
+      "actual": "(skipped)",
+      "delta": null,
+      "tolerance": null,
+      "result": "SKIP"
+    },
+    {
+      "id": "wi3677.ui.recipeImported",
+      "kind": "ui-expect",
+      "description": "recipeImported",
+      "expected": "Computer Use launch_app timed out; list_windows also timed out; after resetting the JavaScript kernel, reimporting @oai/sky and retrying list_windows, the same timeout persisted. Required desktop operations cannot be performed with the current helper connection. No successful login/import/job/postprocess evidence is available.",
+      "actual": "(skipped)",
+      "delta": null,
+      "tolerance": null,
+      "result": "SKIP"
+    },
+    {
+      "id": "wi3677.ui.jobCreated",
+      "kind": "ui-expect",
+      "description": "jobCreated",
+      "expected": "Computer Use launch_app timed out; list_windows also timed out; after resetting the JavaScript kernel, reimporting @oai/sky and retrying list_windows, the same timeout persisted. Required desktop operations cannot be performed with the current helper connection. No successful login/import/job/postprocess evidence is available.",
+      "actual": "(skipped)",
+      "delta": null,
+      "tolerance": null,
+      "result": "SKIP"
+    },
+    {
+      "id": "wi3677.ui.bothJsonConfigured",
+      "kind": "ui-expect",
+      "description": "bothJsonConfigured",
+      "expected": "Computer Use launch_app timed out; list_windows also timed out; after resetting the JavaScript kernel, reimporting @oai/sky and retrying list_windows, the same timeout persisted. Required desktop operations cannot be performed with the current helper connection. No successful login/import/job/postprocess evidence is available.",
+      "actual": "(skipped)",
+      "delta": null,
+      "tolerance": null,
+      "result": "SKIP"
+    },
+    {
+      "id": "wi3677.ui.postprocessCompleted",
+      "kind": "ui-expect",
+      "description": "postprocessCompleted",
+      "expected": "Computer Use launch_app timed out; list_windows also timed out; after resetting the JavaScript kernel, reimporting @oai/sky and retrying list_windows, the same timeout persisted. Required desktop operations cannot be performed with the current helper connection. No successful login/import/job/postprocess evidence is available.",
+      "actual": "(skipped)",
+      "delta": null,
+      "tolerance": null,
+      "result": "SKIP"
+    },
+    {
+      "id": "wi3677.ui.produced-pitch",
+      "kind": "logic",
+      "description": "Actual produced waferRun collection pitches",
+      "expected": "No completed UI-produced waferRun metadata",
+      "actual": "(skipped)",
+      "delta": null,
+      "tolerance": null,
+      "result": "SKIP"
+    }
+  ],
+  "summary": {
+    "total": 6,
+    "passed": 0,
+    "failed": 0,
+    "skipped": 6
+  },
+  "tests": [
+    {
+      "name": "Vega.AutoTest.L2.WorkItem3677L2.ActualDesktopPostprocessEvidence",
+      "outcome": "Passed",
+      "durationMs": 357,
+      "message": null
+    }
+  ],
+  "evidence": {
+    "dir": "C:\\AutoTest\\AutoTest\\VegaAutoTest\\daily\\analysis\\individual-20261022\\ui3677\\runner\\20261023T093343Z_wi0_8f37b7f",
+    "files": [
+      "uia/trx/uia.trx",
+      "uia/trx/uia.testhost.log",
+      "report.md"
+    ]
+  },
+  "exitCode": 2
+}

@@ -1,0 +1,4 @@
+  正在确定要还原的项目…
+  已还原 C:\AutoTest\workspaces\individual-20261022-20261023\Vega.UI.RecipeBatchEditor\Vega.UI.RecipeBatchEditor.csproj (用时 7.69 秒)。
+C:\AutoTest\workspaces\individual-20261022-20261023\Vega.UI.Common\Vega.UI.Common.csproj : warning NU1903: 包 "AutoMapper" 13.0.1 具有已知的 高 严重性漏洞，https://github.com/advisories/GHSA-rvv3-g6hj-g44x [C:\AutoTest\workspaces\individual-20261022-20261023\Vega.UI.RecipeBatchEditor\Vega.UI.RecipeBatchEditor.csproj]
+  22 个项目(共 23 个)是最新的，无法还原。

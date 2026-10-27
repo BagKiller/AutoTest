@@ -1,0 +1,46 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TestRun id="dea8b1d1-d25e-446d-81df-8d33c89493a5" name="Administrator@WIN-5NPN6Q8PL1B 2026-10-21 11:04:34" runUser="WIN-5NPN6Q8PL1B\Administrator" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <Times creation="2026-10-21T11:04:34.8059965+08:00" queuing="2026-10-21T11:04:34.8059968+08:00" start="2026-10-21T11:04:28.9651483+08:00" finish="2026-10-21T11:04:34.8647585+08:00" />
+  <TestSettings name="default" id="0e6e0b22-500d-417e-886d-d9d178571e9c">
+    <Deployment runDeploymentRoot="Administrator_WIN-5NPN6Q8PL1B_2026-10-21_11_04_34" />
+  </TestSettings>
+  <Results>
+    <UnitTestResult executionId="e9ea446b-ec22-4817-abe4-d07a04ae0c02" testId="ccfa7ddc-bf5d-77bb-8f01-95f1612eb75f" testName="Vega.AutoTest.CommitProbe.DailySupplementLogic.DirectSend_EmptyBytes_CountConsumedTracks(tracks: 0, cancelled: True, expected: 0)" computerName="WIN-5NPN6Q8PL1B" duration="00:00:00.0013156" startTime="2026-10-21T11:04:34.7599275+08:00" endTime="2026-10-21T11:04:34.7599276+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="e9ea446b-ec22-4817-abe4-d07a04ae0c02" />
+    <UnitTestResult executionId="14e2e947-709d-421b-9844-c7b793a2bdb1" testId="cc9c813b-c1f5-892a-3e65-ab080a72cea3" testName="Vega.AutoTest.CommitProbe.DailySupplementLogic.DirectSend_EmptyBytes_CountConsumedTracks(tracks: 1, cancelled: True, expected: 1)" computerName="WIN-5NPN6Q8PL1B" duration="00:00:01.6073447" startTime="2026-10-21T11:04:34.7495680+08:00" endTime="2026-10-21T11:04:34.7495913+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="14e2e947-709d-421b-9844-c7b793a2bdb1" />
+    <UnitTestResult executionId="827d83d4-c846-4058-ba10-4b7fdc99d547" testId="deb7b5ee-2783-6fd5-e01d-92d016c6a1fa" testName="Vega.AutoTest.CommitProbe.DailySupplementLogic.DirectSend_EmptyBytes_CountConsumedTracks(tracks: 3, cancelled: False, expected: 3)" computerName="WIN-5NPN6Q8PL1B" duration="00:00:00.0008629" startTime="2026-10-21T11:04:34.7602364+08:00" endTime="2026-10-21T11:04:34.7602366+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="827d83d4-c846-4058-ba10-4b7fdc99d547" />
+  </Results>
+  <TestDefinitions>
+    <UnitTest name="Vega.AutoTest.CommitProbe.DailySupplementLogic.DirectSend_EmptyBytes_CountConsumedTracks(tracks: 1, cancelled: True, expected: 1)" storage="c:\autotest\autotest\vegaautotest\daily\analysis\20261021-batch-failure\isolated-old\bin\vega.autotest.commitprobe.dll" id="cc9c813b-c1f5-892a-3e65-ab080a72cea3">
+      <Execution id="14e2e947-709d-421b-9844-c7b793a2bdb1" />
+      <TestMethod codeBase="C:\AutoTest\AutoTest\VegaAutoTest\daily\analysis\20261021-batch-failure\isolated-old\bin\Vega.AutoTest.CommitProbe.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Vega.AutoTest.CommitProbe.DailySupplementLogic" name="DirectSend_EmptyBytes_CountConsumedTracks" />
+    </UnitTest>
+    <UnitTest name="Vega.AutoTest.CommitProbe.DailySupplementLogic.DirectSend_EmptyBytes_CountConsumedTracks(tracks: 0, cancelled: True, expected: 0)" storage="c:\autotest\autotest\vegaautotest\daily\analysis\20261021-batch-failure\isolated-old\bin\vega.autotest.commitprobe.dll" id="ccfa7ddc-bf5d-77bb-8f01-95f1612eb75f">
+      <Execution id="e9ea446b-ec22-4817-abe4-d07a04ae0c02" />
+      <TestMethod codeBase="C:\AutoTest\AutoTest\VegaAutoTest\daily\analysis\20261021-batch-failure\isolated-old\bin\Vega.AutoTest.CommitProbe.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Vega.AutoTest.CommitProbe.DailySupplementLogic" name="DirectSend_EmptyBytes_CountConsumedTracks" />
+    </UnitTest>
+    <UnitTest name="Vega.AutoTest.CommitProbe.DailySupplementLogic.DirectSend_EmptyBytes_CountConsumedTracks(tracks: 3, cancelled: False, expected: 3)" storage="c:\autotest\autotest\vegaautotest\daily\analysis\20261021-batch-failure\isolated-old\bin\vega.autotest.commitprobe.dll" id="deb7b5ee-2783-6fd5-e01d-92d016c6a1fa">
+      <Execution id="827d83d4-c846-4058-ba10-4b7fdc99d547" />
+      <TestMethod codeBase="C:\AutoTest\AutoTest\VegaAutoTest\daily\analysis\20261021-batch-failure\isolated-old\bin\Vega.AutoTest.CommitProbe.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Vega.AutoTest.CommitProbe.DailySupplementLogic" name="DirectSend_EmptyBytes_CountConsumedTracks" />
+    </UnitTest>
+  </TestDefinitions>
+  <TestEntries>
+    <TestEntry testId="ccfa7ddc-bf5d-77bb-8f01-95f1612eb75f" executionId="e9ea446b-ec22-4817-abe4-d07a04ae0c02" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="cc9c813b-c1f5-892a-3e65-ab080a72cea3" executionId="14e2e947-709d-421b-9844-c7b793a2bdb1" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="deb7b5ee-2783-6fd5-e01d-92d016c6a1fa" executionId="827d83d4-c846-4058-ba10-4b7fdc99d547" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </TestEntries>
+  <TestLists>
+    <TestList name="列表中未列出的结果" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestList name="所有已加载的结果" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </TestLists>
+  <ResultSummary outcome="Completed">
+    <Counters total="3" executed="3" passed="3" failed="0" error="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+    <Output>
+      <StdOut>[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.5.3.1+6b60a9e56a (64-bit .NET 8.0.32)&#xD;
+[xUnit.net 00:00:02.70]   Discovering: Vega.AutoTest.CommitProbe&#xD;
+[xUnit.net 00:00:02.95]   Discovered:  Vega.AutoTest.CommitProbe&#xD;
+[xUnit.net 00:00:02.95]   Starting:    Vega.AutoTest.CommitProbe&#xD;
+[xUnit.net 00:00:04.61]   Finished:    Vega.AutoTest.CommitProbe&#xD;
+</StdOut>
+    </Output>
+  </ResultSummary>
+</TestRun>

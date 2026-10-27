@@ -1,0 +1,167 @@
+{
+  "repo": "C:\\AutoTest\\workspaces\\individual-20261022-20261023",
+  "targetHead": "10c33df5e69aa932bea8d843a29d8f6530d1fd73",
+  "scope": "Fresh targeted modules; no prior-batch product DLLs",
+  "dlls": [
+    {
+      "path": "C:\\AutoTest\\workspaces\\individual-20261022-20261023\\Vega.BL.WaferRun\\bin\\Debug\\net8.0-windows\\Vega.Algo.Imaging.dll",
+      "sha256": "14249c0420ce3465a019f29742ffb92116f00c88106528ecdb0f001032fe2764"
+    },
+    {
+      "path": "C:\\AutoTest\\workspaces\\individual-20261022-20261023\\Vega.BL.WaferRun\\bin\\Debug\\net8.0-windows\\Vega.BL.IWaferAlignment.dll",
+      "sha256": "978cc7258972465a6809e290b9dbf3182369f33b3823f01472cf8bfd4b73b62e"
+    },
+    {
+      "path": "C:\\AutoTest\\workspaces\\individual-20261022-20261023\\Vega.BL.WaferAlignment\\bin\\Debug\\net8.0-windows\\Vega.BL.WaferAlignment.dll",
+      "sha256": "d03dea28a23cf758b2587d35c3b9b81921d73bc9fd0e6922365c38c3b075268e"
+    },
+    {
+      "path": "C:\\AutoTest\\workspaces\\individual-20261022-20261023\\Vega.BL.WaferRun\\bin\\Debug\\net8.0-windows\\Vega.Data.Analysis.dll",
+      "sha256": "cf316d8cdef9d67fd0a7087cb2ed5fbffd205d1b09d238bab45a27f3d2421f25"
+    },
+    {
+      "path": "C:\\AutoTest\\workspaces\\individual-20261022-20261023\\Vega.BL.WaferRun\\bin\\Debug\\net8.0-windows\\Vega.Data.Calibration.dll",
+      "sha256": "4cfc9597dcabd788aff81aeba2cc1a5a408280c6ba13aa31708a15c1326eea50"
+    },
+    {
+      "path": "C:\\AutoTest\\workspaces\\individual-20261022-20261023\\Vega.BL.WaferRun\\bin\\Debug\\net8.0-windows\\Vega.Data.Commons.dll",
+      "sha256": "842192f98782400f6cbfd177c8986feadbbcf96daa4bf7dc55432cd7d3a2fd38"
+    },
+    {
+      "path": "C:\\AutoTest\\workspaces\\individual-20261022-20261023\\Vega.BL.WaferRun\\bin\\Debug\\net8.0-windows\\Vega.Data.Defects.dll",
+      "sha256": "50d58bfc92baed4c00582942cf580e414718cce54783194731162b8c16071e23"
+    },
+    {
+      "path": "C:\\AutoTest\\workspaces\\individual-20261022-20261023\\Vega.BL.WaferRun\\bin\\Debug\\net8.0-windows\\Vega.Data.Jobs.dll",
+      "sha256": "9b6c955199324a0b606084ab7fd791b1619b40775ea5587d610b8d9a52de04dd"
+    },
+    {
+      "path": "C:\\AutoTest\\workspaces\\individual-20261022-20261023\\Vega.BL.WaferRun\\bin\\Debug\\net8.0-windows\\Vega.Data.Measurements.dll",
+      "sha256": "bac536368077d90abf62b80aa5ff2b0e8c8adf48ab87a4d793c1cf330ff021d6"
+    },
+    {
+      "path": "C:\\AutoTest\\workspaces\\individual-20261022-20261023\\Vega.BL.WaferRun\\bin\\Debug\\net8.0-windows\\Vega.Data.Navigation.dll",
+      "sha256": "2e2e27871387cd7149009a7d5608927abcf9aeea2ee1b100d4ac50fff0116011"
+    },
+    {
+      "path": "C:\\AutoTest\\workspaces\\individual-20261022-20261023\\Vega.BL.WaferRun\\bin\\Debug\\net8.0-windows\\Vega.Data.Recipes.dll",
+      "sha256": "c4ac37d96b9e63c510b889b7161c6b6d92302c35305e3a77c85a4662eb0f0cdc"
+    },
+    {
+      "path": "C:\\AutoTest\\workspaces\\individual-20261022-20261023\\Vega.BL.WaferRun\\bin\\Debug\\net8.0-windows\\Vega.Platform.IDatabase.dll",
+      "sha256": "2968feb2a7f96bd4315f3aa40e6a128898d36f96ab263f76613acc0b2d506979"
+    },
+    {
+      "path": "C:\\AutoTest\\workspaces\\individual-20261022-20261023\\Vega.BL.WaferRun\\bin\\Debug\\net8.0-windows\\Vega.Shared.dll",
+      "sha256": "d419f6fc5386ee90049445bb3e4e8083b95f86932e4efb7692866d416838335c"
+    },
+    {
+      "path": "C:\\AutoTest\\workspaces\\individual-20261022-20261023\\Vega.BL.WaferRun\\bin\\Debug\\net8.0-windows\\Vega.Utility.Common.dll",
+      "sha256": "21032e65765b3e59f3ac7342d968c8c11e753f0ae5eb4bdde7aba0649731c4d5"
+    },
+    {
+      "path": "C:\\AutoTest\\workspaces\\individual-20261022-20261023\\Vega.BL.WaferRun\\bin\\Debug\\net8.0-windows\\Vega.Utility.Helper.dll",
+      "sha256": "f9c6a92c8a3d8b242a527ac12a3b4c68247a9f579e64a8a13fd7b31955fece6c"
+    },
+    {
+      "path": "C:\\AutoTest\\workspaces\\individual-20261022-20261023\\Vega.BL.WaferRun\\bin\\Debug\\net8.0-windows\\Vega.BL.IAnalysisServices.dll",
+      "sha256": "af62ce49b00730a169c5b4ab852235856040e00fafd3fa452d434c89fca50616"
+    },
+    {
+      "path": "C:\\AutoTest\\workspaces\\individual-20261022-20261023\\Vega.BL.WaferRun\\bin\\Debug\\net8.0-windows\\Vega.BL.IRecipeProcessing.dll",
+      "sha256": "284e473895b043bbf2af95db088c54f9574b8b51998614b7b56f60f839094c33"
+    },
+    {
+      "path": "C:\\AutoTest\\workspaces\\individual-20261022-20261023\\Vega.BL.WaferRun\\bin\\Debug\\net8.0-windows\\Vega.BL.IWaferHandler.dll",
+      "sha256": "f32553b8a5324d988da9381c14fc6d5780baad1166b680fc10094024c93615ea"
+    },
+    {
+      "path": "C:\\AutoTest\\workspaces\\individual-20261022-20261023\\Vega.BL.WaferRun\\bin\\Debug\\net8.0-windows\\Vega.BL.IWaferRun.dll",
+      "sha256": "df941db1e786663e4164103c4aadaec94bfc73c4397fb180423be0a4d6c326ea"
+    },
+    {
+      "path": "C:\\AutoTest\\workspaces\\individual-20261022-20261023\\Vega.BL.WaferRun\\bin\\Debug\\net8.0-windows\\Vega.BL.WaferRun.dll",
+      "sha256": "ee0806f00de198f25c912c21309f02bca55b5ee2a59be65905af9abbe058024a"
+    },
+    {
+      "path": "C:\\AutoTest\\workspaces\\individual-20261022-20261023\\Vega.BL.WaferRun\\bin\\Debug\\net8.0-windows\\Vega.CD.IConnection.dll",
+      "sha256": "b510944cfa2143b3d9af36f915df1d6f04e0890e98cf4ea68637efacfb4e4012"
+    },
+    {
+      "path": "C:\\AutoTest\\workspaces\\individual-20261022-20261023\\Vega.BL.WaferRun\\bin\\Debug\\net8.0-windows\\Vega.Data.Interaction.dll",
+      "sha256": "a7e46110fd29bf6e1397e6e37005529e63aefaaebb7d482b5744728bbc9ad8ec"
+    },
+    {
+      "path": "C:\\AutoTest\\workspaces\\individual-20261022-20261023\\Vega.BL.WaferRun\\bin\\Debug\\net8.0-windows\\Vega.Data.Management.dll",
+      "sha256": "2fe379303f581d3baf433d607ac708a177f7431ca4338ba0d1f75d7a472099fa"
+    },
+    {
+      "path": "C:\\AutoTest\\workspaces\\individual-20261022-20261023\\Vega.BL.WaferRun\\bin\\Debug\\net8.0-windows\\Vega.ErrorHandling.dll",
+      "sha256": "2679f7478e01e4b2a78f5360f97230150adcde2041be9293dd3143508afb4f9d"
+    },
+    {
+      "path": "C:\\AutoTest\\workspaces\\individual-20261022-20261023\\Vega.BL.WaferRun\\bin\\Debug\\net8.0-windows\\Vega.Facade.IGEM.dll",
+      "sha256": "4fbefcf4bc60f18d0933a0a149260ebcf3dfe741d845b002d7c265007e43e176"
+    },
+    {
+      "path": "C:\\AutoTest\\workspaces\\individual-20261022-20261023\\Vega.BL.WaferRun\\bin\\Debug\\net8.0-windows\\Vega.LD.IBSS.dll",
+      "sha256": "033f2bb471b7d455625589ca7b565be199ee80b5195613831371336af668e287"
+    },
+    {
+      "path": "C:\\AutoTest\\workspaces\\individual-20261022-20261023\\Vega.BL.WaferRun\\bin\\Debug\\net8.0-windows\\Vega.LD.IDataCollector.dll",
+      "sha256": "ff07de47dac50ccaadcbd0e908b31e81128183cef0a3c03f15a27a2c5d521346"
+    },
+    {
+      "path": "C:\\AutoTest\\workspaces\\individual-20261022-20261023\\Vega.BL.WaferRun\\bin\\Debug\\net8.0-windows\\Vega.LD.IMotion.dll",
+      "sha256": "69cc3299d068b275f463e1cc6fa8019c68a768d15e004620b22d87c12d468dbe"
+    },
+    {
+      "path": "C:\\AutoTest\\workspaces\\individual-20261022-20261023\\Vega.BL.WaferRun\\bin\\Debug\\net8.0-windows\\Vega.LD.IOptics.dll",
+      "sha256": "8b2da804d053e173f00eecd5f4f66a575541b8ac643afdcb95d7067f289041c0"
+    },
+    {
+      "path": "C:\\AutoTest\\workspaces\\individual-20261022-20261023\\Vega.BL.WaferRun\\bin\\Debug\\net8.0-windows\\Vega.LD.IWaferReceiver.dll",
+      "sha256": "4069460048eb3189c43fbbf99279cb36643766ae126efe6d5ea52d1a512cb9e1"
+    },
+    {
+      "path": "C:\\AutoTest\\workspaces\\individual-20261022-20261023\\Vega.BL.WaferRun\\bin\\Debug\\net8.0-windows\\Vega.LD.WaferReceiver.dll",
+      "sha256": "4d0aa01f728b5a3e0bb071902a9589fb65cd1f2d55a6922ea41bd88aa28ee2c2"
+    },
+    {
+      "path": "C:\\AutoTest\\workspaces\\individual-20261022-20261023\\Vega.BL.WaferRun\\bin\\Debug\\net8.0-windows\\Vega.PD.ICamera.dll",
+      "sha256": "3583dcd056d621740b3f83226eab521d98b655ad708a545c9803a78e4425f401"
+    },
+    {
+      "path": "C:\\AutoTest\\workspaces\\individual-20261022-20261023\\Vega.BL.WaferRun\\bin\\Debug\\net8.0-windows\\Vega.PD.ICylinderDevice.dll",
+      "sha256": "e97d7fd2fa8add0345a7607bfbbdfc4617102bb53bec1f7774086530c2cb2ca7"
+    },
+    {
+      "path": "C:\\AutoTest\\workspaces\\individual-20261022-20261023\\Vega.BL.WaferRun\\bin\\Debug\\net8.0-windows\\Vega.PD.IMotionDevice.dll",
+      "sha256": "1383266a4847369ec6faa9aa4d5e0fe64d34638d5f184809b173fcf9c4e9e289"
+    },
+    {
+      "path": "C:\\AutoTest\\workspaces\\individual-20261022-20261023\\Vega.BL.WaferRun\\bin\\Debug\\net8.0-windows\\Vega.PD.IWaferDoorDevice.dll",
+      "sha256": "390828fd289f3396309a3c35a1f2ef53a923a0231802abc8d59e7d5692ba73b1"
+    },
+    {
+      "path": "C:\\AutoTest\\workspaces\\individual-20261022-20261023\\Vega.BL.WaferRun\\bin\\Debug\\net8.0-windows\\Vega.Platform.PerformanceMonitor.dll",
+      "sha256": "88464f5c4c9fbe50691b810061313b15195b81f2f1c09cbb58a6eb4828f42952"
+    },
+    {
+      "path": "C:\\AutoTest\\workspaces\\individual-20261022-20261023\\Vega.BL.WaferRun\\bin\\Debug\\net8.0-windows\\Vega.UI.Common.dll",
+      "sha256": "78d04755d4ddde7ff635a4cc49f58e2100311ab3ab9d73667bf1c6c00d2103dc"
+    }
+  ],
+  "verifiedAt": "2026-10-23T16:15:10.161521+08:00",
+  "sdkBuild": "10.0.402",
+  "sdkTest": "8.0.426",
+  "sourceFilesMatchHead": true,
+  "generatedDirtyFiles": [
+    "packages.lock.json"
+  ],
+  "fullVegaExeBuilt": false,
+  "configurationRestoration": {
+    "required": false,
+    "reason": "No product GUI/configuration/session changed; fixture config is confined to the test-host output."
+  }
+}

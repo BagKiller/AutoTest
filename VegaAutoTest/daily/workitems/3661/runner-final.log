@@ -1,0 +1,10 @@
+[layer:logic100] dotnet test --filter "FullyQualifiedName~WorkItem3661Logic"
+[layer:logic100] PASS (OK) 45/45 断言通过
+[layer:logic300] dotnet test --filter "FullyQualifiedName~WorkItem3661Logic"
+[layer:logic300] PASS (OK) 45/45 断言通过
+[layer:logic500] dotnet test --filter "FullyQualifiedName~WorkItem3661Logic"
+[layer:logic500] PASS (OK) 45/45 断言通过
+[layer:logic-none] dotnet test --filter "FullyQualifiedName~WorkItem3661Logic"
+[layer:logic-none] PASS (OK) 45/45 断言通过
+[report] C:\AutoTest\AutoTest\VegaAutoTest\daily\workitems\3661\runner\20261020T073019Z_wi3661_282e9ff\report.md
+C:\AutoTest\AutoTest\VegaAutoTest\daily\workitems\3661\runner\20261020T073019Z_wi3661_282e9ff\result.json

@@ -1,0 +1,64 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TestRun id="ed387f45-508e-4ae2-810c-fb753e120388" name="Administrator@WIN-5NPN6Q8PL1B 2026-10-20 15:31:35" runUser="WIN-5NPN6Q8PL1B\Administrator" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <Times creation="2026-10-20T15:31:35.0090854+08:00" queuing="2026-10-20T15:31:35.0090856+08:00" start="2026-10-20T15:31:33.3380621+08:00" finish="2026-10-20T15:31:35.0167594+08:00" />
+  <TestSettings name="default" id="69c76b4d-973c-4ee2-ae95-538acccfcc49">
+    <Deployment runDeploymentRoot="Administrator_WIN-5NPN6Q8PL1B_2026-10-20_15_31_35" />
+  </TestSettings>
+  <Results>
+    <UnitTestResult executionId="d38c7cfc-3ce5-4755-820f-29bbd7b9ace8" testId="0b37431b-2b20-63c9-2340-10259b3c6dc7" testName="Vega.AutoTest.CommitProbe.WorkItem3661Logic.Calculator_CompiledView_FilterAndNoWriteBack" computerName="WIN-5NPN6Q8PL1B" duration="00:00:00.0367237" startTime="2026-10-20T15:31:34.6392734+08:00" endTime="2026-10-20T15:31:34.6392737+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="d38c7cfc-3ce5-4755-820f-29bbd7b9ace8" />
+    <UnitTestResult executionId="d50f0170-d3a6-403e-b225-8d6e24aafddc" testId="c5a2f999-6cd7-2920-ebed-c1b967c69ccc" testName="Vega.AutoTest.CommitProbe.WorkItem3661Logic.BatchEditor_CompiledWindow_FilterSaveAndJsonRoundTrip" computerName="WIN-5NPN6Q8PL1B" duration="00:00:00.1872095" startTime="2026-10-20T15:31:34.8757818+08:00" endTime="2026-10-20T15:31:34.8757822+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="d50f0170-d3a6-403e-b225-8d6e24aafddc" />
+    <UnitTestResult executionId="3bb32d17-e110-4375-a2e3-38aeddd91ab9" testId="acee808e-e3b0-a31c-d7e5-e69c8e25eb30" testName="Vega.AutoTest.CommitProbe.WorkItem3661Logic.HardwareParameters_CompiledView_FilterAndSaveBareKeys" computerName="WIN-5NPN6Q8PL1B" duration="00:00:00.1058115" startTime="2026-10-20T15:31:34.6048668+08:00" endTime="2026-10-20T15:31:34.6048670+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="3bb32d17-e110-4375-a2e3-38aeddd91ab9" />
+    <UnitTestResult executionId="76dafffb-fc7a-44c6-8b0b-c38a1933be93" testId="5294fddc-2fe9-42ec-b7b7-519d39492953" testName="Vega.AutoTest.CommitProbe.WorkItem3661Logic.Lpd_PirSir_CompiledView_FilterEditSaveAndHiddenData" computerName="WIN-5NPN6Q8PL1B" duration="00:00:00.0490296" startTime="2026-10-20T15:31:34.6884298+08:00" endTime="2026-10-20T15:31:34.6884300+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="76dafffb-fc7a-44c6-8b0b-c38a1933be93" />
+    <UnitTestResult executionId="66c10f37-912f-4efd-9773-07d6a9c56036" testId="f2591e0e-f8f3-62ab-2751-80f97e140abb" testName="Vega.AutoTest.CommitProbe.WorkItem3661Logic.ResultSummary_CompiledView_RendersLabelsWithoutChangingKeys" computerName="WIN-5NPN6Q8PL1B" duration="00:00:00.3576002" startTime="2026-10-20T15:31:34.5184686+08:00" endTime="2026-10-20T15:31:34.5184908+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="66c10f37-912f-4efd-9773-07d6a9c56036" />
+  </Results>
+  <TestDefinitions>
+    <UnitTest name="Vega.AutoTest.CommitProbe.WorkItem3661Logic.Calculator_CompiledView_FilterAndNoWriteBack" storage="c:\autotest\autotest\vegaautotest\probes\vega.autotest.commitprobe\bin\debug\net8.0-windows10.0.19041.0\vega.autotest.commitprobe.dll" id="0b37431b-2b20-63c9-2340-10259b3c6dc7">
+      <Execution id="d38c7cfc-3ce5-4755-820f-29bbd7b9ace8" />
+      <TestMethod codeBase="C:\AutoTest\AutoTest\VegaAutoTest\probes\Vega.AutoTest.CommitProbe\bin\Debug\net8.0-windows10.0.19041.0\Vega.AutoTest.CommitProbe.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Vega.AutoTest.CommitProbe.WorkItem3661Logic" name="Calculator_CompiledView_FilterAndNoWriteBack" />
+    </UnitTest>
+    <UnitTest name="Vega.AutoTest.CommitProbe.WorkItem3661Logic.ResultSummary_CompiledView_RendersLabelsWithoutChangingKeys" storage="c:\autotest\autotest\vegaautotest\probes\vega.autotest.commitprobe\bin\debug\net8.0-windows10.0.19041.0\vega.autotest.commitprobe.dll" id="f2591e0e-f8f3-62ab-2751-80f97e140abb">
+      <Execution id="66c10f37-912f-4efd-9773-07d6a9c56036" />
+      <TestMethod codeBase="C:\AutoTest\AutoTest\VegaAutoTest\probes\Vega.AutoTest.CommitProbe\bin\Debug\net8.0-windows10.0.19041.0\Vega.AutoTest.CommitProbe.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Vega.AutoTest.CommitProbe.WorkItem3661Logic" name="ResultSummary_CompiledView_RendersLabelsWithoutChangingKeys" />
+    </UnitTest>
+    <UnitTest name="Vega.AutoTest.CommitProbe.WorkItem3661Logic.BatchEditor_CompiledWindow_FilterSaveAndJsonRoundTrip" storage="c:\autotest\autotest\vegaautotest\probes\vega.autotest.commitprobe\bin\debug\net8.0-windows10.0.19041.0\vega.autotest.commitprobe.dll" id="c5a2f999-6cd7-2920-ebed-c1b967c69ccc">
+      <Execution id="d50f0170-d3a6-403e-b225-8d6e24aafddc" />
+      <TestMethod codeBase="C:\AutoTest\AutoTest\VegaAutoTest\probes\Vega.AutoTest.CommitProbe\bin\Debug\net8.0-windows10.0.19041.0\Vega.AutoTest.CommitProbe.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Vega.AutoTest.CommitProbe.WorkItem3661Logic" name="BatchEditor_CompiledWindow_FilterSaveAndJsonRoundTrip" />
+    </UnitTest>
+    <UnitTest name="Vega.AutoTest.CommitProbe.WorkItem3661Logic.Lpd_PirSir_CompiledView_FilterEditSaveAndHiddenData" storage="c:\autotest\autotest\vegaautotest\probes\vega.autotest.commitprobe\bin\debug\net8.0-windows10.0.19041.0\vega.autotest.commitprobe.dll" id="5294fddc-2fe9-42ec-b7b7-519d39492953">
+      <Execution id="76dafffb-fc7a-44c6-8b0b-c38a1933be93" />
+      <TestMethod codeBase="C:\AutoTest\AutoTest\VegaAutoTest\probes\Vega.AutoTest.CommitProbe\bin\Debug\net8.0-windows10.0.19041.0\Vega.AutoTest.CommitProbe.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Vega.AutoTest.CommitProbe.WorkItem3661Logic" name="Lpd_PirSir_CompiledView_FilterEditSaveAndHiddenData" />
+    </UnitTest>
+    <UnitTest name="Vega.AutoTest.CommitProbe.WorkItem3661Logic.HardwareParameters_CompiledView_FilterAndSaveBareKeys" storage="c:\autotest\autotest\vegaautotest\probes\vega.autotest.commitprobe\bin\debug\net8.0-windows10.0.19041.0\vega.autotest.commitprobe.dll" id="acee808e-e3b0-a31c-d7e5-e69c8e25eb30">
+      <Execution id="3bb32d17-e110-4375-a2e3-38aeddd91ab9" />
+      <TestMethod codeBase="C:\AutoTest\AutoTest\VegaAutoTest\probes\Vega.AutoTest.CommitProbe\bin\Debug\net8.0-windows10.0.19041.0\Vega.AutoTest.CommitProbe.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Vega.AutoTest.CommitProbe.WorkItem3661Logic" name="HardwareParameters_CompiledView_FilterAndSaveBareKeys" />
+    </UnitTest>
+  </TestDefinitions>
+  <TestEntries>
+    <TestEntry testId="0b37431b-2b20-63c9-2340-10259b3c6dc7" executionId="d38c7cfc-3ce5-4755-820f-29bbd7b9ace8" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="c5a2f999-6cd7-2920-ebed-c1b967c69ccc" executionId="d50f0170-d3a6-403e-b225-8d6e24aafddc" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="acee808e-e3b0-a31c-d7e5-e69c8e25eb30" executionId="3bb32d17-e110-4375-a2e3-38aeddd91ab9" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="5294fddc-2fe9-42ec-b7b7-519d39492953" executionId="76dafffb-fc7a-44c6-8b0b-c38a1933be93" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="f2591e0e-f8f3-62ab-2751-80f97e140abb" executionId="66c10f37-912f-4efd-9773-07d6a9c56036" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </TestEntries>
+  <TestLists>
+    <TestList name="Results Not in a List" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestList name="All Loaded Results" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </TestLists>
+  <ResultSummary outcome="Completed">
+    <Counters total="5" executed="5" passed="5" failed="0" error="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+    <Output>
+      <StdOut>[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.5.3.1+6b60a9e56a (64-bit .NET 8.0.32)&#xD;
+[xUnit.net 00:00:00.10]   Discovering: Vega.AutoTest.CommitProbe&#xD;
+[xUnit.net 00:00:00.17]   Discovered:  Vega.AutoTest.CommitProbe&#xD;
+[xUnit.net 00:00:00.18]   Starting:    Vega.AutoTest.CommitProbe&#xD;
+info: Vega.UI.RecipeBatchEditor.App[0]&#xD;
+      Recipe Batch Editor starting up...&#xD;
+info: Vega.UI.RecipeBatchEditor.ViewModels.CollectionViewViewModel[0]&#xD;
+      CollectionViewViewModel initialized for Recipe: WI3661, Collection: WI3661&#xD;
+info: Vega.UI.RecipeBatchEditor.App[0]&#xD;
+      Recipe Batch Editor shutting down...&#xD;
+[xUnit.net 00:00:01.11]   Finished:    Vega.AutoTest.CommitProbe&#xD;
+</StdOut>
+    </Output>
+  </ResultSummary>
+</TestRun>

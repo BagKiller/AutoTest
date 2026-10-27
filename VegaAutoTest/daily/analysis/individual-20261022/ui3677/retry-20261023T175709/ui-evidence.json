@@ -1,0 +1,14 @@
+{
+  "workItem":3677,
+  "targetHead":"10c33df5e69aa932bea8d843a29d8f6530d1fd73",
+  "process":{"pid":600,"startedAt":"2026-10-23T17:57:31.3850225+08:00"},
+  "profile":"Vega300-HWv1 / Simulator / Gem=false / Gen2",
+  "vegaDllSha256":"676C049E73D9D6595DC35F246E2F11B718B0BC8FDB44BEB3A7505FBCD14EA15D",
+  "stages":{
+    "loggedIn":{"screenshot":"loggedIn.jpg","sha256":"9B3781E75A08774859106AF981D8B0E90DBCCB703A35B72FE61AE24FD2BF7C9D","observation":"Actual Vega300 main window title ends in su; device Idle. Official Authenticator generated password retained only in memory. Independent login modal binding and supported set_value enabled login."},
+    "recipeImported":{"screenshot":"recipeImported.jpg","sha256":"8C3EC4000A3928CC0CEDD8AC47D862F367496D10C13050005E75BB3CA3F747C8","observation":"Actual Recipe Library lists imported JRH_EPI_Particle_dual, Oblique and Normal collections."}
+  },
+  "incompleteReason":"After successful launch, login and original recipe import, switching to Job caused get_window_state timeout. list_windows timed out, repeated after 2 seconds, then reset JavaScript kernel and reimported @oai/sky; final list_windows still timed out. Stopped UI input per Computer Use recovery guidance. Job creation, original JSON configuration and postprocess/output verification not completed.",
+  "diagnosis":{"confirmed":["First lightweight window query timed out; retry recovered","First Authenticator screenshot capture FrameArrived timed out; reobservation recovered","Some screenshots captured occluding content until target activation","Main-window nested login indexes and keyboard input failed; independent login modal binding and supported control assignment succeeded","Vega startup succeeded and reached Idle after official login","Desktop helper later stopped responding even to list_windows after reset"],"unproven":["Underlying reason for helper failure: cannot distinguish capture service, IPC, desktop session or resource fault from current evidence","No evidence that #3677 pitch/DC product logic caused UI automation failure"]},
+  "fullUiAcceptance":false
+}

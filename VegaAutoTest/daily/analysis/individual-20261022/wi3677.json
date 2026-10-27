@@ -1,0 +1,153 @@
+{
+  "id": 3677,
+  "rev": 5,
+  "fields": {
+    "System.AreaPath": "Vega_SW",
+    "System.TeamProject": "Vega_SW",
+    "System.IterationPath": "Vega_SW\\sprint26",
+    "System.WorkItemType": "Bug",
+    "System.State": "新建",
+    "System.Reason": "报告了新缺陷",
+    "System.AssignedTo": {
+      "displayName": "Zhu, Siyuan",
+      "url": "http://win-devops:8080/DefaultCollection/_apis/Identities/87c594a9-bae5-486f-9e1b-a524e03d5b0f",
+      "_links": {
+        "avatar": {
+          "href": "http://win-devops:8080/DefaultCollection/_apis/GraphProfile/MemberAvatars/win.Uy0xLTUtMjEtMjA1NDQ3MDY4My02NzI1NTk1NjMtMjM4MDIzOTI0MS0xMTMy"
+        }
+      },
+      "id": "87c594a9-bae5-486f-9e1b-a524e03d5b0f",
+      "uniqueName": "VEGA-SH\\szhu",
+      "imageUrl": "http://win-devops:8080/DefaultCollection/_apis/GraphProfile/MemberAvatars/win.Uy0xLTUtMjEtMjA1NDQ3MDY4My02NzI1NTk1NjMtMjM4MDIzOTI0MS0xMTMy",
+      "descriptor": "win.Uy0xLTUtMjEtMjA1NDQ3MDY4My02NzI1NTk1NjMtMjM4MDIzOTI0MS0xMTMy"
+    },
+    "System.CreatedDate": "2026-10-22T05:42:01.55Z",
+    "System.CreatedBy": {
+      "displayName": "Ma, Junyan",
+      "url": "http://win-devops:8080/DefaultCollection/_apis/Identities/2f74f4ef-294c-4c7a-94c7-5d5af4d70335",
+      "_links": {
+        "avatar": {
+          "href": "http://win-devops:8080/DefaultCollection/_apis/GraphProfile/MemberAvatars/win.Uy0xLTUtMjEtMjA1NDQ3MDY4My02NzI1NTk1NjMtMjM4MDIzOTI0MS0xMTI5"
+        }
+      },
+      "id": "2f74f4ef-294c-4c7a-94c7-5d5af4d70335",
+      "uniqueName": "VEGA-SH\\jma",
+      "imageUrl": "http://win-devops:8080/DefaultCollection/_apis/GraphProfile/MemberAvatars/win.Uy0xLTUtMjEtMjA1NDQ3MDY4My02NzI1NTk1NjMtMjM4MDIzOTI0MS0xMTI5",
+      "descriptor": "win.Uy0xLTUtMjEtMjA1NDQ3MDY4My02NzI1NTk1NjMtMjM4MDIzOTI0MS0xMTI5"
+    },
+    "System.ChangedDate": "2026-10-22T08:58:29.87Z",
+    "System.ChangedBy": {
+      "displayName": "Ma, Junyan",
+      "url": "http://win-devops:8080/DefaultCollection/_apis/Identities/2f74f4ef-294c-4c7a-94c7-5d5af4d70335",
+      "_links": {
+        "avatar": {
+          "href": "http://win-devops:8080/DefaultCollection/_apis/GraphProfile/MemberAvatars/win.Uy0xLTUtMjEtMjA1NDQ3MDY4My02NzI1NTk1NjMtMjM4MDIzOTI0MS0xMTI5"
+        }
+      },
+      "id": "2f74f4ef-294c-4c7a-94c7-5d5af4d70335",
+      "uniqueName": "VEGA-SH\\jma",
+      "imageUrl": "http://win-devops:8080/DefaultCollection/_apis/GraphProfile/MemberAvatars/win.Uy0xLTUtMjEtMjA1NDQ3MDY4My02NzI1NTk1NjMtMjM4MDIzOTI0MS0xMTI5",
+      "descriptor": "win.Uy0xLTUtMjEtMjA1NDQ3MDY4My02NzI1NTk1NjMtMjM4MDIzOTI0MS0xMTI5"
+    },
+    "System.CommentCount": 1,
+    "System.Title": "offline postprocess时，PixelInMicron等参数在waferRun里为0",
+    "System.BoardColumn": "新建",
+    "System.BoardColumnDone": false,
+    "Microsoft.VSTS.Common.StateChangeDate": "2026-10-22T05:42:01.55Z",
+    "Microsoft.VSTS.Common.Priority": 2,
+    "Microsoft.VSTS.Common.Severity": "3 - 中",
+    "Microsoft.VSTS.Common.ValueArea": "业务",
+    "WEF_CCDA5C2107984103885135DDD7ABA36F_Kanban.Column": "新建",
+    "WEF_CCDA5C2107984103885135DDD7ABA36F_Kanban.Column.Done": false,
+    "Microsoft.VSTS.TCM.ReproSteps": "<div>附件中有两个算法json文件，分别是Oblique和Normal通道的；以及一个dual recipe </div><div>&nbsp;su账户登录Vega </div><div><ol><li>导入recipe </li><li>创建job, 选择刚刚导入的recipe </li><li>右击job 选择离线分析 </li><li>选择postprocess </li><li>分别添加Oblique json 和 Normal json </li><li>运行结果中的waferRun的PixelInMicron等参数为0 </li> </ol> </div>"
+  },
+  "relations": [
+    {
+      "rel": "AttachedFile",
+      "url": "http://win-devops:8080/DefaultCollection/8dbcd5b4-eeb3-44c5-ac52-dcec2c44d052/_apis/wit/attachments/9747bac7-d02f-4078-bfd0-78f019db5173",
+      "attributes": {
+        "authorizedDate": "2026-10-22T05:42:01.55Z",
+        "id": 73152,
+        "resourceCreatedDate": "2026-10-22T05:38:42.407Z",
+        "resourceModifiedDate": "2026-10-21T13:59:58.39Z",
+        "revisedDate": "9999-01-01T00:00:00Z",
+        "resourceSize": 490095,
+        "name": "Wafer_1_202610215854_Oblique_20261021215958.json"
+      }
+    },
+    {
+      "rel": "AttachedFile",
+      "url": "http://win-devops:8080/DefaultCollection/8dbcd5b4-eeb3-44c5-ac52-dcec2c44d052/_apis/wit/attachments/13f744e6-a894-402d-9cdf-f027001b6222",
+      "attributes": {
+        "authorizedDate": "2026-10-22T05:42:01.55Z",
+        "id": 73154,
+        "resourceCreatedDate": "2026-10-22T05:38:55.713Z",
+        "resourceModifiedDate": "2026-10-22T02:59:25Z",
+        "revisedDate": "9999-01-01T00:00:00Z",
+        "resourceSize": 182346,
+        "name": "JRH_EPI_Particle_dual.recipe"
+      }
+    },
+    {
+      "rel": "ArtifactLink",
+      "url": "vstfs:///Git/PullRequestId/8dbcd5b4-eeb3-44c5-ac52-dcec2c44d052%2Fa9010300-dcb2-4e66-b195-767c1741515d%2F4980",
+      "attributes": {
+        "authorizedDate": "2026-10-22T07:06:54.81Z",
+        "id": 73157,
+        "resourceCreatedDate": "2026-10-22T07:06:54.81Z",
+        "resourceModifiedDate": "2026-10-22T07:06:54.81Z",
+        "revisedDate": "9999-01-01T00:00:00Z",
+        "name": "Pull Request"
+      }
+    },
+    {
+      "rel": "ArtifactLink",
+      "url": "vstfs:///Git/Commit/8dbcd5b4-eeb3-44c5-ac52-dcec2c44d052%2fa9010300-dcb2-4e66-b195-767c1741515d%2f10c33df5e69aa932bea8d843a29d8f6530d1fd73",
+      "attributes": {
+        "authorizedDate": "2026-10-22T08:58:29.87Z",
+        "id": 73166,
+        "resourceCreatedDate": "2026-10-22T08:58:29.87Z",
+        "resourceModifiedDate": "2026-10-22T08:58:29.87Z",
+        "revisedDate": "9999-01-01T00:00:00Z",
+        "name": "Fixed in Commit"
+      }
+    },
+    {
+      "rel": "AttachedFile",
+      "url": "http://win-devops:8080/DefaultCollection/8dbcd5b4-eeb3-44c5-ac52-dcec2c44d052/_apis/wit/attachments/9e7370a0-5b9b-409a-a9f2-771f8d200c3d",
+      "attributes": {
+        "authorizedDate": "2026-10-22T05:42:01.55Z",
+        "id": 73153,
+        "resourceCreatedDate": "2026-10-22T05:38:42.41Z",
+        "resourceModifiedDate": "2026-10-21T11:50:12Z",
+        "revisedDate": "9999-01-01T00:00:00Z",
+        "resourceSize": 757154,
+        "name": "Carr003-01_261021194832_Normal_20261021195012.json"
+      }
+    }
+  ],
+  "_links": {
+    "self": {
+      "href": "http://win-devops:8080/DefaultCollection/8dbcd5b4-eeb3-44c5-ac52-dcec2c44d052/_apis/wit/workItems/3677"
+    },
+    "workItemUpdates": {
+      "href": "http://win-devops:8080/DefaultCollection/8dbcd5b4-eeb3-44c5-ac52-dcec2c44d052/_apis/wit/workItems/3677/updates"
+    },
+    "workItemRevisions": {
+      "href": "http://win-devops:8080/DefaultCollection/8dbcd5b4-eeb3-44c5-ac52-dcec2c44d052/_apis/wit/workItems/3677/revisions"
+    },
+    "workItemComments": {
+      "href": "http://win-devops:8080/DefaultCollection/8dbcd5b4-eeb3-44c5-ac52-dcec2c44d052/_apis/wit/workItems/3677/comments"
+    },
+    "html": {
+      "href": "http://win-devops:8080/DefaultCollection/8dbcd5b4-eeb3-44c5-ac52-dcec2c44d052/_workitems/edit/3677"
+    },
+    "workItemType": {
+      "href": "http://win-devops:8080/DefaultCollection/8dbcd5b4-eeb3-44c5-ac52-dcec2c44d052/_apis/wit/workItemTypes/Bug"
+    },
+    "fields": {
+      "href": "http://win-devops:8080/DefaultCollection/8dbcd5b4-eeb3-44c5-ac52-dcec2c44d052/_apis/wit/fields"
+    }
+  },
+  "url": "http://win-devops:8080/DefaultCollection/8dbcd5b4-eeb3-44c5-ac52-dcec2c44d052/_apis/wit/workItems/3677"
+}

@@ -1,0 +1,10 @@
+{
+  "workItem":3677,
+  "targetHead":"10c33df5e69aa932bea8d843a29d8f6530d1fd73",
+  "repo":"C:\\AutoTest\\workspaces\\individual-20261022-20261023",
+  "uiSlots":[{"id":"ui-wi3677-Vega300-HWv1","model":"Vega300","profile":"HWv1","simulator":true,"gem":false,"generation":"Gen2","userDataFolder":"ResourcesDaily_Vega300-HWv1"}],
+  "inputs":["JRH_EPI_Particle_dual.recipe","Wafer_1_202610215854_Oblique_20261021215958.json","Carr003-01_261021194832_Normal_20261021195012.json"],
+  "steps":["Verify fresh full executable and target fingerprints","Prepare isolated model session and official startup key","Launch real Vega and log in as authorized su","Import original dual recipe","Create dedicated Job and select imported recipe","Open offline postprocess and add both original JSON inputs","Execute offline postprocess and inspect completion and results","Read produced waferRun metadata and verify both collection pitches are finite and greater than zero; record DC counts and any missing output expectations","Stop owned process and restore session configuration; verify SHA256"],
+  "evidence":["build provenance","process identity","non-secret UI screenshots and snapshots","produced result metadata and logs","Runner result.json/runId","restoration hashes"],
+  "verdictPolicy":"Only claim actual completed UI scope; preserve BLOCKED/ERROR on startup, authentication, unavailable dependencies or incomplete flow. No fabricated expected defect counts. No hardware actions."
+}

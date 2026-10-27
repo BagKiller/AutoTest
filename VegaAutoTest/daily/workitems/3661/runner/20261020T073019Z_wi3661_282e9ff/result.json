@@ -1,0 +1,1996 @@
+{
+  "schemaVersion": "1.0",
+  "runId": "20261020T073019Z_wi3661_282e9ff",
+  "workItemId": 3661,
+  "caseId": "wi3661-acceptance",
+  "verdict": "PASS",
+  "verdictReason": "OK: 45/45 断言通过 | OK: 45/45 断言通过 | OK: 45/45 断言通过 | OK: 45/45 断言通过",
+  "verdictCode": "OK",
+  "startedAt": "2026-10-20T15:30:17+08:00",
+  "finishedAt": "2026-10-20T15:31:35+08:00",
+  "durationMs": 77208,
+  "target": {
+    "repoRoot": "C:\\AutoTest\\workspaces\\20261019T233014+0800_ddc509_20261020T101112_ee7047",
+    "gitCommit": "985a08aaa9596e259e46f998cdd2ecc79667c81b",
+    "gitBranch": "HEAD",
+    "gitDirty": false,
+    "vegaExe": "C:\\AutoTest\\workspaces\\20261019T233014+0800_ddc509_20261020T101112_ee7047\\Vega\\bin\\Debug\\net8.0-windows10.0.19041.0\\win-x64\\Vega.exe",
+    "vegaExeBuiltAt": "2026-10-20T10:16:19+08:00",
+    "rebuilt": false,
+    "builtFromCurrentSource": false
+  },
+  "channels": {
+    "l1Api": {
+      "available": false,
+      "baseUrl": "http://localhost:18901/vega-agent/",
+      "reason": "用例未产出 oracle-crosscheck 断言（本次层: logic100,logic300,logic500,logic-none）"
+    },
+    "l2Uia": {
+      "available": false,
+      "baseUrl": null,
+      "reason": "本次未请求 uia 层"
+    },
+    "assertions": {
+      "available": true,
+      "baseUrl": null,
+      "reason": null
+    }
+  },
+  "assertions": [
+    {
+      "id": "wi3661.summary.render.DW2 Mask",
+      "kind": "logic",
+      "description": "summary.render.DW2 Mask",
+      "expected": "\"DW Mask\"",
+      "actual": "\"DW Mask\"",
+      "delta": null,
+      "tolerance": null,
+      "result": "PASS"
+    },
+    {
+      "id": "wi3661.summary.render.DW2 Polarizer",
+      "kind": "logic",
+      "description": "summary.render.DW2 Polarizer",
+      "expected": "\"DW Polarizer\"",
+      "actual": "\"DW Polarizer\"",
+      "delta": null,
+      "tolerance": null,
+      "result": "PASS"
+    },
+    {
+      "id": "wi3661.summary.render.DW2 Ideal Gain",
+      "kind": "logic",
+      "description": "summary.render.DW2 Ideal Gain",
+      "expected": "\"DW Ideal Gain\"",
+      "actual": "\"DW Ideal Gain\"",
+      "delta": null,
+      "tolerance": null,
+      "result": "PASS"
+    },
+    {
+      "id": "wi3661.summary.render.DW2-0",
+      "kind": "logic",
+      "description": "summary.render.DW2-0",
+      "expected": "\"DW-0\"",
+      "actual": "\"DW-0\"",
+      "delta": null,
+      "tolerance": null,
+      "result": "PASS"
+    },
+    {
+      "id": "wi3661.summary.render.DN Mask",
+      "kind": "logic",
+      "description": "summary.render.DN Mask",
+      "expected": "\"DN Mask\"",
+      "actual": "\"DN Mask\"",
+      "delta": null,
+      "tolerance": null,
+      "result": "PASS"
+    },
+    {
+      "id": "wi3661.summary.bare-keys-unchanged",
+      "kind": "logic",
+      "description": "summary.bare-keys-unchanged",
+      "expected": "\"{\\\"BaseSummaryDic\\\":{\\\"DW2 Mask\\\":\\\"Full\\\",\\\"DW2 Polarizer\\\":\\\"P\\\",\\\"DW2 Ideal Gain\\\":\\\"123\\\",\\\"DW2-0\\\":\\\"4\\\",\\\"DN Mask\\\":\\\"Full\\\"},\\\"CollectionsSummary\\\":[],\\\"ResultSummary\\\":{\\\"ResultSummaryDic\\\":{\\\"Results\\\":\\\"\\\",\\\"Grade\\\":\\\"Rejected\\\"}},\\\"Title\\\":\\\"Pre Scan Info\\\",\\\"SummaryType\\\":1}\"",
+      "actual": "\"{\\\"BaseSummaryDic\\\":{\\\"DW2 Mask\\\":\\\"Full\\\",\\\"DW2 Polarizer\\\":\\\"P\\\",\\\"DW2 Ideal Gain\\\":\\\"123\\\",\\\"DW2-0\\\":\\\"4\\\",\\\"DN Mask\\\":\\\"Full\\\"},\\\"CollectionsSummary\\\":[],\\\"ResultSummary\\\":{\\\"ResultSummaryDic\\\":{\\\"Results\\\":\\\"\\\",\\\"Grade\\\":\\\"Rejected\\\"}},\\\"Title\\\":\\\"Pre Scan Info\\\",\\\"SummaryType\\\":1}\"",
+      "delta": null,
+      "tolerance": null,
+      "result": "PASS"
+    },
+    {
+      "id": "wi3661.hardware.bare-DW2",
+      "kind": "logic",
+      "description": "hardware.bare-DW2",
+      "expected": "true",
+      "actual": "true",
+      "delta": null,
+      "tolerance": null,
+      "result": "PASS"
+    },
+    {
+      "id": "wi3661.hardware.DW1-filter",
+      "kind": "logic",
+      "description": "hardware.DW1-filter",
+      "expected": "false",
+      "actual": "false",
+      "delta": null,
+      "tolerance": null,
+      "result": "PASS"
+    },
+    {
+      "id": "wi3661.hardware.DN",
+      "kind": "logic",
+      "description": "hardware.DN",
+      "expected": "true",
+      "actual": "true",
+      "delta": null,
+      "tolerance": null,
+      "result": "PASS"
+    },
+    {
+      "id": "wi3661.hardware.render",
+      "kind": "logic",
+      "description": "hardware.render",
+      "expected": "\"DW\"",
+      "actual": "\"DW\"",
+      "delta": null,
+      "tolerance": null,
+      "result": "PASS"
+    },
+    {
+      "id": "wi3661.hardware.save-DW2",
+      "kind": "logic",
+      "description": "hardware.save-DW2",
+      "expected": "0.123",
+      "actual": "0.123",
+      "delta": null,
+      "tolerance": null,
+      "result": "PASS"
+    },
+    {
+      "id": "wi3661.hardware.hidden-preserved",
+      "kind": "logic",
+      "description": "hardware.hidden-preserved",
+      "expected": "\"{\\\"HazeNoise\\\":555.0,\\\"MinDefect\\\":11.0,\\\"MaxDefect\\\":555.0,\\\"MinSIT\\\":0.1,\\\"MaxXT\\\":555.0,\\\"RefMaxHazeNppm\\\":555.0,\\\"RefOD\\\":5,\\\"RefPMTVoltage\\\":550.0,\\\"SystemGain\\\":555.0,\\\"SingleThreshold\\\":65535.0,\\\"SirSingleThreshold\\\":65535.0}\"",
+      "actual": "\"{\\\"HazeNoise\\\":555.0,\\\"MinDefect\\\":11.0,\\\"MaxDefect\\\":555.0,\\\"MinSIT\\\":0.1,\\\"MaxXT\\\":555.0,\\\"RefMaxHazeNppm\\\":555.0,\\\"RefOD\\\":5,\\\"RefPMTVoltage\\\":550.0,\\\"SystemGain\\\":555.0,\\\"SingleThreshold\\\":65535.0,\\\"SirSingleThreshold\\\":65535.0}\"",
+      "delta": null,
+      "tolerance": null,
+      "result": "PASS"
+    },
+    {
+      "id": "wi3661.hardware.no-display-key",
+      "kind": "logic",
+      "description": "hardware.no-display-key",
+      "expected": "false",
+      "actual": "false",
+      "delta": null,
+      "tolerance": null,
+      "result": "PASS"
+    },
+    {
+      "id": "wi3661.calculator.bare-DW2",
+      "kind": "logic",
+      "description": "calculator.bare-DW2",
+      "expected": "true",
+      "actual": "true",
+      "delta": null,
+      "tolerance": null,
+      "result": "PASS"
+    },
+    {
+      "id": "wi3661.calculator.DW1-filter",
+      "kind": "logic",
+      "description": "calculator.DW1-filter",
+      "expected": "false",
+      "actual": "false",
+      "delta": null,
+      "tolerance": null,
+      "result": "PASS"
+    },
+    {
+      "id": "wi3661.calculator.DN",
+      "kind": "logic",
+      "description": "calculator.DN",
+      "expected": "true",
+      "actual": "true",
+      "delta": null,
+      "tolerance": null,
+      "result": "PASS"
+    },
+    {
+      "id": "wi3661.calculator.render",
+      "kind": "logic",
+      "description": "calculator.render",
+      "expected": "\"DW\"",
+      "actual": "\"DW\"",
+      "delta": null,
+      "tolerance": null,
+      "result": "PASS"
+    },
+    {
+      "id": "wi3661.calculator.does-not-save",
+      "kind": "logic",
+      "description": "calculator.does-not-save",
+      "expected": "\"{\\\"PreTrack\\\":26139.925,\\\"MainTrack\\\":26139.925,\\\"LPMThreshold\\\":0.2922,\\\"LaserPowerRange\\\":\\\"Full\\\",\\\"RotationAngle\\\":25.1041,\\\"HardwareParamsDic\\\":{\\\"DW1\\\":{\\\"HazeNoise\\\":555.0,\\\"MinDefect\\\":0.01,\\\"MaxDefect\\\":555.0,\\\"MinSIT\\\":0.1,\\\"MaxXT\\\":555.0,\\\"RefMaxHazeNppm\\\":555.0,\\\"RefOD\\\":5,\\\"RefPMTVoltage\\\":550.0,\\\"SystemGain\\\":555.0,\\\"SingleThreshold\\\":65535.0,\\\"SirSingleThreshold\\\":65535.0},\\\"DW2\\\":{\\\"HazeNoise\\\":555.0,\\\"MinDefect\\\":0.01,\\\"MaxDefect\\\":555.0,\\\"MinSIT\\\":0.1,\\\"MaxXT\\\":555.0,\\\"RefMaxHazeNppm\\\":555.0,\\\"RefOD\\\":5,\\\"RefPMTVoltage\\\":550.0,\\\"SystemGain\\\":555.0,\\\"SingleThreshold\\\":65535.0,\\\"SirSingleThreshold\\\":65535.0},\\\"DN\\\":{\\\"HazeNoise\\\":555.0,\\\"MinDefect\\\":0.01,\\\"MaxDefect\\\":555.0,\\\"MinSIT\\\":0.1,\\\"MaxXT\\\":555.0,\\\"RefMaxHazeNppm\\\":555.0,\\\"RefOD\\\":5,\\\"RefPMTVoltage\\\":550.0,\\\"SystemGain\\\":555.0,\\\"SingleThreshold\\\":65535.0,\\\"SirSingleThreshold\\\":65535.0}}}\"",
+      "actual": "\"{\\\"PreTrack\\\":26139.925,\\\"MainTrack\\\":26139.925,\\\"LPMThreshold\\\":0.2922,\\\"LaserPowerRange\\\":\\\"Full\\\",\\\"RotationAngle\\\":25.1041,\\\"HardwareParamsDic\\\":{\\\"DW1\\\":{\\\"HazeNoise\\\":555.0,\\\"MinDefect\\\":0.01,\\\"MaxDefect\\\":555.0,\\\"MinSIT\\\":0.1,\\\"MaxXT\\\":555.0,\\\"RefMaxHazeNppm\\\":555.0,\\\"RefOD\\\":5,\\\"RefPMTVoltage\\\":550.0,\\\"SystemGain\\\":555.0,\\\"SingleThreshold\\\":65535.0,\\\"SirSingleThreshold\\\":65535.0},\\\"DW2\\\":{\\\"HazeNoise\\\":555.0,\\\"MinDefect\\\":0.01,\\\"MaxDefect\\\":555.0,\\\"MinSIT\\\":0.1,\\\"MaxXT\\\":555.0,\\\"RefMaxHazeNppm\\\":555.0,\\\"RefOD\\\":5,\\\"RefPMTVoltage\\\":550.0,\\\"SystemGain\\\":555.0,\\\"SingleThreshold\\\":65535.0,\\\"SirSingleThreshold\\\":65535.0},\\\"DN\\\":{\\\"HazeNoise\\\":555.0,\\\"MinDefect\\\":0.01,\\\"MaxDefect\\\":555.0,\\\"MinSIT\\\":0.1,\\\"MaxXT\\\":555.0,\\\"RefMaxHazeNppm\\\":555.0,\\\"RefOD\\\":5,\\\"RefPMTVoltage\\\":550.0,\\\"SystemGain\\\":555.0,\\\"SingleThreshold\\\":65535.0,\\\"SirSingleThreshold\\\":65535.0}}}\"",
+      "delta": null,
+      "tolerance": null,
+      "result": "PASS"
+    },
+    {
+      "id": "wi3661.lpd.pir.bare-DW2",
+      "kind": "logic",
+      "description": "lpd.pir.bare-DW2",
+      "expected": "true",
+      "actual": "true",
+      "delta": null,
+      "tolerance": null,
+      "result": "PASS"
+    },
+    {
+      "id": "wi3661.lpd.pir.DW1-filter",
+      "kind": "logic",
+      "description": "lpd.pir.DW1-filter",
+      "expected": "false",
+      "actual": "false",
+      "delta": null,
+      "tolerance": null,
+      "result": "PASS"
+    },
+    {
+      "id": "wi3661.lpd.pir.DN",
+      "kind": "logic",
+      "description": "lpd.pir.DN",
+      "expected": "true",
+      "actual": "true",
+      "delta": null,
+      "tolerance": null,
+      "result": "PASS"
+    },
+    {
+      "id": "wi3661.lpd.sir.bare-DW2",
+      "kind": "logic",
+      "description": "lpd.sir.bare-DW2",
+      "expected": "true",
+      "actual": "true",
+      "delta": null,
+      "tolerance": null,
+      "result": "PASS"
+    },
+    {
+      "id": "wi3661.lpd.sir.DW1-filter",
+      "kind": "logic",
+      "description": "lpd.sir.DW1-filter",
+      "expected": "false",
+      "actual": "false",
+      "delta": null,
+      "tolerance": null,
+      "result": "PASS"
+    },
+    {
+      "id": "wi3661.lpd.sir.DN",
+      "kind": "logic",
+      "description": "lpd.sir.DN",
+      "expected": "true",
+      "actual": "true",
+      "delta": null,
+      "tolerance": null,
+      "result": "PASS"
+    },
+    {
+      "id": "wi3661.lpd.pir.render",
+      "kind": "logic",
+      "description": "lpd.pir.render",
+      "expected": "\"DW\"",
+      "actual": "\"DW\"",
+      "delta": null,
+      "tolerance": null,
+      "result": "PASS"
+    },
+    {
+      "id": "wi3661.lpd.sir.render",
+      "kind": "logic",
+      "description": "lpd.sir.render",
+      "expected": "\"DW\"",
+      "actual": "\"DW\"",
+      "delta": null,
+      "tolerance": null,
+      "result": "PASS"
+    },
+    {
+      "id": "wi3661.lpd.save.pir-DW2",
+      "kind": "logic",
+      "description": "lpd.save.pir-DW2",
+      "expected": "7.0",
+      "actual": "7.0",
+      "delta": null,
+      "tolerance": null,
+      "result": "PASS"
+    },
+    {
+      "id": "wi3661.lpd.save.sir-DW2",
+      "kind": "logic",
+      "description": "lpd.save.sir-DW2",
+      "expected": "8.0",
+      "actual": "8.0",
+      "delta": null,
+      "tolerance": null,
+      "result": "PASS"
+    },
+    {
+      "id": "wi3661.lpd.hidden.pir-DW1",
+      "kind": "logic",
+      "description": "lpd.hidden.pir-DW1",
+      "expected": "11.0",
+      "actual": "11.0",
+      "delta": null,
+      "tolerance": null,
+      "result": "PASS"
+    },
+    {
+      "id": "wi3661.lpd.hidden.sir-DW1",
+      "kind": "logic",
+      "description": "lpd.hidden.sir-DW1",
+      "expected": "12.0",
+      "actual": "12.0",
+      "delta": null,
+      "tolerance": null,
+      "result": "PASS"
+    },
+    {
+      "id": "wi3661.lpd.no-display-key",
+      "kind": "logic",
+      "description": "lpd.no-display-key",
+      "expected": "false",
+      "actual": "false",
+      "delta": null,
+      "tolerance": null,
+      "result": "PASS"
+    },
+    {
+      "id": "wi3661.batch.hardware.bare-DW2",
+      "kind": "logic",
+      "description": "batch.hardware.bare-DW2",
+      "expected": "true",
+      "actual": "true",
+      "delta": null,
+      "tolerance": null,
+      "result": "PASS"
+    },
+    {
+      "id": "wi3661.batch.hardware.DW1-filter",
+      "kind": "logic",
+      "description": "batch.hardware.DW1-filter",
+      "expected": "false",
+      "actual": "false",
+      "delta": null,
+      "tolerance": null,
+      "result": "PASS"
+    },
+    {
+      "id": "wi3661.batch.hardware.DN",
+      "kind": "logic",
+      "description": "batch.hardware.DN",
+      "expected": "true",
+      "actual": "true",
+      "delta": null,
+      "tolerance": null,
+      "result": "PASS"
+    },
+    {
+      "id": "wi3661.batch.channels.bare-DW2",
+      "kind": "logic",
+      "description": "batch.channels.bare-DW2",
+      "expected": "true",
+      "actual": "true",
+      "delta": null,
+      "tolerance": null,
+      "result": "PASS"
+    },
+    {
+      "id": "wi3661.batch.channels.DW1-filter",
+      "kind": "logic",
+      "description": "batch.channels.DW1-filter",
+      "expected": "false",
+      "actual": "false",
+      "delta": null,
+      "tolerance": null,
+      "result": "PASS"
+    },
+    {
+      "id": "wi3661.batch.channels.DN",
+      "kind": "logic",
+      "description": "batch.channels.DN",
+      "expected": "true",
+      "actual": "true",
+      "delta": null,
+      "tolerance": null,
+      "result": "PASS"
+    },
+    {
+      "id": "wi3661.batch.hardware.render",
+      "kind": "logic",
+      "description": "batch.hardware.render",
+      "expected": "\"DW\"",
+      "actual": "\"DW\"",
+      "delta": null,
+      "tolerance": null,
+      "result": "PASS"
+    },
+    {
+      "id": "wi3661.batch.channel.render",
+      "kind": "logic",
+      "description": "batch.channel.render",
+      "expected": "\"DW\"",
+      "actual": "\"DW\"",
+      "delta": null,
+      "tolerance": null,
+      "result": "PASS"
+    },
+    {
+      "id": "wi3661.batch.save-DW2-hardware",
+      "kind": "logic",
+      "description": "batch.save-DW2-hardware",
+      "expected": "2345.0",
+      "actual": "2345.0",
+      "delta": null,
+      "tolerance": null,
+      "result": "PASS"
+    },
+    {
+      "id": "wi3661.batch.save-DW2-channel",
+      "kind": "logic",
+      "description": "batch.save-DW2-channel",
+      "expected": "0.456",
+      "actual": "0.456",
+      "delta": null,
+      "tolerance": null,
+      "result": "PASS"
+    },
+    {
+      "id": "wi3661.batch.hidden-hardware",
+      "kind": "logic",
+      "description": "batch.hidden-hardware",
+      "expected": "111.0",
+      "actual": "111.0",
+      "delta": null,
+      "tolerance": null,
+      "result": "PASS"
+    },
+    {
+      "id": "wi3661.batch.hidden-channel",
+      "kind": "logic",
+      "description": "batch.hidden-channel",
+      "expected": "0.111",
+      "actual": "0.111",
+      "delta": null,
+      "tolerance": null,
+      "result": "PASS"
+    },
+    {
+      "id": "wi3661.batch.no-display-key",
+      "kind": "logic",
+      "description": "batch.no-display-key",
+      "expected": "false",
+      "actual": "false",
+      "delta": null,
+      "tolerance": null,
+      "result": "PASS"
+    },
+    {
+      "id": "wi3661.batch.json-DW2-roundtrip",
+      "kind": "logic",
+      "description": "batch.json-DW2-roundtrip",
+      "expected": "2345.0",
+      "actual": "2345.0",
+      "delta": null,
+      "tolerance": null,
+      "result": "PASS"
+    },
+    {
+      "id": "wi3661.summary.render.DW2 Mask",
+      "kind": "logic",
+      "description": "summary.render.DW2 Mask",
+      "expected": "\"DW2 Mask\"",
+      "actual": "\"DW2 Mask\"",
+      "delta": null,
+      "tolerance": null,
+      "result": "PASS"
+    },
+    {
+      "id": "wi3661.summary.render.DW2 Polarizer",
+      "kind": "logic",
+      "description": "summary.render.DW2 Polarizer",
+      "expected": "\"DW2 Polarizer\"",
+      "actual": "\"DW2 Polarizer\"",
+      "delta": null,
+      "tolerance": null,
+      "result": "PASS"
+    },
+    {
+      "id": "wi3661.summary.render.DW2 Ideal Gain",
+      "kind": "logic",
+      "description": "summary.render.DW2 Ideal Gain",
+      "expected": "\"DW2 Ideal Gain\"",
+      "actual": "\"DW2 Ideal Gain\"",
+      "delta": null,
+      "tolerance": null,
+      "result": "PASS"
+    },
+    {
+      "id": "wi3661.summary.render.DW2-0",
+      "kind": "logic",
+      "description": "summary.render.DW2-0",
+      "expected": "\"DW2-0\"",
+      "actual": "\"DW2-0\"",
+      "delta": null,
+      "tolerance": null,
+      "result": "PASS"
+    },
+    {
+      "id": "wi3661.summary.render.DN Mask",
+      "kind": "logic",
+      "description": "summary.render.DN Mask",
+      "expected": "\"DN Mask\"",
+      "actual": "\"DN Mask\"",
+      "delta": null,
+      "tolerance": null,
+      "result": "PASS"
+    },
+    {
+      "id": "wi3661.summary.bare-keys-unchanged",
+      "kind": "logic",
+      "description": "summary.bare-keys-unchanged",
+      "expected": "\"{\\\"BaseSummaryDic\\\":{\\\"DW2 Mask\\\":\\\"Full\\\",\\\"DW2 Polarizer\\\":\\\"P\\\",\\\"DW2 Ideal Gain\\\":\\\"123\\\",\\\"DW2-0\\\":\\\"4\\\",\\\"DN Mask\\\":\\\"Full\\\"},\\\"CollectionsSummary\\\":[],\\\"ResultSummary\\\":{\\\"ResultSummaryDic\\\":{\\\"Results\\\":\\\"\\\",\\\"Grade\\\":\\\"Rejected\\\"}},\\\"Title\\\":\\\"Pre Scan Info\\\",\\\"SummaryType\\\":1}\"",
+      "actual": "\"{\\\"BaseSummaryDic\\\":{\\\"DW2 Mask\\\":\\\"Full\\\",\\\"DW2 Polarizer\\\":\\\"P\\\",\\\"DW2 Ideal Gain\\\":\\\"123\\\",\\\"DW2-0\\\":\\\"4\\\",\\\"DN Mask\\\":\\\"Full\\\"},\\\"CollectionsSummary\\\":[],\\\"ResultSummary\\\":{\\\"ResultSummaryDic\\\":{\\\"Results\\\":\\\"\\\",\\\"Grade\\\":\\\"Rejected\\\"}},\\\"Title\\\":\\\"Pre Scan Info\\\",\\\"SummaryType\\\":1}\"",
+      "delta": null,
+      "tolerance": null,
+      "result": "PASS"
+    },
+    {
+      "id": "wi3661.hardware.bare-DW2",
+      "kind": "logic",
+      "description": "hardware.bare-DW2",
+      "expected": "true",
+      "actual": "true",
+      "delta": null,
+      "tolerance": null,
+      "result": "PASS"
+    },
+    {
+      "id": "wi3661.hardware.DW1-filter",
+      "kind": "logic",
+      "description": "hardware.DW1-filter",
+      "expected": "true",
+      "actual": "true",
+      "delta": null,
+      "tolerance": null,
+      "result": "PASS"
+    },
+    {
+      "id": "wi3661.hardware.DN",
+      "kind": "logic",
+      "description": "hardware.DN",
+      "expected": "true",
+      "actual": "true",
+      "delta": null,
+      "tolerance": null,
+      "result": "PASS"
+    },
+    {
+      "id": "wi3661.hardware.render",
+      "kind": "logic",
+      "description": "hardware.render",
+      "expected": "\"DW2\"",
+      "actual": "\"DW2\"",
+      "delta": null,
+      "tolerance": null,
+      "result": "PASS"
+    },
+    {
+      "id": "wi3661.hardware.save-DW2",
+      "kind": "logic",
+      "description": "hardware.save-DW2",
+      "expected": "0.123",
+      "actual": "0.123",
+      "delta": null,
+      "tolerance": null,
+      "result": "PASS"
+    },
+    {
+      "id": "wi3661.hardware.hidden-preserved",
+      "kind": "logic",
+      "description": "hardware.hidden-preserved",
+      "expected": "\"{\\\"HazeNoise\\\":555.0,\\\"MinDefect\\\":11.0,\\\"MaxDefect\\\":555.0,\\\"MinSIT\\\":0.1,\\\"MaxXT\\\":555.0,\\\"RefMaxHazeNppm\\\":555.0,\\\"RefOD\\\":5,\\\"RefPMTVoltage\\\":550.0,\\\"SystemGain\\\":555.0,\\\"SingleThreshold\\\":65535.0,\\\"SirSingleThreshold\\\":65535.0}\"",
+      "actual": "\"{\\\"HazeNoise\\\":555.0,\\\"MinDefect\\\":11.0,\\\"MaxDefect\\\":555.0,\\\"MinSIT\\\":0.1,\\\"MaxXT\\\":555.0,\\\"RefMaxHazeNppm\\\":555.0,\\\"RefOD\\\":5,\\\"RefPMTVoltage\\\":550.0,\\\"SystemGain\\\":555.0,\\\"SingleThreshold\\\":65535.0,\\\"SirSingleThreshold\\\":65535.0}\"",
+      "delta": null,
+      "tolerance": null,
+      "result": "PASS"
+    },
+    {
+      "id": "wi3661.hardware.no-display-key",
+      "kind": "logic",
+      "description": "hardware.no-display-key",
+      "expected": "false",
+      "actual": "false",
+      "delta": null,
+      "tolerance": null,
+      "result": "PASS"
+    },
+    {
+      "id": "wi3661.calculator.bare-DW2",
+      "kind": "logic",
+      "description": "calculator.bare-DW2",
+      "expected": "true",
+      "actual": "true",
+      "delta": null,
+      "tolerance": null,
+      "result": "PASS"
+    },
+    {
+      "id": "wi3661.calculator.DW1-filter",
+      "kind": "logic",
+      "description": "calculator.DW1-filter",
+      "expected": "true",
+      "actual": "true",
+      "delta": null,
+      "tolerance": null,
+      "result": "PASS"
+    },
+    {
+      "id": "wi3661.calculator.DN",
+      "kind": "logic",
+      "description": "calculator.DN",
+      "expected": "true",
+      "actual": "true",
+      "delta": null,
+      "tolerance": null,
+      "result": "PASS"
+    },
+    {
+      "id": "wi3661.calculator.render",
+      "kind": "logic",
+      "description": "calculator.render",
+      "expected": "\"DW2\"",
+      "actual": "\"DW2\"",
+      "delta": null,
+      "tolerance": null,
+      "result": "PASS"
+    },
+    {
+      "id": "wi3661.calculator.does-not-save",
+      "kind": "logic",
+      "description": "calculator.does-not-save",
+      "expected": "\"{\\\"PreTrack\\\":26139.925,\\\"MainTrack\\\":26139.925,\\\"LPMThreshold\\\":0.2922,\\\"LaserPowerRange\\\":\\\"Full\\\",\\\"RotationAngle\\\":25.1041,\\\"HardwareParamsDic\\\":{\\\"DW1\\\":{\\\"HazeNoise\\\":555.0,\\\"MinDefect\\\":0.01,\\\"MaxDefect\\\":555.0,\\\"MinSIT\\\":0.1,\\\"MaxXT\\\":555.0,\\\"RefMaxHazeNppm\\\":555.0,\\\"RefOD\\\":5,\\\"RefPMTVoltage\\\":550.0,\\\"SystemGain\\\":555.0,\\\"SingleThreshold\\\":65535.0,\\\"SirSingleThreshold\\\":65535.0},\\\"DW2\\\":{\\\"HazeNoise\\\":555.0,\\\"MinDefect\\\":0.01,\\\"MaxDefect\\\":555.0,\\\"MinSIT\\\":0.1,\\\"MaxXT\\\":555.0,\\\"RefMaxHazeNppm\\\":555.0,\\\"RefOD\\\":5,\\\"RefPMTVoltage\\\":550.0,\\\"SystemGain\\\":555.0,\\\"SingleThreshold\\\":65535.0,\\\"SirSingleThreshold\\\":65535.0},\\\"DN\\\":{\\\"HazeNoise\\\":555.0,\\\"MinDefect\\\":0.01,\\\"MaxDefect\\\":555.0,\\\"MinSIT\\\":0.1,\\\"MaxXT\\\":555.0,\\\"RefMaxHazeNppm\\\":555.0,\\\"RefOD\\\":5,\\\"RefPMTVoltage\\\":550.0,\\\"SystemGain\\\":555.0,\\\"SingleThreshold\\\":65535.0,\\\"SirSingleThreshold\\\":65535.0}}}\"",
+      "actual": "\"{\\\"PreTrack\\\":26139.925,\\\"MainTrack\\\":26139.925,\\\"LPMThreshold\\\":0.2922,\\\"LaserPowerRange\\\":\\\"Full\\\",\\\"RotationAngle\\\":25.1041,\\\"HardwareParamsDic\\\":{\\\"DW1\\\":{\\\"HazeNoise\\\":555.0,\\\"MinDefect\\\":0.01,\\\"MaxDefect\\\":555.0,\\\"MinSIT\\\":0.1,\\\"MaxXT\\\":555.0,\\\"RefMaxHazeNppm\\\":555.0,\\\"RefOD\\\":5,\\\"RefPMTVoltage\\\":550.0,\\\"SystemGain\\\":555.0,\\\"SingleThreshold\\\":65535.0,\\\"SirSingleThreshold\\\":65535.0},\\\"DW2\\\":{\\\"HazeNoise\\\":555.0,\\\"MinDefect\\\":0.01,\\\"MaxDefect\\\":555.0,\\\"MinSIT\\\":0.1,\\\"MaxXT\\\":555.0,\\\"RefMaxHazeNppm\\\":555.0,\\\"RefOD\\\":5,\\\"RefPMTVoltage\\\":550.0,\\\"SystemGain\\\":555.0,\\\"SingleThreshold\\\":65535.0,\\\"SirSingleThreshold\\\":65535.0},\\\"DN\\\":{\\\"HazeNoise\\\":555.0,\\\"MinDefect\\\":0.01,\\\"MaxDefect\\\":555.0,\\\"MinSIT\\\":0.1,\\\"MaxXT\\\":555.0,\\\"RefMaxHazeNppm\\\":555.0,\\\"RefOD\\\":5,\\\"RefPMTVoltage\\\":550.0,\\\"SystemGain\\\":555.0,\\\"SingleThreshold\\\":65535.0,\\\"SirSingleThreshold\\\":65535.0}}}\"",
+      "delta": null,
+      "tolerance": null,
+      "result": "PASS"
+    },
+    {
+      "id": "wi3661.lpd.pir.bare-DW2",
+      "kind": "logic",
+      "description": "lpd.pir.bare-DW2",
+      "expected": "true",
+      "actual": "true",
+      "delta": null,
+      "tolerance": null,
+      "result": "PASS"
+    },
+    {
+      "id": "wi3661.lpd.pir.DW1-filter",
+      "kind": "logic",
+      "description": "lpd.pir.DW1-filter",
+      "expected": "true",
+      "actual": "true",
+      "delta": null,
+      "tolerance": null,
+      "result": "PASS"
+    },
+    {
+      "id": "wi3661.lpd.pir.DN",
+      "kind": "logic",
+      "description": "lpd.pir.DN",
+      "expected": "true",
+      "actual": "true",
+      "delta": null,
+      "tolerance": null,
+      "result": "PASS"
+    },
+    {
+      "id": "wi3661.lpd.sir.bare-DW2",
+      "kind": "logic",
+      "description": "lpd.sir.bare-DW2",
+      "expected": "true",
+      "actual": "true",
+      "delta": null,
+      "tolerance": null,
+      "result": "PASS"
+    },
+    {
+      "id": "wi3661.lpd.sir.DW1-filter",
+      "kind": "logic",
+      "description": "lpd.sir.DW1-filter",
+      "expected": "true",
+      "actual": "true",
+      "delta": null,
+      "tolerance": null,
+      "result": "PASS"
+    },
+    {
+      "id": "wi3661.lpd.sir.DN",
+      "kind": "logic",
+      "description": "lpd.sir.DN",
+      "expected": "true",
+      "actual": "true",
+      "delta": null,
+      "tolerance": null,
+      "result": "PASS"
+    },
+    {
+      "id": "wi3661.lpd.pir.render",
+      "kind": "logic",
+      "description": "lpd.pir.render",
+      "expected": "\"DW2\"",
+      "actual": "\"DW2\"",
+      "delta": null,
+      "tolerance": null,
+      "result": "PASS"
+    },
+    {
+      "id": "wi3661.lpd.sir.render",
+      "kind": "logic",
+      "description": "lpd.sir.render",
+      "expected": "\"DW2\"",
+      "actual": "\"DW2\"",
+      "delta": null,
+      "tolerance": null,
+      "result": "PASS"
+    },
+    {
+      "id": "wi3661.lpd.save.pir-DW2",
+      "kind": "logic",
+      "description": "lpd.save.pir-DW2",
+      "expected": "7.0",
+      "actual": "7.0",
+      "delta": null,
+      "tolerance": null,
+      "result": "PASS"
+    },
+    {
+      "id": "wi3661.lpd.save.sir-DW2",
+      "kind": "logic",
+      "description": "lpd.save.sir-DW2",
+      "expected": "8.0",
+      "actual": "8.0",
+      "delta": null,
+      "tolerance": null,
+      "result": "PASS"
+    },
+    {
+      "id": "wi3661.lpd.hidden.pir-DW1",
+      "kind": "logic",
+      "description": "lpd.hidden.pir-DW1",
+      "expected": "11.0",
+      "actual": "11.0",
+      "delta": null,
+      "tolerance": null,
+      "result": "PASS"
+    },
+    {
+      "id": "wi3661.lpd.hidden.sir-DW1",
+      "kind": "logic",
+      "description": "lpd.hidden.sir-DW1",
+      "expected": "12.0",
+      "actual": "12.0",
+      "delta": null,
+      "tolerance": null,
+      "result": "PASS"
+    },
+    {
+      "id": "wi3661.lpd.no-display-key",
+      "kind": "logic",
+      "description": "lpd.no-display-key",
+      "expected": "false",
+      "actual": "false",
+      "delta": null,
+      "tolerance": null,
+      "result": "PASS"
+    },
+    {
+      "id": "wi3661.batch.hardware.bare-DW2",
+      "kind": "logic",
+      "description": "batch.hardware.bare-DW2",
+      "expected": "true",
+      "actual": "true",
+      "delta": null,
+      "tolerance": null,
+      "result": "PASS"
+    },
+    {
+      "id": "wi3661.batch.hardware.DW1-filter",
+      "kind": "logic",
+      "description": "batch.hardware.DW1-filter",
+      "expected": "true",
+      "actual": "true",
+      "delta": null,
+      "tolerance": null,
+      "result": "PASS"
+    },
+    {
+      "id": "wi3661.batch.hardware.DN",
+      "kind": "logic",
+      "description": "batch.hardware.DN",
+      "expected": "true",
+      "actual": "true",
+      "delta": null,
+      "tolerance": null,
+      "result": "PASS"
+    },
+    {
+      "id": "wi3661.batch.channels.bare-DW2",
+      "kind": "logic",
+      "description": "batch.channels.bare-DW2",
+      "expected": "true",
+      "actual": "true",
+      "delta": null,
+      "tolerance": null,
+      "result": "PASS"
+    },
+    {
+      "id": "wi3661.batch.channels.DW1-filter",
+      "kind": "logic",
+      "description": "batch.channels.DW1-filter",
+      "expected": "true",
+      "actual": "true",
+      "delta": null,
+      "tolerance": null,
+      "result": "PASS"
+    },
+    {
+      "id": "wi3661.batch.channels.DN",
+      "kind": "logic",
+      "description": "batch.channels.DN",
+      "expected": "true",
+      "actual": "true",
+      "delta": null,
+      "tolerance": null,
+      "result": "PASS"
+    },
+    {
+      "id": "wi3661.batch.hardware.render",
+      "kind": "logic",
+      "description": "batch.hardware.render",
+      "expected": "\"DW2\"",
+      "actual": "\"DW2\"",
+      "delta": null,
+      "tolerance": null,
+      "result": "PASS"
+    },
+    {
+      "id": "wi3661.batch.channel.render",
+      "kind": "logic",
+      "description": "batch.channel.render",
+      "expected": "\"DW2\"",
+      "actual": "\"DW2\"",
+      "delta": null,
+      "tolerance": null,
+      "result": "PASS"
+    },
+    {
+      "id": "wi3661.batch.save-DW2-hardware",
+      "kind": "logic",
+      "description": "batch.save-DW2-hardware",
+      "expected": "2345.0",
+      "actual": "2345.0",
+      "delta": null,
+      "tolerance": null,
+      "result": "PASS"
+    },
+    {
+      "id": "wi3661.batch.save-DW2-channel",
+      "kind": "logic",
+      "description": "batch.save-DW2-channel",
+      "expected": "0.456",
+      "actual": "0.456",
+      "delta": null,
+      "tolerance": null,
+      "result": "PASS"
+    },
+    {
+      "id": "wi3661.batch.hidden-hardware",
+      "kind": "logic",
+      "description": "batch.hidden-hardware",
+      "expected": "111.0",
+      "actual": "111.0",
+      "delta": null,
+      "tolerance": null,
+      "result": "PASS"
+    },
+    {
+      "id": "wi3661.batch.hidden-channel",
+      "kind": "logic",
+      "description": "batch.hidden-channel",
+      "expected": "0.111",
+      "actual": "0.111",
+      "delta": null,
+      "tolerance": null,
+      "result": "PASS"
+    },
+    {
+      "id": "wi3661.batch.no-display-key",
+      "kind": "logic",
+      "description": "batch.no-display-key",
+      "expected": "false",
+      "actual": "false",
+      "delta": null,
+      "tolerance": null,
+      "result": "PASS"
+    },
+    {
+      "id": "wi3661.batch.json-DW2-roundtrip",
+      "kind": "logic",
+      "description": "batch.json-DW2-roundtrip",
+      "expected": "2345.0",
+      "actual": "2345.0",
+      "delta": null,
+      "tolerance": null,
+      "result": "PASS"
+    },
+    {
+      "id": "wi3661.summary.render.DW2 Mask",
+      "kind": "logic",
+      "description": "summary.render.DW2 Mask",
+      "expected": "\"DW2 Mask\"",
+      "actual": "\"DW2 Mask\"",
+      "delta": null,
+      "tolerance": null,
+      "result": "PASS"
+    },
+    {
+      "id": "wi3661.summary.render.DW2 Polarizer",
+      "kind": "logic",
+      "description": "summary.render.DW2 Polarizer",
+      "expected": "\"DW2 Polarizer\"",
+      "actual": "\"DW2 Polarizer\"",
+      "delta": null,
+      "tolerance": null,
+      "result": "PASS"
+    },
+    {
+      "id": "wi3661.summary.render.DW2 Ideal Gain",
+      "kind": "logic",
+      "description": "summary.render.DW2 Ideal Gain",
+      "expected": "\"DW2 Ideal Gain\"",
+      "actual": "\"DW2 Ideal Gain\"",
+      "delta": null,
+      "tolerance": null,
+      "result": "PASS"
+    },
+    {
+      "id": "wi3661.summary.render.DW2-0",
+      "kind": "logic",
+      "description": "summary.render.DW2-0",
+      "expected": "\"DW2-0\"",
+      "actual": "\"DW2-0\"",
+      "delta": null,
+      "tolerance": null,
+      "result": "PASS"
+    },
+    {
+      "id": "wi3661.summary.render.DN Mask",
+      "kind": "logic",
+      "description": "summary.render.DN Mask",
+      "expected": "\"DN Mask\"",
+      "actual": "\"DN Mask\"",
+      "delta": null,
+      "tolerance": null,
+      "result": "PASS"
+    },
+    {
+      "id": "wi3661.summary.bare-keys-unchanged",
+      "kind": "logic",
+      "description": "summary.bare-keys-unchanged",
+      "expected": "\"{\\\"BaseSummaryDic\\\":{\\\"DW2 Mask\\\":\\\"Full\\\",\\\"DW2 Polarizer\\\":\\\"P\\\",\\\"DW2 Ideal Gain\\\":\\\"123\\\",\\\"DW2-0\\\":\\\"4\\\",\\\"DN Mask\\\":\\\"Full\\\"},\\\"CollectionsSummary\\\":[],\\\"ResultSummary\\\":{\\\"ResultSummaryDic\\\":{\\\"Results\\\":\\\"\\\",\\\"Grade\\\":\\\"Rejected\\\"}},\\\"Title\\\":\\\"Pre Scan Info\\\",\\\"SummaryType\\\":1}\"",
+      "actual": "\"{\\\"BaseSummaryDic\\\":{\\\"DW2 Mask\\\":\\\"Full\\\",\\\"DW2 Polarizer\\\":\\\"P\\\",\\\"DW2 Ideal Gain\\\":\\\"123\\\",\\\"DW2-0\\\":\\\"4\\\",\\\"DN Mask\\\":\\\"Full\\\"},\\\"CollectionsSummary\\\":[],\\\"ResultSummary\\\":{\\\"ResultSummaryDic\\\":{\\\"Results\\\":\\\"\\\",\\\"Grade\\\":\\\"Rejected\\\"}},\\\"Title\\\":\\\"Pre Scan Info\\\",\\\"SummaryType\\\":1}\"",
+      "delta": null,
+      "tolerance": null,
+      "result": "PASS"
+    },
+    {
+      "id": "wi3661.hardware.bare-DW2",
+      "kind": "logic",
+      "description": "hardware.bare-DW2",
+      "expected": "true",
+      "actual": "true",
+      "delta": null,
+      "tolerance": null,
+      "result": "PASS"
+    },
+    {
+      "id": "wi3661.hardware.DW1-filter",
+      "kind": "logic",
+      "description": "hardware.DW1-filter",
+      "expected": "true",
+      "actual": "true",
+      "delta": null,
+      "tolerance": null,
+      "result": "PASS"
+    },
+    {
+      "id": "wi3661.hardware.DN",
+      "kind": "logic",
+      "description": "hardware.DN",
+      "expected": "true",
+      "actual": "true",
+      "delta": null,
+      "tolerance": null,
+      "result": "PASS"
+    },
+    {
+      "id": "wi3661.hardware.render",
+      "kind": "logic",
+      "description": "hardware.render",
+      "expected": "\"DW2\"",
+      "actual": "\"DW2\"",
+      "delta": null,
+      "tolerance": null,
+      "result": "PASS"
+    },
+    {
+      "id": "wi3661.hardware.save-DW2",
+      "kind": "logic",
+      "description": "hardware.save-DW2",
+      "expected": "0.123",
+      "actual": "0.123",
+      "delta": null,
+      "tolerance": null,
+      "result": "PASS"
+    },
+    {
+      "id": "wi3661.hardware.hidden-preserved",
+      "kind": "logic",
+      "description": "hardware.hidden-preserved",
+      "expected": "\"{\\\"HazeNoise\\\":555.0,\\\"MinDefect\\\":11.0,\\\"MaxDefect\\\":555.0,\\\"MinSIT\\\":0.1,\\\"MaxXT\\\":555.0,\\\"RefMaxHazeNppm\\\":555.0,\\\"RefOD\\\":5,\\\"RefPMTVoltage\\\":550.0,\\\"SystemGain\\\":555.0,\\\"SingleThreshold\\\":65535.0,\\\"SirSingleThreshold\\\":65535.0}\"",
+      "actual": "\"{\\\"HazeNoise\\\":555.0,\\\"MinDefect\\\":11.0,\\\"MaxDefect\\\":555.0,\\\"MinSIT\\\":0.1,\\\"MaxXT\\\":555.0,\\\"RefMaxHazeNppm\\\":555.0,\\\"RefOD\\\":5,\\\"RefPMTVoltage\\\":550.0,\\\"SystemGain\\\":555.0,\\\"SingleThreshold\\\":65535.0,\\\"SirSingleThreshold\\\":65535.0}\"",
+      "delta": null,
+      "tolerance": null,
+      "result": "PASS"
+    },
+    {
+      "id": "wi3661.hardware.no-display-key",
+      "kind": "logic",
+      "description": "hardware.no-display-key",
+      "expected": "false",
+      "actual": "false",
+      "delta": null,
+      "tolerance": null,
+      "result": "PASS"
+    },
+    {
+      "id": "wi3661.calculator.bare-DW2",
+      "kind": "logic",
+      "description": "calculator.bare-DW2",
+      "expected": "true",
+      "actual": "true",
+      "delta": null,
+      "tolerance": null,
+      "result": "PASS"
+    },
+    {
+      "id": "wi3661.calculator.DW1-filter",
+      "kind": "logic",
+      "description": "calculator.DW1-filter",
+      "expected": "true",
+      "actual": "true",
+      "delta": null,
+      "tolerance": null,
+      "result": "PASS"
+    },
+    {
+      "id": "wi3661.calculator.DN",
+      "kind": "logic",
+      "description": "calculator.DN",
+      "expected": "true",
+      "actual": "true",
+      "delta": null,
+      "tolerance": null,
+      "result": "PASS"
+    },
+    {
+      "id": "wi3661.calculator.render",
+      "kind": "logic",
+      "description": "calculator.render",
+      "expected": "\"DW2\"",
+      "actual": "\"DW2\"",
+      "delta": null,
+      "tolerance": null,
+      "result": "PASS"
+    },
+    {
+      "id": "wi3661.calculator.does-not-save",
+      "kind": "logic",
+      "description": "calculator.does-not-save",
+      "expected": "\"{\\\"PreTrack\\\":26139.925,\\\"MainTrack\\\":26139.925,\\\"LPMThreshold\\\":0.2922,\\\"LaserPowerRange\\\":\\\"Full\\\",\\\"RotationAngle\\\":25.1041,\\\"HardwareParamsDic\\\":{\\\"DW1\\\":{\\\"HazeNoise\\\":555.0,\\\"MinDefect\\\":0.01,\\\"MaxDefect\\\":555.0,\\\"MinSIT\\\":0.1,\\\"MaxXT\\\":555.0,\\\"RefMaxHazeNppm\\\":555.0,\\\"RefOD\\\":5,\\\"RefPMTVoltage\\\":550.0,\\\"SystemGain\\\":555.0,\\\"SingleThreshold\\\":65535.0,\\\"SirSingleThreshold\\\":65535.0},\\\"DW2\\\":{\\\"HazeNoise\\\":555.0,\\\"MinDefect\\\":0.01,\\\"MaxDefect\\\":555.0,\\\"MinSIT\\\":0.1,\\\"MaxXT\\\":555.0,\\\"RefMaxHazeNppm\\\":555.0,\\\"RefOD\\\":5,\\\"RefPMTVoltage\\\":550.0,\\\"SystemGain\\\":555.0,\\\"SingleThreshold\\\":65535.0,\\\"SirSingleThreshold\\\":65535.0},\\\"DN\\\":{\\\"HazeNoise\\\":555.0,\\\"MinDefect\\\":0.01,\\\"MaxDefect\\\":555.0,\\\"MinSIT\\\":0.1,\\\"MaxXT\\\":555.0,\\\"RefMaxHazeNppm\\\":555.0,\\\"RefOD\\\":5,\\\"RefPMTVoltage\\\":550.0,\\\"SystemGain\\\":555.0,\\\"SingleThreshold\\\":65535.0,\\\"SirSingleThreshold\\\":65535.0}}}\"",
+      "actual": "\"{\\\"PreTrack\\\":26139.925,\\\"MainTrack\\\":26139.925,\\\"LPMThreshold\\\":0.2922,\\\"LaserPowerRange\\\":\\\"Full\\\",\\\"RotationAngle\\\":25.1041,\\\"HardwareParamsDic\\\":{\\\"DW1\\\":{\\\"HazeNoise\\\":555.0,\\\"MinDefect\\\":0.01,\\\"MaxDefect\\\":555.0,\\\"MinSIT\\\":0.1,\\\"MaxXT\\\":555.0,\\\"RefMaxHazeNppm\\\":555.0,\\\"RefOD\\\":5,\\\"RefPMTVoltage\\\":550.0,\\\"SystemGain\\\":555.0,\\\"SingleThreshold\\\":65535.0,\\\"SirSingleThreshold\\\":65535.0},\\\"DW2\\\":{\\\"HazeNoise\\\":555.0,\\\"MinDefect\\\":0.01,\\\"MaxDefect\\\":555.0,\\\"MinSIT\\\":0.1,\\\"MaxXT\\\":555.0,\\\"RefMaxHazeNppm\\\":555.0,\\\"RefOD\\\":5,\\\"RefPMTVoltage\\\":550.0,\\\"SystemGain\\\":555.0,\\\"SingleThreshold\\\":65535.0,\\\"SirSingleThreshold\\\":65535.0},\\\"DN\\\":{\\\"HazeNoise\\\":555.0,\\\"MinDefect\\\":0.01,\\\"MaxDefect\\\":555.0,\\\"MinSIT\\\":0.1,\\\"MaxXT\\\":555.0,\\\"RefMaxHazeNppm\\\":555.0,\\\"RefOD\\\":5,\\\"RefPMTVoltage\\\":550.0,\\\"SystemGain\\\":555.0,\\\"SingleThreshold\\\":65535.0,\\\"SirSingleThreshold\\\":65535.0}}}\"",
+      "delta": null,
+      "tolerance": null,
+      "result": "PASS"
+    },
+    {
+      "id": "wi3661.lpd.pir.bare-DW2",
+      "kind": "logic",
+      "description": "lpd.pir.bare-DW2",
+      "expected": "true",
+      "actual": "true",
+      "delta": null,
+      "tolerance": null,
+      "result": "PASS"
+    },
+    {
+      "id": "wi3661.lpd.pir.DW1-filter",
+      "kind": "logic",
+      "description": "lpd.pir.DW1-filter",
+      "expected": "true",
+      "actual": "true",
+      "delta": null,
+      "tolerance": null,
+      "result": "PASS"
+    },
+    {
+      "id": "wi3661.lpd.pir.DN",
+      "kind": "logic",
+      "description": "lpd.pir.DN",
+      "expected": "true",
+      "actual": "true",
+      "delta": null,
+      "tolerance": null,
+      "result": "PASS"
+    },
+    {
+      "id": "wi3661.lpd.sir.bare-DW2",
+      "kind": "logic",
+      "description": "lpd.sir.bare-DW2",
+      "expected": "true",
+      "actual": "true",
+      "delta": null,
+      "tolerance": null,
+      "result": "PASS"
+    },
+    {
+      "id": "wi3661.lpd.sir.DW1-filter",
+      "kind": "logic",
+      "description": "lpd.sir.DW1-filter",
+      "expected": "true",
+      "actual": "true",
+      "delta": null,
+      "tolerance": null,
+      "result": "PASS"
+    },
+    {
+      "id": "wi3661.lpd.sir.DN",
+      "kind": "logic",
+      "description": "lpd.sir.DN",
+      "expected": "true",
+      "actual": "true",
+      "delta": null,
+      "tolerance": null,
+      "result": "PASS"
+    },
+    {
+      "id": "wi3661.lpd.pir.render",
+      "kind": "logic",
+      "description": "lpd.pir.render",
+      "expected": "\"DW2\"",
+      "actual": "\"DW2\"",
+      "delta": null,
+      "tolerance": null,
+      "result": "PASS"
+    },
+    {
+      "id": "wi3661.lpd.sir.render",
+      "kind": "logic",
+      "description": "lpd.sir.render",
+      "expected": "\"DW2\"",
+      "actual": "\"DW2\"",
+      "delta": null,
+      "tolerance": null,
+      "result": "PASS"
+    },
+    {
+      "id": "wi3661.lpd.save.pir-DW2",
+      "kind": "logic",
+      "description": "lpd.save.pir-DW2",
+      "expected": "7.0",
+      "actual": "7.0",
+      "delta": null,
+      "tolerance": null,
+      "result": "PASS"
+    },
+    {
+      "id": "wi3661.lpd.save.sir-DW2",
+      "kind": "logic",
+      "description": "lpd.save.sir-DW2",
+      "expected": "8.0",
+      "actual": "8.0",
+      "delta": null,
+      "tolerance": null,
+      "result": "PASS"
+    },
+    {
+      "id": "wi3661.lpd.hidden.pir-DW1",
+      "kind": "logic",
+      "description": "lpd.hidden.pir-DW1",
+      "expected": "11.0",
+      "actual": "11.0",
+      "delta": null,
+      "tolerance": null,
+      "result": "PASS"
+    },
+    {
+      "id": "wi3661.lpd.hidden.sir-DW1",
+      "kind": "logic",
+      "description": "lpd.hidden.sir-DW1",
+      "expected": "12.0",
+      "actual": "12.0",
+      "delta": null,
+      "tolerance": null,
+      "result": "PASS"
+    },
+    {
+      "id": "wi3661.lpd.no-display-key",
+      "kind": "logic",
+      "description": "lpd.no-display-key",
+      "expected": "false",
+      "actual": "false",
+      "delta": null,
+      "tolerance": null,
+      "result": "PASS"
+    },
+    {
+      "id": "wi3661.batch.hardware.bare-DW2",
+      "kind": "logic",
+      "description": "batch.hardware.bare-DW2",
+      "expected": "true",
+      "actual": "true",
+      "delta": null,
+      "tolerance": null,
+      "result": "PASS"
+    },
+    {
+      "id": "wi3661.batch.hardware.DW1-filter",
+      "kind": "logic",
+      "description": "batch.hardware.DW1-filter",
+      "expected": "true",
+      "actual": "true",
+      "delta": null,
+      "tolerance": null,
+      "result": "PASS"
+    },
+    {
+      "id": "wi3661.batch.hardware.DN",
+      "kind": "logic",
+      "description": "batch.hardware.DN",
+      "expected": "true",
+      "actual": "true",
+      "delta": null,
+      "tolerance": null,
+      "result": "PASS"
+    },
+    {
+      "id": "wi3661.batch.channels.bare-DW2",
+      "kind": "logic",
+      "description": "batch.channels.bare-DW2",
+      "expected": "true",
+      "actual": "true",
+      "delta": null,
+      "tolerance": null,
+      "result": "PASS"
+    },
+    {
+      "id": "wi3661.batch.channels.DW1-filter",
+      "kind": "logic",
+      "description": "batch.channels.DW1-filter",
+      "expected": "true",
+      "actual": "true",
+      "delta": null,
+      "tolerance": null,
+      "result": "PASS"
+    },
+    {
+      "id": "wi3661.batch.channels.DN",
+      "kind": "logic",
+      "description": "batch.channels.DN",
+      "expected": "true",
+      "actual": "true",
+      "delta": null,
+      "tolerance": null,
+      "result": "PASS"
+    },
+    {
+      "id": "wi3661.batch.hardware.render",
+      "kind": "logic",
+      "description": "batch.hardware.render",
+      "expected": "\"DW2\"",
+      "actual": "\"DW2\"",
+      "delta": null,
+      "tolerance": null,
+      "result": "PASS"
+    },
+    {
+      "id": "wi3661.batch.channel.render",
+      "kind": "logic",
+      "description": "batch.channel.render",
+      "expected": "\"DW2\"",
+      "actual": "\"DW2\"",
+      "delta": null,
+      "tolerance": null,
+      "result": "PASS"
+    },
+    {
+      "id": "wi3661.batch.save-DW2-hardware",
+      "kind": "logic",
+      "description": "batch.save-DW2-hardware",
+      "expected": "2345.0",
+      "actual": "2345.0",
+      "delta": null,
+      "tolerance": null,
+      "result": "PASS"
+    },
+    {
+      "id": "wi3661.batch.save-DW2-channel",
+      "kind": "logic",
+      "description": "batch.save-DW2-channel",
+      "expected": "0.456",
+      "actual": "0.456",
+      "delta": null,
+      "tolerance": null,
+      "result": "PASS"
+    },
+    {
+      "id": "wi3661.batch.hidden-hardware",
+      "kind": "logic",
+      "description": "batch.hidden-hardware",
+      "expected": "111.0",
+      "actual": "111.0",
+      "delta": null,
+      "tolerance": null,
+      "result": "PASS"
+    },
+    {
+      "id": "wi3661.batch.hidden-channel",
+      "kind": "logic",
+      "description": "batch.hidden-channel",
+      "expected": "0.111",
+      "actual": "0.111",
+      "delta": null,
+      "tolerance": null,
+      "result": "PASS"
+    },
+    {
+      "id": "wi3661.batch.no-display-key",
+      "kind": "logic",
+      "description": "batch.no-display-key",
+      "expected": "false",
+      "actual": "false",
+      "delta": null,
+      "tolerance": null,
+      "result": "PASS"
+    },
+    {
+      "id": "wi3661.batch.json-DW2-roundtrip",
+      "kind": "logic",
+      "description": "batch.json-DW2-roundtrip",
+      "expected": "2345.0",
+      "actual": "2345.0",
+      "delta": null,
+      "tolerance": null,
+      "result": "PASS"
+    },
+    {
+      "id": "wi3661.summary.render.DW2 Mask",
+      "kind": "logic",
+      "description": "summary.render.DW2 Mask",
+      "expected": "\"DW2 Mask\"",
+      "actual": "\"DW2 Mask\"",
+      "delta": null,
+      "tolerance": null,
+      "result": "PASS"
+    },
+    {
+      "id": "wi3661.summary.render.DW2 Polarizer",
+      "kind": "logic",
+      "description": "summary.render.DW2 Polarizer",
+      "expected": "\"DW2 Polarizer\"",
+      "actual": "\"DW2 Polarizer\"",
+      "delta": null,
+      "tolerance": null,
+      "result": "PASS"
+    },
+    {
+      "id": "wi3661.summary.render.DW2 Ideal Gain",
+      "kind": "logic",
+      "description": "summary.render.DW2 Ideal Gain",
+      "expected": "\"DW2 Ideal Gain\"",
+      "actual": "\"DW2 Ideal Gain\"",
+      "delta": null,
+      "tolerance": null,
+      "result": "PASS"
+    },
+    {
+      "id": "wi3661.summary.render.DW2-0",
+      "kind": "logic",
+      "description": "summary.render.DW2-0",
+      "expected": "\"DW2-0\"",
+      "actual": "\"DW2-0\"",
+      "delta": null,
+      "tolerance": null,
+      "result": "PASS"
+    },
+    {
+      "id": "wi3661.summary.render.DN Mask",
+      "kind": "logic",
+      "description": "summary.render.DN Mask",
+      "expected": "\"DN Mask\"",
+      "actual": "\"DN Mask\"",
+      "delta": null,
+      "tolerance": null,
+      "result": "PASS"
+    },
+    {
+      "id": "wi3661.summary.bare-keys-unchanged",
+      "kind": "logic",
+      "description": "summary.bare-keys-unchanged",
+      "expected": "\"{\\\"BaseSummaryDic\\\":{\\\"DW2 Mask\\\":\\\"Full\\\",\\\"DW2 Polarizer\\\":\\\"P\\\",\\\"DW2 Ideal Gain\\\":\\\"123\\\",\\\"DW2-0\\\":\\\"4\\\",\\\"DN Mask\\\":\\\"Full\\\"},\\\"CollectionsSummary\\\":[],\\\"ResultSummary\\\":{\\\"ResultSummaryDic\\\":{\\\"Results\\\":\\\"\\\",\\\"Grade\\\":\\\"Rejected\\\"}},\\\"Title\\\":\\\"Pre Scan Info\\\",\\\"SummaryType\\\":1}\"",
+      "actual": "\"{\\\"BaseSummaryDic\\\":{\\\"DW2 Mask\\\":\\\"Full\\\",\\\"DW2 Polarizer\\\":\\\"P\\\",\\\"DW2 Ideal Gain\\\":\\\"123\\\",\\\"DW2-0\\\":\\\"4\\\",\\\"DN Mask\\\":\\\"Full\\\"},\\\"CollectionsSummary\\\":[],\\\"ResultSummary\\\":{\\\"ResultSummaryDic\\\":{\\\"Results\\\":\\\"\\\",\\\"Grade\\\":\\\"Rejected\\\"}},\\\"Title\\\":\\\"Pre Scan Info\\\",\\\"SummaryType\\\":1}\"",
+      "delta": null,
+      "tolerance": null,
+      "result": "PASS"
+    },
+    {
+      "id": "wi3661.hardware.bare-DW2",
+      "kind": "logic",
+      "description": "hardware.bare-DW2",
+      "expected": "true",
+      "actual": "true",
+      "delta": null,
+      "tolerance": null,
+      "result": "PASS"
+    },
+    {
+      "id": "wi3661.hardware.DW1-filter",
+      "kind": "logic",
+      "description": "hardware.DW1-filter",
+      "expected": "true",
+      "actual": "true",
+      "delta": null,
+      "tolerance": null,
+      "result": "PASS"
+    },
+    {
+      "id": "wi3661.hardware.DN",
+      "kind": "logic",
+      "description": "hardware.DN",
+      "expected": "true",
+      "actual": "true",
+      "delta": null,
+      "tolerance": null,
+      "result": "PASS"
+    },
+    {
+      "id": "wi3661.hardware.render",
+      "kind": "logic",
+      "description": "hardware.render",
+      "expected": "\"DW2\"",
+      "actual": "\"DW2\"",
+      "delta": null,
+      "tolerance": null,
+      "result": "PASS"
+    },
+    {
+      "id": "wi3661.hardware.save-DW2",
+      "kind": "logic",
+      "description": "hardware.save-DW2",
+      "expected": "0.123",
+      "actual": "0.123",
+      "delta": null,
+      "tolerance": null,
+      "result": "PASS"
+    },
+    {
+      "id": "wi3661.hardware.hidden-preserved",
+      "kind": "logic",
+      "description": "hardware.hidden-preserved",
+      "expected": "\"{\\\"HazeNoise\\\":555.0,\\\"MinDefect\\\":11.0,\\\"MaxDefect\\\":555.0,\\\"MinSIT\\\":0.1,\\\"MaxXT\\\":555.0,\\\"RefMaxHazeNppm\\\":555.0,\\\"RefOD\\\":5,\\\"RefPMTVoltage\\\":550.0,\\\"SystemGain\\\":555.0,\\\"SingleThreshold\\\":65535.0,\\\"SirSingleThreshold\\\":65535.0}\"",
+      "actual": "\"{\\\"HazeNoise\\\":555.0,\\\"MinDefect\\\":11.0,\\\"MaxDefect\\\":555.0,\\\"MinSIT\\\":0.1,\\\"MaxXT\\\":555.0,\\\"RefMaxHazeNppm\\\":555.0,\\\"RefOD\\\":5,\\\"RefPMTVoltage\\\":550.0,\\\"SystemGain\\\":555.0,\\\"SingleThreshold\\\":65535.0,\\\"SirSingleThreshold\\\":65535.0}\"",
+      "delta": null,
+      "tolerance": null,
+      "result": "PASS"
+    },
+    {
+      "id": "wi3661.hardware.no-display-key",
+      "kind": "logic",
+      "description": "hardware.no-display-key",
+      "expected": "false",
+      "actual": "false",
+      "delta": null,
+      "tolerance": null,
+      "result": "PASS"
+    },
+    {
+      "id": "wi3661.calculator.bare-DW2",
+      "kind": "logic",
+      "description": "calculator.bare-DW2",
+      "expected": "true",
+      "actual": "true",
+      "delta": null,
+      "tolerance": null,
+      "result": "PASS"
+    },
+    {
+      "id": "wi3661.calculator.DW1-filter",
+      "kind": "logic",
+      "description": "calculator.DW1-filter",
+      "expected": "true",
+      "actual": "true",
+      "delta": null,
+      "tolerance": null,
+      "result": "PASS"
+    },
+    {
+      "id": "wi3661.calculator.DN",
+      "kind": "logic",
+      "description": "calculator.DN",
+      "expected": "true",
+      "actual": "true",
+      "delta": null,
+      "tolerance": null,
+      "result": "PASS"
+    },
+    {
+      "id": "wi3661.calculator.render",
+      "kind": "logic",
+      "description": "calculator.render",
+      "expected": "\"DW2\"",
+      "actual": "\"DW2\"",
+      "delta": null,
+      "tolerance": null,
+      "result": "PASS"
+    },
+    {
+      "id": "wi3661.calculator.does-not-save",
+      "kind": "logic",
+      "description": "calculator.does-not-save",
+      "expected": "\"{\\\"PreTrack\\\":26139.925,\\\"MainTrack\\\":26139.925,\\\"LPMThreshold\\\":0.2922,\\\"LaserPowerRange\\\":\\\"Full\\\",\\\"RotationAngle\\\":25.1041,\\\"HardwareParamsDic\\\":{\\\"DW1\\\":{\\\"HazeNoise\\\":555.0,\\\"MinDefect\\\":0.01,\\\"MaxDefect\\\":555.0,\\\"MinSIT\\\":0.1,\\\"MaxXT\\\":555.0,\\\"RefMaxHazeNppm\\\":555.0,\\\"RefOD\\\":5,\\\"RefPMTVoltage\\\":550.0,\\\"SystemGain\\\":555.0,\\\"SingleThreshold\\\":65535.0,\\\"SirSingleThreshold\\\":65535.0},\\\"DW2\\\":{\\\"HazeNoise\\\":555.0,\\\"MinDefect\\\":0.01,\\\"MaxDefect\\\":555.0,\\\"MinSIT\\\":0.1,\\\"MaxXT\\\":555.0,\\\"RefMaxHazeNppm\\\":555.0,\\\"RefOD\\\":5,\\\"RefPMTVoltage\\\":550.0,\\\"SystemGain\\\":555.0,\\\"SingleThreshold\\\":65535.0,\\\"SirSingleThreshold\\\":65535.0},\\\"DN\\\":{\\\"HazeNoise\\\":555.0,\\\"MinDefect\\\":0.01,\\\"MaxDefect\\\":555.0,\\\"MinSIT\\\":0.1,\\\"MaxXT\\\":555.0,\\\"RefMaxHazeNppm\\\":555.0,\\\"RefOD\\\":5,\\\"RefPMTVoltage\\\":550.0,\\\"SystemGain\\\":555.0,\\\"SingleThreshold\\\":65535.0,\\\"SirSingleThreshold\\\":65535.0}}}\"",
+      "actual": "\"{\\\"PreTrack\\\":26139.925,\\\"MainTrack\\\":26139.925,\\\"LPMThreshold\\\":0.2922,\\\"LaserPowerRange\\\":\\\"Full\\\",\\\"RotationAngle\\\":25.1041,\\\"HardwareParamsDic\\\":{\\\"DW1\\\":{\\\"HazeNoise\\\":555.0,\\\"MinDefect\\\":0.01,\\\"MaxDefect\\\":555.0,\\\"MinSIT\\\":0.1,\\\"MaxXT\\\":555.0,\\\"RefMaxHazeNppm\\\":555.0,\\\"RefOD\\\":5,\\\"RefPMTVoltage\\\":550.0,\\\"SystemGain\\\":555.0,\\\"SingleThreshold\\\":65535.0,\\\"SirSingleThreshold\\\":65535.0},\\\"DW2\\\":{\\\"HazeNoise\\\":555.0,\\\"MinDefect\\\":0.01,\\\"MaxDefect\\\":555.0,\\\"MinSIT\\\":0.1,\\\"MaxXT\\\":555.0,\\\"RefMaxHazeNppm\\\":555.0,\\\"RefOD\\\":5,\\\"RefPMTVoltage\\\":550.0,\\\"SystemGain\\\":555.0,\\\"SingleThreshold\\\":65535.0,\\\"SirSingleThreshold\\\":65535.0},\\\"DN\\\":{\\\"HazeNoise\\\":555.0,\\\"MinDefect\\\":0.01,\\\"MaxDefect\\\":555.0,\\\"MinSIT\\\":0.1,\\\"MaxXT\\\":555.0,\\\"RefMaxHazeNppm\\\":555.0,\\\"RefOD\\\":5,\\\"RefPMTVoltage\\\":550.0,\\\"SystemGain\\\":555.0,\\\"SingleThreshold\\\":65535.0,\\\"SirSingleThreshold\\\":65535.0}}}\"",
+      "delta": null,
+      "tolerance": null,
+      "result": "PASS"
+    },
+    {
+      "id": "wi3661.lpd.pir.bare-DW2",
+      "kind": "logic",
+      "description": "lpd.pir.bare-DW2",
+      "expected": "true",
+      "actual": "true",
+      "delta": null,
+      "tolerance": null,
+      "result": "PASS"
+    },
+    {
+      "id": "wi3661.lpd.pir.DW1-filter",
+      "kind": "logic",
+      "description": "lpd.pir.DW1-filter",
+      "expected": "true",
+      "actual": "true",
+      "delta": null,
+      "tolerance": null,
+      "result": "PASS"
+    },
+    {
+      "id": "wi3661.lpd.pir.DN",
+      "kind": "logic",
+      "description": "lpd.pir.DN",
+      "expected": "true",
+      "actual": "true",
+      "delta": null,
+      "tolerance": null,
+      "result": "PASS"
+    },
+    {
+      "id": "wi3661.lpd.sir.bare-DW2",
+      "kind": "logic",
+      "description": "lpd.sir.bare-DW2",
+      "expected": "true",
+      "actual": "true",
+      "delta": null,
+      "tolerance": null,
+      "result": "PASS"
+    },
+    {
+      "id": "wi3661.lpd.sir.DW1-filter",
+      "kind": "logic",
+      "description": "lpd.sir.DW1-filter",
+      "expected": "true",
+      "actual": "true",
+      "delta": null,
+      "tolerance": null,
+      "result": "PASS"
+    },
+    {
+      "id": "wi3661.lpd.sir.DN",
+      "kind": "logic",
+      "description": "lpd.sir.DN",
+      "expected": "true",
+      "actual": "true",
+      "delta": null,
+      "tolerance": null,
+      "result": "PASS"
+    },
+    {
+      "id": "wi3661.lpd.pir.render",
+      "kind": "logic",
+      "description": "lpd.pir.render",
+      "expected": "\"DW2\"",
+      "actual": "\"DW2\"",
+      "delta": null,
+      "tolerance": null,
+      "result": "PASS"
+    },
+    {
+      "id": "wi3661.lpd.sir.render",
+      "kind": "logic",
+      "description": "lpd.sir.render",
+      "expected": "\"DW2\"",
+      "actual": "\"DW2\"",
+      "delta": null,
+      "tolerance": null,
+      "result": "PASS"
+    },
+    {
+      "id": "wi3661.lpd.save.pir-DW2",
+      "kind": "logic",
+      "description": "lpd.save.pir-DW2",
+      "expected": "7.0",
+      "actual": "7.0",
+      "delta": null,
+      "tolerance": null,
+      "result": "PASS"
+    },
+    {
+      "id": "wi3661.lpd.save.sir-DW2",
+      "kind": "logic",
+      "description": "lpd.save.sir-DW2",
+      "expected": "8.0",
+      "actual": "8.0",
+      "delta": null,
+      "tolerance": null,
+      "result": "PASS"
+    },
+    {
+      "id": "wi3661.lpd.hidden.pir-DW1",
+      "kind": "logic",
+      "description": "lpd.hidden.pir-DW1",
+      "expected": "11.0",
+      "actual": "11.0",
+      "delta": null,
+      "tolerance": null,
+      "result": "PASS"
+    },
+    {
+      "id": "wi3661.lpd.hidden.sir-DW1",
+      "kind": "logic",
+      "description": "lpd.hidden.sir-DW1",
+      "expected": "12.0",
+      "actual": "12.0",
+      "delta": null,
+      "tolerance": null,
+      "result": "PASS"
+    },
+    {
+      "id": "wi3661.lpd.no-display-key",
+      "kind": "logic",
+      "description": "lpd.no-display-key",
+      "expected": "false",
+      "actual": "false",
+      "delta": null,
+      "tolerance": null,
+      "result": "PASS"
+    },
+    {
+      "id": "wi3661.batch.hardware.bare-DW2",
+      "kind": "logic",
+      "description": "batch.hardware.bare-DW2",
+      "expected": "true",
+      "actual": "true",
+      "delta": null,
+      "tolerance": null,
+      "result": "PASS"
+    },
+    {
+      "id": "wi3661.batch.hardware.DW1-filter",
+      "kind": "logic",
+      "description": "batch.hardware.DW1-filter",
+      "expected": "true",
+      "actual": "true",
+      "delta": null,
+      "tolerance": null,
+      "result": "PASS"
+    },
+    {
+      "id": "wi3661.batch.hardware.DN",
+      "kind": "logic",
+      "description": "batch.hardware.DN",
+      "expected": "true",
+      "actual": "true",
+      "delta": null,
+      "tolerance": null,
+      "result": "PASS"
+    },
+    {
+      "id": "wi3661.batch.channels.bare-DW2",
+      "kind": "logic",
+      "description": "batch.channels.bare-DW2",
+      "expected": "true",
+      "actual": "true",
+      "delta": null,
+      "tolerance": null,
+      "result": "PASS"
+    },
+    {
+      "id": "wi3661.batch.channels.DW1-filter",
+      "kind": "logic",
+      "description": "batch.channels.DW1-filter",
+      "expected": "true",
+      "actual": "true",
+      "delta": null,
+      "tolerance": null,
+      "result": "PASS"
+    },
+    {
+      "id": "wi3661.batch.channels.DN",
+      "kind": "logic",
+      "description": "batch.channels.DN",
+      "expected": "true",
+      "actual": "true",
+      "delta": null,
+      "tolerance": null,
+      "result": "PASS"
+    },
+    {
+      "id": "wi3661.batch.hardware.render",
+      "kind": "logic",
+      "description": "batch.hardware.render",
+      "expected": "\"DW2\"",
+      "actual": "\"DW2\"",
+      "delta": null,
+      "tolerance": null,
+      "result": "PASS"
+    },
+    {
+      "id": "wi3661.batch.channel.render",
+      "kind": "logic",
+      "description": "batch.channel.render",
+      "expected": "\"DW2\"",
+      "actual": "\"DW2\"",
+      "delta": null,
+      "tolerance": null,
+      "result": "PASS"
+    },
+    {
+      "id": "wi3661.batch.save-DW2-hardware",
+      "kind": "logic",
+      "description": "batch.save-DW2-hardware",
+      "expected": "2345.0",
+      "actual": "2345.0",
+      "delta": null,
+      "tolerance": null,
+      "result": "PASS"
+    },
+    {
+      "id": "wi3661.batch.save-DW2-channel",
+      "kind": "logic",
+      "description": "batch.save-DW2-channel",
+      "expected": "0.456",
+      "actual": "0.456",
+      "delta": null,
+      "tolerance": null,
+      "result": "PASS"
+    },
+    {
+      "id": "wi3661.batch.hidden-hardware",
+      "kind": "logic",
+      "description": "batch.hidden-hardware",
+      "expected": "111.0",
+      "actual": "111.0",
+      "delta": null,
+      "tolerance": null,
+      "result": "PASS"
+    },
+    {
+      "id": "wi3661.batch.hidden-channel",
+      "kind": "logic",
+      "description": "batch.hidden-channel",
+      "expected": "0.111",
+      "actual": "0.111",
+      "delta": null,
+      "tolerance": null,
+      "result": "PASS"
+    },
+    {
+      "id": "wi3661.batch.no-display-key",
+      "kind": "logic",
+      "description": "batch.no-display-key",
+      "expected": "false",
+      "actual": "false",
+      "delta": null,
+      "tolerance": null,
+      "result": "PASS"
+    },
+    {
+      "id": "wi3661.batch.json-DW2-roundtrip",
+      "kind": "logic",
+      "description": "batch.json-DW2-roundtrip",
+      "expected": "2345.0",
+      "actual": "2345.0",
+      "delta": null,
+      "tolerance": null,
+      "result": "PASS"
+    }
+  ],
+  "summary": {
+    "total": 180,
+    "passed": 180,
+    "failed": 0,
+    "skipped": 0
+  },
+  "tests": [
+    {
+      "name": "Vega.AutoTest.CommitProbe.WorkItem3661Logic.HardwareParameters_CompiledView_FilterAndSaveBareKeys",
+      "outcome": "Passed",
+      "durationMs": 560,
+      "message": null
+    },
+    {
+      "name": "Vega.AutoTest.CommitProbe.WorkItem3661Logic.ResultSummary_CompiledView_RendersLabelsWithoutChangingKeys",
+      "outcome": "Passed",
+      "durationMs": 5135,
+      "message": null
+    },
+    {
+      "name": "Vega.AutoTest.CommitProbe.WorkItem3661Logic.BatchEditor_CompiledWindow_FilterSaveAndJsonRoundTrip",
+      "outcome": "Passed",
+      "durationMs": 879,
+      "message": null
+    },
+    {
+      "name": "Vega.AutoTest.CommitProbe.WorkItem3661Logic.Lpd_PirSir_CompiledView_FilterEditSaveAndHiddenData",
+      "outcome": "Passed",
+      "durationMs": 62,
+      "message": null
+    },
+    {
+      "name": "Vega.AutoTest.CommitProbe.WorkItem3661Logic.Calculator_CompiledView_FilterAndNoWriteBack",
+      "outcome": "Passed",
+      "durationMs": 108,
+      "message": null
+    },
+    {
+      "name": "Vega.AutoTest.CommitProbe.WorkItem3661Logic.Calculator_CompiledView_FilterAndNoWriteBack",
+      "outcome": "Passed",
+      "durationMs": 32,
+      "message": null
+    },
+    {
+      "name": "Vega.AutoTest.CommitProbe.WorkItem3661Logic.BatchEditor_CompiledWindow_FilterSaveAndJsonRoundTrip",
+      "outcome": "Passed",
+      "durationMs": 192,
+      "message": null
+    },
+    {
+      "name": "Vega.AutoTest.CommitProbe.WorkItem3661Logic.HardwareParameters_CompiledView_FilterAndSaveBareKeys",
+      "outcome": "Passed",
+      "durationMs": 131,
+      "message": null
+    },
+    {
+      "name": "Vega.AutoTest.CommitProbe.WorkItem3661Logic.ResultSummary_CompiledView_RendersLabelsWithoutChangingKeys",
+      "outcome": "Passed",
+      "durationMs": 706,
+      "message": null
+    },
+    {
+      "name": "Vega.AutoTest.CommitProbe.WorkItem3661Logic.Lpd_PirSir_CompiledView_FilterEditSaveAndHiddenData",
+      "outcome": "Passed",
+      "durationMs": 53,
+      "message": null
+    },
+    {
+      "name": "Vega.AutoTest.CommitProbe.WorkItem3661Logic.ResultSummary_CompiledView_RendersLabelsWithoutChangingKeys",
+      "outcome": "Passed",
+      "durationMs": 385,
+      "message": null
+    },
+    {
+      "name": "Vega.AutoTest.CommitProbe.WorkItem3661Logic.Calculator_CompiledView_FilterAndNoWriteBack",
+      "outcome": "Passed",
+      "durationMs": 102,
+      "message": null
+    },
+    {
+      "name": "Vega.AutoTest.CommitProbe.WorkItem3661Logic.Lpd_PirSir_CompiledView_FilterEditSaveAndHiddenData",
+      "outcome": "Passed",
+      "durationMs": 49,
+      "message": null
+    },
+    {
+      "name": "Vega.AutoTest.CommitProbe.WorkItem3661Logic.HardwareParameters_CompiledView_FilterAndSaveBareKeys",
+      "outcome": "Passed",
+      "durationMs": 101,
+      "message": null
+    },
+    {
+      "name": "Vega.AutoTest.CommitProbe.WorkItem3661Logic.BatchEditor_CompiledWindow_FilterSaveAndJsonRoundTrip",
+      "outcome": "Passed",
+      "durationMs": 183,
+      "message": null
+    },
+    {
+      "name": "Vega.AutoTest.CommitProbe.WorkItem3661Logic.Calculator_CompiledView_FilterAndNoWriteBack",
+      "outcome": "Passed",
+      "durationMs": 36,
+      "message": null
+    },
+    {
+      "name": "Vega.AutoTest.CommitProbe.WorkItem3661Logic.BatchEditor_CompiledWindow_FilterSaveAndJsonRoundTrip",
+      "outcome": "Passed",
+      "durationMs": 187,
+      "message": null
+    },
+    {
+      "name": "Vega.AutoTest.CommitProbe.WorkItem3661Logic.HardwareParameters_CompiledView_FilterAndSaveBareKeys",
+      "outcome": "Passed",
+      "durationMs": 105,
+      "message": null
+    },
+    {
+      "name": "Vega.AutoTest.CommitProbe.WorkItem3661Logic.Lpd_PirSir_CompiledView_FilterEditSaveAndHiddenData",
+      "outcome": "Passed",
+      "durationMs": 49,
+      "message": null
+    },
+    {
+      "name": "Vega.AutoTest.CommitProbe.WorkItem3661Logic.ResultSummary_CompiledView_RendersLabelsWithoutChangingKeys",
+      "outcome": "Passed",
+      "durationMs": 357,
+      "message": null
+    }
+  ],
+  "evidence": {
+    "dir": "C:\\AutoTest\\AutoTest\\VegaAutoTest\\daily\\workitems\\3661\\runner\\20261020T073019Z_wi3661_282e9ff",
+    "files": [
+      "logic100/trx/logic100.trx",
+      "logic100/trx/logic100.testhost.log",
+      "logic100/lpd-saved.json",
+      "logic100/hardware-saved.json",
+      "logic100/batch-saved-collection.json",
+      "logic300/trx/logic300.trx",
+      "logic300/trx/logic300.testhost.log",
+      "logic300/lpd-saved.json",
+      "logic300/hardware-saved.json",
+      "logic300/batch-saved-collection.json",
+      "logic500/trx/logic500.trx",
+      "logic500/trx/logic500.testhost.log",
+      "logic500/lpd-saved.json",
+      "logic500/hardware-saved.json",
+      "logic500/batch-saved-collection.json",
+      "logic-none/trx/logic-none.trx",
+      "logic-none/trx/logic-none.testhost.log",
+      "logic-none/lpd-saved.json",
+      "logic-none/hardware-saved.json",
+      "logic-none/batch-saved-collection.json",
+      "report.md"
+    ]
+  },
+  "exitCode": 0
+}

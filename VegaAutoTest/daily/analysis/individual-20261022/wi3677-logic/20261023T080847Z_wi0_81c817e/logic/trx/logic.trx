@@ -1,0 +1,314 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TestRun id="849b56ea-038c-44ad-8618-dad23c369e92" name="Administrator@WIN-5NPN6Q8PL1B 2026-10-23 16:08:56" runUser="WIN-5NPN6Q8PL1B\Administrator" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <Times creation="2026-10-23T16:08:56.7321628+08:00" queuing="2026-10-23T16:08:56.7321631+08:00" start="2026-10-23T16:08:55.7863881+08:00" finish="2026-10-23T16:08:57.1711422+08:00" />
+  <TestSettings name="default" id="24412dfc-ad8f-437a-a432-08a6abbd92d2">
+    <Deployment runDeploymentRoot="Administrator_WIN-5NPN6Q8PL1B_2026-10-23_16_08_56" />
+  </TestSettings>
+  <Results>
+    <UnitTestResult executionId="98990402-d670-4f33-9e8f-69b8172fe2a9" testId="29c3c079-6233-b0e3-c14a-166fc1efd72f" testName="Vega.AutoTest.IndividualCommits.WorkItem3677Logic.JsonPitchPreservesFallbackOrUsesValidValue(json: &quot;{}&quot;, expected: 18)" computerName="WIN-5NPN6Q8PL1B" duration="00:00:00.0069968" startTime="2026-10-23T16:08:56.7007957+08:00" endTime="2026-10-23T16:08:56.7007958+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="98990402-d670-4f33-9e8f-69b8172fe2a9" />
+    <UnitTestResult executionId="41f40839-a7d9-4b98-9cdc-8b15c84296d8" testId="d1b7912e-67a0-bad7-00ea-82238625005b" testName="Vega.AutoTest.IndividualCommits.WorkItem3677Logic.JsonPitchPreservesFallbackOrUsesValidValue(json: &quot;{\&quot;pitch_size\&quot;:1.8}&quot;, expected: 1.8)" computerName="WIN-5NPN6Q8PL1B" duration="00:00:00.0016145" startTime="2026-10-23T16:08:56.7047338+08:00" endTime="2026-10-23T16:08:56.7047340+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="41f40839-a7d9-4b98-9cdc-8b15c84296d8" />
+    <UnitTestResult executionId="e748172c-b4b9-4783-b1d2-d15112650c6e" testId="7b15a6ed-772d-18fa-be7b-7e2db72bf9bc" testName="Vega.AutoTest.IndividualCommits.WorkItem3677Logic.JsonPitchPreservesFallbackOrUsesValidValue(json: &quot;{\&quot;pitch_size\&quot;:180.01}&quot;, expected: 18)" computerName="WIN-5NPN6Q8PL1B" duration="00:00:00.0019066" startTime="2026-10-23T16:08:56.7006523+08:00" endTime="2026-10-23T16:08:56.7006525+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="e748172c-b4b9-4783-b1d2-d15112650c6e" />
+    <UnitTestResult executionId="34dc44b6-899f-4acc-afbf-ecf6a3abc720" testId="7425d75e-db53-89e2-7889-0eaf70f2adb6" testName="Vega.AutoTest.IndividualCommits.WorkItem3677Logic.JsonPitchPreservesFallbackOrUsesValidValue(json: &quot;{\&quot;pitchSize\&quot;:21}&quot;, expected: 21)" computerName="WIN-5NPN6Q8PL1B" duration="00:00:00.0015877" startTime="2026-10-23T16:08:56.6407010+08:00" endTime="2026-10-23T16:08:56.6407012+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="34dc44b6-899f-4acc-afbf-ecf6a3abc720" />
+    <UnitTestResult executionId="ddae97b8-05a6-4f03-911f-0dd889845b33" testId="f6298532-5cfd-7b0b-bcf8-897f77b7325e" testName="Vega.AutoTest.IndividualCommits.WorkItem3677Logic.OriginalIssueJsonKeepsNonzeroFallback(fileName: &quot;Carr003-01_261021194832_Normal_20261021195012.json&quot;)" computerName="WIN-5NPN6Q8PL1B" duration="00:00:00.0797500" startTime="2026-10-23T16:08:57.1063713+08:00" endTime="2026-10-23T16:08:57.1063715+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="ddae97b8-05a6-4f03-911f-0dd889845b33" />
+    <UnitTestResult executionId="664e5cc0-3a49-4f28-9f9c-630450c8900f" testId="9a6b59dd-63ef-4153-8250-9daa85d3e3d7" testName="Vega.AutoTest.IndividualCommits.WorkItem3677Logic.ParsingUsesInvariantCulture" computerName="WIN-5NPN6Q8PL1B" duration="00:00:00.0018245" startTime="2026-10-23T16:08:56.9881624+08:00" endTime="2026-10-23T16:08:56.9881625+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="664e5cc0-3a49-4f28-9f9c-630450c8900f" />
+    <UnitTestResult executionId="71196628-085f-482b-850a-6219d9206c79" testId="ae2154bf-e9b6-2e45-700e-5f7ee047632e" testName="Vega.AutoTest.IndividualCommits.WorkItem3677Logic.NewCollectionGetsRecipeThroughputPitch(incidence: Normal, expected: 18)" computerName="WIN-5NPN6Q8PL1B" duration="00:00:00.0016595" startTime="2026-10-23T16:08:56.9862217+08:00" endTime="2026-10-23T16:08:56.9862219+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="71196628-085f-482b-850a-6219d9206c79">
+      <Output>
+        <ErrorInfo>
+          <Message>System.InvalidOperationException : Failed to resolve service of type 'Galaxy.Platform.IAccessControl.IAccessControlService' from the Galaxy container. Ensure it is registered in ComponentConfig.json.&#xD;
+---- Autofac.Core.Registration.ComponentNotRegisteredException : The requested service 'Galaxy.Platform.IAccessControl.IAccessControlService' has not been registered. To avoid this exception, either register a component to provide the service, check for service registration using IsRegistered(), or use the ResolveOptional() method to resolve an optional dependency.
+
+See https://autofac.rtfd.io/help/service-not-registered for more info.</Message>
+          <StackTrace>   at Galaxy.Platform.Component.XComponentContainer.Resolve(Type interfaceType, String name)&#xD;
+   at Galaxy.Platform.Component.XComponentContainer.CreateInstance(Type interfaceType, String name)&#xD;
+   at Galaxy.Platform.Component.XComponentContainer.CreateInstance[T](String name)&#xD;
+   at Galaxy.Platform.Component.DefaultActivator.CreateInstance[T](String name)&#xD;
+   at Vega.Utility.Helper.VegaValidHelper.GetGrants() in C:\AutoTest\workspaces\individual-20261022-20261023\Vega.Utility.Helper\ValidHelper.cs:line 19&#xD;
+   at Vega.Utility.Helper.VegaValidHelper.IsValid(String validOn, List`1 grants) in C:\AutoTest\workspaces\individual-20261022-20261023\Vega.Utility.Helper\ValidHelper.cs:line 13&#xD;
+   at Vega.Utility.Helper.CollectorConfigService.&lt;&gt;c.&lt;GetEnabledCollectorNames&gt;b__9_0(CollectorMapping m) in C:\AutoTest\workspaces\individual-20261022-20261023\Vega.Utility.Helper\CollectorConfigService.cs:line 100&#xD;
+   at System.Linq.Enumerable.TryGetFirst[TSource](IEnumerable`1 source, Func`2 predicate, Boolean&amp; found)&#xD;
+   at System.Linq.Enumerable.FirstOrDefault[TSource](IEnumerable`1 source, Func`2 predicate)&#xD;
+   at Vega.Utility.Helper.CollectorConfigService.GetEnabledCollectorNames() in C:\AutoTest\workspaces\individual-20261022-20261023\Vega.Utility.Helper\CollectorConfigService.cs:line 100&#xD;
+   at Vega.Data.Commons.CollectorTypeExtensions.BuildEnabledCollectors() in C:\AutoTest\workspaces\individual-20261022-20261023\Vega.Data.Commons\CollectorTypeExtensions.cs:line 31&#xD;
+   at System.Lazy`1.ViaFactory(LazyThreadSafetyMode mode)&#xD;
+--- End of stack trace from previous location ---&#xD;
+   at System.Lazy`1.CreateValue()&#xD;
+   at Vega.Data.Commons.CollectorTypeExtensions.get_EnabledCollectors() in C:\AutoTest\workspaces\individual-20261022-20261023\Vega.Data.Commons\CollectorTypeExtensions.cs:line 27&#xD;
+   at Vega.Data.Recipes.DFCollectorSettingContent..ctor(ChannelMode channelMode) in C:\AutoTest\workspaces\individual-20261022-20261023\Vega.Data.Recipes\Elements\CollectionsSections\DarkFieldSettingContent.cs:line 248&#xD;
+   at Vega.Data.Recipes.DFChannelSettingContent..ctor() in C:\AutoTest\workspaces\individual-20261022-20261023\Vega.Data.Recipes\Elements\CollectionsSections\DarkFieldSettingContent.cs:line 218&#xD;
+   at Vega.Data.Recipes.DarkFieldSettingContent..ctor() in C:\AutoTest\workspaces\individual-20261022-20261023\Vega.Data.Recipes\Elements\CollectionsSections\DarkFieldSettingContent.cs:line 76&#xD;
+   at Vega.Data.Recipes.CollectionContent..ctor(String collectionName) in C:\AutoTest\workspaces\individual-20261022-20261023\Vega.Data.Recipes\Elements\CollectionsContent.cs:line 182&#xD;
+   at Vega.Data.Recipes.CollectionsContent..ctor() in C:\AutoTest\workspaces\individual-20261022-20261023\Vega.Data.Recipes\Elements\CollectionsContent.cs:line 22&#xD;
+   at Vega.Data.Recipes.Recipe..ctor() in C:\AutoTest\workspaces\individual-20261022-20261023\Vega.Data.Recipes\Recipe.cs:line 95&#xD;
+   at Vega.AutoTest.IndividualCommits.WorkItem3677Logic.&lt;&gt;c__DisplayClass1_0.&lt;NewCollectionGetsRecipeThroughputPitch&gt;b__0() in C:\AutoTest\AutoTest\VegaAutoTest\probes\Vega.AutoTest.IndividualCommits\IndividualCommitTests.cs:line 182&#xD;
+   at Vega.AutoTest.IndividualCommits.Evidence.Check(String id, Action action) in C:\AutoTest\AutoTest\VegaAutoTest\probes\Vega.AutoTest.IndividualCommits\IndividualCommitTests.cs:line 24&#xD;
+   at Vega.AutoTest.IndividualCommits.WorkItem3677Logic.NewCollectionGetsRecipeThroughputPitch(IncidenceType incidence, Double expected) in C:\AutoTest\AutoTest\VegaAutoTest\probes\Vega.AutoTest.IndividualCommits\IndividualCommitTests.cs:line 181&#xD;
+   at InvokeStub_WorkItem3677Logic.NewCollectionGetsRecipeThroughputPitch(Object, Span`1)&#xD;
+   at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)&#xD;
+----- Inner Stack Trace -----&#xD;
+   at Autofac.ResolutionExtensions.ResolveService(IComponentContext context, Service service, IEnumerable`1 parameters)&#xD;
+   at Autofac.ResolutionExtensions.Resolve(IComponentContext context, Type serviceType, IEnumerable`1 parameters)&#xD;
+   at Autofac.ResolutionExtensions.Resolve(IComponentContext context, Type serviceType)&#xD;
+   at Galaxy.Platform.Component.XComponentContainer.Resolve(Type interfaceType, String name)</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="e2487ff2-4626-4f46-ab33-b785037dcbe3" testId="448cd658-457d-a6f0-6c89-1a502296a8a3" testName="Vega.AutoTest.IndividualCommits.WorkItem3677Logic.JsonPitchPreservesFallbackOrUsesValidValue(json: &quot;{\&quot;pitch_size\&quot;:0}&quot;, expected: 18)" computerName="WIN-5NPN6Q8PL1B" duration="00:00:00.0017580" startTime="2026-10-23T16:08:56.6390564+08:00" endTime="2026-10-23T16:08:56.6390566+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="e2487ff2-4626-4f46-ab33-b785037dcbe3" />
+    <UnitTestResult executionId="4453bffd-578a-4e98-8b29-9d5feba2d29f" testId="38e41841-2335-062f-e94b-adf625b43c40" testName="Vega.AutoTest.IndividualCommits.WorkItem3677Logic.JsonPitchPreservesFallbackOrUsesValidValue(json: &quot;{\&quot;pitch_size\&quot;:20,\&quot;pitchSize\&quot;:22}&quot;, expected: 20)" computerName="WIN-5NPN6Q8PL1B" duration="00:00:00.0020868" startTime="2026-10-23T16:08:56.6234022+08:00" endTime="2026-10-23T16:08:56.6234025+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="4453bffd-578a-4e98-8b29-9d5feba2d29f" />
+    <UnitTestResult executionId="8954d1b9-0b0d-4938-80c9-906ad89d66f3" testId="96bd8315-1508-4529-7b08-6a267180ab53" testName="Vega.AutoTest.IndividualCommits.WorkItem3677Logic.JsonPitchPreservesFallbackOrUsesValidValue(json: &quot;{\&quot;pitch_size\&quot;:\&quot;Infinity\&quot;}&quot;, expected: 18)" computerName="WIN-5NPN6Q8PL1B" duration="00:00:00.0028475" startTime="2026-10-23T16:08:56.6211662+08:00" endTime="2026-10-23T16:08:56.6211664+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="8954d1b9-0b0d-4938-80c9-906ad89d66f3" />
+    <UnitTestResult executionId="acc6f289-ed7a-4990-9e71-f3286bee746f" testId="bb511ac3-5df5-9cf0-1cc8-b0a2a5045074" testName="Vega.AutoTest.IndividualCommits.WorkItem3677Logic.JsonPitchPreservesFallbackOrUsesValidValue(json: &quot;{\&quot;pitch_size\&quot;:null,\&quot;pitchSize\&quot;:22}&quot;, expected: 22)" computerName="WIN-5NPN6Q8PL1B" duration="00:00:00.0236770" startTime="2026-10-23T16:08:56.7008440+08:00" endTime="2026-10-23T16:08:56.7008441+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="acc6f289-ed7a-4990-9e71-f3286bee746f" />
+    <UnitTestResult executionId="4cf68e80-945f-401f-92aa-fa66be15a9d3" testId="c5a8a7df-f878-f3a2-72bd-143de660443f" testName="Vega.AutoTest.IndividualCommits.WorkItem3677Logic.OriginalIssueJsonKeepsNonzeroFallback(fileName: &quot;Wafer_1_202610215854_Oblique_20261021215958.json&quot;)" computerName="WIN-5NPN6Q8PL1B" duration="00:00:00.0432925" startTime="2026-10-23T16:08:57.0264834+08:00" endTime="2026-10-23T16:08:57.0264837+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="4cf68e80-945f-401f-92aa-fa66be15a9d3" />
+    <UnitTestResult executionId="bab5464e-6395-4bd3-bda2-d4332d55283a" testId="8e5ec20e-b902-d608-ed60-dca1d4bc3994" testName="Vega.AutoTest.IndividualCommits.WorkItem3677Logic.JsonPitchPreservesFallbackOrUsesValidValue(json: &quot;{\&quot;pitch_size\&quot;:-1}&quot;, expected: 18)" computerName="WIN-5NPN6Q8PL1B" duration="00:00:00.0024608" startTime="2026-10-23T16:08:56.7029695+08:00" endTime="2026-10-23T16:08:56.7029697+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="bab5464e-6395-4bd3-bda2-d4332d55283a" />
+    <UnitTestResult executionId="76a0b8f6-9a56-4353-a440-045cab74c249" testId="cab17b6a-eea3-5bf5-2473-807a0e3d5edb" testName="Vega.AutoTest.IndividualCommits.WorkItem3677Logic.JsonPitchPreservesFallbackOrUsesValidValue(json: &quot;{\&quot;pitch_size\&quot;:20}&quot;, expected: 20)" computerName="WIN-5NPN6Q8PL1B" duration="00:00:00.0584263" startTime="2026-10-23T16:08:56.6086126+08:00" endTime="2026-10-23T16:08:56.6086348+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="76a0b8f6-9a56-4353-a440-045cab74c249" />
+    <UnitTestResult executionId="df251fc3-719a-4835-94eb-c74c300f9d1b" testId="b34ec55a-2be4-c88d-d4e1-bf98415c6536" testName="Vega.AutoTest.IndividualCommits.WorkItem3677Logic.NewCollectionGetsRecipeThroughputPitch(incidence: Oblique, expected: 36)" computerName="WIN-5NPN6Q8PL1B" duration="00:00:00.2729684" startTime="2026-10-23T16:08:56.9849201+08:00" endTime="2026-10-23T16:08:56.9849205+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="df251fc3-719a-4835-94eb-c74c300f9d1b">
+      <Output>
+        <ErrorInfo>
+          <Message>System.InvalidOperationException : Failed to resolve service of type 'Galaxy.Platform.IAccessControl.IAccessControlService' from the Galaxy container. Ensure it is registered in ComponentConfig.json.&#xD;
+---- Autofac.Core.Registration.ComponentNotRegisteredException : The requested service 'Galaxy.Platform.IAccessControl.IAccessControlService' has not been registered. To avoid this exception, either register a component to provide the service, check for service registration using IsRegistered(), or use the ResolveOptional() method to resolve an optional dependency.
+
+See https://autofac.rtfd.io/help/service-not-registered for more info.</Message>
+          <StackTrace>   at Galaxy.Platform.Component.XComponentContainer.Resolve(Type interfaceType, String name)&#xD;
+   at Galaxy.Platform.Component.XComponentContainer.CreateInstance(Type interfaceType, String name)&#xD;
+   at Galaxy.Platform.Component.XComponentContainer.CreateInstance[T](String name)&#xD;
+   at Galaxy.Platform.Component.DefaultActivator.CreateInstance[T](String name)&#xD;
+   at Vega.Utility.Helper.VegaValidHelper.GetGrants() in C:\AutoTest\workspaces\individual-20261022-20261023\Vega.Utility.Helper\ValidHelper.cs:line 19&#xD;
+   at Vega.Utility.Helper.VegaValidHelper.IsValid(String validOn, List`1 grants) in C:\AutoTest\workspaces\individual-20261022-20261023\Vega.Utility.Helper\ValidHelper.cs:line 13&#xD;
+   at Vega.Utility.Helper.CollectorConfigService.&lt;&gt;c.&lt;GetEnabledCollectorNames&gt;b__9_0(CollectorMapping m) in C:\AutoTest\workspaces\individual-20261022-20261023\Vega.Utility.Helper\CollectorConfigService.cs:line 100&#xD;
+   at System.Linq.Enumerable.TryGetFirst[TSource](IEnumerable`1 source, Func`2 predicate, Boolean&amp; found)&#xD;
+   at System.Linq.Enumerable.FirstOrDefault[TSource](IEnumerable`1 source, Func`2 predicate)&#xD;
+   at Vega.Utility.Helper.CollectorConfigService.GetEnabledCollectorNames() in C:\AutoTest\workspaces\individual-20261022-20261023\Vega.Utility.Helper\CollectorConfigService.cs:line 100&#xD;
+   at Vega.Data.Commons.CollectorTypeExtensions.BuildEnabledCollectors() in C:\AutoTest\workspaces\individual-20261022-20261023\Vega.Data.Commons\CollectorTypeExtensions.cs:line 31&#xD;
+   at System.Lazy`1.ViaFactory(LazyThreadSafetyMode mode)&#xD;
+   at System.Lazy`1.ExecutionAndPublication(LazyHelper executionAndPublication, Boolean useDefaultConstructor)&#xD;
+   at System.Lazy`1.CreateValue()&#xD;
+   at Vega.Data.Commons.CollectorTypeExtensions.get_EnabledCollectors() in C:\AutoTest\workspaces\individual-20261022-20261023\Vega.Data.Commons\CollectorTypeExtensions.cs:line 27&#xD;
+   at Vega.Data.Recipes.DFCollectorSettingContent..ctor(ChannelMode channelMode) in C:\AutoTest\workspaces\individual-20261022-20261023\Vega.Data.Recipes\Elements\CollectionsSections\DarkFieldSettingContent.cs:line 248&#xD;
+   at Vega.Data.Recipes.DFChannelSettingContent..ctor() in C:\AutoTest\workspaces\individual-20261022-20261023\Vega.Data.Recipes\Elements\CollectionsSections\DarkFieldSettingContent.cs:line 218&#xD;
+   at Vega.Data.Recipes.DarkFieldSettingContent..ctor() in C:\AutoTest\workspaces\individual-20261022-20261023\Vega.Data.Recipes\Elements\CollectionsSections\DarkFieldSettingContent.cs:line 76&#xD;
+   at Vega.Data.Recipes.CollectionContent..ctor(String collectionName) in C:\AutoTest\workspaces\individual-20261022-20261023\Vega.Data.Recipes\Elements\CollectionsContent.cs:line 182&#xD;
+   at Vega.Data.Recipes.CollectionsContent..ctor() in C:\AutoTest\workspaces\individual-20261022-20261023\Vega.Data.Recipes\Elements\CollectionsContent.cs:line 22&#xD;
+   at Vega.Data.Recipes.Recipe..ctor() in C:\AutoTest\workspaces\individual-20261022-20261023\Vega.Data.Recipes\Recipe.cs:line 95&#xD;
+   at Vega.AutoTest.IndividualCommits.WorkItem3677Logic.&lt;&gt;c__DisplayClass1_0.&lt;NewCollectionGetsRecipeThroughputPitch&gt;b__0() in C:\AutoTest\AutoTest\VegaAutoTest\probes\Vega.AutoTest.IndividualCommits\IndividualCommitTests.cs:line 182&#xD;
+   at Vega.AutoTest.IndividualCommits.Evidence.Check(String id, Action action) in C:\AutoTest\AutoTest\VegaAutoTest\probes\Vega.AutoTest.IndividualCommits\IndividualCommitTests.cs:line 24&#xD;
+   at Vega.AutoTest.IndividualCommits.WorkItem3677Logic.NewCollectionGetsRecipeThroughputPitch(IncidenceType incidence, Double expected) in C:\AutoTest\AutoTest\VegaAutoTest\probes\Vega.AutoTest.IndividualCommits\IndividualCommitTests.cs:line 181&#xD;
+   at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)&#xD;
+   at System.Reflection.MethodBaseInvoker.InvokeDirectByRefWithFewArgs(Object obj, Span`1 copyOfArgs, BindingFlags invokeAttr)&#xD;
+----- Inner Stack Trace -----&#xD;
+   at Autofac.ResolutionExtensions.ResolveService(IComponentContext context, Service service, IEnumerable`1 parameters)&#xD;
+   at Autofac.ResolutionExtensions.Resolve(IComponentContext context, Type serviceType, IEnumerable`1 parameters)&#xD;
+   at Autofac.ResolutionExtensions.Resolve(IComponentContext context, Type serviceType)&#xD;
+   at Galaxy.Platform.Component.XComponentContainer.Resolve(Type interfaceType, String name)</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="137435ae-4898-46c3-bef5-3a3b1573321e" testId="6494032d-4273-e36d-e17f-7bb2568282ce" testName="Vega.AutoTest.IndividualCommits.WorkItem3677Logic.JsonPitchPreservesFallbackOrUsesValidValue(json: &quot;{\&quot;pitch_size\&quot;:\&quot;19.5\&quot;}&quot;, expected: 19.5)" computerName="WIN-5NPN6Q8PL1B" duration="00:00:00.0104169" startTime="2026-10-23T16:08:56.6182557+08:00" endTime="2026-10-23T16:08:56.6182559+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="137435ae-4898-46c3-bef5-3a3b1573321e" />
+    <UnitTestResult executionId="9e297aed-e9cd-44f5-a5ff-febe38068668" testId="ebf4c0da-19ef-4af0-c55a-2061cbf7d87a" testName="Vega.AutoTest.IndividualCommits.WorkItem3677Logic.JsonPitchPreservesFallbackOrUsesValidValue(json: &quot;{\&quot;pitch_size\&quot;:null}&quot;, expected: 18)" computerName="WIN-5NPN6Q8PL1B" duration="00:00:00.0139410" startTime="2026-10-23T16:08:56.7008226+08:00" endTime="2026-10-23T16:08:56.7008227+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="9e297aed-e9cd-44f5-a5ff-febe38068668" />
+    <UnitTestResult executionId="ecbbcd6e-15d7-49aa-b407-3e59d4a8efe1" testId="ed3ad1ae-36ef-3387-986e-fbc099b578dc" testName="Vega.AutoTest.IndividualCommits.WorkItem3677Logic.JsonPitchPreservesFallbackOrUsesValidValue(json: &quot;{\&quot;pitch_size\&quot;:1.79}&quot;, expected: 18)" computerName="WIN-5NPN6Q8PL1B" duration="00:00:00.0098137" startTime="2026-10-23T16:08:56.6333319+08:00" endTime="2026-10-23T16:08:56.6333321+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="ecbbcd6e-15d7-49aa-b407-3e59d4a8efe1" />
+    <UnitTestResult executionId="ab657ef3-e90e-4411-9369-51876074f75a" testId="62ee21df-31ef-1a11-91c1-7f5eed879620" testName="Vega.AutoTest.IndividualCommits.WorkItem3677Logic.JsonPitchPreservesFallbackOrUsesValidValue(json: &quot;{\&quot;pitch_size\&quot;:\&quot;NaN\&quot;}&quot;, expected: 18)" computerName="WIN-5NPN6Q8PL1B" duration="00:00:00.0120135" startTime="2026-10-23T16:08:56.7008648+08:00" endTime="2026-10-23T16:08:56.7008648+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="ab657ef3-e90e-4411-9369-51876074f75a" />
+    <UnitTestResult executionId="a9a642af-d815-4f78-9504-289c9d5949e9" testId="db18fd7e-31a3-33dd-8a0c-60250e5ada68" testName="Vega.AutoTest.IndividualCommits.WorkItem3677Logic.JsonPitchPreservesFallbackOrUsesValidValue(json: &quot;{\&quot;pitch_size\&quot;:\&quot;bad\&quot;}&quot;, expected: 18)" computerName="WIN-5NPN6Q8PL1B" duration="00:00:00.0021536" startTime="2026-10-23T16:08:56.6372371+08:00" endTime="2026-10-23T16:08:56.6372373+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="a9a642af-d815-4f78-9504-289c9d5949e9" />
+    <UnitTestResult executionId="e3b8326d-d381-4cf4-9239-d4b11664ac31" testId="0c768609-3c78-e1ce-68e1-8a2a4fac9f27" testName="Vega.AutoTest.IndividualCommits.WorkItem3677Logic.JsonPitchPreservesFallbackOrUsesValidValue(json: &quot;{\&quot;pitch_size\&quot;:180}&quot;, expected: 180)" computerName="WIN-5NPN6Q8PL1B" duration="00:00:00.0017334" startTime="2026-10-23T16:08:56.6350186+08:00" endTime="2026-10-23T16:08:56.6350188+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="e3b8326d-d381-4cf4-9239-d4b11664ac31" />
+  </Results>
+  <TestDefinitions>
+    <UnitTest name="Vega.AutoTest.IndividualCommits.WorkItem3677Logic.JsonPitchPreservesFallbackOrUsesValidValue(json: &quot;{\&quot;pitch_size\&quot;:\&quot;NaN\&quot;}&quot;, expected: 18)" storage="c:\autotest\autotest\vegaautotest\probes\vega.autotest.individualcommits\bin\debug\net8.0-windows\vega.bl.waferalignment.tests.dll" id="62ee21df-31ef-1a11-91c1-7f5eed879620">
+      <Execution id="ab657ef3-e90e-4411-9369-51876074f75a" />
+      <TestMethod codeBase="C:\AutoTest\AutoTest\VegaAutoTest\probes\Vega.AutoTest.IndividualCommits\bin\Debug\net8.0-windows\Vega.BL.WaferAlignment.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Vega.AutoTest.IndividualCommits.WorkItem3677Logic" name="JsonPitchPreservesFallbackOrUsesValidValue" />
+    </UnitTest>
+    <UnitTest name="Vega.AutoTest.IndividualCommits.WorkItem3677Logic.NewCollectionGetsRecipeThroughputPitch(incidence: Oblique, expected: 36)" storage="c:\autotest\autotest\vegaautotest\probes\vega.autotest.individualcommits\bin\debug\net8.0-windows\vega.bl.waferalignment.tests.dll" id="b34ec55a-2be4-c88d-d4e1-bf98415c6536">
+      <Execution id="df251fc3-719a-4835-94eb-c74c300f9d1b" />
+      <TestMethod codeBase="C:\AutoTest\AutoTest\VegaAutoTest\probes\Vega.AutoTest.IndividualCommits\bin\Debug\net8.0-windows\Vega.BL.WaferAlignment.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Vega.AutoTest.IndividualCommits.WorkItem3677Logic" name="NewCollectionGetsRecipeThroughputPitch" />
+    </UnitTest>
+    <UnitTest name="Vega.AutoTest.IndividualCommits.WorkItem3677Logic.JsonPitchPreservesFallbackOrUsesValidValue(json: &quot;{\&quot;pitch_size\&quot;:0}&quot;, expected: 18)" storage="c:\autotest\autotest\vegaautotest\probes\vega.autotest.individualcommits\bin\debug\net8.0-windows\vega.bl.waferalignment.tests.dll" id="448cd658-457d-a6f0-6c89-1a502296a8a3">
+      <Execution id="e2487ff2-4626-4f46-ab33-b785037dcbe3" />
+      <TestMethod codeBase="C:\AutoTest\AutoTest\VegaAutoTest\probes\Vega.AutoTest.IndividualCommits\bin\Debug\net8.0-windows\Vega.BL.WaferAlignment.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Vega.AutoTest.IndividualCommits.WorkItem3677Logic" name="JsonPitchPreservesFallbackOrUsesValidValue" />
+    </UnitTest>
+    <UnitTest name="Vega.AutoTest.IndividualCommits.WorkItem3677Logic.ParsingUsesInvariantCulture" storage="c:\autotest\autotest\vegaautotest\probes\vega.autotest.individualcommits\bin\debug\net8.0-windows\vega.bl.waferalignment.tests.dll" id="9a6b59dd-63ef-4153-8250-9daa85d3e3d7">
+      <Execution id="664e5cc0-3a49-4f28-9f9c-630450c8900f" />
+      <TestMethod codeBase="C:\AutoTest\AutoTest\VegaAutoTest\probes\Vega.AutoTest.IndividualCommits\bin\Debug\net8.0-windows\Vega.BL.WaferAlignment.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Vega.AutoTest.IndividualCommits.WorkItem3677Logic" name="ParsingUsesInvariantCulture" />
+    </UnitTest>
+    <UnitTest name="Vega.AutoTest.IndividualCommits.WorkItem3677Logic.JsonPitchPreservesFallbackOrUsesValidValue(json: &quot;{\&quot;pitch_size\&quot;:1.79}&quot;, expected: 18)" storage="c:\autotest\autotest\vegaautotest\probes\vega.autotest.individualcommits\bin\debug\net8.0-windows\vega.bl.waferalignment.tests.dll" id="ed3ad1ae-36ef-3387-986e-fbc099b578dc">
+      <Execution id="ecbbcd6e-15d7-49aa-b407-3e59d4a8efe1" />
+      <TestMethod codeBase="C:\AutoTest\AutoTest\VegaAutoTest\probes\Vega.AutoTest.IndividualCommits\bin\Debug\net8.0-windows\Vega.BL.WaferAlignment.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Vega.AutoTest.IndividualCommits.WorkItem3677Logic" name="JsonPitchPreservesFallbackOrUsesValidValue" />
+    </UnitTest>
+    <UnitTest name="Vega.AutoTest.IndividualCommits.WorkItem3677Logic.JsonPitchPreservesFallbackOrUsesValidValue(json: &quot;{\&quot;pitch_size\&quot;:\&quot;bad\&quot;}&quot;, expected: 18)" storage="c:\autotest\autotest\vegaautotest\probes\vega.autotest.individualcommits\bin\debug\net8.0-windows\vega.bl.waferalignment.tests.dll" id="db18fd7e-31a3-33dd-8a0c-60250e5ada68">
+      <Execution id="a9a642af-d815-4f78-9504-289c9d5949e9" />
+      <TestMethod codeBase="C:\AutoTest\AutoTest\VegaAutoTest\probes\Vega.AutoTest.IndividualCommits\bin\Debug\net8.0-windows\Vega.BL.WaferAlignment.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Vega.AutoTest.IndividualCommits.WorkItem3677Logic" name="JsonPitchPreservesFallbackOrUsesValidValue" />
+    </UnitTest>
+    <UnitTest name="Vega.AutoTest.IndividualCommits.WorkItem3677Logic.JsonPitchPreservesFallbackOrUsesValidValue(json: &quot;{\&quot;pitchSize\&quot;:21}&quot;, expected: 21)" storage="c:\autotest\autotest\vegaautotest\probes\vega.autotest.individualcommits\bin\debug\net8.0-windows\vega.bl.waferalignment.tests.dll" id="7425d75e-db53-89e2-7889-0eaf70f2adb6">
+      <Execution id="34dc44b6-899f-4acc-afbf-ecf6a3abc720" />
+      <TestMethod codeBase="C:\AutoTest\AutoTest\VegaAutoTest\probes\Vega.AutoTest.IndividualCommits\bin\Debug\net8.0-windows\Vega.BL.WaferAlignment.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Vega.AutoTest.IndividualCommits.WorkItem3677Logic" name="JsonPitchPreservesFallbackOrUsesValidValue" />
+    </UnitTest>
+    <UnitTest name="Vega.AutoTest.IndividualCommits.WorkItem3677Logic.JsonPitchPreservesFallbackOrUsesValidValue(json: &quot;{\&quot;pitch_size\&quot;:null,\&quot;pitchSize\&quot;:22}&quot;, expected: 22)" storage="c:\autotest\autotest\vegaautotest\probes\vega.autotest.individualcommits\bin\debug\net8.0-windows\vega.bl.waferalignment.tests.dll" id="bb511ac3-5df5-9cf0-1cc8-b0a2a5045074">
+      <Execution id="acc6f289-ed7a-4990-9e71-f3286bee746f" />
+      <TestMethod codeBase="C:\AutoTest\AutoTest\VegaAutoTest\probes\Vega.AutoTest.IndividualCommits\bin\Debug\net8.0-windows\Vega.BL.WaferAlignment.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Vega.AutoTest.IndividualCommits.WorkItem3677Logic" name="JsonPitchPreservesFallbackOrUsesValidValue" />
+    </UnitTest>
+    <UnitTest name="Vega.AutoTest.IndividualCommits.WorkItem3677Logic.OriginalIssueJsonKeepsNonzeroFallback(fileName: &quot;Carr003-01_261021194832_Normal_20261021195012.json&quot;)" storage="c:\autotest\autotest\vegaautotest\probes\vega.autotest.individualcommits\bin\debug\net8.0-windows\vega.bl.waferalignment.tests.dll" id="f6298532-5cfd-7b0b-bcf8-897f77b7325e">
+      <Execution id="ddae97b8-05a6-4f03-911f-0dd889845b33" />
+      <TestMethod codeBase="C:\AutoTest\AutoTest\VegaAutoTest\probes\Vega.AutoTest.IndividualCommits\bin\Debug\net8.0-windows\Vega.BL.WaferAlignment.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Vega.AutoTest.IndividualCommits.WorkItem3677Logic" name="OriginalIssueJsonKeepsNonzeroFallback" />
+    </UnitTest>
+    <UnitTest name="Vega.AutoTest.IndividualCommits.WorkItem3677Logic.JsonPitchPreservesFallbackOrUsesValidValue(json: &quot;{\&quot;pitch_size\&quot;:180.01}&quot;, expected: 18)" storage="c:\autotest\autotest\vegaautotest\probes\vega.autotest.individualcommits\bin\debug\net8.0-windows\vega.bl.waferalignment.tests.dll" id="7b15a6ed-772d-18fa-be7b-7e2db72bf9bc">
+      <Execution id="e748172c-b4b9-4783-b1d2-d15112650c6e" />
+      <TestMethod codeBase="C:\AutoTest\AutoTest\VegaAutoTest\probes\Vega.AutoTest.IndividualCommits\bin\Debug\net8.0-windows\Vega.BL.WaferAlignment.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Vega.AutoTest.IndividualCommits.WorkItem3677Logic" name="JsonPitchPreservesFallbackOrUsesValidValue" />
+    </UnitTest>
+    <UnitTest name="Vega.AutoTest.IndividualCommits.WorkItem3677Logic.JsonPitchPreservesFallbackOrUsesValidValue(json: &quot;{\&quot;pitch_size\&quot;:1.8}&quot;, expected: 1.8)" storage="c:\autotest\autotest\vegaautotest\probes\vega.autotest.individualcommits\bin\debug\net8.0-windows\vega.bl.waferalignment.tests.dll" id="d1b7912e-67a0-bad7-00ea-82238625005b">
+      <Execution id="41f40839-a7d9-4b98-9cdc-8b15c84296d8" />
+      <TestMethod codeBase="C:\AutoTest\AutoTest\VegaAutoTest\probes\Vega.AutoTest.IndividualCommits\bin\Debug\net8.0-windows\Vega.BL.WaferAlignment.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Vega.AutoTest.IndividualCommits.WorkItem3677Logic" name="JsonPitchPreservesFallbackOrUsesValidValue" />
+    </UnitTest>
+    <UnitTest name="Vega.AutoTest.IndividualCommits.WorkItem3677Logic.JsonPitchPreservesFallbackOrUsesValidValue(json: &quot;{\&quot;pitch_size\&quot;:20,\&quot;pitchSize\&quot;:22}&quot;, expected: 20)" storage="c:\autotest\autotest\vegaautotest\probes\vega.autotest.individualcommits\bin\debug\net8.0-windows\vega.bl.waferalignment.tests.dll" id="38e41841-2335-062f-e94b-adf625b43c40">
+      <Execution id="4453bffd-578a-4e98-8b29-9d5feba2d29f" />
+      <TestMethod codeBase="C:\AutoTest\AutoTest\VegaAutoTest\probes\Vega.AutoTest.IndividualCommits\bin\Debug\net8.0-windows\Vega.BL.WaferAlignment.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Vega.AutoTest.IndividualCommits.WorkItem3677Logic" name="JsonPitchPreservesFallbackOrUsesValidValue" />
+    </UnitTest>
+    <UnitTest name="Vega.AutoTest.IndividualCommits.WorkItem3677Logic.JsonPitchPreservesFallbackOrUsesValidValue(json: &quot;{\&quot;pitch_size\&quot;:\&quot;Infinity\&quot;}&quot;, expected: 18)" storage="c:\autotest\autotest\vegaautotest\probes\vega.autotest.individualcommits\bin\debug\net8.0-windows\vega.bl.waferalignment.tests.dll" id="96bd8315-1508-4529-7b08-6a267180ab53">
+      <Execution id="8954d1b9-0b0d-4938-80c9-906ad89d66f3" />
+      <TestMethod codeBase="C:\AutoTest\AutoTest\VegaAutoTest\probes\Vega.AutoTest.IndividualCommits\bin\Debug\net8.0-windows\Vega.BL.WaferAlignment.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Vega.AutoTest.IndividualCommits.WorkItem3677Logic" name="JsonPitchPreservesFallbackOrUsesValidValue" />
+    </UnitTest>
+    <UnitTest name="Vega.AutoTest.IndividualCommits.WorkItem3677Logic.JsonPitchPreservesFallbackOrUsesValidValue(json: &quot;{\&quot;pitch_size\&quot;:null}&quot;, expected: 18)" storage="c:\autotest\autotest\vegaautotest\probes\vega.autotest.individualcommits\bin\debug\net8.0-windows\vega.bl.waferalignment.tests.dll" id="ebf4c0da-19ef-4af0-c55a-2061cbf7d87a">
+      <Execution id="9e297aed-e9cd-44f5-a5ff-febe38068668" />
+      <TestMethod codeBase="C:\AutoTest\AutoTest\VegaAutoTest\probes\Vega.AutoTest.IndividualCommits\bin\Debug\net8.0-windows\Vega.BL.WaferAlignment.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Vega.AutoTest.IndividualCommits.WorkItem3677Logic" name="JsonPitchPreservesFallbackOrUsesValidValue" />
+    </UnitTest>
+    <UnitTest name="Vega.AutoTest.IndividualCommits.WorkItem3677Logic.OriginalIssueJsonKeepsNonzeroFallback(fileName: &quot;Wafer_1_202610215854_Oblique_20261021215958.json&quot;)" storage="c:\autotest\autotest\vegaautotest\probes\vega.autotest.individualcommits\bin\debug\net8.0-windows\vega.bl.waferalignment.tests.dll" id="c5a8a7df-f878-f3a2-72bd-143de660443f">
+      <Execution id="4cf68e80-945f-401f-92aa-fa66be15a9d3" />
+      <TestMethod codeBase="C:\AutoTest\AutoTest\VegaAutoTest\probes\Vega.AutoTest.IndividualCommits\bin\Debug\net8.0-windows\Vega.BL.WaferAlignment.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Vega.AutoTest.IndividualCommits.WorkItem3677Logic" name="OriginalIssueJsonKeepsNonzeroFallback" />
+    </UnitTest>
+    <UnitTest name="Vega.AutoTest.IndividualCommits.WorkItem3677Logic.JsonPitchPreservesFallbackOrUsesValidValue(json: &quot;{}&quot;, expected: 18)" storage="c:\autotest\autotest\vegaautotest\probes\vega.autotest.individualcommits\bin\debug\net8.0-windows\vega.bl.waferalignment.tests.dll" id="29c3c079-6233-b0e3-c14a-166fc1efd72f">
+      <Execution id="98990402-d670-4f33-9e8f-69b8172fe2a9" />
+      <TestMethod codeBase="C:\AutoTest\AutoTest\VegaAutoTest\probes\Vega.AutoTest.IndividualCommits\bin\Debug\net8.0-windows\Vega.BL.WaferAlignment.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Vega.AutoTest.IndividualCommits.WorkItem3677Logic" name="JsonPitchPreservesFallbackOrUsesValidValue" />
+    </UnitTest>
+    <UnitTest name="Vega.AutoTest.IndividualCommits.WorkItem3677Logic.JsonPitchPreservesFallbackOrUsesValidValue(json: &quot;{\&quot;pitch_size\&quot;:20}&quot;, expected: 20)" storage="c:\autotest\autotest\vegaautotest\probes\vega.autotest.individualcommits\bin\debug\net8.0-windows\vega.bl.waferalignment.tests.dll" id="cab17b6a-eea3-5bf5-2473-807a0e3d5edb">
+      <Execution id="76a0b8f6-9a56-4353-a440-045cab74c249" />
+      <TestMethod codeBase="C:\AutoTest\AutoTest\VegaAutoTest\probes\Vega.AutoTest.IndividualCommits\bin\Debug\net8.0-windows\Vega.BL.WaferAlignment.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Vega.AutoTest.IndividualCommits.WorkItem3677Logic" name="JsonPitchPreservesFallbackOrUsesValidValue" />
+    </UnitTest>
+    <UnitTest name="Vega.AutoTest.IndividualCommits.WorkItem3677Logic.JsonPitchPreservesFallbackOrUsesValidValue(json: &quot;{\&quot;pitch_size\&quot;:-1}&quot;, expected: 18)" storage="c:\autotest\autotest\vegaautotest\probes\vega.autotest.individualcommits\bin\debug\net8.0-windows\vega.bl.waferalignment.tests.dll" id="8e5ec20e-b902-d608-ed60-dca1d4bc3994">
+      <Execution id="bab5464e-6395-4bd3-bda2-d4332d55283a" />
+      <TestMethod codeBase="C:\AutoTest\AutoTest\VegaAutoTest\probes\Vega.AutoTest.IndividualCommits\bin\Debug\net8.0-windows\Vega.BL.WaferAlignment.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Vega.AutoTest.IndividualCommits.WorkItem3677Logic" name="JsonPitchPreservesFallbackOrUsesValidValue" />
+    </UnitTest>
+    <UnitTest name="Vega.AutoTest.IndividualCommits.WorkItem3677Logic.JsonPitchPreservesFallbackOrUsesValidValue(json: &quot;{\&quot;pitch_size\&quot;:\&quot;19.5\&quot;}&quot;, expected: 19.5)" storage="c:\autotest\autotest\vegaautotest\probes\vega.autotest.individualcommits\bin\debug\net8.0-windows\vega.bl.waferalignment.tests.dll" id="6494032d-4273-e36d-e17f-7bb2568282ce">
+      <Execution id="137435ae-4898-46c3-bef5-3a3b1573321e" />
+      <TestMethod codeBase="C:\AutoTest\AutoTest\VegaAutoTest\probes\Vega.AutoTest.IndividualCommits\bin\Debug\net8.0-windows\Vega.BL.WaferAlignment.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Vega.AutoTest.IndividualCommits.WorkItem3677Logic" name="JsonPitchPreservesFallbackOrUsesValidValue" />
+    </UnitTest>
+    <UnitTest name="Vega.AutoTest.IndividualCommits.WorkItem3677Logic.JsonPitchPreservesFallbackOrUsesValidValue(json: &quot;{\&quot;pitch_size\&quot;:180}&quot;, expected: 180)" storage="c:\autotest\autotest\vegaautotest\probes\vega.autotest.individualcommits\bin\debug\net8.0-windows\vega.bl.waferalignment.tests.dll" id="0c768609-3c78-e1ce-68e1-8a2a4fac9f27">
+      <Execution id="e3b8326d-d381-4cf4-9239-d4b11664ac31" />
+      <TestMethod codeBase="C:\AutoTest\AutoTest\VegaAutoTest\probes\Vega.AutoTest.IndividualCommits\bin\Debug\net8.0-windows\Vega.BL.WaferAlignment.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Vega.AutoTest.IndividualCommits.WorkItem3677Logic" name="JsonPitchPreservesFallbackOrUsesValidValue" />
+    </UnitTest>
+    <UnitTest name="Vega.AutoTest.IndividualCommits.WorkItem3677Logic.NewCollectionGetsRecipeThroughputPitch(incidence: Normal, expected: 18)" storage="c:\autotest\autotest\vegaautotest\probes\vega.autotest.individualcommits\bin\debug\net8.0-windows\vega.bl.waferalignment.tests.dll" id="ae2154bf-e9b6-2e45-700e-5f7ee047632e">
+      <Execution id="71196628-085f-482b-850a-6219d9206c79" />
+      <TestMethod codeBase="C:\AutoTest\AutoTest\VegaAutoTest\probes\Vega.AutoTest.IndividualCommits\bin\Debug\net8.0-windows\Vega.BL.WaferAlignment.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Vega.AutoTest.IndividualCommits.WorkItem3677Logic" name="NewCollectionGetsRecipeThroughputPitch" />
+    </UnitTest>
+  </TestDefinitions>
+  <TestEntries>
+    <TestEntry testId="29c3c079-6233-b0e3-c14a-166fc1efd72f" executionId="98990402-d670-4f33-9e8f-69b8172fe2a9" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="d1b7912e-67a0-bad7-00ea-82238625005b" executionId="41f40839-a7d9-4b98-9cdc-8b15c84296d8" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="7b15a6ed-772d-18fa-be7b-7e2db72bf9bc" executionId="e748172c-b4b9-4783-b1d2-d15112650c6e" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="7425d75e-db53-89e2-7889-0eaf70f2adb6" executionId="34dc44b6-899f-4acc-afbf-ecf6a3abc720" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="f6298532-5cfd-7b0b-bcf8-897f77b7325e" executionId="ddae97b8-05a6-4f03-911f-0dd889845b33" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="9a6b59dd-63ef-4153-8250-9daa85d3e3d7" executionId="664e5cc0-3a49-4f28-9f9c-630450c8900f" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="ae2154bf-e9b6-2e45-700e-5f7ee047632e" executionId="71196628-085f-482b-850a-6219d9206c79" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="448cd658-457d-a6f0-6c89-1a502296a8a3" executionId="e2487ff2-4626-4f46-ab33-b785037dcbe3" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="38e41841-2335-062f-e94b-adf625b43c40" executionId="4453bffd-578a-4e98-8b29-9d5feba2d29f" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="96bd8315-1508-4529-7b08-6a267180ab53" executionId="8954d1b9-0b0d-4938-80c9-906ad89d66f3" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="bb511ac3-5df5-9cf0-1cc8-b0a2a5045074" executionId="acc6f289-ed7a-4990-9e71-f3286bee746f" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="c5a8a7df-f878-f3a2-72bd-143de660443f" executionId="4cf68e80-945f-401f-92aa-fa66be15a9d3" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="8e5ec20e-b902-d608-ed60-dca1d4bc3994" executionId="bab5464e-6395-4bd3-bda2-d4332d55283a" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="cab17b6a-eea3-5bf5-2473-807a0e3d5edb" executionId="76a0b8f6-9a56-4353-a440-045cab74c249" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="b34ec55a-2be4-c88d-d4e1-bf98415c6536" executionId="df251fc3-719a-4835-94eb-c74c300f9d1b" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="6494032d-4273-e36d-e17f-7bb2568282ce" executionId="137435ae-4898-46c3-bef5-3a3b1573321e" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="ebf4c0da-19ef-4af0-c55a-2061cbf7d87a" executionId="9e297aed-e9cd-44f5-a5ff-febe38068668" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="ed3ad1ae-36ef-3387-986e-fbc099b578dc" executionId="ecbbcd6e-15d7-49aa-b407-3e59d4a8efe1" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="62ee21df-31ef-1a11-91c1-7f5eed879620" executionId="ab657ef3-e90e-4411-9369-51876074f75a" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="db18fd7e-31a3-33dd-8a0c-60250e5ada68" executionId="a9a642af-d815-4f78-9504-289c9d5949e9" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="0c768609-3c78-e1ce-68e1-8a2a4fac9f27" executionId="e3b8326d-d381-4cf4-9239-d4b11664ac31" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </TestEntries>
+  <TestLists>
+    <TestList name="Results Not in a List" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestList name="All Loaded Results" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </TestLists>
+  <ResultSummary outcome="Failed">
+    <Counters total="21" executed="21" passed="19" failed="2" error="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+    <Output>
+      <StdOut>[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.5.3.1+6b60a9e56a (64-bit .NET 8.0.32)&#xD;
+[xUnit.net 00:00:00.11]   Discovering: Vega.BL.WaferAlignment.Tests&#xD;
+[xUnit.net 00:00:00.19]   Discovered:  Vega.BL.WaferAlignment.Tests&#xD;
+[xUnit.net 00:00:00.19]   Starting:    Vega.BL.WaferAlignment.Tests&#xD;
+[xUnit.net 00:00:00.67]       System.InvalidOperationException : Failed to resolve service of type 'Galaxy.Platform.IAccessControl.IAccessControlService' from the Galaxy container. Ensure it is registered in ComponentConfig.json.&#xD;
+[xUnit.net 00:00:00.67]       ---- Autofac.Core.Registration.ComponentNotRegisteredException : The requested service 'Galaxy.Platform.IAccessControl.IAccessControlService' has not been registered. To avoid this exception, either register a component to provide the service, check for service registration using IsRegistered(), or use the ResolveOptional() method to resolve an optional dependency.
+
+See https://autofac.rtfd.io/help/service-not-registered for more info.&#xD;
+[xUnit.net 00:00:00.67]       Stack Trace:&#xD;
+[xUnit.net 00:00:00.67]            at Galaxy.Platform.Component.XComponentContainer.Resolve(Type interfaceType, String name)&#xD;
+[xUnit.net 00:00:00.67]            at Galaxy.Platform.Component.XComponentContainer.CreateInstance(Type interfaceType, String name)&#xD;
+[xUnit.net 00:00:00.67]            at Galaxy.Platform.Component.XComponentContainer.CreateInstance[T](String name)&#xD;
+[xUnit.net 00:00:00.67]            at Galaxy.Platform.Component.DefaultActivator.CreateInstance[T](String name)&#xD;
+[xUnit.net 00:00:00.67]         C:\AutoTest\workspaces\individual-20261022-20261023\Vega.Utility.Helper\ValidHelper.cs(19,0): at Vega.Utility.Helper.VegaValidHelper.GetGrants()&#xD;
+[xUnit.net 00:00:00.67]         C:\AutoTest\workspaces\individual-20261022-20261023\Vega.Utility.Helper\ValidHelper.cs(13,0): at Vega.Utility.Helper.VegaValidHelper.IsValid(String validOn, List`1 grants)&#xD;
+[xUnit.net 00:00:00.67]         C:\AutoTest\workspaces\individual-20261022-20261023\Vega.Utility.Helper\CollectorConfigService.cs(100,0): at Vega.Utility.Helper.CollectorConfigService.&lt;&gt;c.&lt;GetEnabledCollectorNames&gt;b__9_0(CollectorMapping m)&#xD;
+[xUnit.net 00:00:00.67]            at System.Linq.Enumerable.TryGetFirst[TSource](IEnumerable`1 source, Func`2 predicate, Boolean&amp; found)&#xD;
+[xUnit.net 00:00:00.67]            at System.Linq.Enumerable.FirstOrDefault[TSource](IEnumerable`1 source, Func`2 predicate)&#xD;
+[xUnit.net 00:00:00.67]         C:\AutoTest\workspaces\individual-20261022-20261023\Vega.Utility.Helper\CollectorConfigService.cs(100,0): at Vega.Utility.Helper.CollectorConfigService.GetEnabledCollectorNames()&#xD;
+[xUnit.net 00:00:00.67]         C:\AutoTest\workspaces\individual-20261022-20261023\Vega.Data.Commons\CollectorTypeExtensions.cs(31,0): at Vega.Data.Commons.CollectorTypeExtensions.BuildEnabledCollectors()&#xD;
+[xUnit.net 00:00:00.67]            at System.Lazy`1.ViaFactory(LazyThreadSafetyMode mode)&#xD;
+[xUnit.net 00:00:00.67]            at System.Lazy`1.ExecutionAndPublication(LazyHelper executionAndPublication, Boolean useDefaultConstructor)&#xD;
+[xUnit.net 00:00:00.67]            at System.Lazy`1.CreateValue()&#xD;
+[xUnit.net 00:00:00.67]         C:\AutoTest\workspaces\individual-20261022-20261023\Vega.Data.Commons\CollectorTypeExtensions.cs(27,0): at Vega.Data.Commons.CollectorTypeExtensions.get_EnabledCollectors()&#xD;
+[xUnit.net 00:00:00.67]         C:\AutoTest\workspaces\individual-20261022-20261023\Vega.Data.Recipes\Elements\CollectionsSections\DarkFieldSettingContent.cs(248,0): at Vega.Data.Recipes.DFCollectorSettingContent..ctor(ChannelMode channelMode)&#xD;
+[xUnit.net 00:00:00.67]         C:\AutoTest\workspaces\individual-20261022-20261023\Vega.Data.Recipes\Elements\CollectionsSections\DarkFieldSettingContent.cs(218,0): at Vega.Data.Recipes.DFChannelSettingContent..ctor()&#xD;
+[xUnit.net 00:00:00.67]         C:\AutoTest\workspaces\individual-20261022-20261023\Vega.Data.Recipes\Elements\CollectionsSections\DarkFieldSettingContent.cs(76,0): at Vega.Data.Recipes.DarkFieldSettingContent..ctor()&#xD;
+[xUnit.net 00:00:00.67]         C:\AutoTest\workspaces\individual-20261022-20261023\Vega.Data.Recipes\Elements\CollectionsContent.cs(182,0): at Vega.Data.Recipes.CollectionContent..ctor(String collectionName)&#xD;
+[xUnit.net 00:00:00.67]         C:\AutoTest\workspaces\individual-20261022-20261023\Vega.Data.Recipes\Elements\CollectionsContent.cs(22,0): at Vega.Data.Recipes.CollectionsContent..ctor()&#xD;
+[xUnit.net 00:00:00.67]         C:\AutoTest\workspaces\individual-20261022-20261023\Vega.Data.Recipes\Recipe.cs(95,0): at Vega.Data.Recipes.Recipe..ctor()&#xD;
+[xUnit.net 00:00:00.67]         C:\AutoTest\AutoTest\VegaAutoTest\probes\Vega.AutoTest.IndividualCommits\IndividualCommitTests.cs(182,0): at Vega.AutoTest.IndividualCommits.WorkItem3677Logic.&lt;&gt;c__DisplayClass1_0.&lt;NewCollectionGetsRecipeThroughputPitch&gt;b__0()&#xD;
+[xUnit.net 00:00:00.67]         C:\AutoTest\AutoTest\VegaAutoTest\probes\Vega.AutoTest.IndividualCommits\IndividualCommitTests.cs(24,0): at Vega.AutoTest.IndividualCommits.Evidence.Check(String id, Action action)&#xD;
+[xUnit.net 00:00:00.67]         C:\AutoTest\AutoTest\VegaAutoTest\probes\Vega.AutoTest.IndividualCommits\IndividualCommitTests.cs(181,0): at Vega.AutoTest.IndividualCommits.WorkItem3677Logic.NewCollectionGetsRecipeThroughputPitch(IncidenceType incidence, Double expected)&#xD;
+[xUnit.net 00:00:00.67]            at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)&#xD;
+[xUnit.net 00:00:00.67]            at System.Reflection.MethodBaseInvoker.InvokeDirectByRefWithFewArgs(Object obj, Span`1 copyOfArgs, BindingFlags invokeAttr)&#xD;
+[xUnit.net 00:00:00.67]         ----- Inner Stack Trace -----&#xD;
+[xUnit.net 00:00:00.67]            at Autofac.ResolutionExtensions.ResolveService(IComponentContext context, Service service, IEnumerable`1 parameters)&#xD;
+[xUnit.net 00:00:00.67]            at Autofac.ResolutionExtensions.Resolve(IComponentContext context, Type serviceType, IEnumerable`1 parameters)&#xD;
+[xUnit.net 00:00:00.67]            at Autofac.ResolutionExtensions.Resolve(IComponentContext context, Type serviceType)&#xD;
+[xUnit.net 00:00:00.67]            at Galaxy.Platform.Component.XComponentContainer.Resolve(Type interfaceType, String name)&#xD;
+[xUnit.net 00:00:00.67]       System.InvalidOperationException : Failed to resolve service of type 'Galaxy.Platform.IAccessControl.IAccessControlService' from the Galaxy container. Ensure it is registered in ComponentConfig.json.&#xD;
+[xUnit.net 00:00:00.67]       ---- Autofac.Core.Registration.ComponentNotRegisteredException : The requested service 'Galaxy.Platform.IAccessControl.IAccessControlService' has not been registered. To avoid this exception, either register a component to provide the service, check for service registration using IsRegistered(), or use the ResolveOptional() method to resolve an optional dependency.
+
+See https://autofac.rtfd.io/help/service-not-registered for more info.&#xD;
+[xUnit.net 00:00:00.67]       Stack Trace:&#xD;
+[xUnit.net 00:00:00.67]            at Galaxy.Platform.Component.XComponentContainer.Resolve(Type interfaceType, String name)&#xD;
+[xUnit.net 00:00:00.67]            at Galaxy.Platform.Component.XComponentContainer.CreateInstance(Type interfaceType, String name)&#xD;
+[xUnit.net 00:00:00.67]            at Galaxy.Platform.Component.XComponentContainer.CreateInstance[T](String name)&#xD;
+[xUnit.net 00:00:00.67]            at Galaxy.Platform.Component.DefaultActivator.CreateInstance[T](String name)&#xD;
+[xUnit.net 00:00:00.67]         C:\AutoTest\workspaces\individual-20261022-20261023\Vega.Utility.Helper\ValidHelper.cs(19,0): at Vega.Utility.Helper.VegaValidHelper.GetGrants()&#xD;
+[xUnit.net 00:00:00.67]         C:\AutoTest\workspaces\individual-20261022-20261023\Vega.Utility.Helper\ValidHelper.cs(13,0): at Vega.Utility.Helper.VegaValidHelper.IsValid(String validOn, List`1 grants)&#xD;
+[xUnit.net 00:00:00.67]         C:\AutoTest\workspaces\individual-20261022-20261023\Vega.Utility.Helper\CollectorConfigService.cs(100,0): at Vega.Utility.Helper.CollectorConfigService.&lt;&gt;c.&lt;GetEnabledCollectorNames&gt;b__9_0(CollectorMapping m)&#xD;
+[xUnit.net 00:00:00.67]            at System.Linq.Enumerable.TryGetFirst[TSource](IEnumerable`1 source, Func`2 predicate, Boolean&amp; found)&#xD;
+[xUnit.net 00:00:00.67]            at System.Linq.Enumerable.FirstOrDefault[TSource](IEnumerable`1 source, Func`2 predicate)&#xD;
+[xUnit.net 00:00:00.67]         C:\AutoTest\workspaces\individual-20261022-20261023\Vega.Utility.Helper\CollectorConfigService.cs(100,0): at Vega.Utility.Helper.CollectorConfigService.GetEnabledCollectorNames()&#xD;
+[xUnit.net 00:00:00.67]         C:\AutoTest\workspaces\individual-20261022-20261023\Vega.Data.Commons\CollectorTypeExtensions.cs(31,0): at Vega.Data.Commons.CollectorTypeExtensions.BuildEnabledCollectors()&#xD;
+[xUnit.net 00:00:00.67]            at System.Lazy`1.ViaFactory(LazyThreadSafetyMode mode)&#xD;
+[xUnit.net 00:00:00.67]         --- End of stack trace from previous location ---&#xD;
+[xUnit.net 00:00:00.67]            at System.Lazy`1.CreateValue()&#xD;
+[xUnit.net 00:00:00.67]         C:\AutoTest\workspaces\individual-20261022-20261023\Vega.Data.Commons\CollectorTypeExtensions.cs(27,0): at Vega.Data.Commons.CollectorTypeExtensions.get_EnabledCollectors()&#xD;
+[xUnit.net 00:00:00.67]         C:\AutoTest\workspaces\individual-20261022-20261023\Vega.Data.Recipes\Elements\CollectionsSections\DarkFieldSettingContent.cs(248,0): at Vega.Data.Recipes.DFCollectorSettingContent..ctor(ChannelMode channelMode)&#xD;
+[xUnit.net 00:00:00.67]         C:\AutoTest\workspaces\individual-20261022-20261023\Vega.Data.Recipes\Elements\CollectionsSections\DarkFieldSettingContent.cs(218,0): at Vega.Data.Recipes.DFChannelSettingContent..ctor()&#xD;
+[xUnit.net 00:00:00.67]         C:\AutoTest\workspaces\individual-20261022-20261023\Vega.Data.Recipes\Elements\CollectionsSections\DarkFieldSettingContent.cs(76,0): at Vega.Data.Recipes.DarkFieldSettingContent..ctor()&#xD;
+[xUnit.net 00:00:00.67]         C:\AutoTest\workspaces\individual-20261022-20261023\Vega.Data.Recipes\Elements\CollectionsContent.cs(182,0): at Vega.Data.Recipes.CollectionContent..ctor(String collectionName)&#xD;
+[xUnit.net 00:00:00.67]         C:\AutoTest\workspaces\individual-20261022-20261023\Vega.Data.Recipes\Elements\CollectionsContent.cs(22,0): at Vega.Data.Recipes.CollectionsContent..ctor()&#xD;
+[xUnit.net 00:00:00.67]         C:\AutoTest\workspaces\individual-20261022-20261023\Vega.Data.Recipes\Recipe.cs(95,0): at Vega.Data.Recipes.Recipe..ctor()&#xD;
+[xUnit.net 00:00:00.67]         C:\AutoTest\AutoTest\VegaAutoTest\probes\Vega.AutoTest.IndividualCommits\IndividualCommitTests.cs(182,0): at Vega.AutoTest.IndividualCommits.WorkItem3677Logic.&lt;&gt;c__DisplayClass1_0.&lt;NewCollectionGetsRecipeThroughputPitch&gt;b__0()&#xD;
+[xUnit.net 00:00:00.67]         C:\AutoTest\AutoTest\VegaAutoTest\probes\Vega.AutoTest.IndividualCommits\IndividualCommitTests.cs(24,0): at Vega.AutoTest.IndividualCommits.Evidence.Check(String id, Action action)&#xD;
+[xUnit.net 00:00:00.67]         C:\AutoTest\AutoTest\VegaAutoTest\probes\Vega.AutoTest.IndividualCommits\IndividualCommitTests.cs(181,0): at Vega.AutoTest.IndividualCommits.WorkItem3677Logic.NewCollectionGetsRecipeThroughputPitch(IncidenceType incidence, Double expected)&#xD;
+[xUnit.net 00:00:00.67]            at InvokeStub_WorkItem3677Logic.NewCollectionGetsRecipeThroughputPitch(Object, Span`1)&#xD;
+[xUnit.net 00:00:00.67]            at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)&#xD;
+[xUnit.net 00:00:00.67]         ----- Inner Stack Trace -----&#xD;
+[xUnit.net 00:00:00.67]            at Autofac.ResolutionExtensions.ResolveService(IComponentContext context, Service service, IEnumerable`1 parameters)&#xD;
+[xUnit.net 00:00:00.67]            at Autofac.ResolutionExtensions.Resolve(IComponentContext context, Type serviceType, IEnumerable`1 parameters)&#xD;
+[xUnit.net 00:00:00.67]            at Autofac.ResolutionExtensions.Resolve(IComponentContext context, Type serviceType)&#xD;
+[xUnit.net 00:00:00.67]            at Galaxy.Platform.Component.XComponentContainer.Resolve(Type interfaceType, String name)&#xD;
+[xUnit.net 00:00:00.80]   Finished:    Vega.BL.WaferAlignment.Tests&#xD;
+</StdOut>
+    </Output>
+    <RunInfos>
+      <RunInfo computerName="WIN-5NPN6Q8PL1B" outcome="Error" timestamp="2026-10-23T16:08:56.9823344+08:00">
+        <Text>[xUnit.net 00:00:00.67]     Vega.AutoTest.IndividualCommits.WorkItem3677Logic.NewCollectionGetsRecipeThroughputPitch(incidence: Oblique, expected: 36) [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="WIN-5NPN6Q8PL1B" outcome="Error" timestamp="2026-10-23T16:08:56.9864597+08:00">
+        <Text>[xUnit.net 00:00:00.67]     Vega.AutoTest.IndividualCommits.WorkItem3677Logic.NewCollectionGetsRecipeThroughputPitch(incidence: Normal, expected: 18) [FAIL]</Text>
+      </RunInfo>
+    </RunInfos>
+  </ResultSummary>
+</TestRun>

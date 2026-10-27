@@ -1,0 +1,34 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TestRun id="04e107f8-b598-4886-bd9e-5b0f26258875" name="Administrator@WIN-5NPN6Q8PL1B 2026-10-23 18:11:21" runUser="WIN-5NPN6Q8PL1B\Administrator" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <Times creation="2026-10-23T18:11:21.6653070+08:00" queuing="2026-10-23T18:11:21.6653075+08:00" start="2026-10-23T18:11:17.8129701+08:00" finish="2026-10-23T18:11:21.7119673+08:00" />
+  <TestSettings name="default" id="751016e9-5010-458d-a3f0-70a0a2f10e4c">
+    <Deployment runDeploymentRoot="Administrator_WIN-5NPN6Q8PL1B_2026-10-23_18_11_21" />
+  </TestSettings>
+  <Results>
+    <UnitTestResult executionId="3145bfa4-d62a-44a0-be0a-6f3a9831c11f" testId="400e7513-9177-d4dd-3fbe-f80647641be0" testName="Vega.AutoTest.L2.WorkItem3677L2.ActualDesktopPostprocessEvidence" computerName="WIN-5NPN6Q8PL1B" duration="00:00:00.2677532" startTime="2026-10-23T18:11:21.3698624+08:00" endTime="2026-10-23T18:11:21.3698848+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="3145bfa4-d62a-44a0-be0a-6f3a9831c11f" />
+  </Results>
+  <TestDefinitions>
+    <UnitTest name="Vega.AutoTest.L2.WorkItem3677L2.ActualDesktopPostprocessEvidence" storage="c:\autotest\autotest\vegaautotest\l2\vega.autotest.wi3677uievidence\bin\debug\net8.0-windows\vega.autotest.wi3677uievidence.dll" id="400e7513-9177-d4dd-3fbe-f80647641be0">
+      <Execution id="3145bfa4-d62a-44a0-be0a-6f3a9831c11f" />
+      <TestMethod codeBase="C:\AutoTest\AutoTest\VegaAutoTest\l2\Vega.AutoTest.Wi3677UiEvidence\bin\Debug\net8.0-windows\Vega.AutoTest.Wi3677UiEvidence.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Vega.AutoTest.L2.WorkItem3677L2" name="ActualDesktopPostprocessEvidence" />
+    </UnitTest>
+  </TestDefinitions>
+  <TestEntries>
+    <TestEntry testId="400e7513-9177-d4dd-3fbe-f80647641be0" executionId="3145bfa4-d62a-44a0-be0a-6f3a9831c11f" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </TestEntries>
+  <TestLists>
+    <TestList name="Results Not in a List" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestList name="All Loaded Results" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </TestLists>
+  <ResultSummary outcome="Completed">
+    <Counters total="1" executed="1" passed="1" failed="0" error="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+    <Output>
+      <StdOut>[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.5.3.1+6b60a9e56a (64-bit .NET 8.0.32)&#xD;
+[xUnit.net 00:00:00.55]   Discovering: Vega.AutoTest.Wi3677UiEvidence&#xD;
+[xUnit.net 00:00:00.63]   Discovered:  Vega.AutoTest.Wi3677UiEvidence&#xD;
+[xUnit.net 00:00:00.66]   Starting:    Vega.AutoTest.Wi3677UiEvidence&#xD;
+[xUnit.net 00:00:01.00]   Finished:    Vega.AutoTest.Wi3677UiEvidence&#xD;
+</StdOut>
+    </Output>
+  </ResultSummary>
+</TestRun>

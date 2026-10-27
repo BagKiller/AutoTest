@@ -1,0 +1,122 @@
+commit 10c33df5e69aa932bea8d843a29d8f6530d1fd73
+Author:     Zhu, Siyuan <Zhu, Siyuan>
+AuthorDate: Thu Oct 22 16:58:29 2026 +0800
+Commit:     Ma, Junyan <Ma, Junyan>
+CommitDate: Thu Oct 22 16:58:29 2026 +0800
+
+    已合并 PR 4980: 修复 DC 不合并bug：离线后处理添加 PitchInMicron 兜底
+    
+    修复 DC 不合并bug：离线后处理添加 PitchInMicron 兜底
+    
+    相关工作项: #3677
+
+diff --git a/Vega.BL.WaferRun/OfflineSequences/WaferRunOfflineSequence.cs b/Vega.BL.WaferRun/OfflineSequences/WaferRunOfflineSequence.cs
+index 8f6c409e..3f800094 100644
+--- a/Vega.BL.WaferRun/OfflineSequences/WaferRunOfflineSequence.cs
++++ b/Vega.BL.WaferRun/OfflineSequences/WaferRunOfflineSequence.cs
+@@ -5,6 +5,7 @@ using Galaxy.Platform.IMediator;
+ using Galaxy.Platform.IPerformanceMonitorService;
+ using Newtonsoft.Json.Linq;
+ using System.Buffers;
++using System.Globalization;
+ using Vega.BL.IWaferRun;
+ using Vega.Data.Analysis;
+ using Vega.Data.Commons;
+@@ -124,6 +125,10 @@ public class WaferRunOfflineSequence(string compName) : WaferRunSequenceBase(com
+ 
+                     var jsonContent = File.ReadAllText(jsonFilePath);
+                     var jObj = JObject.Parse(jsonContent);
++                    if (Mode == OfflineRunMode.NewPostProc)
++                    {
++                        ApplyJsonPitch(waferRun[currentIndex], jObj);
++                    }
+                     var alignment = jObj["alignment_data"];
+                     waferRun[currentIndex].Alignment = new AlignmentInfo()
+                     {
+@@ -322,11 +327,20 @@ public class WaferRunOfflineSequence(string compName) : WaferRunSequenceBase(com
+         var endRaduisInMicron = WaferScanRange.ComputeEndRadius(currentScanCollection, waferSizeInMicron, _doDICScan);
+         _logger.Debug(_compName, $"ComputeEndRadius doDICScan={_doDICScan},endRadius={endRaduisInMicron}");
+ 
++        // JSON 后处理没有 raw 数据，PitchInMicron 只能按当前 recipe 的 throughput 推导。
++        // 缺失时 PitchInMicron=0 会让 DC 合并搜索半径（SearchRadiusRatio × pitch）和 SPA 聚类半径
++        // （SearchDistance × pitch）恒为 0，双 collection 的 DC 缺陷几乎不会合并。
++        var (umPerTrack, _, _, _, _, _) = ConvertFromThroughput(
++            currentScanCollection.WaferScan.Throughput,
++            currentScanCollection.DarkField.SizingContent.Incidence,
++            waferRun.RecipeSnapshot.CollectionElement.WaferSize);
++
+         var collectionRun = new CollectionRunInfo()
+         {
+             CollectionIndex = index,
+             CollectionName = currentScanCollection.CollectionName,
+             IsNormalIncidence = currentScanCollection.DarkField.SizingContent.Incidence == IncidenceType.Normal,
++            PitchInMicron = umPerTrack,
+             WaferSizeInMicron = waferSizeInMicron,
+             StartRadiusInMicron = startRaduisInMicron,
+             EndRadiusInMicron = endRaduisInMicron,
+@@ -341,6 +355,65 @@ public class WaferRunOfflineSequence(string compName) : WaferRunSequenceBase(com
+         WaferRunScanSetup.SetupFTSurfImages(waferRun, index, waferRun.RecipeSnapshot.RecipeElements);
+     }
+ 
++    /// <summary>
++    /// NewPostProc 的算法结果 JSON 顶层若携带真实 pitch（pitch_size/pitchSize，单位 um），
++    /// 则覆盖 recipe 推导的兜底值；非法值或偏离兜底值 10 倍以上时保留兜底并告警。
++    /// ReproPostProc 保留持久化的真实值，不调用本方法。
++    /// </summary>
++    private void ApplyJsonPitch(CollectionRunInfo collectionRun, JObject jObj)
++    {
++        var fallbackPitch = collectionRun.PitchInMicron;
++        var source = "recipe-fallback";
++        if (TryReadDouble(jObj, out var pitch, out var invalidKey, "pitch_size", "pitchSize"))
++        {
++            if (!double.IsFinite(pitch) || pitch <= 0)
++            {
++                _logger.Warning(_compName, $"Ignoring invalid pitch {pitch} from JSON for Collection {collectionRun.CollectionName}; keeping fallback {fallbackPitch}um.");
++            }
++            else if (fallbackPitch > 0 && (pitch < fallbackPitch / 10 || pitch > fallbackPitch * 10))
++            {
++                _logger.Warning(_compName, $"JSON pitch {pitch}um for Collection {collectionRun.CollectionName} deviates from recipe fallback {fallbackPitch}um by more than 10x; keeping fallback. Please check the algorithm JSON unit/field.");
++            }
++            else
++            {
++                collectionRun.PitchInMicron = pitch;
++                source = "json";
++            }
++        }
++        else if (invalidKey != null)
++        {
++            _logger.Warning(_compName, $"Failed to parse '{invalidKey}' as pitch for Collection {collectionRun.CollectionName}; keeping fallback {fallbackPitch}um.");
++        }
++
++        _logger.Information(_compName, $"Collection {collectionRun.CollectionName} pitch: {collectionRun.PitchInMicron}um (source: {source})");
++    }
++
++    private static bool TryReadDouble(JObject jObj, out double value, out string? invalidKey, params string[] names)
++    {
++        value = 0;
++        invalidKey = null;
++        foreach (var name in names)
++        {
++            var token = jObj[name];
++            if (token is null || token.Type is JTokenType.Null or JTokenType.Undefined)
++            {
++                continue;
++            }
++            if (token.Type is JTokenType.Float or JTokenType.Integer)
++            {
++                value = token.Value<double>();
++                return true;
++            }
++            if (double.TryParse(token.ToString(), NumberStyles.Float, CultureInfo.InvariantCulture, out value))
++            {
++                return true;
++            }
++            invalidKey = name;
++            return false;
++        }
++        return false;
++    }
++
+     private void ApplyVariablePitchMetadata(CollectionRunInfo collectionRun, CollectionContent currentScanCollection, int waferSizeInMicron, double startRadiusInMicron, double endRadiusInMicron, double umPerTrack, string rawDataPath)
+     {
+         var (enabled, varStartR, ratioStart, ratioEnd, varEndR) = WaferRunScanParams.ReadPrimaryChannelVariablePitchParams(_configsManager, _logger, currentScanCollection.WaferScan.Throughput, waferSizeInMicron / 2.0, rawDataPath, _compName);

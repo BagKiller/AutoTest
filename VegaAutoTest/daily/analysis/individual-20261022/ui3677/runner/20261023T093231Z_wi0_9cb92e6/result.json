@@ -1,0 +1,56 @@
+{
+  "schemaVersion": "1.0",
+  "runId": "20261023T093231Z_wi0_9cb92e6",
+  "workItemId": 0,
+  "caseId": "wi3677-ui-evidence",
+  "verdict": "ERROR",
+  "verdictReason": "TEST_HOST_FAILED: 测试工程未能启动（编译失败或宿主退出且没有 trx）。C:\\AutoTest\\workspaces\\individual-20261022-20261023\\Vega.Data.Commons\\Vega100LaserPowerGears.cs(75,29): error CS0117: 'IncidenceFilterType' does not contain a definition for 'IncidenceOD3' [C:\\AutoTest\\AutoTest\\VegaAutoTest\\l2\\Vega.AutoTest.L2\\Vega.AutoTest.L2.csproj]",
+  "verdictCode": "TEST_HOST_FAILED",
+  "startedAt": "2026-10-23T17:32:31+08:00",
+  "finishedAt": "2026-10-23T17:32:47+08:00",
+  "durationMs": 16314,
+  "target": {
+    "repoRoot": "C:\\AutoTest\\workspaces\\individual-20261022-20261023",
+    "gitCommit": "10c33df5e69aa932bea8d843a29d8f6530d1fd73",
+    "gitBranch": "HEAD",
+    "gitDirty": true,
+    "vegaExe": "C:\\AutoTest\\workspaces\\individual-20261022-20261023\\Vega\\bin\\Debug\\net8.0-windows10.0.19041.0\\win-x64\\Vega.exe",
+    "vegaExeBuiltAt": "2026-10-23T17:27:03+08:00",
+    "rebuilt": false,
+    "builtFromCurrentSource": false
+  },
+  "channels": {
+    "l1Api": {
+      "available": false,
+      "baseUrl": "http://localhost:18901/vega-agent/",
+      "reason": "用例未产出 oracle-crosscheck 断言（本次层: uia）"
+    },
+    "l2Uia": {
+      "available": true,
+      "baseUrl": null,
+      "reason": null
+    },
+    "assertions": {
+      "available": true,
+      "baseUrl": null,
+      "reason": null
+    }
+  },
+  "assertions": [],
+  "summary": {
+    "total": 0,
+    "passed": 0,
+    "failed": 0,
+    "skipped": 0
+  },
+  "tests": [],
+  "evidence": {
+    "dir": "C:\\AutoTest\\AutoTest\\VegaAutoTest\\daily\\analysis\\individual-20261022\\ui3677\\runner\\20261023T093231Z_wi0_9cb92e6",
+    "files": [
+      "uia/trx/uia.trx",
+      "uia/trx/uia.testhost.log",
+      "report.md"
+    ]
+  },
+  "exitCode": 3
+}

@@ -1,0 +1,6 @@
+  Determining projects to restore...
+  Restored C:\AutoTest\workspaces\individual-20261022-20261023\Vega.Data.Jobs\Vega.Data.Jobs.csproj (in 20.1 sec).
+  Restored C:\AutoTest\workspaces\individual-20261022-20261023\Vega.Data.Management\Vega.Data.Management.csproj (in 19.82 sec).
+  Restored C:\AutoTest\workspaces\individual-20261022-20261023\Vega.BL.WaferRun\Vega.BL.WaferRun.csproj (in 19.82 sec).
+C:\AutoTest\runtime\dotnet\sdk\8.0.426\NuGet.targets(174,5): error : The process cannot access the file 'C:\AutoTest\workspaces\individual-20261022-20261023\packages.lock.json' because it is being used by another process. [C:\AutoTest\AutoTest\VegaAutoTest\probes\Vega.AutoTest.IndividualCommits\Vega.AutoTest.IndividualCommits.csproj]
+

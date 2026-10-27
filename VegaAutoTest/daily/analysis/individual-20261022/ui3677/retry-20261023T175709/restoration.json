@@ -1,0 +1,33 @@
+{
+  "processesBefore": [
+    {
+      "ProcessId": 600,
+      "ExecutablePath": "C:\\AutoTest\\workspaces\\individual-20261022-20261023\\Vega\\bin\\Debug\\net8.0-windows10.0.19041.0\\win-x64\\Vega.exe",
+      "CreationDate": "2026-10-23T17:57:31.385022+08:00"
+    },
+    {
+      "ProcessId": 7088,
+      "ExecutablePath": "C:\\AutoTest\\workspaces\\individual-20261022-20261023\\Vega\\bin\\Debug\\net8.0-windows10.0.19041.0\\win-x64\\Servers\\Galaxy.Server.Logging\\Galaxy.Server.Logging.exe",
+      "CreationDate": "2026-10-23T17:57:48.487986+08:00"
+    }
+  ],
+  "stopCompleted": true,
+  "session": "C:\\AutoTest\\AutoTest\\VegaAutoTest\\daily\\sessions\\20261023T175709_Vega300-HWv1_4fa055",
+  "machineOriginalHash": "EADE615A9C6712B6540DD132837F9A993A9FC5037362AC83D8A639879514B6C6",
+  "restoration": {
+    "componentActual": "C673B1F02ADCE40F5E853EDE4424948AF3B8F93EF5A1CC20438E55A69DCC0F6E",
+    "state": "RESTORED",
+    "hardwareActual": "12B209402071FA6297F00A8FDCB2A67A244DF0B87C3FA71FF8F3C57FB5B510AA",
+    "hardwareExpected": "12B209402071FA6297F00A8FDCB2A67A244DF0B87C3FA71FF8F3C57FB5B510AA",
+    "componentExpected": "C673B1F02ADCE40F5E853EDE4424948AF3B8F93EF5A1CC20438E55A69DCC0F6E"
+  },
+  "remainingProcesses": [
+    {
+      "ProcessId": 7088,
+      "ExecutablePath": "C:\\AutoTest\\workspaces\\individual-20261022-20261023\\Vega\\bin\\Debug\\net8.0-windows10.0.19041.0\\win-x64\\Servers\\Galaxy.Server.Logging\\Galaxy.Server.Logging.exe",
+      "CreationDate": "2026-10-23T17:57:48.487986+08:00"
+    }
+  ],
+  "finishedAt": "2026-10-23T18:10:24.9770452+08:00",
+  "machineRestoredHash": "EADE615A9C6712B6540DD132837F9A993A9FC5037362AC83D8A639879514B6C6"
+}

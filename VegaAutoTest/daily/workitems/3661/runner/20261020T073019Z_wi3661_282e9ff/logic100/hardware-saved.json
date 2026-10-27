@@ -1,0 +1,48 @@
+{
+  "PreTrack": 26139.925,
+  "MainTrack": 26139.925,
+  "LPMThreshold": 0.2922,
+  "LaserPowerRange": "Full",
+  "RotationAngle": 25.1041,
+  "HardwareParamsDic": {
+    "DW1": {
+      "HazeNoise": 555.0,
+      "MinDefect": 11.0,
+      "MaxDefect": 555.0,
+      "MinSIT": 0.1,
+      "MaxXT": 555.0,
+      "RefMaxHazeNppm": 555.0,
+      "RefOD": 5,
+      "RefPMTVoltage": 550.0,
+      "SystemGain": 555.0,
+      "SingleThreshold": 65535.0,
+      "SirSingleThreshold": 65535.0
+    },
+    "DW2": {
+      "HazeNoise": 555.0,
+      "MinDefect": 0.123,
+      "MaxDefect": 555.0,
+      "MinSIT": 0.1,
+      "MaxXT": 555.0,
+      "RefMaxHazeNppm": 555.0,
+      "RefOD": 5,
+      "RefPMTVoltage": 550.0,
+      "SystemGain": 555.0,
+      "SingleThreshold": 65535.0,
+      "SirSingleThreshold": 65535.0
+    },
+    "DN": {
+      "HazeNoise": 555.0,
+      "MinDefect": 0.01,
+      "MaxDefect": 555.0,
+      "MinSIT": 0.1,
+      "MaxXT": 555.0,
+      "RefMaxHazeNppm": 555.0,
+      "RefOD": 5,
+      "RefPMTVoltage": 550.0,
+      "SystemGain": 555.0,
+      "SingleThreshold": 65535.0,
+      "SirSingleThreshold": 65535.0
+    }
+  }
+}

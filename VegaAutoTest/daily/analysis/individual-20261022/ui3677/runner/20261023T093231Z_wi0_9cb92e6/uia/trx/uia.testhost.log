@@ -1,0 +1,9 @@
+  Determining projects to restore...
+  Restored C:\AutoTest\AutoTest\VegaAutoTest\l2\Vega.AutoTest.L2\Vega.AutoTest.L2.csproj (in 1.59 sec).
+  Restored C:\AutoTest\AutoTest\VegaAutoTest\harness\Vega.AutoTest.Harness.csproj (in 1.59 sec).
+  Vega.AutoTest.Harness -> C:\AutoTest\AutoTest\VegaAutoTest\harness\bin\Debug\net8.0-windows\Vega.AutoTest.Harness.dll
+C:\AutoTest\workspaces\individual-20261022-20261023\Vega.Data.Commons\Vega100LaserPowerGears.cs(75,29): error CS0117: 'IncidenceFilterType' does not contain a definition for 'IncidenceOD3' [C:\AutoTest\AutoTest\VegaAutoTest\l2\Vega.AutoTest.L2\Vega.AutoTest.L2.csproj]
+C:\AutoTest\AutoTest\VegaAutoTest\l2\Vega.AutoTest.L2\ScanChainL2.cs(77,32): warning CS8604: Possible null reference argument for parameter 'actual' in 'void AssertionRecorder.Pass(string id, string kind, string desc, string expected, string actual, double? delta = null, double? tol = null)'. [C:\AutoTest\AutoTest\VegaAutoTest\l2\Vega.AutoTest.L2\Vega.AutoTest.L2.csproj]
+C:\AutoTest\AutoTest\VegaAutoTest\l2\Vega.AutoTest.L2\ScanChainL2.cs(79,31): warning CS8604: Possible null reference argument for parameter 'actual' in 'void AssertionRecorder.Pass(string id, string kind, string desc, string expected, string actual, double? delta = null, double? tol = null)'. [C:\AutoTest\AutoTest\VegaAutoTest\l2\Vega.AutoTest.L2\Vega.AutoTest.L2.csproj]
+C:\AutoTest\AutoTest\VegaAutoTest\l2\Vega.AutoTest.L2\ScanChainL2.cs(81,54): warning CS8604: Possible null reference argument for parameter 'actual' in 'void AssertionRecorder.Pass(string id, string kind, string desc, string expected, string actual, double? delta = null, double? tol = null)'. [C:\AutoTest\AutoTest\VegaAutoTest\l2\Vega.AutoTest.L2\Vega.AutoTest.L2.csproj]
+

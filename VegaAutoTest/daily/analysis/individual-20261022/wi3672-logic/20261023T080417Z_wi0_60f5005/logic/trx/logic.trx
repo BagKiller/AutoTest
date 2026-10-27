@@ -1,0 +1,88 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TestRun id="17ef754d-1d1f-42da-b72f-bdfc6f43608a" name="Administrator@WIN-5NPN6Q8PL1B 2026-10-23 16:04:22" runUser="WIN-5NPN6Q8PL1B\Administrator" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <Times creation="2026-10-23T16:04:22.6637888+08:00" queuing="2026-10-23T16:04:22.6637891+08:00" start="2026-10-23T16:04:20.8309835+08:00" finish="2026-10-23T16:04:22.7033461+08:00" />
+  <TestSettings name="default" id="ac96a351-3a59-4183-bdf5-313d9eefdf4b">
+    <Deployment runDeploymentRoot="Administrator_WIN-5NPN6Q8PL1B_2026-10-23_16_04_22" />
+  </TestSettings>
+  <Results>
+    <UnitTestResult executionId="d2a8d303-d54d-4b6f-82b3-46bab6cbd904" testId="6620c5ac-4132-f2e5-5a8c-a724264edc82" testName="Vega.AutoTest.IndividualCommits.WorkItem3672Logic.FourShortArcsRecoverKnownCenter" computerName="WIN-5NPN6Q8PL1B" duration="00:00:00.0023587" startTime="2026-10-23T16:04:22.5937858+08:00" endTime="2026-10-23T16:04:22.5937860+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="d2a8d303-d54d-4b6f-82b3-46bab6cbd904" />
+    <UnitTestResult executionId="9d69b1c8-4b8a-4e0a-b19b-4002d0b91bed" testId="10cbabee-a5be-c6b4-2b57-ef67b76064aa" testName="Vega.AutoTest.IndividualCommits.WorkItem3672Logic.FewerThanThreePointsHasExplicitFallback(count: 0)" computerName="WIN-5NPN6Q8PL1B" duration="00:00:00.0011888" startTime="2026-10-23T16:04:21.5527116+08:00" endTime="2026-10-23T16:04:21.5527116+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="9d69b1c8-4b8a-4e0a-b19b-4002d0b91bed" />
+    <UnitTestResult executionId="688ae71e-4669-4517-b0ac-c612b91d8e36" testId="09bef57c-df35-bf28-75ce-4dbe31cb6922" testName="Vega.AutoTest.IndividualCommits.WorkItem3672Logic.AlgebraicCircleRecoversKnownCenter" computerName="WIN-5NPN6Q8PL1B" duration="00:00:00.0016050" startTime="2026-10-23T16:04:22.3325417+08:00" endTime="2026-10-23T16:04:22.3325419+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="688ae71e-4669-4517-b0ac-c612b91d8e36" />
+    <UnitTestResult executionId="899d15cb-2589-4489-a501-a7f45b42d5f2" testId="869f2a4b-26a1-bce7-6178-e7c7ea6cf81e" testName="Vega.AutoTest.IndividualCommits.WorkItem3672Logic.CollinearInputDoesNotInventCircle" computerName="WIN-5NPN6Q8PL1B" duration="00:00:00.0012484" startTime="2026-10-23T16:04:22.5677116+08:00" endTime="2026-10-23T16:04:22.5677119+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="899d15cb-2589-4489-a501-a7f45b42d5f2" />
+    <UnitTestResult executionId="26a3cf77-8e00-4d64-b75c-b50a2ea062da" testId="3fdcc0c5-fe17-4192-26f6-3330e25bf630" testName="Vega.AutoTest.IndividualCommits.WorkItem3672Logic.RepeatedRansacIsDeterministicWithOutliers" computerName="WIN-5NPN6Q8PL1B" duration="00:00:00.2305893" startTime="2026-10-23T16:04:22.5668981+08:00" endTime="2026-10-23T16:04:22.5668985+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="26a3cf77-8e00-4d64-b75c-b50a2ea062da" />
+    <UnitTestResult executionId="4da38be6-cbe0-48f3-aa9c-28bd77ed73b8" testId="13499a11-28e9-24f5-d18a-315b05605cca" testName="Vega.AutoTest.IndividualCommits.WorkItem3672Logic.FewerThanThreePointsHasExplicitFallback(count: 2)" computerName="WIN-5NPN6Q8PL1B" duration="00:00:00.0479465" startTime="2026-10-23T16:04:21.5492392+08:00" endTime="2026-10-23T16:04:21.5492618+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="4da38be6-cbe0-48f3-aa9c-28bd77ed73b8" />
+    <UnitTestResult executionId="4a758a24-8782-4fe6-848d-6824353d115d" testId="3dcbdebf-3d9d-582a-10a8-4e06c5956ae0" testName="Vega.AutoTest.IndividualCommits.WorkItem3672Logic.ActualServiceTooFewPointsReturnsNaN" computerName="WIN-5NPN6Q8PL1B" duration="00:00:00.0009961" startTime="2026-10-23T16:04:22.3336948+08:00" endTime="2026-10-23T16:04:22.3336950+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="4a758a24-8782-4fe6-848d-6824353d115d" />
+    <UnitTestResult executionId="7e482ce0-e016-4de7-8f22-afe096cff076" testId="d3562441-cd2a-a430-a15b-1208fef97038" testName="Vega.AutoTest.IndividualCommits.WorkItem3672Logic.ActualServiceRepeatedCircleFitDoesNotJump" computerName="WIN-5NPN6Q8PL1B" duration="00:00:00.7800081" startTime="2026-10-23T16:04:22.3308043+08:00" endTime="2026-10-23T16:04:22.3308047+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="7e482ce0-e016-4de7-8f22-afe096cff076" />
+    <UnitTestResult executionId="dace9c65-34b3-4077-94c8-563494e3df2b" testId="039bd0f1-1825-af77-1110-fbc281901490" testName="Vega.AutoTest.IndividualCommits.WorkItem3672Logic.NoConsensusIsMarkedAsFallback" computerName="WIN-5NPN6Q8PL1B" duration="00:00:00.0018387" startTime="2026-10-23T16:04:22.3354775+08:00" endTime="2026-10-23T16:04:22.3354777+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="dace9c65-34b3-4077-94c8-563494e3df2b" />
+    <UnitTestResult executionId="83166aee-2757-4322-b3d6-c05670a1773a" testId="7e85672a-2601-b8a5-ed6b-01a0924f01a4" testName="Vega.AutoTest.IndividualCommits.WorkItem3672Logic.FewerThanThreePointsHasExplicitFallback(count: 1)" computerName="WIN-5NPN6Q8PL1B" duration="00:00:00.0009131" startTime="2026-10-23T16:04:21.5523793+08:00" endTime="2026-10-23T16:04:21.5523794+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="83166aee-2757-4322-b3d6-c05670a1773a" />
+  </Results>
+  <TestDefinitions>
+    <UnitTest name="Vega.AutoTest.IndividualCommits.WorkItem3672Logic.ActualServiceTooFewPointsReturnsNaN" storage="c:\autotest\autotest\vegaautotest\probes\vega.autotest.individualcommits\bin\debug\net8.0-windows\vega.bl.waferalignment.tests.dll" id="3dcbdebf-3d9d-582a-10a8-4e06c5956ae0">
+      <Execution id="4a758a24-8782-4fe6-848d-6824353d115d" />
+      <TestMethod codeBase="C:\AutoTest\AutoTest\VegaAutoTest\probes\Vega.AutoTest.IndividualCommits\bin\Debug\net8.0-windows\Vega.BL.WaferAlignment.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Vega.AutoTest.IndividualCommits.WorkItem3672Logic" name="ActualServiceTooFewPointsReturnsNaN" />
+    </UnitTest>
+    <UnitTest name="Vega.AutoTest.IndividualCommits.WorkItem3672Logic.CollinearInputDoesNotInventCircle" storage="c:\autotest\autotest\vegaautotest\probes\vega.autotest.individualcommits\bin\debug\net8.0-windows\vega.bl.waferalignment.tests.dll" id="869f2a4b-26a1-bce7-6178-e7c7ea6cf81e">
+      <Execution id="899d15cb-2589-4489-a501-a7f45b42d5f2" />
+      <TestMethod codeBase="C:\AutoTest\AutoTest\VegaAutoTest\probes\Vega.AutoTest.IndividualCommits\bin\Debug\net8.0-windows\Vega.BL.WaferAlignment.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Vega.AutoTest.IndividualCommits.WorkItem3672Logic" name="CollinearInputDoesNotInventCircle" />
+    </UnitTest>
+    <UnitTest name="Vega.AutoTest.IndividualCommits.WorkItem3672Logic.FourShortArcsRecoverKnownCenter" storage="c:\autotest\autotest\vegaautotest\probes\vega.autotest.individualcommits\bin\debug\net8.0-windows\vega.bl.waferalignment.tests.dll" id="6620c5ac-4132-f2e5-5a8c-a724264edc82">
+      <Execution id="d2a8d303-d54d-4b6f-82b3-46bab6cbd904" />
+      <TestMethod codeBase="C:\AutoTest\AutoTest\VegaAutoTest\probes\Vega.AutoTest.IndividualCommits\bin\Debug\net8.0-windows\Vega.BL.WaferAlignment.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Vega.AutoTest.IndividualCommits.WorkItem3672Logic" name="FourShortArcsRecoverKnownCenter" />
+    </UnitTest>
+    <UnitTest name="Vega.AutoTest.IndividualCommits.WorkItem3672Logic.AlgebraicCircleRecoversKnownCenter" storage="c:\autotest\autotest\vegaautotest\probes\vega.autotest.individualcommits\bin\debug\net8.0-windows\vega.bl.waferalignment.tests.dll" id="09bef57c-df35-bf28-75ce-4dbe31cb6922">
+      <Execution id="688ae71e-4669-4517-b0ac-c612b91d8e36" />
+      <TestMethod codeBase="C:\AutoTest\AutoTest\VegaAutoTest\probes\Vega.AutoTest.IndividualCommits\bin\Debug\net8.0-windows\Vega.BL.WaferAlignment.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Vega.AutoTest.IndividualCommits.WorkItem3672Logic" name="AlgebraicCircleRecoversKnownCenter" />
+    </UnitTest>
+    <UnitTest name="Vega.AutoTest.IndividualCommits.WorkItem3672Logic.FewerThanThreePointsHasExplicitFallback(count: 1)" storage="c:\autotest\autotest\vegaautotest\probes\vega.autotest.individualcommits\bin\debug\net8.0-windows\vega.bl.waferalignment.tests.dll" id="7e85672a-2601-b8a5-ed6b-01a0924f01a4">
+      <Execution id="83166aee-2757-4322-b3d6-c05670a1773a" />
+      <TestMethod codeBase="C:\AutoTest\AutoTest\VegaAutoTest\probes\Vega.AutoTest.IndividualCommits\bin\Debug\net8.0-windows\Vega.BL.WaferAlignment.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Vega.AutoTest.IndividualCommits.WorkItem3672Logic" name="FewerThanThreePointsHasExplicitFallback" />
+    </UnitTest>
+    <UnitTest name="Vega.AutoTest.IndividualCommits.WorkItem3672Logic.NoConsensusIsMarkedAsFallback" storage="c:\autotest\autotest\vegaautotest\probes\vega.autotest.individualcommits\bin\debug\net8.0-windows\vega.bl.waferalignment.tests.dll" id="039bd0f1-1825-af77-1110-fbc281901490">
+      <Execution id="dace9c65-34b3-4077-94c8-563494e3df2b" />
+      <TestMethod codeBase="C:\AutoTest\AutoTest\VegaAutoTest\probes\Vega.AutoTest.IndividualCommits\bin\Debug\net8.0-windows\Vega.BL.WaferAlignment.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Vega.AutoTest.IndividualCommits.WorkItem3672Logic" name="NoConsensusIsMarkedAsFallback" />
+    </UnitTest>
+    <UnitTest name="Vega.AutoTest.IndividualCommits.WorkItem3672Logic.ActualServiceRepeatedCircleFitDoesNotJump" storage="c:\autotest\autotest\vegaautotest\probes\vega.autotest.individualcommits\bin\debug\net8.0-windows\vega.bl.waferalignment.tests.dll" id="d3562441-cd2a-a430-a15b-1208fef97038">
+      <Execution id="7e482ce0-e016-4de7-8f22-afe096cff076" />
+      <TestMethod codeBase="C:\AutoTest\AutoTest\VegaAutoTest\probes\Vega.AutoTest.IndividualCommits\bin\Debug\net8.0-windows\Vega.BL.WaferAlignment.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Vega.AutoTest.IndividualCommits.WorkItem3672Logic" name="ActualServiceRepeatedCircleFitDoesNotJump" />
+    </UnitTest>
+    <UnitTest name="Vega.AutoTest.IndividualCommits.WorkItem3672Logic.RepeatedRansacIsDeterministicWithOutliers" storage="c:\autotest\autotest\vegaautotest\probes\vega.autotest.individualcommits\bin\debug\net8.0-windows\vega.bl.waferalignment.tests.dll" id="3fdcc0c5-fe17-4192-26f6-3330e25bf630">
+      <Execution id="26a3cf77-8e00-4d64-b75c-b50a2ea062da" />
+      <TestMethod codeBase="C:\AutoTest\AutoTest\VegaAutoTest\probes\Vega.AutoTest.IndividualCommits\bin\Debug\net8.0-windows\Vega.BL.WaferAlignment.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Vega.AutoTest.IndividualCommits.WorkItem3672Logic" name="RepeatedRansacIsDeterministicWithOutliers" />
+    </UnitTest>
+    <UnitTest name="Vega.AutoTest.IndividualCommits.WorkItem3672Logic.FewerThanThreePointsHasExplicitFallback(count: 0)" storage="c:\autotest\autotest\vegaautotest\probes\vega.autotest.individualcommits\bin\debug\net8.0-windows\vega.bl.waferalignment.tests.dll" id="10cbabee-a5be-c6b4-2b57-ef67b76064aa">
+      <Execution id="9d69b1c8-4b8a-4e0a-b19b-4002d0b91bed" />
+      <TestMethod codeBase="C:\AutoTest\AutoTest\VegaAutoTest\probes\Vega.AutoTest.IndividualCommits\bin\Debug\net8.0-windows\Vega.BL.WaferAlignment.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Vega.AutoTest.IndividualCommits.WorkItem3672Logic" name="FewerThanThreePointsHasExplicitFallback" />
+    </UnitTest>
+    <UnitTest name="Vega.AutoTest.IndividualCommits.WorkItem3672Logic.FewerThanThreePointsHasExplicitFallback(count: 2)" storage="c:\autotest\autotest\vegaautotest\probes\vega.autotest.individualcommits\bin\debug\net8.0-windows\vega.bl.waferalignment.tests.dll" id="13499a11-28e9-24f5-d18a-315b05605cca">
+      <Execution id="4da38be6-cbe0-48f3-aa9c-28bd77ed73b8" />
+      <TestMethod codeBase="C:\AutoTest\AutoTest\VegaAutoTest\probes\Vega.AutoTest.IndividualCommits\bin\Debug\net8.0-windows\Vega.BL.WaferAlignment.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Vega.AutoTest.IndividualCommits.WorkItem3672Logic" name="FewerThanThreePointsHasExplicitFallback" />
+    </UnitTest>
+  </TestDefinitions>
+  <TestEntries>
+    <TestEntry testId="6620c5ac-4132-f2e5-5a8c-a724264edc82" executionId="d2a8d303-d54d-4b6f-82b3-46bab6cbd904" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="10cbabee-a5be-c6b4-2b57-ef67b76064aa" executionId="9d69b1c8-4b8a-4e0a-b19b-4002d0b91bed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="09bef57c-df35-bf28-75ce-4dbe31cb6922" executionId="688ae71e-4669-4517-b0ac-c612b91d8e36" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="869f2a4b-26a1-bce7-6178-e7c7ea6cf81e" executionId="899d15cb-2589-4489-a501-a7f45b42d5f2" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="3fdcc0c5-fe17-4192-26f6-3330e25bf630" executionId="26a3cf77-8e00-4d64-b75c-b50a2ea062da" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="13499a11-28e9-24f5-d18a-315b05605cca" executionId="4da38be6-cbe0-48f3-aa9c-28bd77ed73b8" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="3dcbdebf-3d9d-582a-10a8-4e06c5956ae0" executionId="4a758a24-8782-4fe6-848d-6824353d115d" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="d3562441-cd2a-a430-a15b-1208fef97038" executionId="7e482ce0-e016-4de7-8f22-afe096cff076" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="039bd0f1-1825-af77-1110-fbc281901490" executionId="dace9c65-34b3-4077-94c8-563494e3df2b" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="7e85672a-2601-b8a5-ed6b-01a0924f01a4" executionId="83166aee-2757-4322-b3d6-c05670a1773a" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </TestEntries>
+  <TestLists>
+    <TestList name="Results Not in a List" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestList name="All Loaded Results" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </TestLists>
+  <ResultSummary outcome="Completed">
+    <Counters total="10" executed="10" passed="10" failed="0" error="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+    <Output>
+      <StdOut>[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.5.3.1+6b60a9e56a (64-bit .NET 8.0.32)&#xD;
+[xUnit.net 00:00:00.10]   Discovering: Vega.BL.WaferAlignment.Tests&#xD;
+[xUnit.net 00:00:00.17]   Discovered:  Vega.BL.WaferAlignment.Tests&#xD;
+[xUnit.net 00:00:00.18]   Starting:    Vega.BL.WaferAlignment.Tests&#xD;
+[xUnit.net 00:00:01.32]   Finished:    Vega.BL.WaferAlignment.Tests&#xD;
+</StdOut>
+    </Output>
+  </ResultSummary>
+</TestRun>

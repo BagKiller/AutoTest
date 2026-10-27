@@ -1,0 +1,490 @@
+{
+  "schemaVersion": "1.0",
+  "runId": "20261023T081237Z_wi0_4a4c580",
+  "workItemId": 0,
+  "caseId": "commit-8d088291-logic",
+  "verdict": "PASS",
+  "verdictReason": "OK: 27/27 断言通过",
+  "verdictCode": "OK",
+  "startedAt": "2026-10-23T16:12:37+08:00",
+  "finishedAt": "2026-10-23T16:12:41+08:00",
+  "durationMs": 3984,
+  "target": {
+    "repoRoot": "C:\\AutoTest\\workspaces\\individual-20261022-20261023",
+    "gitCommit": "10c33df5e69aa932bea8d843a29d8f6530d1fd73",
+    "gitBranch": "HEAD",
+    "gitDirty": true,
+    "vegaExe": "C:\\AutoTest\\workspaces\\individual-20261022-20261023\\Vega\\bin\\Debug\\net8.0-windows10.0.19041.0\\win-x64\\Vega.exe",
+    "vegaExeBuiltAt": null,
+    "rebuilt": false,
+    "builtFromCurrentSource": false
+  },
+  "channels": {
+    "l1Api": {
+      "available": false,
+      "baseUrl": "http://localhost:18901/vega-agent/",
+      "reason": "用例未产出 oracle-crosscheck 断言（本次层: logic）"
+    },
+    "l2Uia": {
+      "available": false,
+      "baseUrl": null,
+      "reason": "本次未请求 uia 层"
+    },
+    "assertions": {
+      "available": true,
+      "baseUrl": null,
+      "reason": null
+    }
+  },
+  "assertions": [
+    {
+      "id": "commit8d088291.Vega.BL.WaferAlignment.Tests.NotchFineSearchValidTests.VertexNearEdge_InsufficientSideSupport_ReturnsNaN",
+      "kind": "logic",
+      "description": "commit8d088291.Vega.BL.WaferAlignment.Tests.NotchFineSearchValidTests.VertexNearEdge_InsufficientSideSupport_ReturnsNaN",
+      "expected": "specified behavior",
+      "actual": "matched",
+      "delta": null,
+      "tolerance": null,
+      "result": "PASS"
+    },
+    {
+      "id": "commit8d088291.Vega.BL.WaferAlignment.Tests.ExtractNotchWindowTests.WindowSlice_CopiesPointsAndMask_MapsStartIndex",
+      "kind": "logic",
+      "description": "commit8d088291.Vega.BL.WaferAlignment.Tests.ExtractNotchWindowTests.WindowSlice_CopiesPointsAndMask_MapsStartIndex",
+      "expected": "specified behavior",
+      "actual": "matched",
+      "delta": null,
+      "tolerance": null,
+      "result": "PASS"
+    },
+    {
+      "id": "commit8d088291.Vega.BL.WaferAlignment.Tests.NotchCoarseSearchCoreTests.MinimumCandidateInvalid_AllCandidatesRejected_ReturnsMinusOne",
+      "kind": "logic",
+      "description": "commit8d088291.Vega.BL.WaferAlignment.Tests.NotchCoarseSearchCoreTests.MinimumCandidateInvalid_AllCandidatesRejected_ReturnsMinusOne",
+      "expected": "specified behavior",
+      "actual": "matched",
+      "delta": null,
+      "tolerance": null,
+      "result": "PASS"
+    },
+    {
+      "id": "commit8d088291.Vega.BL.WaferAlignment.Tests.FindBracketedNotchEdgeInColumnTests.ValidCrossing_AtLastColumn_ReturnsThetaNearTwoPi",
+      "kind": "logic",
+      "description": "commit8d088291.Vega.BL.WaferAlignment.Tests.FindBracketedNotchEdgeInColumnTests.ValidCrossing_AtLastColumn_ReturnsThetaNearTwoPi",
+      "expected": "specified behavior",
+      "actual": "matched",
+      "delta": null,
+      "tolerance": null,
+      "result": "PASS"
+    },
+    {
+      "id": "commit8d088291.Vega.BL.WaferAlignment.Tests.ExtractNotchWindowTests.MismatchedMaskLength_ReturnsNull",
+      "kind": "logic",
+      "description": "commit8d088291.Vega.BL.WaferAlignment.Tests.ExtractNotchWindowTests.MismatchedMaskLength_ReturnsNull",
+      "expected": "specified behavior",
+      "actual": "matched",
+      "delta": null,
+      "tolerance": null,
+      "result": "PASS"
+    },
+    {
+      "id": "commit8d088291.Vega.BL.WaferAlignment.Tests.FindNotchEdgesForIndexesTests.Masked_MixedColumns_WriteInterpolatedRadiusAndMask",
+      "kind": "logic",
+      "description": "commit8d088291.Vega.BL.WaferAlignment.Tests.FindNotchEdgesForIndexesTests.Masked_MixedColumns_WriteInterpolatedRadiusAndMask",
+      "expected": "specified behavior",
+      "actual": "matched",
+      "delta": null,
+      "tolerance": null,
+      "result": "PASS"
+    },
+    {
+      "id": "commit8d088291.Vega.BL.WaferAlignment.Tests.FindBracketedNotchEdgeInColumnTests.GapColumn_SkipsUnbracketedPairs_AndFindsInnerCrossing",
+      "kind": "logic",
+      "description": "commit8d088291.Vega.BL.WaferAlignment.Tests.FindBracketedNotchEdgeInColumnTests.GapColumn_SkipsUnbracketedPairs_AndFindsInnerCrossing",
+      "expected": "specified behavior",
+      "actual": "matched",
+      "delta": null,
+      "tolerance": null,
+      "result": "PASS"
+    },
+    {
+      "id": "commit8d088291.Vega.BL.WaferAlignment.Tests.NotchFineSearchValidTests.MismatchedMaskLength_ReturnsNaN",
+      "kind": "logic",
+      "description": "commit8d088291.Vega.BL.WaferAlignment.Tests.NotchFineSearchValidTests.MismatchedMaskLength_ReturnsNaN",
+      "expected": "specified behavior",
+      "actual": "matched",
+      "delta": null,
+      "tolerance": null,
+      "result": "PASS"
+    },
+    {
+      "id": "commit8d088291.Vega.BL.WaferAlignment.Tests.NotchCoarseSearchCoreTests.AllInvalid_ReturnsMinusOneWithWarning",
+      "kind": "logic",
+      "description": "commit8d088291.Vega.BL.WaferAlignment.Tests.NotchCoarseSearchCoreTests.AllInvalid_ReturnsMinusOneWithWarning",
+      "expected": "specified behavior",
+      "actual": "matched",
+      "delta": null,
+      "tolerance": null,
+      "result": "PASS"
+    },
+    {
+      "id": "commit8d088291.Vega.BL.WaferAlignment.Tests.FindBracketedNotchEdgeInColumnTests.ValidCrossing_AtOffsetColumn_IncludesColumnFraction",
+      "kind": "logic",
+      "description": "commit8d088291.Vega.BL.WaferAlignment.Tests.FindBracketedNotchEdgeInColumnTests.ValidCrossing_AtOffsetColumn_IncludesColumnFraction",
+      "expected": "specified behavior",
+      "actual": "matched",
+      "delta": null,
+      "tolerance": null,
+      "result": "PASS"
+    },
+    {
+      "id": "commit8d088291.Vega.BL.WaferAlignment.Tests.NotchCoarseSearchCoreTests.AllValid_SelectsMinimumRadiusCandidate",
+      "kind": "logic",
+      "description": "commit8d088291.Vega.BL.WaferAlignment.Tests.NotchCoarseSearchCoreTests.AllValid_SelectsMinimumRadiusCandidate",
+      "expected": "specified behavior",
+      "actual": "matched",
+      "delta": null,
+      "tolerance": null,
+      "result": "PASS"
+    },
+    {
+      "id": "commit8d088291.Vega.BL.WaferAlignment.Tests.FindBracketedNotchEdgeInColumnTests.EntirelyAboveThreshold_MarksInvalid",
+      "kind": "logic",
+      "description": "commit8d088291.Vega.BL.WaferAlignment.Tests.FindBracketedNotchEdgeInColumnTests.EntirelyAboveThreshold_MarksInvalid",
+      "expected": "specified behavior",
+      "actual": "matched",
+      "delta": null,
+      "tolerance": null,
+      "result": "PASS"
+    },
+    {
+      "id": "commit8d088291.Vega.BL.WaferAlignment.Tests.FindNotchEdgesForIndexesTests.Unmasked_KeepsFirstCrossingGuessBehavior",
+      "kind": "logic",
+      "description": "commit8d088291.Vega.BL.WaferAlignment.Tests.FindNotchEdgesForIndexesTests.Unmasked_KeepsFirstCrossingGuessBehavior",
+      "expected": "specified behavior",
+      "actual": "matched",
+      "delta": null,
+      "tolerance": null,
+      "result": "PASS"
+    },
+    {
+      "id": "commit8d088291.Vega.BL.WaferAlignment.Tests.FindBracketedNotchEdgeInColumnTests.SingleCrossing_InterpolatesRealFraction",
+      "kind": "logic",
+      "description": "commit8d088291.Vega.BL.WaferAlignment.Tests.FindBracketedNotchEdgeInColumnTests.SingleCrossing_InterpolatesRealFraction",
+      "expected": "specified behavior",
+      "actual": "matched",
+      "delta": null,
+      "tolerance": null,
+      "result": "PASS"
+    },
+    {
+      "id": "commit8d088291.Vega.BL.WaferAlignment.Tests.NotchFineSearchValidTests.TooFewValidPoints_ReturnsNaN",
+      "kind": "logic",
+      "description": "commit8d088291.Vega.BL.WaferAlignment.Tests.NotchFineSearchValidTests.TooFewValidPoints_ReturnsNaN",
+      "expected": "specified behavior",
+      "actual": "matched",
+      "delta": null,
+      "tolerance": null,
+      "result": "PASS"
+    },
+    {
+      "id": "commit8d088291.Vega.BL.WaferAlignment.Tests.NotchFineSearchValidTests.AllInvalid_ReturnsNaN",
+      "kind": "logic",
+      "description": "commit8d088291.Vega.BL.WaferAlignment.Tests.NotchFineSearchValidTests.AllInvalid_ReturnsNaN",
+      "expected": "specified behavior",
+      "actual": "matched",
+      "delta": null,
+      "tolerance": null,
+      "result": "PASS"
+    },
+    {
+      "id": "commit8d088291.Vega.BL.WaferAlignment.Tests.NotchFineSearchValidTests.VertexOutOfRange_ReturnsNaN",
+      "kind": "logic",
+      "description": "commit8d088291.Vega.BL.WaferAlignment.Tests.NotchFineSearchValidTests.VertexOutOfRange_ReturnsNaN",
+      "expected": "specified behavior",
+      "actual": "matched",
+      "delta": null,
+      "tolerance": null,
+      "result": "PASS"
+    },
+    {
+      "id": "commit8d088291.Vega.BL.WaferAlignment.Tests.FindBracketedNotchEdgeInColumnTests.NoBracketedCrossing_MarksInvalid_KeepsDefaultRadius",
+      "kind": "logic",
+      "description": "commit8d088291.Vega.BL.WaferAlignment.Tests.FindBracketedNotchEdgeInColumnTests.NoBracketedCrossing_MarksInvalid_KeepsDefaultRadius",
+      "expected": "specified behavior",
+      "actual": "matched",
+      "delta": null,
+      "tolerance": null,
+      "result": "PASS"
+    },
+    {
+      "id": "commit8d088291.Vega.BL.WaferAlignment.Tests.FindNotchEdgesForIndexesTests.MismatchedMaskLength_ThrowsArgumentException",
+      "kind": "logic",
+      "description": "commit8d088291.Vega.BL.WaferAlignment.Tests.FindNotchEdgesForIndexesTests.MismatchedMaskLength_ThrowsArgumentException",
+      "expected": "specified behavior",
+      "actual": "matched",
+      "delta": null,
+      "tolerance": null,
+      "result": "PASS"
+    },
+    {
+      "id": "commit8d088291.Vega.BL.WaferAlignment.Tests.FindBracketedNotchEdgeInColumnTests.EqualIntensities_NeverInterpolated_MarksInvalid",
+      "kind": "logic",
+      "description": "commit8d088291.Vega.BL.WaferAlignment.Tests.FindBracketedNotchEdgeInColumnTests.EqualIntensities_NeverInterpolated_MarksInvalid",
+      "expected": "specified behavior",
+      "actual": "matched",
+      "delta": null,
+      "tolerance": null,
+      "result": "PASS"
+    },
+    {
+      "id": "commit8d088291.Vega.BL.WaferAlignment.Tests.NotchFineSearchValidTests.AllValidParabola_ReturnsVertex",
+      "kind": "logic",
+      "description": "commit8d088291.Vega.BL.WaferAlignment.Tests.NotchFineSearchValidTests.AllValidParabola_ReturnsVertex",
+      "expected": "specified behavior",
+      "actual": "matched",
+      "delta": null,
+      "tolerance": null,
+      "result": "PASS"
+    },
+    {
+      "id": "commit8d088291.Vega.BL.WaferAlignment.Tests.NotchCoarseSearchCoreTests.MismatchedMaskLength_ReturnsMinusOneWithWarning",
+      "kind": "logic",
+      "description": "commit8d088291.Vega.BL.WaferAlignment.Tests.NotchCoarseSearchCoreTests.MismatchedMaskLength_ReturnsMinusOneWithWarning",
+      "expected": "specified behavior",
+      "actual": "matched",
+      "delta": null,
+      "tolerance": null,
+      "result": "PASS"
+    },
+    {
+      "id": "commit8d088291.Vega.BL.WaferAlignment.Tests.FindNotchEdgesForIndexesTests.Masked_OutOfBoundsIndex_KeepsDefaultRadiusAndInvalid",
+      "kind": "logic",
+      "description": "commit8d088291.Vega.BL.WaferAlignment.Tests.FindNotchEdgesForIndexesTests.Masked_OutOfBoundsIndex_KeepsDefaultRadiusAndInvalid",
+      "expected": "specified behavior",
+      "actual": "matched",
+      "delta": null,
+      "tolerance": null,
+      "result": "PASS"
+    },
+    {
+      "id": "commit8d088291.Vega.BL.WaferAlignment.Tests.NotchCoarseSearchCoreTests.PartialValid_MeanRadiusUsesValidPointsOnly",
+      "kind": "logic",
+      "description": "commit8d088291.Vega.BL.WaferAlignment.Tests.NotchCoarseSearchCoreTests.PartialValid_MeanRadiusUsesValidPointsOnly",
+      "expected": "specified behavior",
+      "actual": "matched",
+      "delta": null,
+      "tolerance": null,
+      "result": "PASS"
+    },
+    {
+      "id": "commit8d088291.Vega.BL.WaferAlignment.Tests.NotchCoarseSearchCoreTests.EmptyPoints_Unmasked_ReturnsMinusOneSilently",
+      "kind": "logic",
+      "description": "commit8d088291.Vega.BL.WaferAlignment.Tests.NotchCoarseSearchCoreTests.EmptyPoints_Unmasked_ReturnsMinusOneSilently",
+      "expected": "specified behavior",
+      "actual": "matched",
+      "delta": null,
+      "tolerance": null,
+      "result": "PASS"
+    },
+    {
+      "id": "commit8d088291.Vega.BL.WaferAlignment.Tests.ExtractNotchWindowTests.NullMask_ReturnsNull",
+      "kind": "logic",
+      "description": "commit8d088291.Vega.BL.WaferAlignment.Tests.ExtractNotchWindowTests.NullMask_ReturnsNull",
+      "expected": "specified behavior",
+      "actual": "matched",
+      "delta": null,
+      "tolerance": null,
+      "result": "PASS"
+    },
+    {
+      "id": "commit8d088291.Vega.BL.WaferAlignment.Tests.ExtractNotchWindowTests.EmptyWindow_ReturnsEmptyArraysWithZeroStartIndex",
+      "kind": "logic",
+      "description": "commit8d088291.Vega.BL.WaferAlignment.Tests.ExtractNotchWindowTests.EmptyWindow_ReturnsEmptyArraysWithZeroStartIndex",
+      "expected": "specified behavior",
+      "actual": "matched",
+      "delta": null,
+      "tolerance": null,
+      "result": "PASS"
+    }
+  ],
+  "summary": {
+    "total": 27,
+    "passed": 27,
+    "failed": 0,
+    "skipped": 0
+  },
+  "tests": [
+    {
+      "name": "Vega.AutoTest.IndividualCommits.Commit8d088291Logic.OriginalRegression(className: \"Vega.BL.WaferAlignment.Tests.NotchCoarseSearchCore\"···, methodName: \"MismatchedMaskLength_ReturnsMinusOneWithWarning\")",
+      "outcome": "Passed",
+      "durationMs": 1,
+      "message": null
+    },
+    {
+      "name": "Vega.AutoTest.IndividualCommits.Commit8d088291Logic.OriginalRegression(className: \"Vega.BL.WaferAlignment.Tests.FindNotchEdgesForInde\"···, methodName: \"Masked_MixedColumns_WriteInterpolatedRadiusAndMask\")",
+      "outcome": "Passed",
+      "durationMs": 2,
+      "message": null
+    },
+    {
+      "name": "Vega.AutoTest.IndividualCommits.Commit8d088291Logic.OriginalRegression(className: \"Vega.BL.WaferAlignment.Tests.FindBracketedNotchEdg\"···, methodName: \"ValidCrossing_AtOffsetColumn_IncludesColumnFractio\"···)",
+      "outcome": "Passed",
+      "durationMs": 1,
+      "message": null
+    },
+    {
+      "name": "Vega.AutoTest.IndividualCommits.Commit8d088291Logic.OriginalRegression(className: \"Vega.BL.WaferAlignment.Tests.NotchFineSearchValidT\"···, methodName: \"AllInvalid_ReturnsNaN\")",
+      "outcome": "Passed",
+      "durationMs": 1,
+      "message": null
+    },
+    {
+      "name": "Vega.AutoTest.IndividualCommits.Commit8d088291Logic.OriginalRegression(className: \"Vega.BL.WaferAlignment.Tests.ExtractNotchWindowTes\"···, methodName: \"WindowSlice_CopiesPointsAndMask_MapsStartIndex\")",
+      "outcome": "Passed",
+      "durationMs": 15,
+      "message": null
+    },
+    {
+      "name": "Vega.AutoTest.IndividualCommits.Commit8d088291Logic.OriginalRegression(className: \"Vega.BL.WaferAlignment.Tests.NotchCoarseSearchCore\"···, methodName: \"MinimumCandidateInvalid_AllCandidatesRejected_Retu\"···)",
+      "outcome": "Passed",
+      "durationMs": 17,
+      "message": null
+    },
+    {
+      "name": "Vega.AutoTest.IndividualCommits.Commit8d088291Logic.OriginalRegression(className: \"Vega.BL.WaferAlignment.Tests.FindBracketedNotchEdg\"···, methodName: \"SingleCrossing_InterpolatesRealFraction\")",
+      "outcome": "Passed",
+      "durationMs": 1,
+      "message": null
+    },
+    {
+      "name": "Vega.AutoTest.IndividualCommits.Commit8d088291Logic.OriginalRegression(className: \"Vega.BL.WaferAlignment.Tests.NotchFineSearchValidT\"···, methodName: \"VertexOutOfRange_ReturnsNaN\")",
+      "outcome": "Passed",
+      "durationMs": 4,
+      "message": null
+    },
+    {
+      "name": "Vega.AutoTest.IndividualCommits.Commit8d088291Logic.OriginalRegression(className: \"Vega.BL.WaferAlignment.Tests.NotchFineSearchValidT\"···, methodName: \"VertexNearEdge_InsufficientSideSupport_ReturnsNaN\")",
+      "outcome": "Passed",
+      "durationMs": 69,
+      "message": null
+    },
+    {
+      "name": "Vega.AutoTest.IndividualCommits.Commit8d088291Logic.OriginalRegression(className: \"Vega.BL.WaferAlignment.Tests.FindBracketedNotchEdg\"···, methodName: \"EqualIntensities_NeverInterpolated_MarksInvalid\")",
+      "outcome": "Passed",
+      "durationMs": 1,
+      "message": null
+    },
+    {
+      "name": "Vega.AutoTest.IndividualCommits.Commit8d088291Logic.OriginalRegression(className: \"Vega.BL.WaferAlignment.Tests.FindNotchEdgesForInde\"···, methodName: \"Unmasked_KeepsFirstCrossingGuessBehavior\")",
+      "outcome": "Passed",
+      "durationMs": 3,
+      "message": null
+    },
+    {
+      "name": "Vega.AutoTest.IndividualCommits.Commit8d088291Logic.OriginalRegression(className: \"Vega.BL.WaferAlignment.Tests.FindBracketedNotchEdg\"···, methodName: \"ValidCrossing_AtLastColumn_ReturnsThetaNearTwoPi\")",
+      "outcome": "Passed",
+      "durationMs": 2,
+      "message": null
+    },
+    {
+      "name": "Vega.AutoTest.IndividualCommits.Commit8d088291Logic.OriginalRegression(className: \"Vega.BL.WaferAlignment.Tests.FindNotchEdgesForInde\"···, methodName: \"MismatchedMaskLength_ThrowsArgumentException\")",
+      "outcome": "Passed",
+      "durationMs": 15,
+      "message": null
+    },
+    {
+      "name": "Vega.AutoTest.IndividualCommits.Commit8d088291Logic.OriginalRegression(className: \"Vega.BL.WaferAlignment.Tests.ExtractNotchWindowTes\"···, methodName: \"EmptyWindow_ReturnsEmptyArraysWithZeroStartIndex\")",
+      "outcome": "Passed",
+      "durationMs": 10,
+      "message": null
+    },
+    {
+      "name": "Vega.AutoTest.IndividualCommits.Commit8d088291Logic.OriginalRegression(className: \"Vega.BL.WaferAlignment.Tests.NotchCoarseSearchCore\"···, methodName: \"AllValid_SelectsMinimumRadiusCandidate\")",
+      "outcome": "Passed",
+      "durationMs": 1,
+      "message": null
+    },
+    {
+      "name": "Vega.AutoTest.IndividualCommits.Commit8d088291Logic.OriginalRegression(className: \"Vega.BL.WaferAlignment.Tests.NotchCoarseSearchCore\"···, methodName: \"EmptyPoints_Unmasked_ReturnsMinusOneSilently\")",
+      "outcome": "Passed",
+      "durationMs": 6,
+      "message": null
+    },
+    {
+      "name": "Vega.AutoTest.IndividualCommits.Commit8d088291Logic.OriginalRegression(className: \"Vega.BL.WaferAlignment.Tests.FindBracketedNotchEdg\"···, methodName: \"EntirelyAboveThreshold_MarksInvalid\")",
+      "outcome": "Passed",
+      "durationMs": 1,
+      "message": null
+    },
+    {
+      "name": "Vega.AutoTest.IndividualCommits.Commit8d088291Logic.OriginalRegression(className: \"Vega.BL.WaferAlignment.Tests.NotchCoarseSearchCore\"···, methodName: \"AllInvalid_ReturnsMinusOneWithWarning\")",
+      "outcome": "Passed",
+      "durationMs": 1,
+      "message": null
+    },
+    {
+      "name": "Vega.AutoTest.IndividualCommits.Commit8d088291Logic.OriginalRegression(className: \"Vega.BL.WaferAlignment.Tests.NotchCoarseSearchCore\"···, methodName: \"PartialValid_MeanRadiusUsesValidPointsOnly\")",
+      "outcome": "Passed",
+      "durationMs": 1,
+      "message": null
+    },
+    {
+      "name": "Vega.AutoTest.IndividualCommits.Commit8d088291Logic.OriginalRegression(className: \"Vega.BL.WaferAlignment.Tests.ExtractNotchWindowTes\"···, methodName: \"MismatchedMaskLength_ReturnsNull\")",
+      "outcome": "Passed",
+      "durationMs": 1,
+      "message": null
+    },
+    {
+      "name": "Vega.AutoTest.IndividualCommits.Commit8d088291Logic.OriginalRegression(className: \"Vega.BL.WaferAlignment.Tests.FindNotchEdgesForInde\"···, methodName: \"Masked_OutOfBoundsIndex_KeepsDefaultRadiusAndInval\"···)",
+      "outcome": "Passed",
+      "durationMs": 1,
+      "message": null
+    },
+    {
+      "name": "Vega.AutoTest.IndividualCommits.Commit8d088291Logic.OriginalRegression(className: \"Vega.BL.WaferAlignment.Tests.FindBracketedNotchEdg\"···, methodName: \"GapColumn_SkipsUnbracketedPairs_AndFindsInnerCross\"···)",
+      "outcome": "Passed",
+      "durationMs": 1,
+      "message": null
+    },
+    {
+      "name": "Vega.AutoTest.IndividualCommits.Commit8d088291Logic.OriginalRegression(className: \"Vega.BL.WaferAlignment.Tests.FindBracketedNotchEdg\"···, methodName: \"NoBracketedCrossing_MarksInvalid_KeepsDefaultRadiu\"···)",
+      "outcome": "Passed",
+      "durationMs": 1,
+      "message": null
+    },
+    {
+      "name": "Vega.AutoTest.IndividualCommits.Commit8d088291Logic.OriginalRegression(className: \"Vega.BL.WaferAlignment.Tests.NotchFineSearchValidT\"···, methodName: \"TooFewValidPoints_ReturnsNaN\")",
+      "outcome": "Passed",
+      "durationMs": 1,
+      "message": null
+    },
+    {
+      "name": "Vega.AutoTest.IndividualCommits.Commit8d088291Logic.OriginalRegression(className: \"Vega.BL.WaferAlignment.Tests.NotchFineSearchValidT\"···, methodName: \"AllValidParabola_ReturnsVertex\")",
+      "outcome": "Passed",
+      "durationMs": 1,
+      "message": null
+    },
+    {
+      "name": "Vega.AutoTest.IndividualCommits.Commit8d088291Logic.OriginalRegression(className: \"Vega.BL.WaferAlignment.Tests.ExtractNotchWindowTes\"···, methodName: \"NullMask_ReturnsNull\")",
+      "outcome": "Passed",
+      "durationMs": 15,
+      "message": null
+    },
+    {
+      "name": "Vega.AutoTest.IndividualCommits.Commit8d088291Logic.OriginalRegression(className: \"Vega.BL.WaferAlignment.Tests.NotchFineSearchValidT\"···, methodName: \"MismatchedMaskLength_ReturnsNaN\")",
+      "outcome": "Passed",
+      "durationMs": 1,
+      "message": null
+    }
+  ],
+  "evidence": {
+    "dir": "C:\\AutoTest\\AutoTest\\VegaAutoTest\\daily\\analysis\\individual-20261022\\commit-8d088291-logic\\20261023T081237Z_wi0_4a4c580",
+    "files": [
+      "logic/trx/logic.trx",
+      "logic/trx/logic.testhost.log",
+      "report.md"
+    ]
+  },
+  "exitCode": 0
+}

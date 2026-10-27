@@ -1,0 +1,56 @@
+{
+  "schemaVersion": "1.0",
+  "runId": "20261023T081104Z_wi0_91eb4c5",
+  "workItemId": 0,
+  "caseId": "wi3677-logic",
+  "verdict": "ERROR",
+  "verdictReason": "TEST_HOST_FAILED: 测试工程未能启动（编译失败或宿主退出且没有 trx）。",
+  "verdictCode": "TEST_HOST_FAILED",
+  "startedAt": "2026-10-23T16:11:04+08:00",
+  "finishedAt": "2026-10-23T16:11:07+08:00",
+  "durationMs": 2896,
+  "target": {
+    "repoRoot": "C:\\AutoTest\\workspaces\\individual-20261022-20261023",
+    "gitCommit": "10c33df5e69aa932bea8d843a29d8f6530d1fd73",
+    "gitBranch": "HEAD",
+    "gitDirty": true,
+    "vegaExe": "C:\\AutoTest\\workspaces\\individual-20261022-20261023\\Vega\\bin\\Debug\\net8.0-windows10.0.19041.0\\win-x64\\Vega.exe",
+    "vegaExeBuiltAt": null,
+    "rebuilt": false,
+    "builtFromCurrentSource": false
+  },
+  "channels": {
+    "l1Api": {
+      "available": false,
+      "baseUrl": "http://localhost:18901/vega-agent/",
+      "reason": "用例未产出 oracle-crosscheck 断言（本次层: logic）"
+    },
+    "l2Uia": {
+      "available": false,
+      "baseUrl": null,
+      "reason": "本次未请求 uia 层"
+    },
+    "assertions": {
+      "available": true,
+      "baseUrl": null,
+      "reason": null
+    }
+  },
+  "assertions": [],
+  "summary": {
+    "total": 0,
+    "passed": 0,
+    "failed": 0,
+    "skipped": 0
+  },
+  "tests": [],
+  "evidence": {
+    "dir": "C:\\AutoTest\\AutoTest\\VegaAutoTest\\daily\\analysis\\individual-20261022\\wi3677-logic\\20261023T081104Z_wi0_91eb4c5",
+    "files": [
+      "logic/trx/logic.trx",
+      "logic/trx/logic.testhost.log",
+      "report.md"
+    ]
+  },
+  "exitCode": 3
+}

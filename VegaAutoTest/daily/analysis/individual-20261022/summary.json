@@ -1,0 +1,80 @@
+{
+  "date": "2026-10-22",
+  "generatedAt": "2026-10-23T16:15:10.161521+08:00",
+  "targetHead": "10c33df5e69aa932bea8d843a29d8f6530d1fd73",
+  "selection": "Three commits with committer date 2026-10-22, verified against refreshed remote master history; no backlog included",
+  "results": [
+    {
+      "commit": "8c8583d50d3592ed718b8223bf415a54076bb1c5",
+      "title": "#3672：CoW 拟合与 Notch offset 跳变",
+      "caseId": "wi3672-logic",
+      "runId": "20261023T081231Z_wi0_35eec62",
+      "verdict": "PASS",
+      "verdictCode": "OK",
+      "summary": {
+        "total": 10,
+        "passed": 10,
+        "failed": 0,
+        "skipped": 0
+      },
+      "report": "C:\\AutoTest\\AutoTest\\VegaAutoTest\\daily\\analysis\\individual-20261022\\8c8583d5-report.md",
+      "result": "C:\\AutoTest\\AutoTest\\VegaAutoTest\\daily\\analysis\\individual-20261022\\wi3672-logic\\20261023T081231Z_wi0_35eec62\\result.json",
+      "acceptance": "PARTIAL",
+      "gaps": "缺少工单截图对应的原始 Edge BIN，未做该现场数据的重复回放、最终 Notch theta 测量或真实 EdgeChuck 设备验收。测试覆盖实际算法模块及服务方法，但没有触发硬件或完整诊断页流程。"
+    },
+    {
+      "commit": "8d0882910c5dbb1bfa5803f74f926a0a7eb33c2a",
+      "title": "PR4975：Notch 假候选与阈值包夹过滤",
+      "caseId": "commit-8d088291-logic",
+      "runId": "20261023T081237Z_wi0_4a4c580",
+      "verdict": "PASS",
+      "verdictCode": "OK",
+      "summary": {
+        "total": 27,
+        "passed": 27,
+        "failed": 0,
+        "skipped": 0
+      },
+      "report": "C:\\AutoTest\\AutoTest\\VegaAutoTest\\daily\\analysis\\individual-20261022\\8d088291-report.md",
+      "result": "C:\\AutoTest\\AutoTest\\VegaAutoTest\\daily\\analysis\\individual-20261022\\commit-8d088291-logic\\20261023T081237Z_wi0_4a4c580\\result.json",
+      "acceptance": "PARTIAL",
+      "gaps": "未取得提交描述里的真实 BIN 与 StartTheta=3.090740/3.118 两种现场回放数据，因此未独立复核真实 Notch 角度。未做 VacuumChuck 实物数据回放和完整诊断页操作。"
+    },
+    {
+      "commit": "10c33df5e69aa932bea8d843a29d8f6530d1fd73",
+      "title": "#3677：离线后处理 pitch 缺失与 DC 不合并",
+      "caseId": "wi3677-logic",
+      "runId": "20261023T081242Z_wi0_afd6e2a",
+      "verdict": "PASS",
+      "verdictCode": "OK",
+      "summary": {
+        "total": 22,
+        "passed": 22,
+        "failed": 0,
+        "skipped": 0
+      },
+      "report": "C:\\AutoTest\\AutoTest\\VegaAutoTest\\daily\\analysis\\individual-20261022\\10c33df5-report.md",
+      "result": "C:\\AutoTest\\AutoTest\\VegaAutoTest\\daily\\analysis\\individual-20261022\\wi3677-logic\\20261023T081242Z_wi0_afd6e2a\\result.json",
+      "acceptance": "PARTIAL",
+      "gaps": "尚未执行 su 登录后的完整创建 job/离线后处理界面流程；未将原始 dual.recipe 与两份 JSON 送入整个处理引擎，也未量化最终 DC 合并数量或 SPA 聚类输出。本次证明 pitch 初始化、校验和保留逻辑，不能替代完整 DC 合并验收。"
+    }
+  ],
+  "attachments": [
+    {
+      "name": "Carr003-01_261021194832_Normal_20261021195012.json",
+      "sha256": "29f8748d392f11b6419b297efbc2e272148993fcda15daccfb2edecef1f8fb5e",
+      "bytes": 757154
+    },
+    {
+      "name": "JRH_EPI_Particle_dual.recipe",
+      "sha256": "6cd1d0c2999b4e2609e09859356517756b5f4a030cc982767ac8f19ef2f00348",
+      "bytes": 182346
+    },
+    {
+      "name": "Wafer_1_202610215854_Oblique_20261021215958.json",
+      "sha256": "db8b9bb4b07265a356bd209f4a01291210a5ce9b34e83c6662ccd93630259e7b",
+      "bytes": 490095
+    }
+  ],
+  "fullAcceptance": false
+}

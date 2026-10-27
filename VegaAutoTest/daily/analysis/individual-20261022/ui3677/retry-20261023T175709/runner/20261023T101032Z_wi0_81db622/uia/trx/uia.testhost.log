@@ -1,0 +1,13 @@
+  Determining projects to restore...
+  All projects are up-to-date for restore.
+  Vega.AutoTest.Harness -> C:\AutoTest\AutoTest\VegaAutoTest\harness\bin\Debug\net8.0-windows\Vega.AutoTest.Harness.dll
+  Vega.AutoTest.Wi3677UiEvidence -> C:\AutoTest\AutoTest\VegaAutoTest\l2\Vega.AutoTest.Wi3677UiEvidence\bin\Debug\net8.0-windows\Vega.AutoTest.Wi3677UiEvidence.dll
+Test run for C:\AutoTest\AutoTest\VegaAutoTest\l2\Vega.AutoTest.Wi3677UiEvidence\bin\Debug\net8.0-windows\Vega.AutoTest.Wi3677UiEvidence.dll (.NETCoreApp,Version=v8.0)
+VSTest version 17.11.1 (x64)
+
+Starting test execution, please wait...
+A total of 1 test files matched the specified pattern.
+Results File: C:\AutoTest\AutoTest\VegaAutoTest\daily\analysis\individual-20261022\ui3677\retry-20261023T175709\runner\20261023T101032Z_wi0_81db622\uia\trx\uia.trx
+
+Passed!  - Failed:     0, Passed:     1, Skipped:     0, Total:     1, Duration: < 1 ms - Vega.AutoTest.Wi3677UiEvidence.dll (net8.0)
+

@@ -1,0 +1,394 @@
+{
+  "schemaVersion": "1.0",
+  "runId": "20261023T080758Z_wi0_fe2a7cb",
+  "workItemId": 0,
+  "caseId": "wi3677-logic",
+  "verdict": "ERROR",
+  "verdictReason": "契约自检违例：channels.l2Uia.available=false 但存在通过的断言（检查字段是否被复用） ｜ 原判定 ERROR/HARNESS_EXCEPTION: HARNESS_EXCEPTION: 2 个用例异常（非断言失败）",
+  "verdictCode": "CONTRACT_VIOLATION",
+  "startedAt": "2026-10-23T16:07:57+08:00",
+  "finishedAt": "2026-10-23T16:08:05+08:00",
+  "durationMs": 7174,
+  "target": {
+    "repoRoot": "C:\\AutoTest\\workspaces\\individual-20261022-20261023",
+    "gitCommit": "10c33df5e69aa932bea8d843a29d8f6530d1fd73",
+    "gitBranch": "HEAD",
+    "gitDirty": true,
+    "vegaExe": "C:\\AutoTest\\workspaces\\individual-20261022-20261023\\Vega\\bin\\Debug\\net8.0-windows10.0.19041.0\\win-x64\\Vega.exe",
+    "vegaExeBuiltAt": null,
+    "rebuilt": false,
+    "builtFromCurrentSource": false
+  },
+  "channels": {
+    "l1Api": {
+      "available": false,
+      "baseUrl": "http://localhost:18901/vega-agent/",
+      "reason": "用例未产出 oracle-crosscheck 断言（本次层: logic）"
+    },
+    "l2Uia": {
+      "available": false,
+      "baseUrl": null,
+      "reason": "本次未请求 uia 层"
+    },
+    "assertions": {
+      "available": true,
+      "baseUrl": null,
+      "reason": null
+    }
+  },
+  "assertions": [
+    {
+      "id": "wi3677.json-pitch.{\"pitch_size\":20}",
+      "kind": "logic",
+      "description": "wi3677.json-pitch.{\"pitch_size\":20}",
+      "expected": "specified behavior",
+      "actual": "matched",
+      "delta": null,
+      "tolerance": null,
+      "result": "PASS"
+    },
+    {
+      "id": "wi3677.json-pitch.{\"pitch_size\":\"19.5\"}",
+      "kind": "logic",
+      "description": "wi3677.json-pitch.{\"pitch_size\":\"19.5\"}",
+      "expected": "specified behavior",
+      "actual": "matched",
+      "delta": null,
+      "tolerance": null,
+      "result": "PASS"
+    },
+    {
+      "id": "wi3677.json-pitch.{\"pitch_size\":\"Infinity\"}",
+      "kind": "logic",
+      "description": "wi3677.json-pitch.{\"pitch_size\":\"Infinity\"}",
+      "expected": "specified behavior",
+      "actual": "matched",
+      "delta": null,
+      "tolerance": null,
+      "result": "PASS"
+    },
+    {
+      "id": "wi3677.json-pitch.{\"pitch_size\":20,\"pitchSize\":22}",
+      "kind": "logic",
+      "description": "wi3677.json-pitch.{\"pitch_size\":20,\"pitchSize\":22}",
+      "expected": "specified behavior",
+      "actual": "matched",
+      "delta": null,
+      "tolerance": null,
+      "result": "PASS"
+    },
+    {
+      "id": "wi3677.json-pitch.{\"pitch_size\":1.79}",
+      "kind": "logic",
+      "description": "wi3677.json-pitch.{\"pitch_size\":1.79}",
+      "expected": "specified behavior",
+      "actual": "matched",
+      "delta": null,
+      "tolerance": null,
+      "result": "PASS"
+    },
+    {
+      "id": "wi3677.json-pitch.{\"pitch_size\":180}",
+      "kind": "logic",
+      "description": "wi3677.json-pitch.{\"pitch_size\":180}",
+      "expected": "specified behavior",
+      "actual": "matched",
+      "delta": null,
+      "tolerance": null,
+      "result": "PASS"
+    },
+    {
+      "id": "wi3677.json-pitch.{\"pitch_size\":\"bad\"}",
+      "kind": "logic",
+      "description": "wi3677.json-pitch.{\"pitch_size\":\"bad\"}",
+      "expected": "specified behavior",
+      "actual": "matched",
+      "delta": null,
+      "tolerance": null,
+      "result": "PASS"
+    },
+    {
+      "id": "wi3677.json-pitch.{\"pitch_size\":0}",
+      "kind": "logic",
+      "description": "wi3677.json-pitch.{\"pitch_size\":0}",
+      "expected": "specified behavior",
+      "actual": "matched",
+      "delta": null,
+      "tolerance": null,
+      "result": "PASS"
+    },
+    {
+      "id": "wi3677.json-pitch.{\"pitchSize\":21}",
+      "kind": "logic",
+      "description": "wi3677.json-pitch.{\"pitchSize\":21}",
+      "expected": "specified behavior",
+      "actual": "matched",
+      "delta": null,
+      "tolerance": null,
+      "result": "PASS"
+    },
+    {
+      "id": "wi3677.json-pitch.{\"pitch_size\":180.01}",
+      "kind": "logic",
+      "description": "wi3677.json-pitch.{\"pitch_size\":180.01}",
+      "expected": "specified behavior",
+      "actual": "matched",
+      "delta": null,
+      "tolerance": null,
+      "result": "PASS"
+    },
+    {
+      "id": "wi3677.json-pitch.{}",
+      "kind": "logic",
+      "description": "wi3677.json-pitch.{}",
+      "expected": "specified behavior",
+      "actual": "matched",
+      "delta": null,
+      "tolerance": null,
+      "result": "PASS"
+    },
+    {
+      "id": "wi3677.json-pitch.{\"pitch_size\":null}",
+      "kind": "logic",
+      "description": "wi3677.json-pitch.{\"pitch_size\":null}",
+      "expected": "specified behavior",
+      "actual": "matched",
+      "delta": null,
+      "tolerance": null,
+      "result": "PASS"
+    },
+    {
+      "id": "wi3677.json-pitch.{\"pitch_size\":null,\"pitchSize\":22}",
+      "kind": "logic",
+      "description": "wi3677.json-pitch.{\"pitch_size\":null,\"pitchSize\":22}",
+      "expected": "specified behavior",
+      "actual": "matched",
+      "delta": null,
+      "tolerance": null,
+      "result": "PASS"
+    },
+    {
+      "id": "wi3677.json-pitch.{\"pitch_size\":\"NaN\"}",
+      "kind": "logic",
+      "description": "wi3677.json-pitch.{\"pitch_size\":\"NaN\"}",
+      "expected": "specified behavior",
+      "actual": "matched",
+      "delta": null,
+      "tolerance": null,
+      "result": "PASS"
+    },
+    {
+      "id": "wi3677.json-pitch.{\"pitch_size\":-1}",
+      "kind": "logic",
+      "description": "wi3677.json-pitch.{\"pitch_size\":-1}",
+      "expected": "specified behavior",
+      "actual": "matched",
+      "delta": null,
+      "tolerance": null,
+      "result": "PASS"
+    },
+    {
+      "id": "wi3677.json-pitch.{\"pitch_size\":1.8}",
+      "kind": "logic",
+      "description": "wi3677.json-pitch.{\"pitch_size\":1.8}",
+      "expected": "specified behavior",
+      "actual": "matched",
+      "delta": null,
+      "tolerance": null,
+      "result": "PASS"
+    },
+    {
+      "id": "wi3677.populate-recipe.Oblique",
+      "kind": "logic",
+      "description": "wi3677.populate-recipe.Oblique",
+      "expected": "specified behavior",
+      "actual": "System.InvalidOperationException: Galaxy container initialization failed. Root cause: Could not load file or assembly 'Castle.Core.AsyncInterceptor, Version=2.1.0.0, Culture=neutral, PublicKeyToken=e33b67d3bb5581e4'. 系统找不到指定的文件。. Typical case: a type referenced by ComponentConfig.json (component/ExtraMappings) does not exist in the current build (e.g. stale per-user config after switching branches).\r\n ---> System.IO.FileNotFoundException: Could not load file or assembly 'Castle.Core.AsyncInterceptor, Version=2.1.0.0, Culture=neutral, PublicKeyToken=e33b67d3bb5581e4'. 系统找不到指定的文件。\r\nFile name: 'Castle.Core.AsyncInterceptor, Version=2.1.0.0, Culture=neutral, PublicKeyToken=e33b67d3bb5581e4'\r\n   at Galaxy.Platform.Component.XComponentContainer.Register(String configFile)\r\n   at Galaxy.Platform.Component.XComponentContainer.RegisterDefault(String configFile)\r\n   at Galaxy.Platform.Component.XComponentContainer..ctor(String defaultConfigFile)\r\n   at Galaxy.Platform.Component.XComponentContainer..ctor()\r\n   at Galaxy.Platform.Component.XActivator.<>c.<.cctor>b__4_0()\r\n   --- End of inner exception stack trace ---\r\n   at Galaxy.Platform.Component.XActivator.<>c.<.cctor>b__4_0()\r\n   at System.Lazy`1.ViaFactory(LazyThreadSafetyMode mode)\r\n   at System.Lazy`1.ExecutionAndPublication(LazyHelper executionAndPublication, Boolean useDefaultConstructor)\r\n   at System.Lazy`1.CreateValue()\r\n   at Galaxy.Platform.Component.XActivator.get_Activator()\r\n   at Vega.Utility.Helper.ToolFeaturesHelper.<>c.<.cctor>b__61_2() in C:\\AutoTest\\workspaces\\individual-20261022-20261023\\Vega.Utility.Helper\\ToolFeaturesHelper.cs:line 46\r\n   at System.Lazy`1.ViaFactory(LazyThreadSafetyMode mode)\r\n   at System.Lazy`1.ExecutionAndPublication(LazyHelper executionAndPublication, Boolean useDefaultConstructor)\r\n   at System.Lazy`1.CreateValue()\r\n   at Vega.Utility.Helper.ToolFeaturesHelper.get_ToolType() in C:\\AutoTest\\workspaces\\individual-20261022-20261023\\Vega.Utility.Helper\\ToolFeaturesHelper.cs:line 48\r\n   at Vega.Utility.Helper.ToolFeaturesHelper.get_IsVega100() in C:\\AutoTest\\workspaces\\individual-20261022-20261023\\Vega.Utility.Helper\\ToolFeaturesHelper.cs:line 49\r\n   at Vega.Data.Recipes.DFSizingContent..ctor() in C:\\AutoTest\\workspaces\\individual-20261022-20261023\\Vega.Data.Recipes\\Elements\\CollectionsSections\\DarkFieldSettingContent.cs:line 184\r\n   at Vega.Data.Recipes.DarkFieldSettingContent..ctor() in C:\\AutoTest\\workspaces\\individual-20261022-20261023\\Vega.Data.Recipes\\Elements\\CollectionsSections\\DarkFieldSettingContent.cs:line 74\r\n   at Vega.Data.Recipes.CollectionContent..ctor(String collectionName) in C:\\AutoTest\\workspaces\\individual-20261022-20261023\\Vega.Data.Recipes\\Elements\\CollectionsContent.cs:line 182\r\n   at Vega.Data.Recipes.CollectionsContent..ctor() in C:\\AutoTest\\workspaces\\individual-20261022-20261023\\Vega.Data.Recipes\\Elements\\CollectionsContent.cs:line 22\r\n   at Vega.Data.Recipes.Recipe..ctor() in C:\\AutoTest\\workspaces\\individual-20261022-20261023\\Vega.Data.Recipes\\Recipe.cs:line 95\r\n   at Vega.AutoTest.IndividualCommits.WorkItem3677Logic.<>c__DisplayClass0_0.<NewCollectionGetsRecipeThroughputPitch>b__0() in C:\\AutoTest\\AutoTest\\VegaAutoTest\\probes\\Vega.AutoTest.IndividualCommits\\IndividualCommitTests.cs:line 166\r\n   at Vega.AutoTest.IndividualCommits.Evidence.Check(String id, Action action) in C:\\AutoTest\\AutoTest\\VegaAutoTest\\probes\\Vega.AutoTest.IndividualCommits\\IndividualCommitTests.cs:line 24",
+      "delta": null,
+      "tolerance": null,
+      "result": "FAIL"
+    },
+    {
+      "id": "wi3677.populate-recipe.Normal",
+      "kind": "logic",
+      "description": "wi3677.populate-recipe.Normal",
+      "expected": "specified behavior",
+      "actual": "System.InvalidOperationException: Galaxy container initialization failed. Root cause: Could not load file or assembly 'Castle.Core.AsyncInterceptor, Version=2.1.0.0, Culture=neutral, PublicKeyToken=e33b67d3bb5581e4'. 系统找不到指定的文件。. Typical case: a type referenced by ComponentConfig.json (component/ExtraMappings) does not exist in the current build (e.g. stale per-user config after switching branches).\r\n ---> System.IO.FileNotFoundException: Could not load file or assembly 'Castle.Core.AsyncInterceptor, Version=2.1.0.0, Culture=neutral, PublicKeyToken=e33b67d3bb5581e4'. 系统找不到指定的文件。\r\nFile name: 'Castle.Core.AsyncInterceptor, Version=2.1.0.0, Culture=neutral, PublicKeyToken=e33b67d3bb5581e4'\r\n   at Galaxy.Platform.Component.XComponentContainer.Register(String configFile)\r\n   at Galaxy.Platform.Component.XComponentContainer.RegisterDefault(String configFile)\r\n   at Galaxy.Platform.Component.XComponentContainer..ctor(String defaultConfigFile)\r\n   at Galaxy.Platform.Component.XComponentContainer..ctor()\r\n   at Galaxy.Platform.Component.XActivator.<>c.<.cctor>b__4_0()\r\n   --- End of inner exception stack trace ---\r\n   at Galaxy.Platform.Component.XActivator.<>c.<.cctor>b__4_0()\r\n   at System.Lazy`1.ViaFactory(LazyThreadSafetyMode mode)\r\n   at System.Lazy`1.ExecutionAndPublication(LazyHelper executionAndPublication, Boolean useDefaultConstructor)\r\n   at System.Lazy`1.CreateValue()\r\n   at Galaxy.Platform.Component.XActivator.get_Activator()\r\n   at Vega.Utility.Helper.ToolFeaturesHelper.<>c.<.cctor>b__61_2() in C:\\AutoTest\\workspaces\\individual-20261022-20261023\\Vega.Utility.Helper\\ToolFeaturesHelper.cs:line 46\r\n   at System.Lazy`1.ViaFactory(LazyThreadSafetyMode mode)\r\n--- End of stack trace from previous location ---\r\n   at System.Lazy`1.CreateValue()\r\n   at Vega.Utility.Helper.ToolFeaturesHelper.get_ToolType() in C:\\AutoTest\\workspaces\\individual-20261022-20261023\\Vega.Utility.Helper\\ToolFeaturesHelper.cs:line 48\r\n   at Vega.Utility.Helper.ToolFeaturesHelper.get_IsVega100() in C:\\AutoTest\\workspaces\\individual-20261022-20261023\\Vega.Utility.Helper\\ToolFeaturesHelper.cs:line 49\r\n   at Vega.Data.Recipes.DFSizingContent..ctor() in C:\\AutoTest\\workspaces\\individual-20261022-20261023\\Vega.Data.Recipes\\Elements\\CollectionsSections\\DarkFieldSettingContent.cs:line 184\r\n   at Vega.Data.Recipes.DarkFieldSettingContent..ctor() in C:\\AutoTest\\workspaces\\individual-20261022-20261023\\Vega.Data.Recipes\\Elements\\CollectionsSections\\DarkFieldSettingContent.cs:line 74\r\n   at Vega.Data.Recipes.CollectionContent..ctor(String collectionName) in C:\\AutoTest\\workspaces\\individual-20261022-20261023\\Vega.Data.Recipes\\Elements\\CollectionsContent.cs:line 182\r\n   at Vega.Data.Recipes.CollectionsContent..ctor() in C:\\AutoTest\\workspaces\\individual-20261022-20261023\\Vega.Data.Recipes\\Elements\\CollectionsContent.cs:line 22\r\n   at Vega.Data.Recipes.Recipe..ctor() in C:\\AutoTest\\workspaces\\individual-20261022-20261023\\Vega.Data.Recipes\\Recipe.cs:line 95\r\n   at Vega.AutoTest.IndividualCommits.WorkItem3677Logic.<>c__DisplayClass0_0.<NewCollectionGetsRecipeThroughputPitch>b__0() in C:\\AutoTest\\AutoTest\\VegaAutoTest\\probes\\Vega.AutoTest.IndividualCommits\\IndividualCommitTests.cs:line 166\r\n   at Vega.AutoTest.IndividualCommits.Evidence.Check(String id, Action action) in C:\\AutoTest\\AutoTest\\VegaAutoTest\\probes\\Vega.AutoTest.IndividualCommits\\IndividualCommitTests.cs:line 24",
+      "delta": null,
+      "tolerance": null,
+      "result": "FAIL"
+    },
+    {
+      "id": "wi3677.invariant-culture",
+      "kind": "logic",
+      "description": "wi3677.invariant-culture",
+      "expected": "specified behavior",
+      "actual": "matched",
+      "delta": null,
+      "tolerance": null,
+      "result": "PASS"
+    },
+    {
+      "id": "wi3677.original-json.Wafer_1_202610215854_Oblique_20261021215958.json",
+      "kind": "logic",
+      "description": "wi3677.original-json.Wafer_1_202610215854_Oblique_20261021215958.json",
+      "expected": "specified behavior",
+      "actual": "matched",
+      "delta": null,
+      "tolerance": null,
+      "result": "PASS"
+    },
+    {
+      "id": "wi3677.original-json.Carr003-01_261021194832_Normal_20261021195012.json",
+      "kind": "logic",
+      "description": "wi3677.original-json.Carr003-01_261021194832_Normal_20261021195012.json",
+      "expected": "specified behavior",
+      "actual": "matched",
+      "delta": null,
+      "tolerance": null,
+      "result": "PASS"
+    }
+  ],
+  "summary": {
+    "total": 21,
+    "passed": 19,
+    "failed": 2,
+    "skipped": 0
+  },
+  "tests": [
+    {
+      "name": "Vega.AutoTest.IndividualCommits.WorkItem3677Logic.JsonPitchPreservesFallbackOrUsesValidValue(json: \"{\\\"pitch_size\\\":\\\"19.5\\\"}\", expected: 19.5)",
+      "outcome": "Passed",
+      "durationMs": 10,
+      "message": null
+    },
+    {
+      "name": "Vega.AutoTest.IndividualCommits.WorkItem3677Logic.JsonPitchPreservesFallbackOrUsesValidValue(json: \"{\\\"pitch_size\\\":0}\", expected: 18)",
+      "outcome": "Passed",
+      "durationMs": 1,
+      "message": null
+    },
+    {
+      "name": "Vega.AutoTest.IndividualCommits.WorkItem3677Logic.ParsingUsesInvariantCulture",
+      "outcome": "Passed",
+      "durationMs": 2,
+      "message": null
+    },
+    {
+      "name": "Vega.AutoTest.IndividualCommits.WorkItem3677Logic.JsonPitchPreservesFallbackOrUsesValidValue(json: \"{\\\"pitch_size\\\":-1}\", expected: 18)",
+      "outcome": "Passed",
+      "durationMs": 1,
+      "message": null
+    },
+    {
+      "name": "Vega.AutoTest.IndividualCommits.WorkItem3677Logic.OriginalIssueJsonKeepsNonzeroFallback(fileName: \"Wafer_1_202610215854_Oblique_20261021215958.json\")",
+      "outcome": "Passed",
+      "durationMs": 61,
+      "message": null
+    },
+    {
+      "name": "Vega.AutoTest.IndividualCommits.WorkItem3677Logic.JsonPitchPreservesFallbackOrUsesValidValue(json: \"{}\", expected: 18)",
+      "outcome": "Passed",
+      "durationMs": 6,
+      "message": null
+    },
+    {
+      "name": "Vega.AutoTest.IndividualCommits.WorkItem3677Logic.JsonPitchPreservesFallbackOrUsesValidValue(json: \"{\\\"pitch_size\\\":null}\", expected: 18)",
+      "outcome": "Passed",
+      "durationMs": 4,
+      "message": null
+    },
+    {
+      "name": "Vega.AutoTest.IndividualCommits.WorkItem3677Logic.JsonPitchPreservesFallbackOrUsesValidValue(json: \"{\\\"pitch_size\\\":180.01}\", expected: 18)",
+      "outcome": "Passed",
+      "durationMs": 3,
+      "message": null
+    },
+    {
+      "name": "Vega.AutoTest.IndividualCommits.WorkItem3677Logic.JsonPitchPreservesFallbackOrUsesValidValue(json: \"{\\\"pitch_size\\\":\\\"bad\\\"}\", expected: 18)",
+      "outcome": "Passed",
+      "durationMs": 2,
+      "message": null
+    },
+    {
+      "name": "Vega.AutoTest.IndividualCommits.WorkItem3677Logic.JsonPitchPreservesFallbackOrUsesValidValue(json: \"{\\\"pitch_size\\\":1.79}\", expected: 18)",
+      "outcome": "Passed",
+      "durationMs": 10,
+      "message": null
+    },
+    {
+      "name": "Vega.AutoTest.IndividualCommits.WorkItem3677Logic.NewCollectionGetsRecipeThroughputPitch(incidence: Oblique, expected: 36)",
+      "outcome": "Failed",
+      "durationMs": 2790,
+      "message": "System.InvalidOperationException : Galaxy container initialization failed. Root cause: Could not load file or assembly 'Castle.Core.AsyncInterceptor, Version=2.1.0.0, Culture=neutral, PublicKeyToken=e33b67d3bb5581e4'. 系统找不到指定的文件。. Typical case: a type referenced by ComponentConfig.json (component/ExtraMappings) does not exist in the current build (e.g. stale per-user config after switching branches).\r\n---- System.IO.FileNotFoundException : Could not load file or assembly 'Castle.Core.AsyncInterceptor, Version=2.1.0.0, Culture=neutral, PublicKeyToken=e33b67d3bb5581e4'. 系统找不到指定的文件。\r\nat Galaxy.Platform.Component.XActivator.<>c.<.cctor>b__4_0()\r\n   at System.Lazy`1.ViaFactory(LazyThreadSafetyMode mode)\r\n   at System.Lazy`1.ExecutionAndPublication(LazyHelper executionAndPublication, Boolean useDefaultConstructor)\r\n   at System.Lazy`1.CreateValue()\r\n   at Galaxy.Platform.Component.XActivator.get_Activator()\r\n   at Vega.Utility.Helper.ToolFeaturesHelper.<>c.<.cctor>b__61_2() in C:\\AutoTest\\workspaces\\individual-20261022-20261023\\Vega.Utility.Helper\\ToolFeaturesHelper.cs:line 46\r\n   at System.Lazy`1.ViaFactory(LazyThreadSafetyMode mode)\r\n   at System.Lazy`1.ExecutionAndPublication(LazyHelper executionAndPublication, Boolean useDefaultConstructor)\r\n   at System.Lazy`1.CreateValue()\r\n   at Vega.Utility.Helper.ToolFeaturesHelper.get_ToolType() in C:\\AutoTest\\workspaces\\individual-20261022-20261023\\Vega.Utility.Helper\\ToolFeaturesHelper.cs:line 48\r\n   at Vega.Utility.Helper.ToolFeaturesHelper.get_IsVega100() in C:\\AutoTest\\workspaces\\individual-20261022-20261023\\Vega.Utilit...(truncated, 3228 chars)"
+    },
+    {
+      "name": "Vega.AutoTest.IndividualCommits.WorkItem3677Logic.JsonPitchPreservesFallbackOrUsesValidValue(json: \"{\\\"pitch_size\\\":180}\", expected: 180)",
+      "outcome": "Passed",
+      "durationMs": 1,
+      "message": null
+    },
+    {
+      "name": "Vega.AutoTest.IndividualCommits.WorkItem3677Logic.JsonPitchPreservesFallbackOrUsesValidValue(json: \"{\\\"pitch_size\\\":20,\\\"pitchSize\\\":22}\", expected: 20)",
+      "outcome": "Passed",
+      "durationMs": 2,
+      "message": null
+    },
+    {
+      "name": "Vega.AutoTest.IndividualCommits.WorkItem3677Logic.JsonPitchPreservesFallbackOrUsesValidValue(json: \"{\\\"pitch_size\\\":20}\", expected: 20)",
+      "outcome": "Passed",
+      "durationMs": 48,
+      "message": null
+    },
+    {
+      "name": "Vega.AutoTest.IndividualCommits.WorkItem3677Logic.JsonPitchPreservesFallbackOrUsesValidValue(json: \"{\\\"pitch_size\\\":\\\"Infinity\\\"}\", expected: 18)",
+      "outcome": "Passed",
+      "durationMs": 2,
+      "message": null
+    },
+    {
+      "name": "Vega.AutoTest.IndividualCommits.WorkItem3677Logic.JsonPitchPreservesFallbackOrUsesValidValue(json: \"{\\\"pitch_size\\\":1.8}\", expected: 1.8)",
+      "outcome": "Passed",
+      "durationMs": 1,
+      "message": null
+    },
+    {
+      "name": "Vega.AutoTest.IndividualCommits.WorkItem3677Logic.OriginalIssueJsonKeepsNonzeroFallback(fileName: \"Carr003-01_261021194832_Normal_20261021195012.json\")",
+      "outcome": "Passed",
+      "durationMs": 98,
+      "message": null
+    },
+    {
+      "name": "Vega.AutoTest.IndividualCommits.WorkItem3677Logic.JsonPitchPreservesFallbackOrUsesValidValue(json: \"{\\\"pitch_size\\\":null,\\\"pitchSize\\\":22}\", expected: 22)",
+      "outcome": "Passed",
+      "durationMs": 4,
+      "message": null
+    },
+    {
+      "name": "Vega.AutoTest.IndividualCommits.WorkItem3677Logic.JsonPitchPreservesFallbackOrUsesValidValue(json: \"{\\\"pitchSize\\\":21}\", expected: 21)",
+      "outcome": "Passed",
+      "durationMs": 1,
+      "message": null
+    },
+    {
+      "name": "Vega.AutoTest.IndividualCommits.WorkItem3677Logic.NewCollectionGetsRecipeThroughputPitch(incidence: Normal, expected: 18)",
+      "outcome": "Failed",
+      "durationMs": 1,
+      "message": "System.InvalidOperationException : Galaxy container initialization failed. Root cause: Could not load file or assembly 'Castle.Core.AsyncInterceptor, Version=2.1.0.0, Culture=neutral, PublicKeyToken=e33b67d3bb5581e4'. 系统找不到指定的文件。. Typical case: a type referenced by ComponentConfig.json (component/ExtraMappings) does not exist in the current build (e.g. stale per-user config after switching branches).\r\n---- System.IO.FileNotFoundException : Could not load file or assembly 'Castle.Core.AsyncInterceptor, Version=2.1.0.0, Culture=neutral, PublicKeyToken=e33b67d3bb5581e4'. 系统找不到指定的文件。\r\nat Galaxy.Platform.Component.XActivator.<>c.<.cctor>b__4_0()\r\n   at System.Lazy`1.ViaFactory(LazyThreadSafetyMode mode)\r\n   at System.Lazy`1.ExecutionAndPublication(LazyHelper executionAndPublication, Boolean useDefaultConstructor)\r\n   at System.Lazy`1.CreateValue()\r\n   at Galaxy.Platform.Component.XActivator.get_Activator()\r\n   at Vega.Utility.Helper.ToolFeaturesHelper.<>c.<.cctor>b__61_2() in C:\\AutoTest\\workspaces\\individual-20261022-20261023\\Vega.Utility.Helper\\ToolFeaturesHelper.cs:line 46\r\n   at System.Lazy`1.ViaFactory(LazyThreadSafetyMode mode)\r\n--- End of stack trace from previous location ---\r\n   at System.Lazy`1.CreateValue()\r\n   at Vega.Utility.Helper.ToolFeaturesHelper.get_ToolType() in C:\\AutoTest\\workspaces\\individual-20261022-20261023\\Vega.Utility.Helper\\ToolFeaturesHelper.cs:line 48\r\n   at Vega.Utility.Helper.ToolFeaturesHelper.get_IsVega100() in C:\\AutoTest\\workspaces\\individual-20261022-20261023\\Vega.Utility.Helper\\ToolFeaturesHelper.cs:line 49\r\n   at Vega.Data.Recip...(truncated, 3167 chars)"
+    },
+    {
+      "name": "Vega.AutoTest.IndividualCommits.WorkItem3677Logic.JsonPitchPreservesFallbackOrUsesValidValue(json: \"{\\\"pitch_size\\\":\\\"NaN\\\"}\", expected: 18)",
+      "outcome": "Passed",
+      "durationMs": 4,
+      "message": null
+    }
+  ],
+  "evidence": {
+    "dir": "C:\\AutoTest\\AutoTest\\VegaAutoTest\\daily\\analysis\\individual-20261022\\wi3677-logic\\20261023T080758Z_wi0_fe2a7cb",
+    "files": [
+      "logic/trx/logic.trx",
+      "logic/trx/logic.testhost.log",
+      "report.md"
+    ]
+  },
+  "exitCode": 3
+}

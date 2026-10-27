@@ -1,0 +1,228 @@
+commit 8c8583d50d3592ed718b8223bf415a54076bb1c5
+Author:     Di, Fei <Di, Fei>
+AuthorDate: Thu Oct 22 16:24:34 2026 +0800
+Commit:     Ma, Junyan <Ma, Junyan>
+CommitDate: Thu Oct 22 16:24:34 2026 +0800
+
+    已合并 PR 4976: Bug Fix#3672 3003 notch scan测试， notch offset 跳变。
+    
+    Bug Fix#3672
+      - FindCOWCircleFitting 用 Kåsa 代数全局解作 LM 初值 + 径向 RMS 回退护栏（CircleModel.FitLeastSquares 新增于 Vega.Algo.Imaging/WECDHelper.cs）。
+      - RANSACFilter 增加默认 seed = 0，new Random(Seed) 固定采样序列 → 同数据同结果；
+        - Filter 返回 usedFallback 标志（含 <3 点保护），服务端兜底时打英文 Warning 提示 CoW 可能不可信；
+        - 内点判据 Pitch / 10（1.8 µm）放宽为 Pitch / 2（9 µm），适配缓坡边缘的实际散布。
+    
+    相关工作项: #3672
+
+diff --git a/Vega.Algo.Imaging/WECDHelper.cs b/Vega.Algo.Imaging/WECDHelper.cs
+index fffbee0e..2d2760b7 100644
+--- a/Vega.Algo.Imaging/WECDHelper.cs
++++ b/Vega.Algo.Imaging/WECDHelper.cs
+@@ -433,6 +433,63 @@ public class CircleModel
+         return new CircleModel(cx, cy, radius);
+     }
+ 
++    //Kasa algebraic least-squares circle fit: solves the same linear system as the 3-point Fit above
++    //(2*cx*x + 2*cy*y + k = x^2 + y^2, k = r^2 - cx^2 - cy^2) in a least-squares sense over all points,
++    //so the solution is unique and closed-form (no iteration, no local minima). Use it as a globally
++    //reliable seed for iterative geometric fitting (e.g. Levenberg-Marquardt).
++    //Returns null for degenerate input: fewer than 3 points, a singular normal matrix (near-collinear
++    //points) or a non-finite solution.
++    public static CircleModel? FitLeastSquares(List<(double x, double y)> points)
++    {
++        if (points.Count < 3)
++        {
++            return null;
++        }
++
++        double sx = 0.0, sy = 0.0, sxx = 0.0, syy = 0.0, sxy = 0.0;
++        double sxxx = 0.0, syyy = 0.0, sxxy = 0.0, sxyy = 0.0;
++        foreach (var (x, y) in points)
++        {
++            sx += x;
++            sy += y;
++            sxx += x * x;
++            syy += y * y;
++            sxy += x * y;
++            sxxx += x * x * x;
++            syyy += y * y * y;
++            sxxy += x * x * y;
++            sxyy += x * y * y;
++        }
++
++        var normalMatrix = Matrix<double>.Build.DenseOfArray(new double[3, 3]
++        {
++            { sxx, sxy, sx },
++            { sxy, syy, sy },
++            { sx, sy, points.Count }
++        });
++        var rhs = Vector<double>.Build.Dense([sxxx + sxyy, sxxy + syyy, sxx + syy]);
++
++        Vector<double> solution;
++        try
++        {
++            solution = normalMatrix.Solve(rhs);
++        }
++        catch (ArgumentException)
++        {
++            return null;
++        }
++
++        double cx = solution[0] / 2.0;
++        double cy = solution[1] / 2.0;
++        double rSquared = solution[2] + cx * cx + cy * cy;
++        if (!double.IsFinite(cx) || !double.IsFinite(cy) || rSquared <= 0.0)
++        {
++            return null;
++        }
++
++        return new CircleModel(cx, cy, Math.Sqrt(rSquared));
++    }
++
+     public double DistanceSquaredTo((double x, double y) point)
+     {
+         double dx = point.x - Cx;
+@@ -444,22 +501,31 @@ public class CircleModel
+                                  (point.y - Cy) * (point.y - Cy)) - Radius);
+ }
+ 
+-public class RANSACFilter(int minInliers, double distanceThreshold, int maxIterations)
++public class RANSACFilter(int minInliers, double distanceThreshold, int maxIterations, int seed = 0)
+ {
+     public int MinInliers { get; set; } = minInliers;
+     public double DistanceThreshold { get; set; } = distanceThreshold;
+     public int MaxIterations { get; set; } = maxIterations;
++    //Fixed seed by default keeps Filter deterministic: the same input always yields the same inlier set.
++    //An unseeded Random made repeated runs on identical data alternate between a lucky consensus subset
++    //and the no-consensus fallback, so the fitted circle center jumped between two values run by run.
++    public int Seed { get; set; } = seed;
+ 
+-    public (List<(double x, double y)> inliers, List<(double x, double y)> outliers) Filter(
++    public (List<(double x, double y)> inliers, List<(double x, double y)> outliers, bool usedFallback) Filter(
+         List<(double x, double y)> data)
+     {
+         var bestModel = default(CircleModel);
+         int bestInliersCount = 0;
+ 
+         List<(double x, double y)> bestInliers = new List<(double x, double y)>(data.Count);
+-        var random = new Random();
++        var random = new Random(Seed);
+         int dataCount = data.Count;
+ 
++        if (dataCount < 3)
++        {
++            return ([.. data], [], true);
++        }
++
+         double threshold = DistanceThreshold;
+         double thresholdSq = threshold * threshold;
+ 
+@@ -522,6 +588,8 @@ public class RANSACFilter(int minInliers, double distanceThreshold, int maxItera
+             }
+         }
+ 
++        //No sampled model reached MinInliers within MaxIterations: return all points and flag the
++        //fallback so the caller can warn instead of silently fitting a poor "consensus".
+         var inlierList = bestModel != null ? bestInliers : [.. data];
+         var outlierList = new List<(double x, double y)>(dataCount - inlierList.Count);
+         foreach (var point in data)
+@@ -532,6 +600,6 @@ public class RANSACFilter(int minInliers, double distanceThreshold, int maxItera
+             }
+         }
+ 
+-        return (inlierList, outlierList);
++        return (inlierList, outlierList, bestModel == null);
+     }
+ }
+diff --git a/Vega.BL.WaferAlignment/WaferAlignmentService.cs b/Vega.BL.WaferAlignment/WaferAlignmentService.cs
+index 1f0e90b6..359fa7b1 100644
+--- a/Vega.BL.WaferAlignment/WaferAlignmentService.cs
++++ b/Vega.BL.WaferAlignment/WaferAlignmentService.cs
+@@ -697,14 +697,44 @@ public class WaferAlignmentService(IRecipeStorageProvider _recipeService, IConfi
+             cartesianPoints = [.. filteredEdgePoints.Select(p => (p.Radius * Math.Cos(p.Theta), p.Radius * Math.Sin(p.Theta)))];
+         }
+ 
+-        //RANSAC to filter outliers
+-        var filter = new RANSACFilter((int) (cartesianPoints.Count * 0.2), CurrentEdgeScan.Pitch / 10, 1000);
+-        var (filteredData, removedPoints) = filter.Filter(cartesianPoints);
++        //RANSAC 去离群点：固定种子（默认 seed=0）保证同数据同结果；内点带宽取 pitch/2——边缘缓坡下
++        //窗口内散布远超 pitch/10，过紧的判据使 RANSAC 常凑不足 20% 共识而静默回退全点拟合，
++        //与偶发命中共识的运行交替出现，同一份数据的 CoW 便在两个圆心间跳变（3003 NotchScan 复盘）。
++        int minInliers = (int) (cartesianPoints.Count * 0.2);
++        var filter = new RANSACFilter(minInliers, CurrentEdgeScan.Pitch / 2, 1000);
++        var (filteredData, removedPoints, usedFallback) = filter.Filter(cartesianPoints);
++        if (usedFallback)
++        {
++            Logger.Warning(Name, $"RANSAC found no circle reaching {minInliers} inliers within {CurrentEdgeScan.Pitch / 2} um, circle fitting falls back to all {filteredData.Count} points and the CoW may be unreliable. Check the edge scan data quality (edge window radius consistency).");
++        }
++        if (filteredData.Count < 3)
++        {
++            Logger.Error(Name, $"Circle fitting requires at least 3 points after RANSAC, only {filteredData.Count} available.");
++            return (double.NaN, double.NaN);
++        }
+ 
+-        double avgX = filteredData.Average(p => p.x);
+-        double avgY = filteredData.Average(p => p.y);
+-        double initialRadius = filteredData.Average(p => Math.Sqrt(Math.Pow(p.x - avgX, 2) + Math.Pow(p.y - avgY, 2)));
+-        var initialParams = Vector<double>.Build.Dense([avgX, avgY, initialRadius]);
++        //用 Kåsa 代数拟合（线性最小二乘，闭式唯一解、无局部最优）作 LM 初值，替代"质心 + 平均半径"：
++        //LM 是局部优化器，EdgeChuck 下只有 4 段短弧覆盖、质心初值偏离真实圆心时会收敛到局部极小。
++        var seedCircle = CircleModel.FitLeastSquares(filteredData);
++        double seedCx;
++        double seedCy;
++        double seedR;
++        if (seedCircle != null)
++        {
++            seedCx = seedCircle.Cx;
++            seedCy = seedCircle.Cy;
++            seedR = seedCircle.Radius;
++        }
++        else
++        {
++            //代数解退化（近似共线）时退回旧初值，保持与历史版本一致的兜底行为。
++            seedCx = filteredData.Average(p => p.x);
++            seedCy = filteredData.Average(p => p.y);
++            seedR = filteredData.Average(p => Math.Sqrt((p.x - seedCx) * (p.x - seedCx) + (p.y - seedCy) * (p.y - seedCy)));
++            Logger.Warning(Name, "Kasa circle fit is degenerate, fall back to the centroid-based seed for LM.");
++        }
++        double seedCost = RadialRms(filteredData, seedCx, seedCy, seedR);
++        var initialParams = Vector<double>.Build.Dense([seedCx, seedCy, seedR]);
+ 
+         Func<Vector<double>, Vector<double>, Vector<double>> residualFunc = (parameters, _) =>
+         {
+@@ -732,9 +762,32 @@ public class WaferAlignmentService(IRecipeStorageProvider _recipeService, IConfi
+                 maximumIterations: 1000);
+ 
+         var result = optimizer.FindMinimum(objective, initialParams);
+-        Logger.Debug(Name, $"Circle fitting with LM result: cX = {result.MinimizingPoint[0]}, cY = {result.MinimizingPoint[1]}, radius = {result.MinimizingPoint[2]}，" +
+-            $"ExitCondition = {result.ReasonForExit}， Itrs = {result.Iterations}");
+-        return (result.MinimizingPoint[0], result.MinimizingPoint[1]);
++        double lmCx = result.MinimizingPoint[0];
++        double lmCy = result.MinimizingPoint[1];
++        double lmCost = RadialRms(filteredData, lmCx, lmCy, result.MinimizingPoint[2]);
++        Logger.Debug(Name, $"Circle fitting with LM result: cX = {lmCx}, cY = {lmCy}, radius = {result.MinimizingPoint[2]}, RMS = {lmCost}, " +
++            $"Kasa seed: cX = {seedCx}, cY = {seedCy}, radius = {seedR}, RMS = {seedCost}, ExitCondition = {result.ReasonForExit}, Itrs = {result.Iterations}");
++        //LM 精修结果按径向 RMS 校验后采纳：未收敛或落入局部极小（劣于代数全局解）时回退代数解，保证不会输出更差的圆心。
++        if (double.IsFinite(lmCost) && lmCost <= seedCost)
++        {
++            return (lmCx, lmCy);
++        }
++
++        Logger.Warning(Name, $"Circle fitting: LM refinement RMS = {lmCost} is not better than the Kasa fit RMS = {seedCost}, keep the algebraic solution.");
++        return (seedCx, seedCy);
++    }
++
++    //径向残差 RMS：sqrt(mean((|P - C| - r)^2))，在同一量纲下比较代数解与 LM 精修解的优劣。
++    private static double RadialRms(List<(double x, double y)> points, double cx, double cy, double radius)
++    {
++        double sumOfSquares = 0.0;
++        foreach (var (x, y) in points)
++        {
++            double residual = Math.Sqrt((x - cx) * (x - cx) + (y - cy) * (y - cy)) - radius;
++            sumOfSquares += residual * residual;
++        }
++
++        return Math.Sqrt(sumOfSquares / points.Count);
+     }
+ 
+     private int NotchCoarseSearch(PointInPolar cowInPolar, PointInPolar[] edgePoints)

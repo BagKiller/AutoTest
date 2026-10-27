@@ -1,0 +1,1119 @@
+commit 8d0882910c5dbb1bfa5803f74f926a0a7eb33c2a
+Author:     Qiu, Junwei <Qiu, Junwei>
+AuthorDate: Thu Oct 22 16:31:43 2026 +0800
+Commit:     Ma, Junyan <Ma, Junyan>
+CommitDate: Thu Oct 22 16:31:43 2026 +0800
+
+    已合并 PR 4975: fix: FindNotch 排除未包夹阈值的边缘交点，修复 EdgeChuck 粗定位选中假候选
+    
+    ## 变更内容
+    （`Vega.BL.WaferAlignment/WaferAlignmentService.cs` + 回归测试工程，修订明细见文末「修订记录」）
+    
+    - **FindEdge**：EdgeChuck 的 notch 边缘启用严格包夹判定——只接受 `inner < threshold <= outer` 的交点对（相邻强度相等不插值，插值比例须有限且 ∈ [0,1]），不满足时继续向内搜索；输出与点数组等长的有效性掩码 + total/valid/invalid 一行汇总日志。其余调用（FindWaferEdge / 非 EdgeChuck）行为不变
+    - **NotchCoarseSearch**：新增可选 `validMask` 参数（默认 null，VacuumChuck / DUV 原调用方行为不变）；平均半径与候选只取有效点；验证邻域内出现无效点即拒绝该候选并尝试下一个；无有效点或全部候选失败时 Warning 记录可诊断原因
+    - **FindNotchEH**：掩码缺失 / 长度不符时明确失败（Error 日志 + 直接返回，不退回无掩码旧路径）；窗口提取改为单次索引循环同步切出点与掩码，用首命中原始索引精确映射窗口局部索引（弃用角度取整公式，消除取整偏差）
+    - **PerformAlignment**：调用点适配传参
+    
+    ## 原因 / 背景
+    同一 BIN 的两次 EdgeChuck 回放：StartTheta=3.090740 时 notch 窗口约 34.7%（≈2778/8000 点）的边缘点因首个低于阈值的点对未包夹阈值被外插出负 / 异常大半径，污染粗定位平均半径与候选排序，选中假候选 266.4045°；StartTheta=3.118 时全点有效，选中真实 notch ≈268.673°。根因：FindEdge 对第一个 `v[i] < threshold` 点对直接插值而不校验包夹关系。
+    
+    ## 验证方式
+    - 单元回归测试 `Vega.BL.WaferAlignment.Tests`：22/22 通过（缺口序列 / 插值比例 / 掩码均值分母 / 候选拒绝 / 顶点闸门 / 窗口索引映射等）
+    - 诊断页离线回放真实 BIN 两个 StartTheta 变体（全部修订后实测通过）：3.090740 越界点全部被掩码排除、假候选被拒，落在真实 notch；3.118 全点有效仍选中 ≈268.673°
+    - diff 核对：DUV 链路、FindWaferEdge 路径零改动；`validMask == null` 分支与原实现逐位等价
+    - **影响面声明**：共用方法 `FindNotchEdgeWithFactor` 带掩码分支另有 master 既有调用方 VacuumChuck `FindNotchDepthCenter`（深度中心首定位）。master 现状为"首对低于阈值即写入猜测半径 + 打掩码 + break"（缺口列一律 invalid）；本 PR 改为未包夹继续向内找回真实交点，对该路径是数据质量修复（同根因），行为差异仅在首对未包夹的列，方法级行为由 `GapColumn_SkipsUnbracketedPairs_AndFindsInnerCrossing`（[0,100,0,0]）钉死；VacuumChuck 路径无真实数据回放，如实声明
+    
+    ## 修订记录
+    ### 第一轮（11520876，回应首轮 review）
+    `NotchSearchFirstTry` 接入精定位掩码；`FindNotchEH` 最终拟合启用 `validateEdges`（极角按 CoW 校正 + 支撑点校验，与 VacuumChuck 传参对齐）；包夹判定抽共享谓词 `IsBracketedNotchCrossing`；对齐失败不再写入 WaferOrientation（-Infinity 泄漏：`AlignmentInfo.IsValid` 只挡 NaN）
+    
+    ### 第二轮（88002e38，回应复审 P2）
+    修复带掩码列搜索遇未包夹点对直接 break 遗漏内侧真实交点（[0,100,0,0] 序列）——抽共用 `FindBracketedNotchEdgeInColumn`，未包夹继续向内，整列无有效交点才标无效；新增测试工程（xunit，InternalsVisibleTo 直测）；真实数据回放两变体通过
+    
+    ### 第三轮（51d6c394，回应 OCR 自动化复审 16 条）
+    四个核心抽为 `internal static` 纯函数（`FindNotchEdgesForIndexes` / `NotchCoarseSearchCore` / `NotchFineSearchValid` / `ExtractNotchWindow`）+ 新增 16 例集成测试（合计 22/22）；13 条直接采纳（NaN→IsNaN、除法前置、空阈值 Error、越界上提、测试契约校验等）；#1 NaN 泄漏经实证反驳（`double.NaN is double.NaN` 为 true，闸门有效）仍采可读性备选；#11 修正用例为 [100,30,30,30]；#14 因 ImplicitUsings 已启用谢绝（逐条处置见评论 thread 31345）
+    
+    ### 第四轮（7ed3ecc4，回应第三轮复审）
+    修复 `NotchFineSearch(null!)` 中转在 `validateEdges=false` 时的 NRE 死路径——按掩码分派：直达 `NotchFineSearchValid` / 恢复原 IQR 传参，`NotchFineSearch` 收回两参数签名；`NotchSearchFirstTry` 拟合 NaN 时快速失败回退粗定位索引（不再经 (int) 饱和转换折回任意窗口产生误导告警）
+    
+    ### 第五轮（9058a2e7，回应第四轮后 OCR 复审 10 条）
+    - **采纳 8 条**：空阈值表在两个 `Average()` 消费方入口加守卫（`NotchSearchFirstTry` 回退粗定位索引 / `FindNotchDepthCenter` 返回 (NaN, 0) 走既有失败语义——原建议在 `PrepareforAlignment` 尾部加 return 的位置无效：方法为 void 且其后仅剩两条日志，阻止不了下游调用；`NotchFinalSearch` 遍历空表零执行已天然干净失败）；三个核心纯函数入口校验掩码长度（`FindNotchEdgesForIndexes` 抛 ArgumentException / `NotchFineSearchValid` 返 NaN / `NotchCoarseSearchCore` 告警 + -1）并补 3 例契约测试（合计 25/25）；包夹谓词删冗余子句（等强度由调用方前置短路独占，`IsFinite` 被 [0,1] 比例检查蕴含——NaN/±Inf 比较恒 false）；无掩码分支三元化去除 fraction 影子变量；删 pre-existing 未用 `min...
+
+diff --git a/Vega.BL.WaferAlignment.Tests/ExtractNotchWindowTests.cs b/Vega.BL.WaferAlignment.Tests/ExtractNotchWindowTests.cs
+new file mode 100644
+index 00000000..bba99bc1
+--- /dev/null
++++ b/Vega.BL.WaferAlignment.Tests/ExtractNotchWindowTests.cs
+@@ -0,0 +1,72 @@
++// Copyright (c) Shanghai Vega Technology Co., Ltd. All rights reserved.
++
++using Vega.Data.Measurements;
++
++namespace Vega.BL.WaferAlignment.Tests;
++
++/// <summary>
++/// notch 窗口提取回归：掩码缺失/长度不符返回 null（显式失败信号）；正常窗口切片点与掩码，
++/// 并记录窗口首点的原始索引（供粗定位 trace 偏移与索引换算使用）。
++/// </summary>
++public class ExtractNotchWindowTests
++{
++    private static PointInPolar[] MakePoints(int count)
++    {
++        return [.. Enumerable.Range(0, count).Select(i => new PointInPolar(100.0 + i, (double) i / count * 2.0 * Math.PI))];
++    }
++
++    private static ValueRange<double> Window(int fromIndexInclusive, int toIndexInclusive, int count)
++    {
++        return new ValueRange<double> { Min = (double) fromIndexInclusive / count * 2.0 * Math.PI, Max = (double) toIndexInclusive / count * 2.0 * Math.PI };
++    }
++
++    [Fact]
++    public void NullMask_ReturnsNull()
++    {
++        var extracted = WaferAlignmentService.ExtractNotchWindow(MakePoints(6), null, Window(2, 4, 6));
++
++        Assert.Null(extracted);
++    }
++
++    [Fact]
++    public void MismatchedMaskLength_ReturnsNull()
++    {
++        var extracted = WaferAlignmentService.ExtractNotchWindow(MakePoints(6), new bool[5], Window(2, 4, 6));
++
++        Assert.Null(extracted);
++    }
++
++    [Fact]
++    public void WindowSlice_CopiesPointsAndMask_MapsStartIndex()
++    {
++        //窗口 [theta2, theta4]（含端点）：切片 idx2..4 共 3 点，掩码同步切片，首点原始索引 = 2
++        var points = MakePoints(6);
++        var mask = new[] { true, false, false, true, false, true };
++
++        var extracted = WaferAlignmentService.ExtractNotchWindow(points, mask, Window(2, 4, 6));
++
++        Assert.NotNull(extracted);
++        var (notchPoints, notchValidMask, windowStartIndex) = extracted.Value;
++        Assert.Equal(3, notchPoints.Length);
++        for (var k = 0; k < 3; k++)
++        {
++            Assert.Equal(102.0 + k, notchPoints[k].Radius, 6);
++            Assert.Equal((2 + k) / 6.0 * 2.0 * Math.PI, notchPoints[k].Theta, 6);
++        }
++        Assert.Equal([false, true, false], notchValidMask);
++        Assert.Equal(2, windowStartIndex);
++    }
++
++    [Fact]
++    public void EmptyWindow_ReturnsEmptyArraysWithZeroStartIndex()
++    {
++        //窗口落在采样角度之外（负角度）：空切片，WindowStartIndex 取 Math.Max(0, -1) = 0
++        var extracted = WaferAlignmentService.ExtractNotchWindow(MakePoints(6), new bool[6], new ValueRange<double> { Min = -0.1, Max = -0.05 });
++
++        Assert.NotNull(extracted);
++        var (notchPoints, notchValidMask, windowStartIndex) = extracted.Value;
++        Assert.Empty(notchPoints);
++        Assert.Empty(notchValidMask);
++        Assert.Equal(0, windowStartIndex);
++    }
++}
+diff --git a/Vega.BL.WaferAlignment.Tests/FindBracketedNotchEdgeInColumnTests.cs b/Vega.BL.WaferAlignment.Tests/FindBracketedNotchEdgeInColumnTests.cs
+new file mode 100644
+index 00000000..23983357
+--- /dev/null
++++ b/Vega.BL.WaferAlignment.Tests/FindBracketedNotchEdgeInColumnTests.cs
+@@ -0,0 +1,105 @@
++// Copyright (c) Shanghai Vega Technology Co., Ltd. All rights reserved.
++
++namespace Vega.BL.WaferAlignment.Tests;
++
++/// <summary>
++/// 单列 notch 交点搜索回归：未包夹点对继续向内（缺口序列 0,100,0,0 不漏内侧真实交点）／
++/// 正常单交点按真实比例插值／相邻等强度不插值／整列无有效交点保持默认半径并标记无效
++/// （FindEdge 的 EdgeChuck 粗定位与 FindNotchEdgesForIndexes 的精定位共用此搜索）。
++/// </summary>
++public class FindBracketedNotchEdgeInColumnTests
++{
++    private const double StartRadius = 100.0;
++    private const double Pitch = 1.0;
++    private const double Threshold = 50.0;
++
++    [Fact]
++    public void GapColumn_SkipsUnbracketedPairs_AndFindsInnerCrossing()
++    {
++        //由内向外 0,100,0,0：最外 (0,0) 对未包夹须继续向内，命中内侧 (0,100) 真实交点（i=0, fraction=0.5 → i+fraction=0.5）
++        var data = TestHelpers.MakeData([0, 100, 0, 0]);
++
++        var (point, isValid) = WaferAlignmentService.FindBracketedNotchEdgeInColumn(data, 0, Threshold, StartRadius, Pitch);
++
++        Assert.True(isValid);
++        Assert.Equal(StartRadius + Pitch * 0.5, point.Radius, 6);
++        Assert.Equal(0.0, point.Theta, 6);
++    }
++
++    [Fact]
++    public void SingleCrossing_InterpolatesRealFraction()
++    {
++        //正常单交点：由内向外 0,40,100,100 → (40,100) 包夹，fraction=(50-40)/60 → i=1+1/6（非 0.5 猜测值）
++        var data = TestHelpers.MakeData([0, 40, 100, 100]);
++
++        var (point, isValid) = WaferAlignmentService.FindBracketedNotchEdgeInColumn(data, 0, Threshold, StartRadius, Pitch);
++
++        Assert.True(isValid);
++        Assert.Equal(StartRadius + Pitch * (1.0 + 1.0 / 6.0), point.Radius, 6);
++        Assert.Equal(0.0, point.Theta, 6);
++    }
++
++    [Fact]
++    public void EqualIntensities_NeverInterpolated_MarksInvalid()
++    {
++        //由内向外 100,30,30,30：i=1/i=2 两对 (30,30) 相邻等强度均须拒绝，整列无包夹交点 → 无效 + 默认半径
++        var data = TestHelpers.MakeData([100, 30, 30, 30]);
++
++        var (point, isValid) = WaferAlignmentService.FindBracketedNotchEdgeInColumn(data, 0, Threshold, StartRadius, Pitch);
++
++        Assert.False(isValid);
++        Assert.Equal(StartRadius, point.Radius, 6);
++    }
++
++    [Fact]
++    public void ValidCrossing_AtOffsetColumn_IncludesColumnFraction()
++    {
++        //4 列取 j=1 的有效交点：半径与角度均须含 jFraction=1/4 的贡献（radius = start + pitch*(i+fraction+j/N), theta = π/2）
++        var data = TestHelpers.MakeData([0, 100], [0, 100], [0, 100], [0, 100]);
++
++        var (point, isValid) = WaferAlignmentService.FindBracketedNotchEdgeInColumn(data, 1, Threshold, StartRadius, Pitch);
++
++        Assert.True(isValid);
++        Assert.Equal(StartRadius + Pitch * (0.0 + 0.5 + 0.25), point.Radius, 6);
++        Assert.Equal(0.25 * 2.0 * Math.PI, point.Theta, 6);
++    }
++
++    [Fact]
++    public void ValidCrossing_AtLastColumn_ReturnsThetaNearTwoPi()
++    {
++        //j=N-1 边界列：jFraction=(N-1)/N，theta 逼近 2π（与 j=0 拉开差距，端点几何语义不与起点混淆）
++        var data = TestHelpers.MakeData([0, 100], [0, 100], [0, 100], [0, 100]);
++
++        var (point, isValid) = WaferAlignmentService.FindBracketedNotchEdgeInColumn(data, 3, Threshold, StartRadius, Pitch);
++
++        Assert.True(isValid);
++        Assert.Equal(StartRadius + Pitch * (0.5 + 0.75), point.Radius, 6);
++        Assert.Equal(0.75 * 2.0 * Math.PI, point.Theta, 6);
++    }
++
++    [Fact]
++    public void NoBracketedCrossing_MarksInvalid_KeepsDefaultRadius()
++    {
++        //整列低于阈值（notch 缺口区整列无交点）：无效 + 默认半径/角度；j=1 同时验证列偏移
++        var data = TestHelpers.MakeData([0, 0, 0, 0], [0, 0, 0, 0]);
++
++        var (point, isValid) = WaferAlignmentService.FindBracketedNotchEdgeInColumn(data, 1, Threshold, StartRadius, Pitch);
++
++        Assert.False(isValid);
++        Assert.Equal(StartRadius + Pitch * 0.5, point.Radius, 6);
++        Assert.Equal(Math.PI, point.Theta, 6);
++    }
++
++    [Fact]
++    public void EntirelyAboveThreshold_MarksInvalid()
++    {
++        //整列不低于阈值（由外向内全程无 v[i]<threshold）：无效 + 默认半径
++        var data = TestHelpers.MakeData([100, 100, 100]);
++
++        var (point, isValid) = WaferAlignmentService.FindBracketedNotchEdgeInColumn(data, 0, Threshold, StartRadius, Pitch);
++
++        Assert.False(isValid);
++        Assert.Equal(StartRadius, point.Radius, 6);
++        Assert.Equal(0.0, point.Theta, 6);
++    }
++}
+diff --git a/Vega.BL.WaferAlignment.Tests/FindNotchEdgesForIndexesTests.cs b/Vega.BL.WaferAlignment.Tests/FindNotchEdgesForIndexesTests.cs
+new file mode 100644
+index 00000000..6283a8c4
+--- /dev/null
++++ b/Vega.BL.WaferAlignment.Tests/FindNotchEdgesForIndexesTests.cs
+@@ -0,0 +1,66 @@
++// Copyright (c) Shanghai Vega Technology Co., Ltd. All rights reserved.
++
++namespace Vega.BL.WaferAlignment.Tests;
++
++/// <summary>
++/// 按索引集合提取 notch 边缘点的回归：带掩码时整列搜索与掩码写入（有效=插值半径，无效/越界=默认半径）；
++/// 无掩码时保持首个低于阈值点对的原始插值/猜测行为不变。
++/// </summary>
++public class FindNotchEdgesForIndexesTests
++{
++    private const double StartRadius = 100.0;
++    private const double Pitch = 1.0;
++    private const double Threshold = 50.0;
++
++    [Fact]
++    public void Masked_MixedColumns_WriteInterpolatedRadiusAndMask()
++    {
++        //col0 正常包夹（有效，插值半径）；col1 整列无交点（无效，默认半径 + j/N 偏移）
++        var data = TestHelpers.MakeData([0, 40, 100, 100], [0, 0, 0, 0]);
++        var validMask = new bool[2];
++
++        var points = WaferAlignmentService.FindNotchEdgesForIndexes(data, [0, 1], Threshold, StartRadius, Pitch, validMask);
++
++        Assert.True(validMask[0]);
++        Assert.Equal(StartRadius + Pitch * (1.0 + 1.0 / 6.0), points[0].Radius, 6);
++        Assert.False(validMask[1]);
++        Assert.Equal(StartRadius + Pitch * 0.5, points[1].Radius, 6);
++        Assert.Equal(Math.PI, points[1].Theta, 6);
++    }
++
++    [Fact]
++    public void Masked_OutOfBoundsIndex_KeepsDefaultRadiusAndInvalid()
++    {
++        //越界索引（j=-1）：默认半径 + 掩码无效，不参与数组访问
++        var data = TestHelpers.MakeData([0, 100]);
++        var validMask = new bool[2];
++
++        var points = WaferAlignmentService.FindNotchEdgesForIndexes(data, [-1, 0], Threshold, StartRadius, Pitch, validMask);
++
++        Assert.False(validMask[0]);
++        Assert.Equal(StartRadius + Pitch * -1.0, points[0].Radius, 6);
++        Assert.True(validMask[1]);
++        Assert.Equal(StartRadius + Pitch * 0.5, points[1].Radius, 6);
++    }
++
++    [Fact]
++    public void MismatchedMaskLength_ThrowsArgumentException()
++    {
++        //掩码长度与索引数不符是契约破坏：显式抛出而非随机越界
++        var data = TestHelpers.MakeData([0, 100]);
++
++        Assert.Throws<ArgumentException>(() => WaferAlignmentService.FindNotchEdgesForIndexes(data, [0], Threshold, StartRadius, Pitch, new bool[2]));
++    }
++
++    [Fact]
++    public void Unmasked_KeepsFirstCrossingGuessBehavior()
++    {
++        //无掩码（validMask=null）保持原始行为：首个低于阈值点对 (0,0) 等强度 → 写入 i+0.5 猜测半径，不做包夹过滤
++        var data = TestHelpers.MakeData([0, 100, 0, 0]);
++
++        var points = WaferAlignmentService.FindNotchEdgesForIndexes(data, [0], Threshold, StartRadius, Pitch);
++
++        Assert.Single(points);
++        Assert.Equal(StartRadius + Pitch * 2.5, points[0].Radius, 6);
++    }
++}
+diff --git a/Vega.BL.WaferAlignment.Tests/NotchCoarseSearchCoreTests.cs b/Vega.BL.WaferAlignment.Tests/NotchCoarseSearchCoreTests.cs
+new file mode 100644
+index 00000000..ed1d46b4
+--- /dev/null
++++ b/Vega.BL.WaferAlignment.Tests/NotchCoarseSearchCoreTests.cs
+@@ -0,0 +1,101 @@
++// Copyright (c) Shanghai Vega Technology Co., Ltd. All rights reserved.
++
++using Vega.Data.Measurements;
++
++namespace Vega.BL.WaferAlignment.Tests;
++
++/// <summary>
++/// 粗定位核心回归：部分有效点的平均半径语义（分母只计有效点）、无效邻域候选拒绝、
++/// 全无效与全候选失败时的 -1 + 告警。CoW 置于原点使各点半径即到 CoW 距离，便于精确构造。
++/// </summary>
++public class NotchCoarseSearchCoreTests
++{
++    private static readonly PointInPolar CowAtOrigin = new(0.0, 0.0);
++
++    private static PointInPolar[] MakePoints(params double[] radii)
++    {
++        return [.. radii.Select((radius, i) => new PointInPolar(radius, (double) i / radii.Length * 2.0 * Math.PI))];
++    }
++
++    [Fact]
++    public void AllValid_SelectsMinimumRadiusCandidate()
++    {
++        //谷底在 idx3（r=8）：验证邻域 j2..4 全部低于阈值线 → 选中 3
++        var points = MakePoints(16, 14, 11, 8, 10, 12, 15, 17);
++        var warnings = new List<string>();
++
++        var index = WaferAlignmentService.NotchCoarseSearchCore(CowAtOrigin, points, notchSearchingHalfRange: 2, validMask: null, warn: warnings.Add);
++
++        Assert.Equal(3, index);
++        Assert.Empty(warnings);
++    }
++
++    [Fact]
++    public void PartialValid_MeanRadiusUsesValidPointsOnly()
++    {
++        //idx0 是无效垃圾点（r=0）：有效均值 76/7≈10.857 → 阈值线 9.893，候选 idx3 邻居 9/7/8 全过 → 选中 3；
++        //若均值错误地包含无效 0（76/8=9.5 → 阈值线 8.875），邻居 9 将被拒——本用例钉死分母只计有效点
++        var points = MakePoints(0, 10, 9, 7, 8, 12, 14, 16);
++        var validMask = new[] { false, true, true, true, true, true, true, true };
++        var warnings = new List<string>();
++
++        var index = WaferAlignmentService.NotchCoarseSearchCore(CowAtOrigin, points, notchSearchingHalfRange: 2, validMask: validMask, warn: warnings.Add);
++
++        Assert.Equal(3, index);
++        Assert.Empty(warnings);
++    }
++
++    [Fact]
++    public void AllInvalid_ReturnsMinusOneWithWarning()
++    {
++        var points = MakePoints(16, 14, 11, 8, 10, 12, 15, 17);
++        var warnings = new List<string>();
++
++        var index = WaferAlignmentService.NotchCoarseSearchCore(CowAtOrigin, points, notchSearchingHalfRange: 2, validMask: new bool[8], warn: warnings.Add);
++
++        Assert.Equal(-1, index);
++        var warning = Assert.Single(warnings);
++        Assert.Contains("no valid edge points", warning);
++    }
++
++    [Fact]
++    public void MismatchedMaskLength_ReturnsMinusOneWithWarning()
++    {
++        //掩码长度与点数不符是契约破坏：显式告警 + -1，不随机越界
++        var points = MakePoints(16, 14, 11, 8, 10, 12, 15, 17);
++        var warnings = new List<string>();
++
++        var index = WaferAlignmentService.NotchCoarseSearchCore(CowAtOrigin, points, notchSearchingHalfRange: 2, validMask: new bool[3], warn: warnings.Add);
++
++        Assert.Equal(-1, index);
++        var warning = Assert.Single(warnings);
++        Assert.Contains("does not match", warning);
++    }
++
++    [Fact]
++    public void EmptyPoints_Unmasked_ReturnsMinusOneSilently()
++    {
++        //空点数组 + 无掩码：零候选走 -1，"正确地失败"且不告警（无掩码路径保持零行为差异），本用例钉死该行为
++        var warnings = new List<string>();
++
++        var index = WaferAlignmentService.NotchCoarseSearchCore(CowAtOrigin, [], notchSearchingHalfRange: 2, validMask: null, warn: warnings.Add);
++
++        Assert.Equal(-1, index);
++        Assert.Empty(warnings);
++    }
++
++    [Fact]
++    public void MinimumCandidateInvalid_AllCandidatesRejected_ReturnsMinusOne()
++    {
++        //谷底 idx3 无效：最小有效候选 idx4 的验证邻域含无效点被拒（无效邻域路径），其余候选全部高于阈值线 → -1 + 汇总告警
++        var points = MakePoints(15, 13, 11, 8, 10, 12, 14, 16);
++        var validMask = new[] { true, true, true, false, true, true, true, true };
++        var warnings = new List<string>();
++
++        var index = WaferAlignmentService.NotchCoarseSearchCore(CowAtOrigin, points, notchSearchingHalfRange: 2, validMask: validMask, warn: warnings.Add);
++
++        Assert.Equal(-1, index);
++        var warning = Assert.Single(warnings);
++        Assert.Contains("7 valid candidate(s) evaluated", warning);
++    }
++}
+diff --git a/Vega.BL.WaferAlignment.Tests/NotchFineSearchValidTests.cs b/Vega.BL.WaferAlignment.Tests/NotchFineSearchValidTests.cs
+new file mode 100644
+index 00000000..b15cc8b0
+--- /dev/null
++++ b/Vega.BL.WaferAlignment.Tests/NotchFineSearchValidTests.cs
+@@ -0,0 +1,80 @@
++// Copyright (c) Shanghai Vega Technology Co., Ltd. All rights reserved.
++
++namespace Vega.BL.WaferAlignment.Tests;
++
++/// <summary>
++/// 掩码精定位抛物线顶点回归：有效点拟合返回顶点；有效点数不足、顶点越出采样范围、
++/// 顶点两侧支撑点不足、全无效时一律返回 NaN（由上游 NaN 闸门过滤，绝不外推垃圾值）。
++/// </summary>
++public class NotchFineSearchValidTests
++{
++    [Fact]
++    public void AllValidParabola_ReturnsVertex()
++    {
++        //15 点精确抛物线 (i-7)²：拟合顶点即 7（左 7 点右 7 点，支撑充足）
++        var y = TestHelpers.MakeY(15, i => (i - 7) * (double) (i - 7));
++
++        var vertex = WaferAlignmentService.NotchFineSearchValid(y, Enumerable.Repeat(true, 15).ToArray());
++
++        Assert.Equal(7.0, vertex, 6);
++    }
++
++    [Fact]
++    public void TooFewValidPoints_ReturnsNaN()
++    {
++        //仅 5 个有效点（&lt; 2×MinSidePoints=6）：数量闸门直接拒绝
++        var y = TestHelpers.MakeY(15, i => (i - 7) * (double) (i - 7));
++        var validMask = new bool[15];
++        foreach (var i in new[] { 0, 2, 4, 6, 8 })
++        {
++            validMask[i] = true;
++        }
++
++        var vertex = WaferAlignmentService.NotchFineSearchValid(y, validMask);
++
++        Assert.True(double.IsNaN(vertex));
++    }
++
++    [Fact]
++    public void MismatchedMaskLength_ReturnsNaN()
++    {
++        //掩码长度与数据不符按失败处理（NaN），不猜测语义
++        var y = TestHelpers.MakeY(15, i => (i - 7) * (double) (i - 7));
++
++        var vertex = WaferAlignmentService.NotchFineSearchValid(y, new bool[3]);
++
++        Assert.True(double.IsNaN(vertex));
++    }
++
++    [Fact]
++    public void VertexOutOfRange_ReturnsNaN()
++    {
++        //无噪精确抛物线样本 → 拟合顶点恰为 20（>14）：先触顶点越界闸门（其先于支撑点闸门执行，拒绝路径明确）
++        var y = TestHelpers.MakeY(15, i => (i - 20) * (double) (i - 20));
++
++        var vertex = WaferAlignmentService.NotchFineSearchValid(y, Enumerable.Repeat(true, 15).ToArray());
++
++        Assert.True(double.IsNaN(vertex));
++    }
++
++    [Fact]
++    public void VertexNearEdge_InsufficientSideSupport_ReturnsNaN()
++    {
++        //顶点在 x=1：左侧仅 1 个支撑点（&lt; MinSidePoints=3），支撑闸门拒绝
++        var y = TestHelpers.MakeY(15, i => (i - 1) * (double) (i - 1));
++
++        var vertex = WaferAlignmentService.NotchFineSearchValid(y, Enumerable.Repeat(true, 15).ToArray());
++
++        Assert.True(double.IsNaN(vertex));
++    }
++
++    [Fact]
++    public void AllInvalid_ReturnsNaN()
++    {
++        var y = TestHelpers.MakeY(15, i => (i - 7) * (double) (i - 7));
++
++        var vertex = WaferAlignmentService.NotchFineSearchValid(y, new bool[15]);
++
++        Assert.True(double.IsNaN(vertex));
++    }
++}
+diff --git a/Vega.BL.WaferAlignment.Tests/TestHelpers.cs b/Vega.BL.WaferAlignment.Tests/TestHelpers.cs
+new file mode 100644
+index 00000000..4a4735b5
+--- /dev/null
++++ b/Vega.BL.WaferAlignment.Tests/TestHelpers.cs
+@@ -0,0 +1,37 @@
++// Copyright (c) Shanghai Vega Technology Co., Ltd. All rights reserved.
++
++namespace Vega.BL.WaferAlignment.Tests;
++
++/// <summary>测试输入构造助手：列优先 2D ushort 边缘数据与 1D 数值序列，供各测试类共用。</summary>
++internal static class TestHelpers
++{
++    internal static ushort[,] MakeData(params ushort[][] columns)
++    {
++        if (columns.Length == 0)
++        {
++            throw new ArgumentException("At least one column is required.", nameof(columns));
++        }
++        var rowCount = columns[0].Length;
++        foreach (var column in columns)
++        {
++            if (column.Length != rowCount)
++            {
++                throw new ArgumentException($"All columns must have the same length. Expected {rowCount}, got {column.Length}.", nameof(columns));
++            }
++        }
++        var data = new ushort[rowCount, columns.Length];
++        for (var j = 0; j < columns.Length; j++)
++        {
++            for (var i = 0; i < columns[j].Length; i++)
++            {
++                data[i, j] = columns[j][i];
++            }
++        }
++        return data;
++    }
++
++    internal static double[] MakeY(int count, Func<int, double> y)
++    {
++        return [.. Enumerable.Range(0, count).Select(y)];
++    }
++}
+diff --git a/Vega.BL.WaferAlignment.Tests/Vega.BL.WaferAlignment.Tests.csproj b/Vega.BL.WaferAlignment.Tests/Vega.BL.WaferAlignment.Tests.csproj
+new file mode 100644
+index 00000000..15b2c72a
+--- /dev/null
++++ b/Vega.BL.WaferAlignment.Tests/Vega.BL.WaferAlignment.Tests.csproj
+@@ -0,0 +1,28 @@
++<Project Sdk="Microsoft.NET.Sdk">
++
++  <PropertyGroup>
++    <TargetFramework>net8.0-windows</TargetFramework>
++    <ImplicitUsings>enable</ImplicitUsings>
++    <Nullable>enable</Nullable>
++    <PlatformTarget>x64</PlatformTarget>
++
++    <IsPackable>false</IsPackable>
++    <IsTestProject>true</IsTestProject>
++  </PropertyGroup>
++
++  <ItemGroup>
++    <PackageReference Include="coverlet.collector" />
++    <PackageReference Include="Microsoft.NET.Test.Sdk" />
++    <PackageReference Include="xunit" />
++    <PackageReference Include="xunit.runner.visualstudio" />
++  </ItemGroup>
++
++  <ItemGroup>
++    <Using Include="Xunit" />
++  </ItemGroup>
++
++  <ItemGroup>
++    <ProjectReference Include="..\Vega.BL.WaferAlignment\Vega.BL.WaferAlignment.csproj" />
++  </ItemGroup>
++
++</Project>
+diff --git a/Vega.BL.WaferAlignment/Properties/AssemblyInfo.cs b/Vega.BL.WaferAlignment/Properties/AssemblyInfo.cs
+new file mode 100644
+index 00000000..8a71de9e
+--- /dev/null
++++ b/Vega.BL.WaferAlignment/Properties/AssemblyInfo.cs
+@@ -0,0 +1,5 @@
++// Copyright (c) Shanghai Vega Technology Co., Ltd. All rights reserved.
++
++using System.Runtime.CompilerServices;
++
++[assembly: InternalsVisibleTo("Vega.BL.WaferAlignment.Tests")]
+diff --git a/Vega.BL.WaferAlignment/WaferAlignmentService.cs b/Vega.BL.WaferAlignment/WaferAlignmentService.cs
+index 359fa7b1..fce59782 100644
+--- a/Vega.BL.WaferAlignment/WaferAlignmentService.cs
++++ b/Vega.BL.WaferAlignment/WaferAlignmentService.cs
+@@ -150,8 +150,8 @@ public class WaferAlignmentService(IRecipeStorageProvider _recipeService, IConfi
+                 Convert2DArray(edgeScanData);
+                 PrepareforAlignment();
+ 
+-                var edgePoints = FindEdge(FindEdgeType.FindWaferEdge);
+-                var notchEdgePoints = FindEdge(FindEdgeType.FindNotchEdge);
++                var edgePoints = FindEdge(FindEdgeType.FindWaferEdge, out _);
++                var notchEdgePoints = FindEdge(FindEdgeType.FindNotchEdge, out var notchValidMask);
+ 
+                 var centerX = 0.0;
+                 var centerY = 0.0;
+@@ -175,7 +175,7 @@ public class WaferAlignmentService(IRecipeStorageProvider _recipeService, IConfi
+                     switch (CurrentEdgeScan.ClampingModeOption)
+                     {
+                         case Data.Commons.ClampingMode.EdgeChuck:
+-                            FindNotchEH(cowInPolar, notchEdgePoints, ref notchTheta);
++                            FindNotchEH(cowInPolar, notchEdgePoints, notchValidMask, ref notchTheta);
+                             break;
+                         case Data.Commons.ClampingMode.VacuumChuck:
+                         default:
+@@ -183,13 +183,18 @@ public class WaferAlignmentService(IRecipeStorageProvider _recipeService, IConfi
+                             break;
+                     }
+ 
++                    //成功才写入 WaferOrientation；失败（notchTheta 仍为 -Infinity）时跳过写入，
++                    //避免 -Infinity 泄漏进 CurrentAlignment——AlignmentInfo.IsValid 只挡 NaN，挡不住 -Infinity
+                     if (notchTheta == double.NegativeInfinity)
+                     {
+                         Logger.Error(Name, "Find notch failed!");
+                         isExecutedSuccess = false;
+                     }
+-                    CurrentAlignment.WaferOrientation = notchTheta;//This StartPoint Theta in rad is actually Theta offset(Edge Laser theta - DUV laser theta).
+-                    Logger.Information(Name, $"Find the notch position at theta(rad) = {CurrentAlignment.WaferOrientation}");
++                    else
++                    {
++                        CurrentAlignment.WaferOrientation = notchTheta;//This StartPoint Theta in rad is actually Theta offset(Edge Laser theta - DUV laser theta).
++                        Logger.Information(Name, $"Find the notch position at theta(rad) = {CurrentAlignment.WaferOrientation}");
++                    }
+                 }
+ 
+                 if (!CurrentAlignment.IsValid)
+@@ -306,6 +311,11 @@ public class WaferAlignmentService(IRecipeStorageProvider _recipeService, IConfi
+         {
+             _notchThresolds.Add(CurrentEdgeScan.OnWaferIntensity + offWaferIntensity_Notch * i);
+         }
++        if (_notchThresolds.Count == 0)
++        {
++            //阈值表为空是配置问题（factor 超上限），与数据/拟合失败区分开，避免现场把排查引向调阈值系数
++            Logger.Error(Name, $"Empty notch threshold list: NotchThresholdFactor = {CurrentEdgeScan.NotchThresholdFactor} exceeds max {_maxNotchThresholdFactor}.");
++        }
+         Logger.Debug(Name, $"OnWaferIntensity = {CurrentEdgeScan.OnWaferIntensity}, OffWaferIntensity = {CurrentEdgeScan.OffWaferIntensity} (track {offWaferTrackIndex}, offset {offWaferTrackOffset}), EdgeInterpThreshold = {CurrentEdgeScan.EdgeInterpThreshold}, NotchThreshold = {CurrentEdgeScan.NotchThreshold}");
+ 
+         // notch 阈值超过 notch 窗口的片外亮度时，最外圈整条全片外的轨道都达不到阈值，
+@@ -455,15 +465,65 @@ public class WaferAlignmentService(IRecipeStorageProvider _recipeService, IConfi
+         return new EdgeStatistics(radius, rMin, rMax, variance, std);
+     }
+ 
+-    private PointInPolar[] FindEdge(FindEdgeType findEdgeType)
++    //notch 边缘交点的包夹判定：inner < threshold <= outer（inner 低于阈值由调用方循环条件保证），插值比例落在 [0,1]
++    //（NaN/±Inf 的比较恒 false，比例检查天然排除非有限值）；等强度拒插值由调用方前置短路独占（除零保护）。
++    //仅供 FindBracketedNotchEdgeInColumn 使用，粗定位与精定位经该列搜索间接共用同一口径
++    private static bool IsBracketedNotchCrossing(double outerIntensity, double threshold, double fraction)
++    {
++        return outerIntensity >= threshold && fraction >= 0.0 && fraction <= 1.0;
++    }
++
++    //单列 notch 交点搜索（由外向内）：只接受包夹阈值的点对，未包夹（含缺口区整段低于阈值、相邻强度相等）继续向内；
++    //整列无有效交点返回默认半径点并标记无效。FindEdge 的 EdgeChuck 粗定位与 FindNotchEdgeWithFactor 的精定位共用，
++    //保证两处"有效交点"的判定与搜索行为同源
++    internal static (PointInPolar Point, bool IsValid) FindBracketedNotchEdgeInColumn(ushort[,] edgedata, int j, double threshold, double startRadius, double pitch)
++    {
++        var jFraction = (double) j / edgedata.GetLength(1);
++        for (int i = edgedata.GetLength(0) - 2; i >= 0; i--)
++        {
++            if (edgedata[i, j] >= threshold)
++            {
++                continue;
++            }
++            //相邻强度相等先拒（避免除零依赖 IsFinite 兜底），再按包夹判定插值
++            if (edgedata[i + 1, j] == edgedata[i, j])
++            {
++                continue;
++            }
++            var fraction = (double) (threshold - edgedata[i, j]) / (edgedata[i + 1, j] - edgedata[i, j]);
++            if (!IsBracketedNotchCrossing(edgedata[i + 1, j], threshold, fraction))
++            {
++                continue;
++            }
++            return (new PointInPolar(startRadius + pitch * (i + fraction + jFraction), jFraction * 2.0 * Math.PI), true);
++        }
++        return (new PointInPolar(startRadius + pitch * jFraction, jFraction * 2.0 * Math.PI), false);
++    }
++
++    private PointInPolar[] FindEdge(FindEdgeType findEdgeType, out bool[]? notchValidMask)
+     {
+         var threshold = findEdgeType == FindEdgeType.FindWaferEdge ? CurrentEdgeScan.EdgeInterpThreshold : CurrentEdgeScan.NotchThreshold;
+         var edgedata = (CurrentEdgeScan.CowSearchMethod == 1 || findEdgeType == FindEdgeType.FindNotchEdge) ? _alignmentRawData : _downsampledRawData;
++        //仅 EdgeChuck 的 notch 边缘启用有效交点判定并输出与点数组等长的掩码；其余调用保持原行为（notchValidMask = null）
++        var edgeChuckNotch = findEdgeType == FindEdgeType.FindNotchEdge && CurrentEdgeScan.ClampingModeOption == Data.Commons.ClampingMode.EdgeChuck;
++        bool[]? validMaskSlots = edgeChuckNotch ? new bool[edgedata.GetLength(1)] : null;
+ 
+         PointInPolar[] edgePoints = new PointInPolar[edgedata.GetLength(1)];
+         _ = Parallel.For(0, edgedata.GetLength(1), j =>
+         {
+             edgePoints[j] = new PointInPolar(CurrentEdgeScan.StartPoint.Radius + CurrentEdgeScan.Pitch * ((double) j / edgedata.GetLength(1)), (double) j / edgedata.GetLength(1) * 2.0 * Math.PI);
++            if (edgeChuckNotch)
++            {
++                //只接受包夹点对，未包夹继续向内（与精定位共用同一列搜索，见 FindBracketedNotchEdgeInColumn）；
++                //全部轨道无有效交点时保留默认半径，该角度由掩码标记为无效
++                var (point, isValid) = FindBracketedNotchEdgeInColumn(edgedata, j, threshold, CurrentEdgeScan.StartPoint.Radius, CurrentEdgeScan.Pitch);
++                if (isValid)
++                {
++                    edgePoints[j] = point;
++                    validMaskSlots![j] = true;
++                }
++                return;
++            }
+             for (int i = edgedata.GetLength(0) - 2; i >= 0; i--)
+             {
+                 if (edgedata[i, j] < threshold)
+@@ -483,6 +543,20 @@ public class WaferAlignmentService(IRecipeStorageProvider _recipeService, IConfi
+             }
+         });
+ 
++        if (validMaskSlots is not null)
++        {
++            var validCount = validMaskSlots.Count(v => v);
++            var message = $"EdgeChuck notch edge validity: total={validMaskSlots.Length}, valid={validCount}, invalid={validMaskSlots.Length - validCount}.";
++            if (validCount == 0)
++            {
++                Logger.Error(Name, $"{message} All notch edge points invalid; downstream notch search will fail.");//整圆全无效是核心故障信号，与 PrepareforAlignment 的配置类 Error 强度对齐
++            }
++            else
++            {
++                Logger.Information(Name, message);
++            }
++        }
++        notchValidMask = validMaskSlots;
+         return edgePoints;
+     }
+ 
+@@ -523,44 +597,47 @@ public class WaferAlignmentService(IRecipeStorageProvider _recipeService, IConfi
+ 
+         return (edgePoints, edgePoints_DS);
+     }
+-    private PointInPolar[] FindNotchEdgeWithFactor(IEnumerable<int> notchIndexes, double threshold, bool[]? validMask = null)
++    //按索引集合提取各列 notch 边缘点：带掩码时走包夹列搜索（见 FindBracketedNotchEdgeInColumn），整列无有效交点
++    //保持默认半径并标记无效；无掩码时保持首个低于阈值点对的原始插值行为（等强度取 i+0.5 猜测值，同样写入）。
++    //两条路径共享初始化默认半径与越界语义（越界索引默认半径 + 掩码无效）
++    internal static PointInPolar[] FindNotchEdgesForIndexes(ushort[,] edgedata, IEnumerable<int> notchIndexes, double threshold, double startRadius, double pitch, bool[]? validMask = null)
+     {
+-        var edgedata = _alignmentRawData;
+         var colLength = edgedata.GetLength(1);
+-        var edgePoints = new PointInPolar[notchIndexes.Count()];
++        var indexes = notchIndexes as int[] ?? notchIndexes.ToArray();
++        var edgePoints = new PointInPolar[indexes.Length];
++        if (validMask is not null && validMask.Length != edgePoints.Length)
++        {
++            throw new ArgumentException($"validMask length ({validMask.Length}) must match notch index count ({edgePoints.Length}).", nameof(validMask));
++        }
+         var index = 0;
+-        foreach (var j in notchIndexes)
++        foreach (var j in indexes)
+         {
+-            edgePoints[index] = new PointInPolar(CurrentEdgeScan.StartPoint.Radius + CurrentEdgeScan.Pitch * ((double) j / colLength), (double) j / colLength * 2.0 * Math.PI);
+-            for (int i = edgedata.GetLength(0) - 2; i >= 0; i--)
++            edgePoints[index] = new PointInPolar(startRadius + pitch * ((double) j / colLength), (double) j / colLength * 2.0 * Math.PI);
++            if (j < 0 || j >= colLength)//make sure the index be inside the bounds of array
+             {
+-                if (j < 0 || j >= colLength)//make sure the index be inside the bounds of array
++                index++;
++                continue;
++            }
++            if (validMask is not null)
++            {
++                var (point, isValid) = FindBracketedNotchEdgeInColumn(edgedata, j, threshold, startRadius, pitch);
++                if (isValid)
+                 {
+-                    continue;
++                    edgePoints[index] = point;
++                    validMask[index] = true;
+                 }
++                index++;
++                continue;
++            }
++            for (int i = edgedata.GetLength(0) - 2; i >= 0; i--)
++            {
+                 if (edgedata[i, j] < threshold)
+                 {
+-                    double edgePosition = i;
+-                    double fraction = 0.5;
+-                    if (edgedata[i + 1, j] != edgedata[i, j])
+-                    {
+-                        fraction = (threshold - edgedata[i, j]) / (edgedata[i + 1, j] - edgedata[i, j]);
+-                        edgePosition = i + fraction;
+-                    }
+-                    else
+-                    {
+-                        edgePosition = i + 0.5;
+-                    }
+-                    edgePoints[index] = new PointInPolar(CurrentEdgeScan.StartPoint.Radius + CurrentEdgeScan.Pitch * (edgePosition + (double) j / colLength), (double) j / colLength * 2.0 * Math.PI);
+-                    if (validMask is not null)
+-                    {
+-                        //有效边缘须真实夹住阈值：插值比例在 [0,1] 且两点强度跨过阈值；两点相等取 0.5 的猜测视为无效。
+-                        validMask[index] = double.IsFinite(edgePoints[index].Radius) && double.IsFinite(fraction)
+-                            && fraction >= 0.0 && fraction <= 1.0
+-                            && edgedata[i, j] != edgedata[i + 1, j]
+-                            && Math.Min(edgedata[i, j], edgedata[i + 1, j]) <= threshold
+-                            && threshold <= Math.Max(edgedata[i, j], edgedata[i + 1, j]);
+-                    }
++                    //无掩码保持原始行为：首个低于阈值点对直接插值，等强度取 i+0.5 猜测值（同样写入）
++                    double edgePosition = edgedata[i + 1, j] != edgedata[i, j]
++                        ? i + (double) (threshold - edgedata[i, j]) / (edgedata[i + 1, j] - edgedata[i, j])
++                        : i + 0.5;
++                    edgePoints[index] = new PointInPolar(startRadius + pitch * (edgePosition + (double) j / colLength), (double) j / colLength * 2.0 * Math.PI);
+                     break;
+                 }
+             }
+@@ -570,6 +647,11 @@ public class WaferAlignmentService(IRecipeStorageProvider _recipeService, IConfi
+         return edgePoints;
+     }
+ 
++    private PointInPolar[] FindNotchEdgeWithFactor(IEnumerable<int> notchIndexes, double threshold, bool[]? validMask = null)
++    {
++        return FindNotchEdgesForIndexes(_alignmentRawData, notchIndexes, threshold, CurrentEdgeScan.StartPoint.Radius, CurrentEdgeScan.Pitch, validMask);
++    }
++
+     private (PointInPolar[], PointInPolar[]) FindEdgeDUVLaser(bool useGaussionFitting = true)
+     {
+         int colCount = _alignmentRawData.GetLength(1);
+@@ -790,40 +872,74 @@ public class WaferAlignmentService(IRecipeStorageProvider _recipeService, IConfi
+         return Math.Sqrt(sumOfSquares / points.Count);
+     }
+ 
+-    private int NotchCoarseSearch(PointInPolar cowInPolar, PointInPolar[] edgePoints)
++    //粗定位核心：按到 CoW 距离升序验证候选。带掩码时平均半径与候选只取有效点，验证邻域出现无效点即拒绝并尝试下一候选；
++    //warn 回调接线调用方日志（核心为纯函数，便于单测部分有效/邻域拒绝语义）
++    internal static int NotchCoarseSearchCore(PointInPolar cowInPolar, PointInPolar[] edgePoints, int notchSearchingHalfRange, bool[]? validMask = null, Action<string>? warn = null)
+     {
++        if (validMask is not null && validMask.Length != edgePoints.Length)
++        {
++            warn?.Invoke($"NotchCoarseSearch aborted: valid mask length ({validMask.Length}) does not match edge point count ({edgePoints.Length}).");
++            return -1;
++        }
+         var sqrOfCoWR = cowInPolar.Radius * cowInPolar.Radius;
+         var radiusPoints = new (double Radius, int Index)[edgePoints.Length];
+         double sum = 0.0;
+         double radius = 0.0;
+-        var min = new PointInPolar(double.PositiveInfinity, 0.0);
++        int validCount = 0;
+         var indexOfNotch = -1;
+ 
+         for (int i = 0; i < edgePoints.Length; i++)
+         {
+             radiusPoints[i] = (Math.Sqrt(sqrOfCoWR + edgePoints[i].Radius * edgePoints[i].Radius - 2.0 * cowInPolar.Radius * edgePoints[i].Radius * Math.Cos(edgePoints[i].Theta - cowInPolar.Theta)), i);
+-            sum += radiusPoints[i].Radius;
++            if (validMask is null || validMask[i])
++            {
++                sum += radiusPoints[i].Radius;
++                validCount++;
++            }
+         }
+-        radius = sum / radiusPoints.Length;
++        if (validMask is not null && validCount == 0)
++        {
++            warn?.Invoke($"NotchCoarseSearch failed: no valid edge points ({edgePoints.Length} points in total).");
++            return -1;
++        }
++        //带掩码时平均半径按"有效点"维度计算，与 validMask 一致（无效点是缺口/噪声区，不能作为参考半径）；
++        //无掩码时循环内 validCount 已递增到与总点数相等，无需分支
++        radius = sum / (double) validCount;
+ 
+         var sortedPoints = new (double Radius, int Index)[radiusPoints.Length];
+         Array.Copy(radiusPoints, sortedPoints, radiusPoints.Length);
+         Array.Sort(sortedPoints, (a, b) => a.Radius.CompareTo(b.Radius));
+         //Find the nearest point to cow as the notch point, then search the notch next step.
+         bool found = true;
++        int evaluatedCandidates = 0;
++        string? lastRejectReason = null;//验证邻域至少含候选自身，进入评估必被写入；null 仅作不可达兜底
+         foreach (var point in sortedPoints)
+         {
++            //带掩码时只把有效点作为候选，升序关系天然保留
++            if (validMask is not null && !validMask[point.Index])
++            {
++                continue;
++            }
+             found = true;
++            evaluatedCandidates++;
+             indexOfNotch = point.Index;
+-            //Double check the notch position               
+-            int verification_start = Math.Max(0, indexOfNotch - CurrentEdgeScan.NotchSearchingHalfRange / 2);
+-            int verification_end = Math.Min(radiusPoints.Length - 1, indexOfNotch + CurrentEdgeScan.NotchSearchingHalfRange / 2);
++            //Double check the notch position
++            int verification_start = Math.Max(0, indexOfNotch - notchSearchingHalfRange / 2);
++            int verification_end = Math.Min(radiusPoints.Length - 1, indexOfNotch + notchSearchingHalfRange / 2);
+             double radius_threshold = radius - (radius - radiusPoints[indexOfNotch].Radius) / 4;
+             for (int j = verification_start; j <= verification_end; j++)
+             {
++                //邻域内出现无效点说明该候选落在缺口/噪声区，直接拒绝并尝试下一候选
++                if (validMask is not null && !validMask[j])
++                {
++                    found = false;
++                    lastRejectReason = $"invalid neighbor at local index {j}";
++                    break;
++                }
+                 if (radiusPoints[j].Radius > radius_threshold)
+                 {
+                     found = false;
++                    lastRejectReason = $"radius at local index {j} = {radiusPoints[j].Radius} > threshold {radius_threshold}";
+                     break;
+                 }
+             }
+@@ -832,8 +948,13 @@ public class WaferAlignmentService(IRecipeStorageProvider _recipeService, IConfi
+                 break;
+             }
+         }
+-        if (!found)
++        if (!found || evaluatedCandidates == 0)
+         {
++            if (validMask is not null)
++            {
++                var reason = evaluatedCandidates == 0 ? "no valid candidates" : $"last rejection: {lastRejectReason ?? "unknown"}";
++                warn?.Invoke($"NotchCoarseSearch failed: {evaluatedCandidates} valid candidate(s) evaluated, {reason}.");
++            }
+             return -1;//Failed
+         }
+         else
+@@ -841,6 +962,11 @@ public class WaferAlignmentService(IRecipeStorageProvider _recipeService, IConfi
+             return indexOfNotch;
+         }
+     }
++
++    private int NotchCoarseSearch(PointInPolar cowInPolar, PointInPolar[] edgePoints, bool[]? validMask = null)
++    {
++        return NotchCoarseSearchCore(cowInPolar, edgePoints, CurrentEdgeScan.NotchSearchingHalfRange, validMask, message => Logger.Warning(Name, message));
++    }
+     private void CheckNotchWindow(int start, int end, int length)
+     {
+         if (start < 0 || end > length - 1)
+@@ -852,11 +978,23 @@ public class WaferAlignmentService(IRecipeStorageProvider _recipeService, IConfi
+     {
+         var sqrOfCoWR = cowInPolar.Radius * cowInPolar.Radius;
+         var indexes = WECDHelper.BuildNotchData(index, CurrentEdgeScan.SamplePerTrack, CurrentEdgeScan.NotchSearchingHalfRange);
+-        var yPoints = FindNotchEdgeWithFactor(indexes, _notchThresolds.Average());
++        if (_notchThresolds.Count == 0)//空阈值表是配置问题（PrepareforAlignment 已 Error）：回退粗定位索引，避免下游 Average() 抛出
++        {
++            return index;
++        }
++        var threshold = _notchThresolds.Average();//缓存一份：业务调用与日志须同源，避免二次枚举
++        //EdgeChuck 首定位同样只信包夹交点：掩码判定复用 FindNotchEdgeWithFactor（同 FindNotchDepthCenter 的用法）
++        var validMask = new bool[indexes.Length];
++        var yPoints = FindNotchEdgeWithFactor(indexes, threshold, validMask);
+         var yRadius = yPoints.Select(p => Math.Sqrt(sqrOfCoWR + p.Radius * p.Radius - 2.0 * cowInPolar.Radius * p.Radius * Math.Cos(p.Theta)));
+-        var notchIndex = NotchFineSearch([.. indexes], [.. yRadius]);
++        var notchIndex = NotchFineSearchValid([.. yRadius], validMask);//首定位只信包夹交点：无效点不参与拟合，直达省去无用索引数组
++        if (double.IsNaN(notchIndex))//首定位失败回退粗定位索引：NaN 经 (int) 饱和转换会折回任意窗口，产生与真实原因无关的 CheckNotchWindow 告警
++        {
++            Logger.Warning(Name, "NotchSearchFirstTry failed, fall back to the coarse notch index.");
++            return index;
++        }
+         var tempNotchTheta = WECDHelper.ThetaSum(edgePoints[indexes[0]].Theta, notchIndex * 2.0 * Math.PI / CurrentEdgeScan.SamplePerTrack);
+-        Logger.Debug(Name, $"NotchSearchFirstTry -- Find the 1st notch theta = {tempNotchTheta}, with the notch threshold = {_notchThresolds.Average()}");
++        Logger.Debug(Name, $"NotchSearchFirstTry -- Find the 1st notch theta = {tempNotchTheta}, with the notch threshold = {threshold}");
+         return indexes[0] + notchIndex;
+     }
+ 
+@@ -870,8 +1008,12 @@ public class WaferAlignmentService(IRecipeStorageProvider _recipeService, IConfi
+         Logger.Debug(Name, $"NotchSearchFirstTryDUV -- Find the 1st notch theta = {tempNotchTheta}");
+         return indexes[0] + notchIndex;
+     }
+-    private double NotchFinalSearch(int[] finalIndexes, double startThteta, PointInPolar cowInPolar, bool validateEdges = false)
++    private double NotchFinalSearch(int[] finalIndexes, double startThteta, PointInPolar cowInPolar, bool validateEdges)
+     {
++        if (_notchThresolds.Count == 0)//空阈值表是配置问题（PrepareforAlignment 已 Error）：与另两个消费方守卫对齐
++        {
++            return double.NegativeInfinity;
++        }
+         var sqrOfCoWR = cowInPolar.Radius * cowInPolar.Radius;
+         var idealNotchRadius = WaferScanRange.GetEffectiveIdealNotchRadius(CurrentEdgeScan);//Formula waferR - 1500 covers 12/8 inch and 150mm; falls back to the legacy 12/8 inch ternary when not derived by the main overload.
+         ConcurrentBag<double> notchResults = [];
+@@ -881,8 +1023,10 @@ public class WaferAlignmentService(IRecipeStorageProvider _recipeService, IConfi
+             var yPoints = FindNotchEdgeWithFactor(finalIndexes, thd, validMask);
+             //validateEdges 时同时校正极角：8 寸小圆片的 CoW 极角不可忽略，仍用扫描基准角会引入半径误差
+             var yRadius = yPoints.Select(p => Math.Sqrt(sqrOfCoWR + p.Radius * p.Radius - 2.0 * cowInPolar.Radius * p.Radius * Math.Cos(validateEdges ? p.Theta - cowInPolar.Theta : p.Theta)));
+-            var notchResult = NotchFineSearch([.. finalIndexes], [.. yRadius], validMask);
+-            if (notchResult is double.NaN)
++            var notchResult = validateEdges
++                ? NotchFineSearchValid([.. yRadius], validMask!)//掩码直达：validMask 仅在 validateEdges=true 分支使用（此处必非空），无掩码分支独立走 IQR
++                : NotchFineSearch([.. finalIndexes], [.. yRadius]);
++            if (double.IsNaN(notchResult))//NaN 判定用 IsNaN 显式表达（is double.NaN 虽语义等价但易被误读为 == NaN）
+             {
+                 Logger.Debug(Name, $"NotchFinalSearch -- Find the notch theta Failed with the notch threshold = {thd}");
+                 return;
+@@ -899,6 +1043,7 @@ public class WaferAlignmentService(IRecipeStorageProvider _recipeService, IConfi
+         var filteredResults = WECDHelper.RemoveOutliers([.. notchResults], 2.0);
+         if (validateEdges && filteredResults.Length == 0)
+         {
++            Logger.Warning(Name, $"All {notchResults.Count} notch theta fits were removed as outliers.");//与上方 IsEmpty 闸门对称：全剔除同样是可诊断事件
+             return double.NegativeInfinity;
+         }
+         var tempNotchTheta = filteredResults.Average();
+@@ -916,12 +1061,8 @@ public class WaferAlignmentService(IRecipeStorageProvider _recipeService, IConfi
+         Logger.Debug(Name, $"NotchFinalSearchDUV -- before corrected the notch theta = {theta}");
+         return WECDHelper.CorrectNotchTheta((cowInPolar.Radius, cowInPolar.Theta), (idealNotchRadius, theta));
+     }
+-    private double NotchFineSearch(double[] theta, double[] y, bool[]? validMask = null)
++    private double NotchFineSearch(double[] theta, double[] y)
+     {
+-        if (validMask is not null)
+-        {
+-            return NotchFineSearchValid(y, validMask);
+-        }
+         double[]? xClean, yClean;
+         // IQR filter to remove outliers
+         (xClean, yClean) = WECDHelper.RemoveOutliersByIQR(theta, y);
+@@ -938,9 +1079,13 @@ public class WaferAlignmentService(IRecipeStorageProvider _recipeService, IConfi
+ 
+     //有效边缘点集上的抛物线拟合定位：无效点（validMask=false）只标记未知区域，绝不作为实际半径参与拟合；
+     //顶点须落在窗口内且两侧各有足够支撑点，防止越界拟合把窗口推离真实 notch。
+-    private static double NotchFineSearchValid(double[] y, bool[] validMask)
++    internal static double NotchFineSearchValid(double[] y, bool[] validMask)
+     {
+         const int MinSidePoints = 3;
++        if (validMask.Length != y.Length)//长度不符按失败处理：掩码契约破坏时不猜测语义
++        {
++            return double.NaN;
++        }
+         int[] validIndices = Enumerable.Range(0, y.Length)
+             .Where(i => validMask[i] && double.IsFinite(y[i])).ToArray();
+         if (validIndices.Length < 2 * MinSidePoints)
+@@ -984,6 +1129,10 @@ public class WaferAlignmentService(IRecipeStorageProvider _recipeService, IConfi
+         int maxHalfRange = (sampleCount - 1) / 2;
+         //搜索宽度取已有 notch 排除区域，独立于最终抛物线窗口；失败最多扩大一次。
+         int searchHalfRange = Math.Min(maxHalfRange, Math.Max(configuredHalfRange, CurrentEdgeScan.NotchExclusionHalfRange));
++        if (_notchThresolds.Count == 0)//空阈值表是配置问题（PrepareforAlignment 已 Error）：按本方法失败语义返回，避免 Average() 抛出
++        {
++            return (double.NaN, 0);
++        }
+         double threshold = _notchThresolds.Average();
+         for (int attempt = 0; attempt < 2; attempt++)
+         {
+@@ -1077,14 +1226,44 @@ public class WaferAlignmentService(IRecipeStorageProvider _recipeService, IConfi
+         }
+     }
+ 
+-    private void FindNotchEH(PointInPolar cowInPolar, PointInPolar[] edgePoints, ref double notchTheta)
++    //从全圆边缘点中切出 notch 窗口内的点与掩码切片，并记录首个命中点的原始索引：theta 随列号严格单调，
++    //窗口命中集必为连续区间，局部索引 + WindowStartIndex 即原始索引（角度取整公式存在偏差，弃用）。
++    //掩码缺失/长度不符返回 null——属内部不一致，调用方应明确失败而不是退回无掩码的旧粗定位逻辑
++    internal static (PointInPolar[] NotchPoints, bool[] NotchValidMask, int WindowStartIndex)? ExtractNotchWindow(PointInPolar[] edgePoints, bool[]? edgeValidMask, ValueRange<double> notchWindow)
+     {
++        if (edgeValidMask is null || edgeValidMask.Length != edgePoints.Length)
++        {
++            return null;
++        }
++        int windowStartIndex = -1;
++        var windowPoints = new List<PointInPolar>();
++        var windowMask = new List<bool>();
++        for (int i = 0; i < edgePoints.Length; i++)
++        {
++            if (notchWindow.IsInRange(edgePoints[i].Theta))
++            {
++                windowStartIndex = windowStartIndex < 0 ? i : windowStartIndex;
++                windowPoints.Add(edgePoints[i]);
++                windowMask.Add(edgeValidMask[i]);
++            }
++        }
++        //空窗口时 windowStartIndex 保持 -1 并钳到 0，该值无几何意义；调用方应先检查 NotchPoints.Length == 0
++        return (windowPoints.ToArray(), windowMask.ToArray(), Math.Max(0, windowStartIndex));
++    }
+ 
+-        var notchPoints = edgePoints.Where(p => _notchWindow.IsInRange(p.Theta)).ToArray();
+-        var startIndex_Notch = Math.Max(0, (int) (_notchWindow.Min / (Math.PI * 2) * CurrentEdgeScan.SamplePerTrack));
++    private void FindNotchEH(PointInPolar cowInPolar, PointInPolar[] edgePoints, bool[]? edgeValidMask, ref double notchTheta)
++    {
++        var extracted = ExtractNotchWindow(edgePoints, edgeValidMask, _notchWindow);
++        if (extracted is null)
++        {
++            //EdgeChuck 路径必须携带与点数组等长的有效掩码；缺失或长度不符属内部不一致，明确失败而不是退回无掩码的旧粗定位逻辑
++            Logger.Error(Name, $"FindNotchEH aborted: edge valid mask is {(edgeValidMask is null ? "missing" : $"length mismatched ({edgeValidMask.Length} vs {edgePoints.Length})")}.");
++            return;
++        }
++        var (notchPoints, notchValidMask, startIndex_Notch) = extracted.Value;
+         try
+         {
+-            var indexOfNotch = NotchCoarseSearch(cowInPolar, notchPoints);
++            var indexOfNotch = NotchCoarseSearch(cowInPolar, notchPoints, notchValidMask);
+             Logger.Debug(Name, $"FindNotch -- NotchCoarseSearch find the notch index = {indexOfNotch + startIndex_Notch}");
+             if (indexOfNotch == -1)
+             {
+@@ -1099,7 +1278,8 @@ public class WaferAlignmentService(IRecipeStorageProvider _recipeService, IConfi
+                 var finalIndexes = WECDHelper.BuildNotchData((int) (notchIndex), CurrentEdgeScan.SamplePerTrack, CurrentEdgeScan.NotchSearchingHalfRange);
+                 //try more thresholds to calculate the avg of notch theta
+                 var startThteta = edgePoints[finalIndexes[0]].Theta;
+-                notchTheta = NotchFinalSearch(finalIndexes, startThteta, cowInPolar);
++                //精定位同样只信包夹交点（极角按 CoW 校正 + 两侧支撑点校验），与 VacuumChuck FindNotch 的传参对齐
++                notchTheta = NotchFinalSearch(finalIndexes, startThteta, cowInPolar, true);
+             }
+         }
+         catch (Exception ex)
+diff --git a/Vega.sln b/Vega.sln
+index 6077998b..7bdd3154 100644
+--- a/Vega.sln
++++ b/Vega.sln
+@@ -265,6 +265,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Vega.Facade.GEMBase.Tests",
+ EndProject
+ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Vega.UI.Configuration.Tests", "Vega.UI.Configuration.Tests\Vega.UI.Configuration.Tests.csproj", "{4F59FD0A-9D77-4A79-AEE8-74CA9F698AAD}"
+ EndProject
++Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Vega.BL.WaferAlignment.Tests", "Vega.BL.WaferAlignment.Tests\Vega.BL.WaferAlignment.Tests.csproj", "{5F95659D-ACDD-4A4E-9150-821D8A470B6B}"
++EndProject
+ Global
+ 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+ 		Debug|Any CPU = Debug|Any CPU
+@@ -1799,6 +1801,18 @@ Global
+ 		{4F59FD0A-9D77-4A79-AEE8-74CA9F698AAD}.Release|x64.Build.0 = Release|Any CPU
+ 		{4F59FD0A-9D77-4A79-AEE8-74CA9F698AAD}.Release|x86.ActiveCfg = Release|Any CPU
+ 		{4F59FD0A-9D77-4A79-AEE8-74CA9F698AAD}.Release|x86.Build.0 = Release|Any CPU
++		{5F95659D-ACDD-4A4E-9150-821D8A470B6B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
++		{5F95659D-ACDD-4A4E-9150-821D8A470B6B}.Debug|Any CPU.Build.0 = Debug|Any CPU
++		{5F95659D-ACDD-4A4E-9150-821D8A470B6B}.Debug|x64.ActiveCfg = Debug|Any CPU
++		{5F95659D-ACDD-4A4E-9150-821D8A470B6B}.Debug|x64.Build.0 = Debug|Any CPU
++		{5F95659D-ACDD-4A4E-9150-821D8A470B6B}.Debug|x86.ActiveCfg = Debug|Any CPU
++		{5F95659D-ACDD-4A4E-9150-821D8A470B6B}.Debug|x86.Build.0 = Debug|Any CPU
++		{5F95659D-ACDD-4A4E-9150-821D8A470B6B}.Release|Any CPU.ActiveCfg = Release|Any CPU
++		{5F95659D-ACDD-4A4E-9150-821D8A470B6B}.Release|Any CPU.Build.0 = Release|Any CPU
++		{5F95659D-ACDD-4A4E-9150-821D8A470B6B}.Release|x64.ActiveCfg = Release|Any CPU
++		{5F95659D-ACDD-4A4E-9150-821D8A470B6B}.Release|x64.Build.0 = Release|Any CPU
++		{5F95659D-ACDD-4A4E-9150-821D8A470B6B}.Release|x86.ActiveCfg = Release|Any CPU
++		{5F95659D-ACDD-4A4E-9150-821D8A470B6B}.Release|x86.Build.0 = Release|Any CPU
+ 	EndGlobalSection
+ 	GlobalSection(SolutionProperties) = preSolution
+ 		HideSolutionNode = FALSE
