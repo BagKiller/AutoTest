@@ -167,7 +167,7 @@ def get_verification_status(job_id: str) -> dict:
 
 
 def list_verifiable_work_items() -> dict:
-    """列出 registry.json 已登记的可验证工作项（没登记的无法自动验证）。"""
+    """列出已登记用例；未登记时由 AI 在执行前准备真实测试并登记。"""
     try:
         p = subprocess.run(_runner_cmd(["list-cases"]), capture_output=True,
                            text=True, encoding="utf-8", errors="replace", timeout=120)
@@ -232,7 +232,7 @@ TOOLS_SCHEMA = [
         "type": "function",
         "function": {
             "name": "list_verifiable_work_items",
-            "description": "列出已登记自动化用例的可验证工作项。未登记的工作项无法自动验证（NO_CASE_REGISTERED），应如实告知需人工补用例",
+            "description": "列出已登记用例。NO_CASE_REGISTERED 表示尚需准备：AI 自行阅读需求/diff、复用或补写真实测试及数据、构建发现并登记后执行；不能仅因缺登记而停止。",
             "parameters": {"type": "object", "properties": {}},
         }
     },

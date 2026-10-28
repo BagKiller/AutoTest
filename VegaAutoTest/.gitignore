@@ -23,6 +23,9 @@ daily/cache.git/
 daily/build/
 daily/state.json
 daily/sessions/
+daily/.operation.lock
+__pycache__/
+*.py[cod]
 
 # IDE
 .vs/

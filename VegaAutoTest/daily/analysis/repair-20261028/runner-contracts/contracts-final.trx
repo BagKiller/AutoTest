@@ -1,0 +1,94 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TestRun id="a2ba2861-9487-477b-8d00-d08ca5a963d7" name="Administrator@WIN-5NPN6Q8PL1B 2026-10-28 14:29:23" runUser="WIN-5NPN6Q8PL1B\Administrator" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <Times creation="2026-10-28T14:29:23.8553538+08:00" queuing="2026-10-28T14:29:23.8553542+08:00" start="2026-10-28T14:29:20.9413940+08:00" finish="2026-10-28T14:29:24.9433935+08:00" />
+  <TestSettings name="default" id="65d091cf-786c-48b8-8001-2e6fd1d5beae">
+    <Deployment runDeploymentRoot="Administrator_WIN-5NPN6Q8PL1B_2026-10-28_14_29_23" />
+  </TestSettings>
+  <Results>
+    <UnitTestResult executionId="1935dfe5-7e5f-4d7a-9737-0f8a342c973d" testId="af4d3d23-7516-5785-2256-ca174d30a689" testName="FailureClassificationTests.WrappedInitializationExceptionRemainsError" computerName="WIN-5NPN6Q8PL1B" duration="00:00:00.0001570" startTime="2026-10-28T14:29:23.8257644+08:00" endTime="2026-10-28T14:29:23.8257645+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="1935dfe5-7e5f-4d7a-9737-0f8a342c973d" />
+    <UnitTestResult executionId="1ebe430c-44a4-4275-8dff-9b5e565e3cc0" testId="461d15eb-163f-d8c0-45a1-9b5bbcec7084" testName="TimeoutEvidenceTests.TimeoutKillsOwnedChildAndRetainsHostLog" computerName="WIN-5NPN6Q8PL1B" duration="00:00:01.8549238" startTime="2026-10-28T14:29:24.8841720+08:00" endTime="2026-10-28T14:29:24.8841723+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="1ebe430c-44a4-4275-8dff-9b5e565e3cc0" />
+    <UnitTestResult executionId="9f818f83-aa08-4df2-9e12-573c7ee503ea" testId="be2034e5-5ed9-49a4-49ac-c07b97804ff0" testName="FailureClassificationTests.HeadlessMixedResultsDoNotRequireUia" computerName="WIN-5NPN6Q8PL1B" duration="00:00:00.0039231" startTime="2026-10-28T14:29:23.8174122+08:00" endTime="2026-10-28T14:29:23.8174123+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="9f818f83-aa08-4df2-9e12-573c7ee503ea" />
+    <UnitTestResult executionId="f8eb1e17-a343-4bf1-9b85-184f373eee5a" testId="cb24188d-ac4c-9f46-9edc-ae7344127fc7" testName="FailureClassificationTests.CustomMessageRequiresMatchingTypedTestEvidence(actual: &quot;System.Collections.Generic.KeyNotFoundException: M&quot;···, expected: &quot;ERROR&quot;)" computerName="WIN-5NPN6Q8PL1B" duration="00:00:00.0000052" startTime="2026-10-28T14:29:23.8165274+08:00" endTime="2026-10-28T14:29:23.8165274+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="f8eb1e17-a343-4bf1-9b85-184f373eee5a" />
+    <UnitTestResult executionId="5e37e7a7-7f8b-498c-80f4-e99410479825" testId="70a9d862-f35d-fd39-4917-b3023d5db435" testName="FailureClassificationTests.CustomMessageRequiresMatchingTypedTestEvidence(actual: &quot;Xunit.Sdk.TrueException: Missing dependency node\n&quot;···, expected: &quot;FAIL&quot;)" computerName="WIN-5NPN6Q8PL1B" duration="00:00:00.0003423" startTime="2026-10-28T14:29:23.8160547+08:00" endTime="2026-10-28T14:29:23.8160548+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="5e37e7a7-7f8b-498c-80f4-e99410479825" />
+    <UnitTestResult executionId="d5d416d9-24a0-4ea7-91fb-a6dc49d3589c" testId="e5d4850f-6e0c-21fb-b786-9f1d7a5ce661" testName="FailureClassificationTests.LogicAssertionRemainsFail(message: &quot;Xunit.Sdk.TrueException: Assert.True() Failure&quot;)" computerName="WIN-5NPN6Q8PL1B" duration="00:00:00.0001906" startTime="2026-10-28T14:29:23.8166229+08:00" endTime="2026-10-28T14:29:23.8166236+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="d5d416d9-24a0-4ea7-91fb-a6dc49d3589c" />
+    <UnitTestResult executionId="dff1e5d8-6eaf-4852-9cb8-3dc308596f7f" testId="b7268506-cbea-a2df-9b4b-5d19b74d9a91" testName="FailureClassificationTests.LogicAssertionRemainsFail(message: &quot;Assert.True() Failure: device should be idle&quot;)" computerName="WIN-5NPN6Q8PL1B" duration="00:00:00.0004030" startTime="2026-10-28T14:29:23.8165922+08:00" endTime="2026-10-28T14:29:23.8165923+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="dff1e5d8-6eaf-4852-9cb8-3dc308596f7f" />
+    <UnitTestResult executionId="6e8e2f48-9900-4f35-9cc2-a43f83e78259" testId="41c2ec11-c984-f0fe-ac04-2b1d6456eea9" testName="FailureClassificationTests.CustomMessageRequiresMatchingTypedTestEvidence(actual: &quot;Xunit.Sdk.TrueException: Missing dependency node\n&quot;···, expected: &quot;ERROR&quot;)" computerName="WIN-5NPN6Q8PL1B" duration="00:00:00.0000063" startTime="2026-10-28T14:29:23.8164935+08:00" endTime="2026-10-28T14:29:23.8164936+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="6e8e2f48-9900-4f35-9cc2-a43f83e78259" />
+    <UnitTestResult executionId="e8c6532b-e155-4fa3-9b9a-96b12d6ef838" testId="0f94de6d-2d36-7cf0-63ec-ed9fe64c084c" testName="FailureClassificationTests.LogicAssertionRemainsFail(message: &quot;Assert.Equal() Failure: Values differ\nExpected: 1&quot;···)" computerName="WIN-5NPN6Q8PL1B" duration="00:00:00.0000098" startTime="2026-10-28T14:29:23.8166516+08:00" endTime="2026-10-28T14:29:23.8166517+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="e8c6532b-e155-4fa3-9b9a-96b12d6ef838" />
+    <UnitTestResult executionId="f3c58e6d-9c16-44fb-8df1-54b6187ea771" testId="abddfeeb-2ebd-44bb-d6b4-afb51845ef0c" testName="FailureClassificationTests.CustomMessageRequiresMatchingTypedTestEvidence(actual: &quot;Xunit.Sdk.TrueException: Missing dependency node s&quot;···, expected: &quot;ERROR&quot;)" computerName="WIN-5NPN6Q8PL1B" duration="00:00:00.7802611" startTime="2026-10-28T14:29:23.8127385+08:00" endTime="2026-10-28T14:29:23.8127617+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="f3c58e6d-9c16-44fb-8df1-54b6187ea771" />
+    <UnitTestResult executionId="0f5f1a71-a268-4933-b333-5d47a44d4a2e" testId="dd01281c-44f3-5973-23e5-bbf66dd2b00a" testName="FailureClassificationTests.CustomMessageRequiresMatchingTypedTestEvidence(actual: &quot;Xunit.Sdk.TrueException: Different failure\n at Fi&quot;···, expected: &quot;ERROR&quot;)" computerName="WIN-5NPN6Q8PL1B" duration="00:00:00.0000167" startTime="2026-10-28T14:29:23.8164510+08:00" endTime="2026-10-28T14:29:23.8164512+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="0f5f1a71-a268-4933-b333-5d47a44d4a2e" />
+  </Results>
+  <TestDefinitions>
+    <UnitTest name="FailureClassificationTests.WrappedInitializationExceptionRemainsError" storage="c:\autotest\test-artifacts\repair-runner-contracts\bin\vega.autotest.runner.tests\debug\vega.autotest.runner.tests.dll" id="af4d3d23-7516-5785-2256-ca174d30a689">
+      <Execution id="1935dfe5-7e5f-4d7a-9737-0f8a342c973d" />
+      <TestMethod codeBase="C:\AutoTest\test-artifacts\repair-runner-contracts\bin\Vega.AutoTest.Runner.Tests\debug\Vega.AutoTest.Runner.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="FailureClassificationTests" name="WrappedInitializationExceptionRemainsError" />
+    </UnitTest>
+    <UnitTest name="FailureClassificationTests.CustomMessageRequiresMatchingTypedTestEvidence(actual: &quot;Xunit.Sdk.TrueException: Missing dependency node\n&quot;···, expected: &quot;FAIL&quot;)" storage="c:\autotest\test-artifacts\repair-runner-contracts\bin\vega.autotest.runner.tests\debug\vega.autotest.runner.tests.dll" id="70a9d862-f35d-fd39-4917-b3023d5db435">
+      <Execution id="5e37e7a7-7f8b-498c-80f4-e99410479825" />
+      <TestMethod codeBase="C:\AutoTest\test-artifacts\repair-runner-contracts\bin\Vega.AutoTest.Runner.Tests\debug\Vega.AutoTest.Runner.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="FailureClassificationTests" name="CustomMessageRequiresMatchingTypedTestEvidence" />
+    </UnitTest>
+    <UnitTest name="FailureClassificationTests.LogicAssertionRemainsFail(message: &quot;Xunit.Sdk.TrueException: Assert.True() Failure&quot;)" storage="c:\autotest\test-artifacts\repair-runner-contracts\bin\vega.autotest.runner.tests\debug\vega.autotest.runner.tests.dll" id="e5d4850f-6e0c-21fb-b786-9f1d7a5ce661">
+      <Execution id="d5d416d9-24a0-4ea7-91fb-a6dc49d3589c" />
+      <TestMethod codeBase="C:\AutoTest\test-artifacts\repair-runner-contracts\bin\Vega.AutoTest.Runner.Tests\debug\Vega.AutoTest.Runner.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="FailureClassificationTests" name="LogicAssertionRemainsFail" />
+    </UnitTest>
+    <UnitTest name="TimeoutEvidenceTests.TimeoutKillsOwnedChildAndRetainsHostLog" storage="c:\autotest\test-artifacts\repair-runner-contracts\bin\vega.autotest.runner.tests\debug\vega.autotest.runner.tests.dll" id="461d15eb-163f-d8c0-45a1-9b5bbcec7084">
+      <Execution id="1ebe430c-44a4-4275-8dff-9b5e565e3cc0" />
+      <TestMethod codeBase="C:\AutoTest\test-artifacts\repair-runner-contracts\bin\Vega.AutoTest.Runner.Tests\debug\Vega.AutoTest.Runner.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="TimeoutEvidenceTests" name="TimeoutKillsOwnedChildAndRetainsHostLog" />
+    </UnitTest>
+    <UnitTest name="FailureClassificationTests.HeadlessMixedResultsDoNotRequireUia" storage="c:\autotest\test-artifacts\repair-runner-contracts\bin\vega.autotest.runner.tests\debug\vega.autotest.runner.tests.dll" id="be2034e5-5ed9-49a4-49ac-c07b97804ff0">
+      <Execution id="9f818f83-aa08-4df2-9e12-573c7ee503ea" />
+      <TestMethod codeBase="C:\AutoTest\test-artifacts\repair-runner-contracts\bin\Vega.AutoTest.Runner.Tests\debug\Vega.AutoTest.Runner.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="FailureClassificationTests" name="HeadlessMixedResultsDoNotRequireUia" />
+    </UnitTest>
+    <UnitTest name="FailureClassificationTests.CustomMessageRequiresMatchingTypedTestEvidence(actual: &quot;Xunit.Sdk.TrueException: Missing dependency node\n&quot;···, expected: &quot;ERROR&quot;)" storage="c:\autotest\test-artifacts\repair-runner-contracts\bin\vega.autotest.runner.tests\debug\vega.autotest.runner.tests.dll" id="41c2ec11-c984-f0fe-ac04-2b1d6456eea9">
+      <Execution id="6e8e2f48-9900-4f35-9cc2-a43f83e78259" />
+      <TestMethod codeBase="C:\AutoTest\test-artifacts\repair-runner-contracts\bin\Vega.AutoTest.Runner.Tests\debug\Vega.AutoTest.Runner.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="FailureClassificationTests" name="CustomMessageRequiresMatchingTypedTestEvidence" />
+    </UnitTest>
+    <UnitTest name="FailureClassificationTests.CustomMessageRequiresMatchingTypedTestEvidence(actual: &quot;Xunit.Sdk.TrueException: Different failure\n at Fi&quot;···, expected: &quot;ERROR&quot;)" storage="c:\autotest\test-artifacts\repair-runner-contracts\bin\vega.autotest.runner.tests\debug\vega.autotest.runner.tests.dll" id="dd01281c-44f3-5973-23e5-bbf66dd2b00a">
+      <Execution id="0f5f1a71-a268-4933-b333-5d47a44d4a2e" />
+      <TestMethod codeBase="C:\AutoTest\test-artifacts\repair-runner-contracts\bin\Vega.AutoTest.Runner.Tests\debug\Vega.AutoTest.Runner.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="FailureClassificationTests" name="CustomMessageRequiresMatchingTypedTestEvidence" />
+    </UnitTest>
+    <UnitTest name="FailureClassificationTests.LogicAssertionRemainsFail(message: &quot;Assert.True() Failure: device should be idle&quot;)" storage="c:\autotest\test-artifacts\repair-runner-contracts\bin\vega.autotest.runner.tests\debug\vega.autotest.runner.tests.dll" id="b7268506-cbea-a2df-9b4b-5d19b74d9a91">
+      <Execution id="dff1e5d8-6eaf-4852-9cb8-3dc308596f7f" />
+      <TestMethod codeBase="C:\AutoTest\test-artifacts\repair-runner-contracts\bin\Vega.AutoTest.Runner.Tests\debug\Vega.AutoTest.Runner.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="FailureClassificationTests" name="LogicAssertionRemainsFail" />
+    </UnitTest>
+    <UnitTest name="FailureClassificationTests.LogicAssertionRemainsFail(message: &quot;Assert.Equal() Failure: Values differ\nExpected: 1&quot;···)" storage="c:\autotest\test-artifacts\repair-runner-contracts\bin\vega.autotest.runner.tests\debug\vega.autotest.runner.tests.dll" id="0f94de6d-2d36-7cf0-63ec-ed9fe64c084c">
+      <Execution id="e8c6532b-e155-4fa3-9b9a-96b12d6ef838" />
+      <TestMethod codeBase="C:\AutoTest\test-artifacts\repair-runner-contracts\bin\Vega.AutoTest.Runner.Tests\debug\Vega.AutoTest.Runner.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="FailureClassificationTests" name="LogicAssertionRemainsFail" />
+    </UnitTest>
+    <UnitTest name="FailureClassificationTests.CustomMessageRequiresMatchingTypedTestEvidence(actual: &quot;System.Collections.Generic.KeyNotFoundException: M&quot;···, expected: &quot;ERROR&quot;)" storage="c:\autotest\test-artifacts\repair-runner-contracts\bin\vega.autotest.runner.tests\debug\vega.autotest.runner.tests.dll" id="cb24188d-ac4c-9f46-9edc-ae7344127fc7">
+      <Execution id="f8eb1e17-a343-4bf1-9b85-184f373eee5a" />
+      <TestMethod codeBase="C:\AutoTest\test-artifacts\repair-runner-contracts\bin\Vega.AutoTest.Runner.Tests\debug\Vega.AutoTest.Runner.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="FailureClassificationTests" name="CustomMessageRequiresMatchingTypedTestEvidence" />
+    </UnitTest>
+    <UnitTest name="FailureClassificationTests.CustomMessageRequiresMatchingTypedTestEvidence(actual: &quot;Xunit.Sdk.TrueException: Missing dependency node s&quot;···, expected: &quot;ERROR&quot;)" storage="c:\autotest\test-artifacts\repair-runner-contracts\bin\vega.autotest.runner.tests\debug\vega.autotest.runner.tests.dll" id="abddfeeb-2ebd-44bb-d6b4-afb51845ef0c">
+      <Execution id="f3c58e6d-9c16-44fb-8df1-54b6187ea771" />
+      <TestMethod codeBase="C:\AutoTest\test-artifacts\repair-runner-contracts\bin\Vega.AutoTest.Runner.Tests\debug\Vega.AutoTest.Runner.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="FailureClassificationTests" name="CustomMessageRequiresMatchingTypedTestEvidence" />
+    </UnitTest>
+  </TestDefinitions>
+  <TestEntries>
+    <TestEntry testId="af4d3d23-7516-5785-2256-ca174d30a689" executionId="1935dfe5-7e5f-4d7a-9737-0f8a342c973d" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="461d15eb-163f-d8c0-45a1-9b5bbcec7084" executionId="1ebe430c-44a4-4275-8dff-9b5e565e3cc0" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="be2034e5-5ed9-49a4-49ac-c07b97804ff0" executionId="9f818f83-aa08-4df2-9e12-573c7ee503ea" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="cb24188d-ac4c-9f46-9edc-ae7344127fc7" executionId="f8eb1e17-a343-4bf1-9b85-184f373eee5a" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="70a9d862-f35d-fd39-4917-b3023d5db435" executionId="5e37e7a7-7f8b-498c-80f4-e99410479825" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="e5d4850f-6e0c-21fb-b786-9f1d7a5ce661" executionId="d5d416d9-24a0-4ea7-91fb-a6dc49d3589c" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="b7268506-cbea-a2df-9b4b-5d19b74d9a91" executionId="dff1e5d8-6eaf-4852-9cb8-3dc308596f7f" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="41c2ec11-c984-f0fe-ac04-2b1d6456eea9" executionId="6e8e2f48-9900-4f35-9cc2-a43f83e78259" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="0f94de6d-2d36-7cf0-63ec-ed9fe64c084c" executionId="e8c6532b-e155-4fa3-9b9a-96b12d6ef838" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="abddfeeb-2ebd-44bb-d6b4-afb51845ef0c" executionId="f3c58e6d-9c16-44fb-8df1-54b6187ea771" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="dd01281c-44f3-5973-23e5-bbf66dd2b00a" executionId="0f5f1a71-a268-4933-b333-5d47a44d4a2e" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </TestEntries>
+  <TestLists>
+    <TestList name="列表中未列出的结果" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestList name="所有已加载的结果" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </TestLists>
+  <ResultSummary outcome="Completed">
+    <Counters total="11" executed="11" passed="11" failed="0" error="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+    <Output>
+      <StdOut>[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.5.3.1+6b60a9e56a (64-bit .NET 8.0.32)&#xD;
+[xUnit.net 00:00:00.60]   Discovering: Vega.AutoTest.Runner.Tests&#xD;
+[xUnit.net 00:00:00.66]   Discovered:  Vega.AutoTest.Runner.Tests&#xD;
+[xUnit.net 00:00:00.66]   Starting:    Vega.AutoTest.Runner.Tests&#xD;
+[xUnit.net 00:00:02.56]   Finished:    Vega.AutoTest.Runner.Tests&#xD;
+</StdOut>
+    </Output>
+  </ResultSummary>
+</TestRun>

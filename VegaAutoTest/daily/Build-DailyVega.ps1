@@ -40,7 +40,19 @@ try {
 if($LASTEXITCODE -ne 0){throw 'Batch editor build failed; see build-batch-editor.log'}
 $batchDll=Join-Path (Split-Path $project) 'bin\Debug\net8.0-windows10.0.19041.0\win-x64\RecipeBatchEditor\RecipeBatchEditor.dll'
 if(-not (Test-Path -LiteralPath $batchDll)){throw 'Batch editor output missing after build'}
+# Hardware Profile changes also require the actual standalone editor UI.
+# Build it from the same detached SHA rather than an installed/previous copy.
+$componentProject=Join-Path $RepoRoot 'ComponentConfigEditor\ComponentConfigEditor.csproj'
+$componentDll=$null
+if(Test-Path -LiteralPath $componentProject){
+    & "$env:DOTNET_ROOT\dotnet.exe" restore $componentProject --configfile C:\AutoTest\setup\NuGet.Config @common *> (Join-Path $runRoot 'restore-component-editor.log')
+    if($LASTEXITCODE -ne 0){throw 'Component editor restore failed; see restore-component-editor.log'}
+    & "$env:DOTNET_ROOT\dotnet.exe" build $componentProject --no-restore @common -v:minimal *> (Join-Path $runRoot 'build-component-editor.log')
+    if($LASTEXITCODE -ne 0){throw 'Component editor build failed; see build-component-editor.log'}
+    $componentDll=Join-Path $RepoRoot 'Vega\bin\Debug\net8.0-windows10.0.19041.0\win-x64\ComponentConfigEditor\ComponentConfigEditor.dll'
+    if(-not(Test-Path -LiteralPath $componentDll)){throw 'Component editor output missing after build'}
+}
 $head= & git -c "safe.directory=$RepoRoot" -C $RepoRoot rev-parse HEAD
 $dll=Join-Path $RepoRoot 'Vega\bin\Debug\net8.0-windows10.0.19041.0\win-x64\Vega.dll'
-@{commit=$head;builtAt=(Get-Date).ToString('o');repo=$RepoRoot;vegaDllSha256=(Get-FileHash -LiteralPath $dll).Hash;batchEditorDllSha256=(Get-FileHash -LiteralPath $batchDll).Hash;hardwareNativeNiProjectExcluded=$true;lockedRestore=$false} | ConvertTo-Json | Set-Content (Join-Path $runRoot 'build-provenance.json')
+@{commit=$head;builtAt=(Get-Date).ToString('o');repo=$RepoRoot;vegaDllSha256=(Get-FileHash -LiteralPath $dll).Hash;batchEditorDllSha256=(Get-FileHash -LiteralPath $batchDll).Hash;componentEditorDllSha256=$(if($componentDll){(Get-FileHash -LiteralPath $componentDll).Hash}else{$null});hardwareNativeNiProjectExcluded=$true;lockedRestore=$false} | ConvertTo-Json | Set-Content (Join-Path $runRoot 'build-provenance.json')
 Get-Content (Join-Path $runRoot 'build.log') -Tail 5

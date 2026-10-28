@@ -42,6 +42,19 @@ function Read-Session {
     if($state.bin -ne $bin){throw 'Session belongs to a different binary directory; pass its original -RepoRoot'}
     return $state
 }
+function Restore-MachineConfiguration($State, [string]$SessionRoot) {
+    if(-not $State.machineConfiguration){return}
+    $backup=Join-Path $SessionRoot 'MachineConfiguration.before.json'
+    if(Test-Path -LiteralPath $backup){
+        $expected=if($State.machineOriginalSha256){$State.machineOriginalSha256}else{(Get-FileHash -LiteralPath $backup).Hash}
+        if((Get-FileHash -LiteralPath $backup).Hash -ne $expected){throw 'Machine configuration backup fingerprint mismatch'}
+        Copy-Item -LiteralPath $backup -Destination $State.machineConfiguration -Force
+        if((Get-FileHash -LiteralPath $State.machineConfiguration).Hash -ne $expected){throw 'Machine configuration restore fingerprint mismatch'}
+    }elseif($State.ContainsKey('machineExisted') -and -not $State.machineExisted){
+        Remove-Item -LiteralPath $State.machineConfiguration -Force -ErrorAction SilentlyContinue
+        if(Test-Path -LiteralPath $State.machineConfiguration){throw 'New machine configuration could not be removed during restore'}
+    }else{throw 'Machine configuration backup is missing; cannot establish restoration'}
+}
 if($Action -eq 'Prepare'){
     Assert-Stopped
     $component=Get-Content -LiteralPath $componentPath -Raw | ConvertFrom-Json -AsHashtable
@@ -62,6 +75,16 @@ if($Action -eq 'Prepare'){
     $tool[0].Features=$features
     $tool[0].UserDataFolder=$plan.userDataFolder
     $hardware.SelectedProfiles[$Model]=$profileName
+    $userFolder=Join-Path ([Environment]::GetFolderPath('LocalApplicationData')) ('Vega\'+$plan.userDataFolder)
+    $machine=Join-Path $userFolder 'MachineConfiguration.json'
+    $plan.machineConfiguration=$machine
+    $plan.machineExisted=Test-Path -LiteralPath $machine
+    if($plan.machineExisted){
+        Copy-Item -LiteralPath $machine -Destination (Join-Path $session 'MachineConfiguration.before.json')
+        $plan.machineOriginalSha256=(Get-FileHash -LiteralPath $machine).Hash
+    }
+    $plan.state='PREPARING'
+    Save-Json (Join-Path $session 'session.json') $plan
     try {
         Save-Json $componentPath $component
         Save-Json $hardwarePath $hardware
@@ -70,8 +93,7 @@ if($Action -eq 'Prepare'){
         $userFolder=Join-Path ([Environment]::GetFolderPath('LocalApplicationData')) ('Vega\'+$plan.userDataFolder)
         New-Item -ItemType Directory -Path $userFolder -Force | Out-Null
         $machine=Join-Path $userFolder 'MachineConfiguration.json'
-        if(Test-Path -LiteralPath $machine){Copy-Item -LiteralPath $machine -Destination (Join-Path $session 'MachineConfiguration.before.json')}
-        else{Copy-Item -LiteralPath (Join-Path $bin 'Resources\MachineConfiguration_Default.json') -Destination $machine}
+        if(-not $plan.machineExisted){Copy-Item -LiteralPath (Join-Path $bin 'Resources\MachineConfiguration_Default.json') -Destination $machine}
         $dataRoot=Join-Path 'C:\AutoTest\data\validation' $profileName
         New-Item -ItemType Directory -Path $dataRoot -Force | Out-Null
         $machineObject=Get-Content -LiteralPath $machine -Raw | ConvertFrom-Json -AsHashtable
@@ -99,6 +121,8 @@ if($Action -eq 'Prepare'){
     }catch{
         Copy-Item -LiteralPath (Join-Path $session 'ComponentConfig.original.json') -Destination $componentPath -Force
         Copy-Item -LiteralPath (Join-Path $session 'HardwareProfiles.original.json') -Destination $hardwarePath -Force
+        Restore-MachineConfiguration $plan $session
+        $plan.state='RESTORED';Save-Json (Join-Path $session 'session.json') $plan
         throw
     }
     Write-Output "Prepared $profileName. SessionPath=$session"
@@ -151,6 +175,7 @@ if($Action -eq 'Start'){
             Copy-Item -LiteralPath (Join-Path $SessionPath ($entry.Key+'.original.json')) -Destination $entry.Value -Force
             if((Get-FileHash -LiteralPath $entry.Value).Hash -ne $state.originalHashes[$entry.Key]){throw 'Restored configuration fingerprint mismatch'}
         }
+        Restore-MachineConfiguration $state $SessionPath
         $state.state='RESTORED';Save-Json (Join-Path $SessionPath 'session.json') $state
         Write-Output 'Original configuration restored and SHA256 verified.'
     }

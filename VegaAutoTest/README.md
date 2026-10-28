@@ -14,7 +14,7 @@ VegaAutoTest 是 Vega 半导体检测设备控制软件的**确定性自动化�
 1. **人**：开发/测试在本地手跑 UIA 回归用例，验证某工作项的修复效果。
 2. **外部编排层**（Claude Code 的 `wi-verify` skill、code_indicator/vega-agent）：通过 **Runner CLI** 以进程边界方式调用，消费机器可读的 `result.json` 得到 PASS/FAIL/BLOCKED/ERROR 判定。
 
-核心纪律：**模型只决定「要不要验、验哪个」；程序决定「怎么验、判什么」**。判定逻辑全部固化在 `VerdictResolver`，任何 LLM 不得临场决定断言与结论。
+核心纪律：**AI 在准备阶段理解需求、复用或补写可执行测试；程序执行冻结测试并判定结果**。断言和输入基准在冻结前准备并检查，冻结后不得临场修改。正式判定逻辑固化在 `VerdictResolver`，不得由 LLM 改写结论。每日入口以 `daily/AGENTS.md` 和 `daily/README.md` 的 2026-10-28 流程为准。
 
 ### 1.1 三层结构
 
@@ -279,7 +279,7 @@ D:\Code\Vega\VegaAutomation\VegaAutoTest\runs\20260917T055731Z_wi3478_08a70f4\re
 
 ## 6. 用例登记（registry.json）
 
-`cases\registry.json` 是工作项到用例的**显式映射**。没有登记 = 无法自动验证（诚实返回 `NO_CASE_REGISTERED`），这是特性不是缺陷——提示人类"该补用例了"，而不是让模型现编一个看起来像验证的东西。
+`cases\registry.json` 是工作项到用例的**显式映射**。没有登记时 Runner 返回 `NO_CASE_REGISTERED`，这表示执行前还需准备。AI 应自行阅读需求和 diff，复用或补写真实测试、数据和断言，完成构建/发现并登记后再执行；不等待人工补写。无法覆盖的部分必须保留具体尝试证据与缺口，不能伪造通过。
 
 ```jsonc
 {

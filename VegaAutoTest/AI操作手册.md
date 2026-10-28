@@ -17,9 +17,9 @@
    | `PASS` | 断言全过 | "已验证通过"（附 runId） |
    | `FAIL` | 行为与预期不符 | "未通过"，附失败断言明细 |
    | `BLOCKED` | **环境问题无法判定** | "无法验证，原因 XXX"。**不是 Bug，也不是通过** |
-   | `ERROR` | Runner 自身故障 | "验证工具异常，需人工介入" |
+   | `ERROR` | Runner 或构建工具异常 | 保留证据，有界恢复一次，继续其他项 |
 3. **引用结论必须带 `runId`**，且 `target.builtFromCurrentSource == false`
-   时必须注明"未用当前源码重编，结论仅对旧二进制有效"。
+   时必须注明"Runner 未自行重编"；若有本 SHA 独立构建及 DLL 指纹证明，应同时引用，不能误称为旧二进制，也不改写该字段。
    无 runId 的"已验证"一律视为无效。
 
 ---
@@ -46,7 +46,7 @@
 D:\Code\Vega\VegaAutomation\           ← 自动化工程根（L0 + L1）
   VegaAutoTest\                       ← L1 确定性验证
     runner\Vega.AutoTest.Runner\      ← 判定 CLI（唯一判定出口）
-    cases\registry.json               ← 工作项→用例登记表（没登记=不能验）
+    cases\registry.json               ← 工作项→用例登记表（没登记时先自动准备真实测试）
     runs\<runId>\result.json          ← 每次验证的机器可读结论（判定唯一出处）
     runs\<runId>\report.md            ← 同期自动写出的可读报告，只转写 result.json
   code_indicator\                     ← L0 编排层（vega-agent）
@@ -163,7 +163,7 @@ P4/P5 已完成的整改（AI 不要回退）：
 | verdictCode / 现象 | 原因 | AI 处置 |
 | --- | --- | --- |
 | `VEGA_EXE_NOT_FOUND` / doctor 里 exe [MISS] | `VEGA_SW_ROOT` 未设/指错，或主程序没编过 | 设好变量重试；仍缺则跑 `verify --rebuild`（数分钟） |
-| `NO_CASE_REGISTERED` | 用例没登记 | 不是故障。如实说明，可提议补用例（见 §5） |
+| `NO_CASE_REGISTERED` | 尚需准备用例 | AI 自行补写/复用、构建发现及登记后执行；无法覆盖则保留实际尝试证据（见 daily/AGENTS.md） |
 | `DEVICE_NEVER_IDLE` | MongoDB(127.0.0.1:27017) 未启动 | 检查/启动 MongoDB 后重试 |
 | `MAIN_WINDOW_TIMEOUT` | 主窗口 180s 未就绪 | 查 Vega 日志；偶发重试一次 |
 | `NO_TEST_MATCHED`（logic 层） | spike 未以 `VEGA_SW_ROOT` 重编 | `dotnet build spike\Vega.AutoTest.Spike\Vega.AutoTest.Spike.csproj` 后重试 |

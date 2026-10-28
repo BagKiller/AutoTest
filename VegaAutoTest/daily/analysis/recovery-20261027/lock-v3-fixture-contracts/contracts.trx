@@ -1,0 +1,52 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TestRun id="bd6c8474-6a8f-4b66-8caa-b59cb063ad22" name="Administrator@WIN-5NPN6Q8PL1B 2026-10-27 18:06:26" runUser="WIN-5NPN6Q8PL1B\Administrator" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <Times creation="2026-10-27T18:06:26.9766618+08:00" queuing="2026-10-27T18:06:26.9766622+08:00" start="2026-10-27T18:06:25.1679520+08:00" finish="2026-10-27T18:06:26.9843802+08:00" />
+  <TestSettings name="default" id="e4806cd3-699a-498b-9a66-d90e0028d2e6">
+    <Deployment runDeploymentRoot="Administrator_WIN-5NPN6Q8PL1B_2026-10-27_18_06_26" />
+  </TestSettings>
+  <Results>
+    <UnitTestResult executionId="48ecd9fd-7dd8-4a96-a9fd-980dbd8d9a2b" testId="0e4d9bed-cf85-f296-cec4-1897fd371ee1" testName="Vega.AutoTest.LockGraphV3.GraphContractTests.RidInheritsBaseNodes" computerName="WIN-5NPN6Q8PL1B" duration="00:00:00.0002044" startTime="2026-10-27T18:06:26.8670640+08:00" endTime="2026-10-27T18:06:26.8670643+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="48ecd9fd-7dd8-4a96-a9fd-980dbd8d9a2b" />
+    <UnitTestResult executionId="1ff0ed78-6061-4acb-a300-11bb3f00dbfa" testId="47b0b510-9671-4d8b-eed6-b7f4c45377e2" testName="Vega.AutoTest.LockGraphV3.GraphContractTests.DanglingNodeIsRejected" computerName="WIN-5NPN6Q8PL1B" duration="00:00:00.0088216" startTime="2026-10-27T18:06:26.8664730+08:00" endTime="2026-10-27T18:06:26.8664732+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="1ff0ed78-6061-4acb-a300-11bb3f00dbfa" />
+    <UnitTestResult executionId="53c33cd7-f6a6-4d66-a717-4f4c88b2e359" testId="29d42166-82ef-ad4e-e6df-25bde90a3fa0" testName="Vega.AutoTest.LockGraphV3.GraphContractTests.PackageWithoutResolutionIsRejected" computerName="WIN-5NPN6Q8PL1B" duration="00:00:00.0002481" startTime="2026-10-27T18:06:26.8668277+08:00" endTime="2026-10-27T18:06:26.8668278+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="53c33cd7-f6a6-4d66-a717-4f4c88b2e359" />
+    <UnitTestResult executionId="aab97b85-df09-410d-b01c-b70ab9195ab1" testId="a9095d3b-1239-fd65-4df0-4b22f5d0e6ce" testName="Vega.AutoTest.LockGraphV3.GraphContractTests.ProjectNodeNeedsNoResolvedVersion" computerName="WIN-5NPN6Q8PL1B" duration="00:00:00.1891841" startTime="2026-10-27T18:06:26.8583569+08:00" endTime="2026-10-27T18:06:26.8583793+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="aab97b85-df09-410d-b01c-b70ab9195ab1" />
+  </Results>
+  <TestDefinitions>
+    <UnitTest name="Vega.AutoTest.LockGraphV3.GraphContractTests.DanglingNodeIsRejected" storage="c:\autotest\autotest\vegaautotest\probes\vega.autotest.lockgraphv3\bin\debug\net8.0-windows\vega.autotest.lockgraphv3.dll" id="47b0b510-9671-4d8b-eed6-b7f4c45377e2">
+      <Execution id="1ff0ed78-6061-4acb-a300-11bb3f00dbfa" />
+      <TestMethod codeBase="C:\AutoTest\AutoTest\VegaAutoTest\probes\Vega.AutoTest.LockGraphV3\bin\Debug\net8.0-windows\Vega.AutoTest.LockGraphV3.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Vega.AutoTest.LockGraphV3.GraphContractTests" name="DanglingNodeIsRejected" />
+    </UnitTest>
+    <UnitTest name="Vega.AutoTest.LockGraphV3.GraphContractTests.PackageWithoutResolutionIsRejected" storage="c:\autotest\autotest\vegaautotest\probes\vega.autotest.lockgraphv3\bin\debug\net8.0-windows\vega.autotest.lockgraphv3.dll" id="29d42166-82ef-ad4e-e6df-25bde90a3fa0">
+      <Execution id="53c33cd7-f6a6-4d66-a717-4f4c88b2e359" />
+      <TestMethod codeBase="C:\AutoTest\AutoTest\VegaAutoTest\probes\Vega.AutoTest.LockGraphV3\bin\Debug\net8.0-windows\Vega.AutoTest.LockGraphV3.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Vega.AutoTest.LockGraphV3.GraphContractTests" name="PackageWithoutResolutionIsRejected" />
+    </UnitTest>
+    <UnitTest name="Vega.AutoTest.LockGraphV3.GraphContractTests.ProjectNodeNeedsNoResolvedVersion" storage="c:\autotest\autotest\vegaautotest\probes\vega.autotest.lockgraphv3\bin\debug\net8.0-windows\vega.autotest.lockgraphv3.dll" id="a9095d3b-1239-fd65-4df0-4b22f5d0e6ce">
+      <Execution id="aab97b85-df09-410d-b01c-b70ab9195ab1" />
+      <TestMethod codeBase="C:\AutoTest\AutoTest\VegaAutoTest\probes\Vega.AutoTest.LockGraphV3\bin\Debug\net8.0-windows\Vega.AutoTest.LockGraphV3.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Vega.AutoTest.LockGraphV3.GraphContractTests" name="ProjectNodeNeedsNoResolvedVersion" />
+    </UnitTest>
+    <UnitTest name="Vega.AutoTest.LockGraphV3.GraphContractTests.RidInheritsBaseNodes" storage="c:\autotest\autotest\vegaautotest\probes\vega.autotest.lockgraphv3\bin\debug\net8.0-windows\vega.autotest.lockgraphv3.dll" id="0e4d9bed-cf85-f296-cec4-1897fd371ee1">
+      <Execution id="48ecd9fd-7dd8-4a96-a9fd-980dbd8d9a2b" />
+      <TestMethod codeBase="C:\AutoTest\AutoTest\VegaAutoTest\probes\Vega.AutoTest.LockGraphV3\bin\Debug\net8.0-windows\Vega.AutoTest.LockGraphV3.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Vega.AutoTest.LockGraphV3.GraphContractTests" name="RidInheritsBaseNodes" />
+    </UnitTest>
+  </TestDefinitions>
+  <TestEntries>
+    <TestEntry testId="0e4d9bed-cf85-f296-cec4-1897fd371ee1" executionId="48ecd9fd-7dd8-4a96-a9fd-980dbd8d9a2b" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="47b0b510-9671-4d8b-eed6-b7f4c45377e2" executionId="1ff0ed78-6061-4acb-a300-11bb3f00dbfa" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="29d42166-82ef-ad4e-e6df-25bde90a3fa0" executionId="53c33cd7-f6a6-4d66-a717-4f4c88b2e359" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="a9095d3b-1239-fd65-4df0-4b22f5d0e6ce" executionId="aab97b85-df09-410d-b01c-b70ab9195ab1" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </TestEntries>
+  <TestLists>
+    <TestList name="列表中未列出的结果" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestList name="所有已加载的结果" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </TestLists>
+  <ResultSummary outcome="Completed">
+    <Counters total="4" executed="4" passed="4" failed="0" error="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+    <Output>
+      <StdOut>[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.5.3.1+6b60a9e56a (64-bit .NET 8.0.32)&#xD;
+[xUnit.net 00:00:00.51]   Discovering: Vega.AutoTest.LockGraphV3&#xD;
+[xUnit.net 00:00:00.56]   Discovered:  Vega.AutoTest.LockGraphV3&#xD;
+[xUnit.net 00:00:00.56]   Starting:    Vega.AutoTest.LockGraphV3&#xD;
+[xUnit.net 00:00:00.81]   Finished:    Vega.AutoTest.LockGraphV3&#xD;
+</StdOut>
+    </Output>
+  </ResultSummary>
+</TestRun>

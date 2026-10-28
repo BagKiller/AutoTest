@@ -49,6 +49,20 @@ public static class TestRunner
         psi.ArgumentList.Add($"trx;LogFileName={trxName}");
         psi.ArgumentList.Add("--results-directory");
         psi.ArgumentList.Add(trxDir);
+        // Isolate both compilation and runtime copies, including project
+        // references. --results-directory alone isolates only TRX/evidence.
+        psi.ArgumentList.Add("--artifacts-path");
+        // Nested campaign/SHA/run/layer evidence paths exceed MAX_PATH in
+        // MSBuild copy tasks even when the compiler successfully writes files.
+        var artifactId = Convert.ToHexString(System.Security.Cryptography.SHA256.HashData(
+            System.Text.Encoding.UTF8.GetBytes(Path.GetFullPath(layerDir))))[..24];
+        var artifactRoot = Environment.GetEnvironmentVariable("VEGA_AUTOTEST_ARTIFACTS_ROOT")
+            ?? Path.Combine(Path.GetTempPath(), "vega-test-artifacts");
+        var artifacts = Path.Combine(artifactRoot, artifactId);
+        psi.ArgumentList.Add(artifacts);
+        File.WriteAllText(Path.Combine(layerDir, "test-artifacts.json"),
+            System.Text.Json.JsonSerializer.Serialize(new { artifacts, project, layerName }));
+        psi.ArgumentList.Add("-p:UseSharedCompilation=false");
         // 关键：VEGA_AUTOTEST_RUNDIR 指向 layer 子目录，assert-*.json 与证据互不覆盖；
         // VEGA_AUTOTEST_EXE/OUTDIR：外部仓库不再嵌在 Vega 主仓库里，向上找 Vega.sln
         // 必然失败，由 Runner 把已定位的 exe/证据目录显式下传（RunContext/VegaEnv 优先读环境变量）
@@ -83,6 +97,21 @@ public static class TestRunner
 
             outcome.TimedOut = true;
             outcome.Error = $"layer '{layerName}' timed out after {layer.TimeoutSeconds}s";
+            // Timeouts are the cases where the partial host log matters most.
+            // Drain killed child pipes with a bounded grace period before disposing.
+            try
+            {
+                process.WaitForExit(10000);
+                Task.WaitAll(new Task[] { stdout, stderr }, 10000);
+                File.WriteAllText(Path.Combine(trxDir, $"{layerName}.testhost.log"),
+                    (stdout.IsCompletedSuccessfully ? stdout.Result : "[stdout incomplete]")
+                    + Environment.NewLine + (stderr.IsCompletedSuccessfully ? stderr.Result : "[stderr incomplete]")
+                    + Environment.NewLine + outcome.Error);
+            }
+            catch (Exception error)
+            {
+                File.WriteAllText(Path.Combine(trxDir, $"{layerName}.testhost.log"), outcome.Error + Environment.NewLine + error.GetType().Name);
+            }
             return outcome;
         }
 

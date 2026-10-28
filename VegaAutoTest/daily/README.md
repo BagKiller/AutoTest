@@ -1,5 +1,32 @@
 # Vega 每日提交批次验证
 
+## 2026-10-28 新执行入口
+
+新批次先收集，接着 `--resume <根> --prepare-all`，AI 审核并补齐**全部**提交的测试。对每项运行 `--check-cases <SHA> --case-ids <ID列表>`，通过实际编译/发现后再 `--freeze-commit <SHA> --review-file <JSON>`。全部计划准备好后统一 `--resume <根> --drain`；队列推进、失败后继续及收尾由代码执行。需要实际 UI 时 drain 返回 2，完成对应 ui-request 后再次 drain，最后 `--check-complete` 必须返回 0。准备阶段允许先处理后续 SHA，执行仍严格串行。
+
+schemaVersion=5 的未覆盖场景除 gap 外必须包含真实尝试证据，例如：
+
+```json
+"attemptEvidence": [{"path":"preparation/checks/case-logic.log","sha256":"实际文件SHA256","action":"编译并发现针对修复点的测试","outcome":"组件测试已发现，远端采集/UI场景仍缺具体环境或数据"}]
+```
+
+`case-check.json` 由 `--check-cases` 生成，不手工伪造。新增适配测试按 SHA 和原产品测试程序集隔离，原断言保持不变，默认标记 partial-acceptance。附件在 preparation/attachments 中只读保存并纳入冻结指纹；不执行附件内容。硬编码旧 worktree 的源码不允许进入新冻结计划。详细规则以 AGENTS.md 的 2026-10-28 章节为准，下方旧命令用于兼容已有批次。
+
+准备时某个提交失败，会在其 `preparation/authoring.json` 留下失败原因并继续准备其余提交；失败项仍须由 AI 补齐真实测试或有证据的缺口，不能当作准备成功。删除的测试源码不会再尝试从目标提交读取。
+
+实际界面执行必须传入 `--session`，程序会核对准备会话的提交目录、机型、profile 和配置文件校验值。需要界面操作但确实受阻时，按 AGENTS.md 留下真实非空尝试文件及 `ui/<slot>/blocker.json`，重新 `--drain` 会收尾并推进下一提交，未验界面仍保留在 `unverifiedUiSlots`，不会变成通过。`--check-complete` 只用于队列根目录，不能与执行动作混用。
+
+历史专项脚本归档在 `analysis/recovery-20261027/tools/`，不作为日常入口；旧版本测试工程仍被历史冻结计划引用，保留用于审计。
+
+本地流程回归（不访问工单、不启动软件、不推进每日游标）：
+
+```powershell
+& $python -B -m unittest discover -s .\daily -p 'test_*.py'
+& C:\AutoTest\runtime\dotnet\dotnet.exe test .\runner\Vega.AutoTest.Runner.Tests\Vega.AutoTest.Runner.Tests.csproj
+```
+
+其中 `$python` 使用下方示例中的固定 Python 路径。Runner 回归工程已加入 `Vega.AutoTest.sln`。
+
 每日 23:30（北京时间）由本机 Codex 定时任务触发。默认 `individual`：收集当天及游标之后新出现的提交，每个提交在自己的 SHA 上独立准备覆盖、构建、运行及报告；不得跨提交共享 DLL 或 runId。根批次只是串行队列，产物在 `daily/runs/<batchId>/commits/<SHA>/`。正式 verdict 只来自 Runner 的 `result.json`。`--strategy merged` 仅保留旧的总体合并编排，不是当前每日默认流程。
 
 机器与桌面需保持运行；界面会话需要可交互桌面和有效的机型授权。
@@ -81,6 +108,14 @@ cd C:\AutoTest\AutoTest\VegaAutoTest
 
 ## 收集
 
+### 长任务、重入与专项模拟
+
+等待工具返回 session ID 时应继续等待该 session；短时间无 stdout 不代表进程已结束。daily CLI 由内核锁保护，重复调用会明确拒绝。Runner 使用短路径的独立测试 artifacts，并在每层保存 `test-artifacts.json` 映射，防止共享 bin/obj 和 Windows 长路径问题。
+
+最终回复之前执行 `daily.py --resume <根目录> --check-complete`；退出码 2 表示流程仍未走完。按 `nextAction` 继续，直到检查返回 0。该检查证明流程收尾，不改变测试验收结果。
+
+用户明确授权专项模拟历史批次时，使用 `daily.py --revalidate-batch <原目录>` 创建其下新的 `revalidation-*` 候选队列，再逐项审核/冻结/执行；不会改原冻结计划、原 Runner 结果或每日游标。专项 UI 外部实测证据放在提交子目录 `ui/<slotId>/evidence.json`，Runner 仍负责正式判定。
+
 - 按 **committer time** 取北京时间当天 00:00 至执行时刻的 master 全部可达提交（不只 first-parent），按 SHA 去重。
 - 补收上次 `collectedHead` 之后新出现的提交，覆盖 23:30 之后的提交和回填日期的提交。
 - **不重放历史待验提交**：上一批的 `NEEDS_CASE`、`ERROR`、`PENDING` 等结果只保留在原批次报告中，不会混入后续每日批次。每日批次只验证当天提交与上次游标之后新出现的提交。
@@ -98,7 +133,7 @@ cd C:\AutoTest\AutoTest\VegaAutoTest
 3. **未映射模块簇** `module:<目录>`：仅对没有工作项号的提交，把路径规则未覆盖的文件按模块分组，列入“需分析”。
 4. 仅文档改动（`ve-docs/`、`*.md`）的提交记为无需验证。
 
-有产品改动时，`baselineCases`（`daily-recent10`、`daily-supplement`）作为每日回归底线照常跑，单独标注，不计入任何提交的验收。
+有产品改动时，`baselineCases`（当前为 `daily-recent10-v3`、`daily-supplement`）作为每日回归底线照常跑，单独标注，不代替工作项验收。旧冻结计划保留原基线定义和结果；v3 只修正目录分隔符等价比较及版本化工程的测试宿主绑定，不降低断言数量。
 
 执行顺序：
 

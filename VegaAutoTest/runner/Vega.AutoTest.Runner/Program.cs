@@ -144,10 +144,11 @@ public static class Program
         var runsDir = options.GetValueOrDefault("--runs-dir") ?? DefaultRunsDir(autoTestRoot);
         var rebuild = options.ContainsKey("--rebuild");
 
+        var probe = TargetProbe.Probe(repoRoot, configuration);
         var registry = CaseRegistry.Load(autoTestRoot);
         var testCase = caseArg is not null
             ? registry.Cases.FirstOrDefault(c => c.Id == caseArg)
-            : CaseRegistry.FindByWorkItem(registry, workItemId);
+            : CaseRegistry.FindByWorkItem(registry, workItemId, probe.GitCommit);
         if (testCase is null)
         {
             if (caseArg is not null)
@@ -166,7 +167,7 @@ public static class Program
                 WorkItemId = workItemId,
                 Verdict = "BLOCKED",
                 VerdictCode = "NO_CASE_REGISTERED",
-                VerdictReason = $"工作项 #{workItemId} 未登记自动化用例（cases/registry.json）",
+                VerdictReason = $"工作项 #{workItemId} 未登记适用于当前提交的自动化用例（cases/registry.json）；先准备并检查真实测试",
                 StartedAt = Stamp(startedAt),
                 FinishedAt = Stamp(DateTime.Now),
                 Target = ToTarget(TargetProbe.Probe(repoRoot, configuration), rebuilt: false,
@@ -202,9 +203,22 @@ public static class Program
         Directory.CreateDirectory(runDir2);
 
         // ── TargetProbe + 可选重建 ──
-        var probe = TargetProbe.Probe(repoRoot, configuration);
         var builtFromCurrentSource = false;
         string? buildNote = null;
+        if (!CaseRegistry.MatchesTarget(testCase, probe.GitCommit))
+        {
+            var mismatch = new RunResult
+            {
+                RunId = runId2, WorkItemId = workItemId, CaseId = testCase.Id,
+                Verdict = "BLOCKED", VerdictCode = "CASE_TARGET_MISMATCH",
+                VerdictReason = $"用例仅适用于提交 {testCase.TargetSha}；当前提交 {probe.GitCommit ?? "unknown"}。请准备当前提交的真实用例。",
+                StartedAt = Stamp(startedAt), FinishedAt = Stamp(DateTime.Now),
+                Target = ToTarget(probe, builtFromCurrentSource: false), ExitCode = ExitBlocked,
+            };
+            mismatch.Evidence.Dir = runDir2;
+            MarkChannelsNotRun(mismatch.Channels, "未执行测试层（用例目标提交不匹配）");
+            return Finish(mismatch, runDir2, startedAt);
+        }
         if (rebuild)
         {
             var buildLog = Path.Combine(runDir2, "build.log");

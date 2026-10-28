@@ -33,11 +33,25 @@ public sealed class VegaApp : IDisposable
         {
             try
             {
+                var image = p.MainModule?.FileName;
+                if (!string.Equals(image, VegaEnv.VegaExe, StringComparison.OrdinalIgnoreCase))
+                {
+                    throw new InvalidOperationException($"Unrelated Vega PID {p.Id} is running; isolated validation cannot take its single-instance slot");
+                }
+                if (!Path.GetFullPath(image!).StartsWith(@"C:\AutoTest\workspaces\", StringComparison.OrdinalIgnoreCase))
+                    throw new InvalidOperationException("Automatic cleanup is restricted to validation workspaces");
+                using var config = System.Text.Json.JsonDocument.Parse(File.ReadAllText(
+                    Path.Combine(Path.GetDirectoryName(image!)!, "Resources", "ComponentConfig.json")));
+                var collection = config.RootElement.GetProperty("ToolConfigCollection");
+                var selected = collection.GetProperty("SelectedToolType").GetString();
+                var tool = collection.GetProperty("ToolConfigs").EnumerateArray().Single(t => t.GetProperty("ToolType").GetString() == selected);
+                if (!(tool.GetProperty("RootCondition").GetString() ?? "").Split(',').Contains("Simulator"))
+                    throw new InvalidOperationException("Refusing cleanup of a non-Simulator Vega");
                 log.Step($"清理残留 Vega 进程 pid={p.Id}");
                 p.Kill();
                 p.WaitForExit(5000);
             }
-            catch
+            catch (ArgumentException)
             {
                 // 已退出
             }

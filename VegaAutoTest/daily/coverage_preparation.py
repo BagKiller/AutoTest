@@ -11,6 +11,7 @@ from pathlib import Path
 import urllib.error
 import urllib.parse
 import urllib.request
+import xml.etree.ElementTree as ET
 
 
 def digest(path):
@@ -66,7 +67,7 @@ def fetch_sources(d, child, manifest):
     return result
 
 
-def case_fingerprints(d, registry, case_ids):
+def case_fingerprints(d, registry, case_ids, transitive=False, linked_sources=False):
     """Freeze executable definitions and local test sources, not just work-item IDs."""
     by_id = {c['id']: c for c in registry['cases']}
     definitions, files = [], {}
@@ -81,16 +82,51 @@ def case_fingerprints(d, registry, case_ids):
                 raise ValueError(f'{cid}: executable project missing or outside automation root')
             if not layer.get('filter'):
                 raise ValueError(f'{cid}: a scoped executable test filter is required')
-            for p in project.parent.rglob('*'):
-                if p.is_file() and p.suffix in ('.cs', '.csproj', '.json') and not {'bin', 'obj'}.intersection(p.relative_to(project.parent).parts):
-                    files[str(p.relative_to(d.ROOT.resolve()))] = digest(p)
+            pending, visited = [project], set()
+            while pending:
+                current = pending.pop()
+                if current in visited:
+                    continue
+                visited.add(current)
+                for p in current.parent.rglob('*'):
+                    suffixes = ('.cs', '.csproj', '.json', '.props', '.targets') if transitive else ('.cs', '.csproj', '.json')
+                    if p.is_file() and p.suffix in suffixes and not {'bin', 'obj'}.intersection(p.relative_to(current.parent).parts):
+                        files[str(p.relative_to(d.ROOT.resolve()))] = digest(p)
+                if transitive:
+                    tree = ET.parse(current).getroot()
+                    for source in tree.iter('Compile'):
+                        include = source.get('Include', '').replace('\\', '/')
+                        if not include or include.startswith('$(VEGA_SW_ROOT)'):
+                            continue
+                        if '$(' in include:
+                            raise ValueError('Cannot establish compiled-source provenance: ' + include)
+                        resolved = (current.parent / include).resolve()
+                        if not resolved.is_relative_to(d.ROOT.resolve()):
+                            raise ValueError('Hardcoded external compiled source; use $(VEGA_SW_ROOT): ' + include)
+                        if linked_sources:
+                            for item in current.parent.glob(include):
+                                if item.is_file():
+                                    item = item.resolve()
+                                    if not item.is_relative_to(d.ROOT.resolve()):
+                                        raise ValueError('Linked source escapes automation root')
+                                    files[str(item.relative_to(d.ROOT.resolve()))] = digest(item)
+                    for ref in tree.iter('ProjectReference'):
+                        include = ref.get('Include', '').replace('\\', '/')
+                        dependency = (current.parent / include).resolve()
+                        if '$(' in include or not dependency.is_relative_to(d.ROOT.resolve()) or not dependency.is_file():
+                            raise ValueError('Cannot freeze project dependency: ' + include)
+                        pending.append(dependency)
     return dict(cases=definitions, files=files)
 
 
-def freeze(d, child, manifest, registry, sched, review_path):
+def freeze(d, child, manifest, registry, sched, review_path, require_evidence=False):
     if (child / 'plan.json').exists():
         raise ValueError('Frozen plans cannot be replaced; use a separate targeted campaign')
-    if (child / 'execution.json').exists() or (child / 'outcomes.json').exists():
+    preparation_state = d.load(child / 'execution.json', {})
+    preparation_only = require_evidence and (preparation_state.get('state') == 'COVERAGE_CHECKED' or
+        (preparation_state.get('state') == 'ERROR' and preparation_state.get('phase') == 'coverage-build'
+         and (child / 'preparation' / 'case-check-error.json').exists()))
+    if ((child / 'execution.json').exists() and not preparation_only) or (child / 'outcomes.json').exists():
         raise ValueError('Cannot prepare coverage after execution has started')
     review = d.load(review_path)
     scope = d.load(child / 'scope.json')
@@ -106,6 +142,8 @@ def freeze(d, child, manifest, registry, sched, review_path):
     if review.get('workItemsSha256') != digest(source_path):
         raise ValueError('Review must fingerprint the retrieved work-item requirements')
     requirements = review.get('requirements', [])
+    if require_evidence:
+        validate_preparation(d, child, manifest, registry, requirements)
     product = not manifest['commits'][0].get('noProductChange')
     if product and not requirements:
         raise ValueError('Product changes require explicit acceptance scenarios or a documented gap')
@@ -145,25 +183,80 @@ def freeze(d, child, manifest, registry, sched, review_path):
                                    gaps=['Work-item acceptance requirements unavailable: ' + str(record['id'])]))
     # The reviewed case may be reused for commits without work-item references.
     reviewed_manifest = dict(manifest, reviewCaseIds=sorted({cid for r in normalized for cid in r.get('caseIds', [])}))
+    if require_evidence:
+        reviewed_manifest['coverageSelectionExplicit'] = True
     cp = draft(d, child, reviewed_manifest, registry, sched)
     selected = {i['caseId'] for i in cp['headless']} | {i['caseId'] for s in cp['uiSlots'] for i in s['cases']}
-    fingerprints = case_fingerprints(d, registry, selected)
+    fingerprints = case_fingerprints(d, registry, selected, transitive=require_evidence, linked_sources=require_evidence)
     cp.update(coverageRequirements=normalized, coverageReviewed=True,
               frozenAt=d.now_cn().isoformat(), frozenCases=fingerprints,
               frozenCaseProfiles={cid: sched.get('caseProfiles', {}).get(cid) for cid in selected},
               review=review, sourceSha256=digest(source_path), diffSha256=digest(diff))
+    if require_evidence:
+        cp['fingerprintVersion'] = 3
+        asset_root = child / 'preparation' / 'attachments'
+        cp['assetFingerprints'] = {str(p.relative_to(child)): digest(p) for p in asset_root.rglob('*') if p.is_file()}
+        evidence_names = set()
+        receipt_path = child / 'preparation' / 'case-check.json'
+        if receipt_path.exists():
+            evidence_names.add(str(receipt_path.relative_to(child)))
+            evidence_names.update(r['log'] for r in d.load(receipt_path)['records'])
+        evidence_names.update(attempt['path'] for requirement in requirements for attempt in requirement.get('attemptEvidence', []))
+        cp['preparationEvidenceFingerprints'] = {name: digest(child / name) for name in evidence_names}
+        receipt = d.load(child / 'preparation' / 'case-check.json', {})
+        target = d.load(child / 'execution-target.json', {})
+        if receipt.get('repo') and receipt['repo'] == target.get('repo'):
+            cp['preparedTarget'] = target
     d.save(child / 'plan.json', cp)
     return cp
+
+
+def validate_preparation(d, child, manifest, registry, requirements):
+    """Do not accept 'no registered case' as proof of an authoring attempt."""
+    ids = sorted({cid for item in requirements for cid in item.get('caseIds', [])})
+    if ids:
+        receipt = d.load(child / 'preparation' / 'case-check.json', {})
+        if receipt.get('sha') != manifest['head']:
+            raise ValueError('Run --check-cases at this exact SHA before freezing new cases')
+        if receipt.get('fingerprints') != case_fingerprints(d, registry, ids, transitive=True,
+                                                          linked_sources=receipt.get('fingerprintVersion', 2) >= 3):
+            raise ValueError('Case sources changed since discovery; run --check-cases again')
+        by_id = {c['id']: c for c in registry['cases']}
+        for cid in ids:
+            for layer in by_id[cid]['layers']:
+                match = [r for r in receipt.get('records', []) if r['caseId'] == cid and r['layer'] == layer]
+                if len(match) != 1 or match[0]['exitCode'] != 0 or not match[0].get('discoveredTests'):
+                    raise ValueError('Executable test build/discovery failed: ' + cid + '/' + layer)
+                log = (child / match[0]['log']).resolve()
+                if not log.is_relative_to(child.resolve()) or not log.is_file() or digest(log) != match[0]['logSha256']:
+                    raise ValueError('Missing/changed discovery log: ' + cid + '/' + layer)
+    for requirement in requirements:
+        if requirement.get('caseIds') and not requirement.get('gap'):
+            continue
+        attempts = requirement.get('attemptEvidence', [])
+        if not attempts:
+            raise ValueError('Uncovered scenario requires actual authoring/reuse attempt evidence: ' + requirement['id'])
+        for attempt in attempts:
+            path = (child / attempt['path']).resolve()
+            if not path.is_relative_to(child.resolve()) or not path.is_file() or not path.stat().st_size:
+                raise ValueError('Attempt evidence must be a nonempty file inside this commit directory')
+            if attempt.get('sha256') != digest(path) or not attempt.get('action') or not attempt.get('outcome'):
+                raise ValueError('Attempt evidence needs action, outcome and matching SHA256')
 
 
 def verify_frozen(d, child, cp, registry, sched):
     if not cp.get('coverageReviewed'):
         raise ValueError('This new commit plan has not completed coverage preparation')
     expected = cp['frozenCases']
-    current = case_fingerprints(d, registry, {c['id'] for c in expected['cases']})
+    current = case_fingerprints(d, registry, {c['id'] for c in expected['cases']}, transitive=cp.get('fingerprintVersion', 1) >= 2,
+                               linked_sources=cp.get('fingerprintVersion', 1) >= 3)
     if current != expected:
         raise ValueError('Frozen case definitions/sources changed; do not change assertions during execution')
     if any(sched.get('caseProfiles', {}).get(cid) != value for cid, value in cp['frozenCaseProfiles'].items()):
         raise ValueError('Frozen UI case/profile mapping changed')
     if digest(child / 'preparation' / 'workitems.json') != cp['sourceSha256'] or digest(Path(d.load(child / 'scope.json')['diff'])) != cp['diffSha256']:
         raise ValueError('Frozen requirement/diff evidence changed')
+    for name, expected_hash in {**cp.get('assetFingerprints', {}), **cp.get('preparationEvidenceFingerprints', {})}.items():
+        path = (child / name).resolve()
+        if not path.is_relative_to(child.resolve()) or not path.is_file() or digest(path) != expected_hash:
+            raise ValueError('Frozen requirement attachment changed: ' + name)

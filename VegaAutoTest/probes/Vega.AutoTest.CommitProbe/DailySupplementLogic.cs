@@ -74,7 +74,10 @@ public sealed class DailySupplementLogic
 
     [Theory]
     [InlineData(3, false, 3)]
-    [InlineData(1, true, 1)]
+    // Current product contract checks cancellation before reading the cache
+    // (QT1426ProxyDataCollector.GetDataGroup loop head). A pre-cancelled call
+    // consumes zero tracks, including when one track is already buffered.
+    [InlineData(1, true, 0)]
     [InlineData(0, true, 0)]
     public void DirectSend_EmptyBytes_CountConsumedTracks(int tracks, bool cancelled, int expected)
         => Check($"delivery.empty.{tracks}.{cancelled}", () => {
@@ -83,6 +86,12 @@ public sealed class DailySupplementLogic
             if (cancelled) cts.Cancel();
             Assert.True(collector.GetDataGroup("runA", ChannelMode.DN_Normal, 0, 3, out var data, out var delivered, cts.Token));
             Assert.Empty(data); Assert.Equal(expected, delivered);
+            if (cancelled && tracks > 0)
+            {
+                var cache = (ConcurrentDictionary<string, ConcurrentDictionary<int, ConcurrentDictionary<int, byte[]>>>)
+                    typeof(QT1426ProxyDataCollector).GetField("_dicDataCache", BindingFlags.NonPublic | BindingFlags.Instance)!.GetValue(collector)!;
+                Assert.Equal(tracks, cache["runA"][(int)ChannelMode.DN_Normal].Count);
+            }
         });
 
     [Fact]

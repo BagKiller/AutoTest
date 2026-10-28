@@ -1,0 +1,34 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TestRun id="fcf34730-c5e7-4968-8899-5aa2303af6ae" name="Administrator@WIN-5NPN6Q8PL1B 2026-10-27 18:00:12" runUser="WIN-5NPN6Q8PL1B\Administrator" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <Times creation="2026-10-27T18:00:12.6152693+08:00" queuing="2026-10-27T18:00:12.6152697+08:00" start="2026-10-27T18:00:10.3947887+08:00" finish="2026-10-27T18:00:12.6511667+08:00" />
+  <TestSettings name="default" id="60773af0-4aa5-4ec8-b175-e916d5ae66b1">
+    <Deployment runDeploymentRoot="Administrator_WIN-5NPN6Q8PL1B_2026-10-27_18_00_12" />
+  </TestSettings>
+  <Results>
+    <UnitTestResult executionId="8c16c122-91a6-4bfa-8d4d-6f6538abc4ec" testId="01a0c240-9655-0b1f-4d7b-4abf02215c8e" testName="Vega.AutoTest.LockGraph.DependencyLockLogic.CommittedLockHasResolvableDependencyGraph" computerName="WIN-5NPN6Q8PL1B" duration="00:00:00.5120320" startTime="2026-10-27T18:00:12.5016354+08:00" endTime="2026-10-27T18:00:12.5016578+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="8c16c122-91a6-4bfa-8d4d-6f6538abc4ec" />
+  </Results>
+  <TestDefinitions>
+    <UnitTest name="Vega.AutoTest.LockGraph.DependencyLockLogic.CommittedLockHasResolvableDependencyGraph" storage="c:\autotest\autotest\vegaautotest\probes\vega.autotest.lockgraph\bin\debug\net8.0-windows\vega.autotest.lockgraph.dll" id="01a0c240-9655-0b1f-4d7b-4abf02215c8e">
+      <Execution id="8c16c122-91a6-4bfa-8d4d-6f6538abc4ec" />
+      <TestMethod codeBase="C:\AutoTest\AutoTest\VegaAutoTest\probes\Vega.AutoTest.LockGraph\bin\Debug\net8.0-windows\Vega.AutoTest.LockGraph.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Vega.AutoTest.LockGraph.DependencyLockLogic" name="CommittedLockHasResolvableDependencyGraph" />
+    </UnitTest>
+  </TestDefinitions>
+  <TestEntries>
+    <TestEntry testId="01a0c240-9655-0b1f-4d7b-4abf02215c8e" executionId="8c16c122-91a6-4bfa-8d4d-6f6538abc4ec" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </TestEntries>
+  <TestLists>
+    <TestList name="列表中未列出的结果" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestList name="所有已加载的结果" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </TestLists>
+  <ResultSummary outcome="Completed">
+    <Counters total="1" executed="1" passed="1" failed="0" error="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+    <Output>
+      <StdOut>[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.5.3.1+6b60a9e56a (64-bit .NET 8.0.32)&#xD;
+[xUnit.net 00:00:00.56]   Discovering: Vega.AutoTest.LockGraph&#xD;
+[xUnit.net 00:00:00.61]   Discovered:  Vega.AutoTest.LockGraph&#xD;
+[xUnit.net 00:00:00.62]   Starting:    Vega.AutoTest.LockGraph&#xD;
+[xUnit.net 00:00:01.18]   Finished:    Vega.AutoTest.LockGraph&#xD;
+</StdOut>
+    </Output>
+  </ResultSummary>
+</TestRun>

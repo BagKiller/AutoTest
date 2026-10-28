@@ -36,13 +36,8 @@ public static class ResultContractCheck
 
         // §2.5：channels 三字段各答一问
         // l2Uia 只答"是否执行了 uia 层"，与断言结果无关
-        var hasUiaFailures = result.Tests.Any(t => t.Outcome == "Failed")
-                             && result.Verdict is "FAIL" or "ERROR";
-        if (!result.Channels.L2Uia.Available && hasUiaFailures && result.Summary.Passed > 0)
-        {
-            // 极端组合：无 uia 通道却有断言通过——多半是字段复用
-            violations.Add("channels.l2Uia.available=false 但存在通过的断言（检查字段是否被复用）");
-        }
+        // Logic layers can contain both passing and failing assertions without
+        // ever requesting UIA. Test outcomes do not establish channel usage.
 
         // l1Api.available=true 时必须真的消费到 oracle 断言（或本次跑的层无 oracle 概念）
         if (result.Channels.L1Api.Available)

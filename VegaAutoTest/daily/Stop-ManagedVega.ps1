@@ -29,3 +29,15 @@ foreach($item in @(Get-CimInstance Win32_Process -Filter "Name='Vega.exe'")) {
     ConvertTo-Json -InputObject @($records) -Depth 8 | Set-Content -LiteralPath $AuditPath
 }
 ConvertTo-Json -InputObject @($records) -Depth 8 | Set-Content -LiteralPath $AuditPath
+# Prepare can fail before any Vega process is started. Such sessions still own
+# modified configuration and must not be forgotten by process-only cleanup.
+foreach($sessionFile in @(Get-ChildItem (Join-Path $PSScriptRoot 'sessions') -Filter session.json -Recurse -ErrorAction SilentlyContinue)) {
+    $session=Get-Content -LiteralPath $sessionFile.FullName -Raw | ConvertFrom-Json
+    if($session.state -notin @('PREPARING','PREPARED')){continue}
+    $resolvedRepo=[IO.Path]::GetFullPath($session.repo)
+    if(-not $resolvedRepo.StartsWith('C:\AutoTest\workspaces\',[StringComparison]::OrdinalIgnoreCase)){continue}
+    $profileArg=if($session.model -in @('Vega100','Vega300')){($session.profile -split '-')[1]}else{'Default'}
+    & (Join-Path $PSScriptRoot 'Start-ModelValidation.ps1') -Action Restore -Model $session.model -Profile $profileArg -RepoRoot $resolvedRepo -SessionPath $sessionFile.DirectoryName
+    $records+=@{action='restore orphan prepared session';session=$sessionFile.DirectoryName;sha256Verified=$true}
+    ConvertTo-Json -InputObject @($records) -Depth 8 | Set-Content -LiteralPath $AuditPath
+}

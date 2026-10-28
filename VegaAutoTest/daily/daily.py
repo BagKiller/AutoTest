@@ -16,6 +16,11 @@ import time
 import uuid
 import individual
 import coverage_preparation as coverage_contract
+import operation_lock
+import shutil
+import sys
+import case_authoring
+import queue_driver
 
 ROOT = Path(__file__).resolve().parents[1]
 REPO = Path(os.environ.get("VEGA_SW_ROOT", r"C:\Vega\Vega_SW"))
@@ -41,7 +46,15 @@ CLOSED = ("ACCEPTED", "NOT_APPLICABLE", "ACKNOWLEDGED")
 
 def save(path, obj):
     path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text(json.dumps(obj, ensure_ascii=False, indent=2), encoding="utf-8")
+    # Nested campaign/SHA/run evidence paths are already close to MAX_PATH.
+    # Appending a full UUID to the destination name made otherwise valid paths
+    # fail with FileNotFoundError during atomic writes.
+    temporary = path.with_name('.' + uuid.uuid4().hex[:12] + '.tmp')
+    try:
+        temporary.write_text(json.dumps(obj, ensure_ascii=False, indent=2), encoding="utf-8")
+        os.replace(temporary, path)
+    finally:
+        temporary.unlink(missing_ok=True)
 
 
 def load(path, default=None):
@@ -70,7 +83,7 @@ def git(*args, repo=REPO, env=None):
     if p.returncode:
         # Never expose authentication headers or Git's echoed command in diagnostics.
         raise RuntimeError(f"Git operation {args[0]} failed (exit {p.returncode}); inspect connectivity/permissions")
-    return p.stdout.strip()
+    return p.stdout if '-z' in args else p.stdout.strip()
 
 
 def sync():
@@ -217,9 +230,11 @@ def profile_args(profile):
 
 
 def plan(out, manifest, registry, sched):
-    cases = {c["id"]: c for c in registry["cases"]}
+    cases = {c["id"]: c for c in registry["cases"] if not c.get('targetSha') or c['targetSha'] == manifest['head']}
     by_wi = {}
-    for case in registry["cases"]:
+    for case in cases.values():
+        if manifest.get('coverageSelectionExplicit') and case['id'] not in manifest.get('reviewCaseIds', []):
+            continue
         for wi in case.get("workItems", []):
             by_wi.setdefault(wi, []).append(case["id"])
     partial = {cid for cid, c in cases.items() if "partial-acceptance" in c.get("tags", [])}
@@ -336,10 +351,30 @@ def runner_binary():
 def runner_env(repo):
     env = os.environ.copy()
     env.update(VEGA_SW_ROOT=str(repo), DOTNET_ROOT=str(DOTNET.parent),
+               DOTNET_CLI_UI_LANGUAGE='en',
+               VEGA_AUTOTEST_ARTIFACTS_ROOT=r'C:\AutoTest\test-artifacts',
                NUGET_PACKAGES=r"C:\Users\Administrator\.nuget\packages",
                GIT_CONFIG_COUNT="1", GIT_CONFIG_KEY_0="safe.directory", GIT_CONFIG_VALUE_0=Path(repo).as_posix())
     env["PATH"] = str(DOTNET.parent) + os.pathsep + env["PATH"]
     return env
+
+
+def build_runner(out):
+    """The controller must execute the Runner we just tested, not a stale DLL."""
+    project = ROOT / 'runner' / 'Vega.AutoTest.Runner' / 'Vega.AutoTest.Runner.csproj'
+    env = os.environ.copy()
+    env.update(DOTNET_ROOT=str(DOTNET.parent), DOTNET_CLI_UI_LANGUAGE='en')
+    env['PATH'] = str(DOTNET.parent) + os.pathsep + env['PATH']
+    log_path = out / 'runner-build.log'
+    with log_path.open('w', encoding='utf-8') as log:
+        result = run_bounded([str(DOTNET), 'build', str(project), '-p:UseSharedCompilation=false'],
+            env=env, cwd=ROOT, stdout=log, stderr=subprocess.STDOUT, timeout=180)
+    if result.returncode:
+        raise RuntimeError('Runner build failed; see ' + str(log_path))
+    binary = runner_binary()
+    save(out / 'runner-reference.json', dict(binary=str(binary), sha256=hashlib.sha256(binary.read_bytes()).hexdigest(),
+        builtAt=now_cn().isoformat(), sources={str(p.relative_to(ROOT)): hashlib.sha256(p.read_bytes()).hexdigest()
+            for p in project.parent.glob('*') if p.suffix in ('.cs', '.csproj')}))
 
 
 def prepare_target(out, manifest):
@@ -367,7 +402,13 @@ def prepare_target(out, manifest):
                              "-RepoRoot", str(repo), "-EvidenceRoot", str(evidence / "build")],
                             stdout=log, stderr=subprocess.STDOUT, timeout=1800)
     if build.returncode:
-        raise RuntimeError(f"Target build failed; see {evidence / 'build'}")
+        log_path = evidence / 'build' / 'build.log'
+        errors = []
+        if log_path.exists():
+            errors = list(dict.fromkeys(line.split(': error ', 1)[1].split(' [', 1)[0]
+                for line in log_path.read_text(encoding='utf-8', errors='replace').splitlines() if ': error ' in line))[:5]
+        save(evidence / 'build-failure.json', dict(exitCode=build.returncode, errors=errors, log=str(log_path)))
+        raise RuntimeError(f"Target build failed: {'; '.join(errors) or 'inspect restore/build logs'}; see {evidence / 'build'}")
     provenance = load(evidence / "build" / "build-provenance.json")
     dll = repo / "Vega/bin/Debug/net8.0-windows10.0.19041.0/win-x64/Vega.dll"
     if provenance["commit"] != manifest["head"] or hashlib.sha256(dll.read_bytes()).hexdigest().upper() != provenance["vegaDllSha256"].upper():
@@ -382,16 +423,23 @@ def run_case(out, repo, log_dir, case_id, layers, phase, timeout, outcomes):
     log_path = log_dir / f"runner-{phase}-{case_id}-{now_cn():%H%M%S}.log"
     entry = dict(caseId=case_id, phase=phase, layers=layers, startedAt=now_cn().isoformat(), log=str(log_path))
     try:
+        env = runner_env(repo)
+        if phase != 'headless':
+            env['VEGA_DAILY_UI_EVIDENCE'] = str(out / 'ui' / phase / 'evidence.json')
         with log_path.open("w", encoding="utf-8") as log:
             p = run_bounded([str(DOTNET), str(runner_binary()), "verify", "--case", case_id, "--layers", ",".join(layers),
                              "--repo-root", str(repo), "--runs-dir", str(out / "runner")],
-                            env=runner_env(repo), stdout=log, stderr=subprocess.STDOUT, timeout=timeout, cwd=ROOT)
+                            env=env, stdout=log, stderr=subprocess.STDOUT, timeout=timeout, cwd=ROOT)
         entry["exitCode"] = p.returncode
         lines = [l.strip() for l in log_path.read_text(encoding="utf-8", errors="replace").splitlines() if l.strip()]
         result_path = Path(lines[-1]) if lines else None
         if not result_path or result_path.name != "result.json" or not result_path.is_file():
             raise RuntimeError("Runner 末行不是 result.json 路径")
         result = load(result_path)
+        if result.get('caseId') != case_id or result.get('target', {}).get('gitCommit') != git('rev-parse', 'HEAD', repo=repo):
+            raise RuntimeError('Runner result case/target does not match this invocation')
+        if not result_path.resolve().is_relative_to((out / 'runner').resolve()):
+            raise RuntimeError('Runner result is outside this commit evidence directory')
         entry.update(runId=result["runId"], verdict=result["verdict"], verdictCode=result["verdictCode"],
                      verdictReason=result.get("verdictReason"), summary=result.get("summary"),
                      resultPath=str(result_path), reportPath=str(result_path.with_name("report.md")),
@@ -409,7 +457,23 @@ def execute(out, manifest, plan_data, outcomes, budget_minutes):
     if manifest["historyRewritten"]:
         save(out / "execution.json", dict(state="BLOCKED", reason="remote history rewritten; retained for review"))
         return
-    repo, evidence = prepare_target(out, manifest)
+    prepared = plan_data.get('preparedTarget')
+    if prepared:
+        repo, evidence = Path(prepared['repo']), Path(prepared['evidence'])
+        # Reuse only THIS commit's own preparation build. Discovery and execution
+        # consume identical binaries; no DLL/runId sharing between SHAs.
+        if load(out / 'execution-target.json') != prepared or git('rev-parse', 'HEAD', repo=repo) != manifest['head']:
+            raise RuntimeError('Prepared worktree target changed')
+        provenance = load(out / 'build-reference.json', {})
+        binary_root = repo / 'Vega/bin/Debug/net8.0-windows10.0.19041.0/win-x64'
+        for name, key in [('Vega.dll', 'vegaDllSha256'), ('RecipeBatchEditor/RecipeBatchEditor.dll', 'batchEditorDllSha256'),
+                          ('ComponentConfigEditor/ComponentConfigEditor.dll', 'componentEditorDllSha256')]:
+            if provenance.get(key) and hashlib.sha256((binary_root / name).read_bytes()).hexdigest().upper() != provenance[key].upper():
+                raise RuntimeError('Prepared binary changed: ' + name)
+        if provenance.get('commit') != manifest['head'] or git('status', '--porcelain', '--untracked-files=no', repo=repo):
+            raise RuntimeError('Prepared source/provenance changed')
+    else:
+        repo, evidence = prepare_target(out, manifest)
     save(out / "execution.json", dict(state="HEADLESS", evidence=str(evidence)))
     deadline = time.monotonic() + budget_minutes * 60
     for item in plan_data["headless"]:
@@ -435,6 +499,22 @@ def run_slot(out, manifest, plan_data, slot_id, session, outcomes):
     repo = Path(target["repo"])
     if git("rev-parse", "HEAD", repo=repo) != manifest["head"]:
         raise RuntimeError("worktree HEAD 与 manifest 不一致")
+    if not session:
+        raise ValueError('UI execution requires --session from Start-ModelValidation.ps1 Prepare')
+    session = Path(session).resolve()
+    if not session.is_relative_to((ROOT / 'daily' / 'sessions').resolve()):
+        raise ValueError('UI session must be inside daily/sessions')
+    state = load(session / 'session.json', {})
+    binary_root = repo / 'Vega/bin/Debug/net8.0-windows10.0.19041.0/win-x64'
+    if (state.get('state') != 'PREPARED' or Path(state.get('repo', '')).resolve() != repo.resolve()
+            or Path(state.get('bin', '')).resolve() != binary_root.resolve()
+            or state.get('model') != slot['model'] or state.get('profile') != slot['profile']):
+        raise ValueError('UI session target/model/profile does not match this planned slot')
+    for name in ('ComponentConfig', 'HardwareProfiles'):
+        config = binary_root / 'Resources' / (name + '.json')
+        expected = state.get('preparedHashes', {}).get(name)
+        if not expected or not config.is_file() or coverage_contract.digest(config).upper() != expected.upper():
+            raise ValueError('Prepared UI configuration missing/changed: ' + name)
     log_dir = out / "slots" / f"{slot_id}_{now_cn():%Y%m%dT%H%M%S}"
     log_dir.mkdir(parents=True, exist_ok=True)
     try:
@@ -476,6 +556,7 @@ def evaluate(manifest, plan_data, outcomes, registry):
     latest = latest_runs(outcomes)
     partial = {c["id"] for c in registry["cases"] if "partial-acceptance" in c.get("tags", [])}
     clusters = {c["id"]: c for c in plan_data["clusters"]}
+    baseline_cases = sorted({cid for cl in clusters.values() if cl['kind'] == 'baseline' for cid in cl['cases']})
     phases = {}
     for s in plan_data["uiSlots"]:
         for item in s["cases"]:
@@ -487,7 +568,8 @@ def evaluate(manifest, plan_data, outcomes, registry):
         wi_clusters = [cl for cl in mine if cl["kind"] == "workItem"]
         tag_cases = sorted({cid for cl in mine if cl["kind"] == "pathTag" for cid in cl["cases"]})
         wi_cases = sorted({cid for cl in wi_clusters for cid in cl["cases"]})
-        cells = {cid: case_state(cid, plan_data, latest) for cid in wi_cases + tag_cases}
+        required_cases = sorted(set(wi_cases + tag_cases + baseline_cases))
+        cells = {cid: case_state(cid, plan_data, latest) for cid in required_cases}
         evidence = [dict(caseId=cid, verdict=cells[cid][0], runIds=[e.get("runId") for e in cells[cid][1]],
                          codes=[e.get("verdictCode") for e in cells[cid][1]], partial=cid in partial)
                     for cid in sorted(cells)]
@@ -496,9 +578,9 @@ def evaluate(manifest, plan_data, outcomes, registry):
         elif any(cells[cid][0] == "FAIL" for cid in cells):
             failed = [cid for cid in cells if cells[cid][0] == "FAIL"]
             status, reason = "FAIL", f"用例失败: {', '.join(failed)}；同簇提交见计划，需隔离/二分"
-        elif any(cells[cid][0] == "ERROR" for cid in wi_cases):
+        elif any(cells[cid][0] == "ERROR" for cid in required_cases):
             status, reason = "ERROR", "验证工具异常"
-        elif any(cells[cid][0] == "BLOCKED" for cid in wi_cases):
+        elif any(cells[cid][0] == "BLOCKED" for cid in required_cases):
             status, reason = "BLOCKED", "前置/环境不满足，无法判定"
         elif any(r.get('gaps') for r in plan_data.get('coverageRequirements', [])):
             status, reason = 'NEEDS_CASE', '需求覆盖未齐：' + '; '.join(
@@ -510,8 +592,8 @@ def evaluate(manifest, plan_data, outcomes, registry):
         elif any(not cl["cases"] for cl in wi_clusters):
             missing = [cl["label"] for cl in wi_clusters if not cl["cases"]]
             status, reason = "NEEDS_CASE", f"{', '.join(missing)} 未在 registry.json 登记用例"
-        elif any(cells[cid][0] is None for cid in wi_cases):
-            waiting = sorted({ph for cid in wi_cases if cells[cid][0] is None for ph in phases.get(cid, ["headless"])})
+        elif any(cells[cid][0] is None for cid in required_cases):
+            waiting = sorted({ph for cid in required_cases if cells[cid][0] is None for ph in phases.get(cid, ["headless"])})
             status, reason = "PENDING", f"等待执行: {', '.join(waiting)}"
         elif any(cid in partial for cid in wi_cases):
             status, reason = "PARTIAL", "登记用例全部 PASS，但标记为 partial-acceptance"
@@ -688,6 +770,14 @@ def main():
     parser.add_argument("--last", type=int, default=0, help="示例模式：最近 N 个提交，不推进每日游标")
     parser.add_argument("--offline", action="store_true")
     parser.add_argument("--execute", action="store_true", help="新 individual 批次仅收集候选队列；配合 --run-commit 才构建/执行该 SHA；merged 执行无界面")
+    parser.add_argument('--check-complete', action='store_true', help='Exit 2 while any commit workflow is unfinished; never treat a background launch as completion')
+    parser.add_argument('--prepare-all', action='store_true', help='Retrieve ALL commit requirements and generate isolated adapters for changed product tests before execution')
+    parser.add_argument('--author-cases', help='Generate isolated executable adapters from changed product regression tests at this SHA')
+    parser.add_argument('--check-cases', help='Build/discover reviewed case IDs at this exact SHA before freeze')
+    parser.add_argument('--case-ids', help='Comma-separated reviewed case IDs for --check-cases')
+    parser.add_argument('--repo-root', type=Path, help='Already built exact-SHA worktree for --check-cases; omitted creates a fresh target build')
+    parser.add_argument('--drain', action='store_true', help='Execute the entire frozen queue deterministically; exit 2 only when actual UI work remains')
+    parser.add_argument('--revalidate-batch', type=Path, help='Explicit targeted simulation of an existing manifest in a NEW child campaign; leaves original plans/results and daily cursor intact')
     parser.add_argument("--strategy", choices=("individual", "merged"), help="新批默认逐提交；merged 保留原总体编排，历史批次沿用原模式")
     parser.add_argument("--run-commit", help="逐提交队列中执行一项的独立构建及无界面测试（需 --resume --execute）")
     parser.add_argument("--finish-commit", help="记录一项流程已收尾（含失败/未验范围和恢复证据），再允许下一项")
@@ -702,13 +792,44 @@ def main():
     parser.add_argument("--ack", help="人工关闭一个待验提交（SHA 前缀）")
     parser.add_argument("--ack-reason")
     args = parser.parse_args()
-    actions = [args.run_commit, args.finish_commit, args.prepare_commit, args.freeze_commit, args.run_slot, args.plan_only]
+    if args.check_complete and not args.resume:
+        raise ValueError('--check-complete requires --resume; it must never collect or advance the cursor')
+    queue_action = any((args.prepare_all, args.author_cases, args.check_cases, args.drain))
+    if args.check_complete and any((args.execute, args.last, args.offline, args.prepare_commit,
+            args.freeze_commit, args.run_commit, args.finish_commit, args.run_slot, args.plan_only,
+            args.ack, args.revalidate_batch, queue_action)):
+        raise ValueError('--check-complete cannot be combined with preparation/execution actions')
+    if args.revalidate_batch:
+        if any((args.resume, args.execute, args.last, args.offline, args.prepare_commit,
+                args.freeze_commit, args.run_commit, args.finish_commit, args.run_slot, args.plan_only,
+                args.ack, queue_action, args.case_ids, args.repo_root, args.review_file)):
+            raise ValueError('--revalidate-batch creates only a new candidate campaign')
+        source = args.revalidate_batch.resolve()
+        if not source.is_relative_to((ROOT / 'daily' / 'runs').resolve()):
+            raise ValueError('Source batch must be inside daily/runs')
+        original = load(source / 'manifest.json')
+        out = source / ('revalidation-' + now_cn().strftime('%Y%m%dT%H%M%S') + '_' + uuid.uuid4().hex[:6])
+        manifest = dict(original, batchId=out.name, mode='targeted-revalidation', strategy='individual',
+                        revalidationOf=str(source), revalidationRequestedAt=now_cn().isoformat())
+        save(out / 'manifest.json', manifest)
+        for commit in original['commits']:
+            shutil.copy2(source / (commit['sha'][:8] + '.diff'), out / (commit['sha'][:8] + '.diff'))
+        registry, sched = load(REGISTRY), load(SCHEDULING)
+        queue = individual.prepare(__import__(__name__), out, manifest, registry, sched)
+        print(json.dumps(individual.aggregate(__import__(__name__), out, manifest, queue, registry), ensure_ascii=False))
+        return
+    actions = [args.run_commit, args.finish_commit, args.prepare_commit, args.freeze_commit, args.run_slot, args.plan_only,
+               args.prepare_all, args.author_cases, args.check_cases, args.drain]
     if sum(bool(x) for x in actions) > 1:
         raise ValueError('Select only one preparation/execution/completion action per invocation')
     if (args.prepare_commit or args.freeze_commit) and not args.resume:
         raise ValueError('Preparation actions require --resume <individual root batch>')
     if bool(args.review_file) != bool(args.freeze_commit):
         raise ValueError('--review-file is required only with --freeze-commit')
+    if (args.prepare_all or args.author_cases or args.check_cases or args.drain) and not args.resume:
+        raise ValueError('Queue preparation/drain requires --resume <root>')
+    if bool(args.case_ids) != bool(args.check_cases) or (args.repo_root and not args.check_cases):
+        raise ValueError('--check-cases requires --case-ids; --repo-root is only for discovery')
     if args.ack:
         acknowledge(args.ack, args.ack_reason)
         return
@@ -724,17 +845,45 @@ def main():
             raise ValueError("Resume path must be inside daily/runs")
         manifest = load(out / "manifest.json")
         strategy = resolve_strategy(args.strategy, manifest)
+        historical_root = Path(manifest['parentBatch']) if manifest.get('parentBatch') else out
+        if (historical_root / 'revalidation-link.json').exists() and (any(actions) or args.execute):
+            raise ValueError('Historical frozen batch is linked to revalidation; operate on the separate campaign')
     else:
         strategy = resolve_strategy(args.strategy, None)
         out, manifest = collect(args.last, args.offline)
         manifest["strategy"] = strategy
         save(out / "manifest.json", manifest)
+    if (queue_action or args.check_complete) and strategy != 'individual':
+        raise ValueError('Queue preparation/drain/completion checks require an individual root batch')
     registry = load(REGISTRY)
     sched = load(SCHEDULING)
     if strategy == "individual":
+        if (out / 'revalidation-link.json').exists() and any(actions):
+            raise ValueError('Historical batch is linked to explicit revalidation; operate on the linked campaign, preserve the original frozen batch')
         if args.run_slot:
             raise ValueError("Resume the commit child directory to run a UI slot, not the queue root")
         plan_data = individual.prepare(__import__(__name__), out, manifest, registry, sched)
+        if args.prepare_all:
+            queue_driver.prepare_all(__import__(__name__), plan_data, registry, sched)
+        if args.author_cases or args.check_cases:
+            slot = individual.select(__import__(__name__), plan_data, args.author_cases or args.check_cases, require_previous=False)
+            child = Path(slot['batch'])
+            if (child / 'plan.json').exists():
+                raise ValueError('Authoring/discovery must happen before plan freeze')
+            cm = load(child / 'manifest.json')
+            if args.author_cases:
+                case_authoring.generate(__import__(__name__), child, cm, registry)
+            else:
+                try:
+                    repo = args.repo_root.resolve() if args.repo_root else prepare_target(child, cm)[0]
+                    queue_driver.check_cases(__import__(__name__), child, cm, registry, args.case_ids.split(','), repo)
+                except Exception as exc:
+                    failure = dict(sha=cm['head'], reason=str(exc), phase='coverage-build', at=now_cn().isoformat())
+                    save(child / 'preparation' / 'case-check-error.json', failure)
+                    if not (child / 'build-reference.json').exists():
+                        previous = load(child / 'execution.json', {})
+                        save(child / 'execution.json', dict(previous, state='ERROR', **failure))
+                    raise
         if args.prepare_commit:
             individual.prepare_one(__import__(__name__), plan_data, args.prepare_commit, registry, sched)
         if args.freeze_commit:
@@ -743,8 +892,13 @@ def main():
             individual.run_one(__import__(__name__), out, plan_data, args.run_commit, registry, sched)
         if args.finish_commit:
             individual.finish_one(__import__(__name__), out, plan_data, args.finish_commit, args.completion_reason)
-        data = individual.aggregate(__import__(__name__), out, manifest, plan_data, registry)
+        if args.drain:
+            build_runner(out)
+        data = (queue_driver.drain(__import__(__name__), out, manifest, plan_data, registry, sched) if args.drain else
+                individual.aggregate(__import__(__name__), out, manifest, plan_data, registry))
         print(json.dumps(data, ensure_ascii=False))
+        if (args.check_complete or args.drain or args.prepare_all) and data['pendingCommitValidations']:
+            raise SystemExit(2)
         return
     if args.run_commit or args.finish_commit or args.prepare_commit or args.freeze_commit:
         raise ValueError("Commit queue actions require an individual root batch")
@@ -788,4 +942,12 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    # PowerShell/tool consumers decode JSON as UTF-8, while Windows Python may
+    # otherwise emit CP936 and silently corrupt Chinese requirement text.
+    sys.stdout.reconfigure(encoding='utf-8')
+    sys.stderr.reconfigure(encoding='utf-8')
+    if '--help' in sys.argv[1:] or '-h' in sys.argv[1:]:
+        main()  # argparse help is read-only and must work during a long queue.
+    else:
+        with operation_lock.acquire(ROOT / 'daily' / '.operation.lock'):
+            main()

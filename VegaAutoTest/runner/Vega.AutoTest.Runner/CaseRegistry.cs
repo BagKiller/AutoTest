@@ -28,6 +28,8 @@ public sealed class CaseConfig
 
     [JsonProperty("title")] public string Title { get; set; } = string.Empty;
 
+    [JsonProperty("targetSha")] public string? TargetSha { get; set; }
+
     [JsonProperty("workItems")] public List<int> WorkItems { get; set; } = new();
 
     [JsonProperty("tags")] public List<string> Tags { get; set; } = new();
@@ -53,6 +55,11 @@ public static class CaseRegistry
                File.ReadAllText(Path.Combine(autoTestRoot, "cases", "registry.json")))
            ?? throw new InvalidOperationException("registry.json 解析结果为空");
 
-    public static CaseConfig? FindByWorkItem(RegistryConfig registry, int workItemId)
-        => registry.Cases.FirstOrDefault(c => c.WorkItems.Contains(workItemId));
+    public static bool MatchesTarget(CaseConfig testCase, string? gitCommit)
+        => string.IsNullOrWhiteSpace(testCase.TargetSha)
+           || string.Equals(testCase.TargetSha, gitCommit, StringComparison.OrdinalIgnoreCase);
+
+    public static CaseConfig? FindByWorkItem(RegistryConfig registry, int workItemId, string? gitCommit = null)
+        => registry.Cases.Where(c => c.WorkItems.Contains(workItemId) && MatchesTarget(c, gitCommit))
+            .OrderByDescending(c => !string.IsNullOrWhiteSpace(c.TargetSha)).FirstOrDefault();
 }

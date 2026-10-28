@@ -178,16 +178,17 @@ CD (Vega.CD.*) — 通信通道, IConnection
      不得写成"存在 Bug"，也不得写成"通过"
    - ERROR → 验证工具自身故障，请求人工介入
 3. `target.builtFromCurrentSource == false` 时，必须显式标注
-   "未使用当前源码重编，结论仅对旧二进制有效"（未重编跑出的 run 该字段
-   恒为 false，只有 `--rebuild` 成功才 true；`vegaExeBuiltAt` 必须一并报出）。
+   "Runner 未自行重编"；若有本 SHA 独立构建和 DLL 指纹证据，应同时引用，不能误称为旧二进制。
+   该字段保持原样，不能用外部构建证明改写它；`vegaExeBuiltAt` 必须一并报出。
 4. `channels.l1Api.available == false` 时 oracle 交叉验证未实际发生，
    摘要不得表述为"强验证"（SKIP 的 oracle 断言注明"弱断言"）。
 5. 引用验证结论必须带 `runId`；无 runId 的"已验证"视为无效。
    每次验证结束，Runner 会在 `result.json` 同目录写出 `report.md`。回复必须给出该路径，
    结论与报告一致。不要等用户索要，也不要另写一份和 `result.json` 不一致的结论。
 6. 工作项未登记用例（verdictCode=NO_CASE_REGISTERED 或 `list_verifiable_work_items`
-   里没有）时，如实说明"该工作项尚未登记自动化用例，需人工补充"，
-   **不要伪造验证过程，不要现编一个看起来像验证的东西**。
+   里没有）时，进入准备阶段：自行理解需求和 diff，复用或补写真实可执行测试、合法输入与预期，
+   构建/发现、审核登记后执行，不等待人工补用例。不得伪造验证过程或空 PASS。
+   缺数据/环境时保留实际尝试证据、具体缺口并继续其他项。每日任务遵循 daily/AGENTS.md 的整批准备和 --drain 流程。
 7. 未提交、修复尚未进入本地 git 历史的工作项，必须走闭环而不是单次验证：
    `start_loop_baseline` → 仅当基线 FAIL 才修复 → `finish_loop`。
    没有失败基线就不要改代码。`finish_loop` 之后停住，不 push、不开 PR、不改工作项状态。

@@ -1,0 +1,38 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <AssemblyName>Vega.AutoTest.CommitProbe</AssemblyName>
+    <TargetFramework>net8.0-windows10.0.19041.0</TargetFramework>
+    <UseWPF>true</UseWPF>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <IsTestProject>true</IsTestProject>
+    <IsPackable>false</IsPackable>
+    <PlatformTarget>x64</PlatformTarget>
+    <ManagePackageVersionsCentrally>false</ManagePackageVersionsCentrally>
+    <NuGetAudit>false</NuGetAudit>
+    <ProductBin>$(VEGA_SW_ROOT)\Vega\bin\Debug\net8.0-windows10.0.19041.0\win-x64</ProductBin>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.8.0" />
+    <PackageReference Include="xunit" Version="2.5.3" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="2.5.3" />
+    <PackageReference Include="Castle.Core.AsyncInterceptor" Version="2.1.0" />
+    <Reference Include="$(ProductBin)\Galaxy.*.dll;$(ProductBin)\Vega.*.dll;$(ProductBin)\CommunityToolkit.Mvvm.dll;$(ProductBin)\Newtonsoft.Json.dll" />
+    <Reference Include="$(ProductBin)\Castle.Core.dll;$(ProductBin)\System.Collections.Immutable.dll;$(ProductBin)\System.Drawing.Common.dll;$(ProductBin)\System.Management.dll" />
+    <Reference Include="$(ProductBin)\EFEM.*.dll" />
+    <Content Include="$(ProductBin)\*.dll" Link="%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
+    <ProjectReference Include="..\..\harness\Vega.AutoTest.Harness.csproj" />
+    <Compile Include="..\..\spike\Vega.AutoTest.Spike\StubLogService.cs" Link="StubLogService.cs" />
+    <!-- Batch editor is a separate executable. Compile its unchanged converter source,
+         and report this source-level coverage separately from the binary probes. -->
+    <Compile Include="$(VEGA_SW_ROOT)\Vega.UI.RecipeBatchEditor\Converters\ValueConverters.cs" Link="Product\ValueConverters.cs" />
+    <Using Include="Xunit" />
+    <Reference Include="$(ProductBin)\RecipeBatchEditor\RecipeBatchEditor.dll;$(ProductBin)\RecipeBatchEditor\Microsoft.Extensions.Logging.Abstractions.dll" />
+    <Content Include="$(ProductBin)\RecipeBatchEditor\RecipeBatchEditor.dll" Link="RecipeBatchEditor.dll" CopyToOutputDirectory="PreserveNewest" />
+    <Compile Include="$(VEGA_SW_ROOT)\Vega.UI.Inspection.Tests\SummaryBinningEnabledTests.cs" Link="ProductTests\SummaryBinningEnabledTests.cs" />
+    <Compile Include="$(VEGA_SW_ROOT)\Vega.Utility.Common.Tests\NotchChannelResolverTests.cs" Link="ProductTests\NotchChannelResolverTests.cs" />
+    <Compile Include="$(VEGA_SW_ROOT)\Vega.Facade.GEMBase.Tests\TestGEMService.cs" Link="ProductTests\TestGEMService.cs" />
+    <Compile Include="$(VEGA_SW_ROOT)\Vega.Facade.GEMBase.Tests\GEMServiceBaseChangeLoadPortAccessModeTests.cs" Link="ProductTests\GEMServiceBaseChangeLoadPortAccessModeTests.cs" />
+    <Compile Include="$(VEGA_SW_ROOT)\Vega.Facade.GEMBase.Tests\GEMServiceSimChangeLoadPortAccessModeTests.cs" Link="ProductTests\GEMServiceSimChangeLoadPortAccessModeTests.cs" />
+  </ItemGroup>
+</Project>

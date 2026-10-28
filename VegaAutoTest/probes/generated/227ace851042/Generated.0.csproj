@@ -1,0 +1,11 @@
+<Project Sdk="Microsoft.NET.Sdk">
+ <PropertyGroup><TargetFramework>net8.0-windows10.0.19041.0</TargetFramework><UseWPF>true</UseWPF>
+ <ImplicitUsings>enable</ImplicitUsings><Nullable>enable</Nullable><IsTestProject>true</IsTestProject><PlatformTarget>x64</PlatformTarget>
+ <ManagePackageVersionsCentrally>false</ManagePackageVersionsCentrally><NuGetAudit>false</NuGetAudit>
+ <ProductBin>$(VEGA_SW_ROOT)\Vega\bin\Debug\net8.0-windows10.0.19041.0\win-x64</ProductBin>
+ <EnableDefaultCompileItems>false</EnableDefaultCompileItems><AssemblyName>Vega.Utility.Common.Tests</AssemblyName></PropertyGroup>
+ <ItemGroup><PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.8.0"/><PackageReference Include="xunit" Version="2.5.3"/>
+ <PackageReference Include="xunit.runner.visualstudio" Version="2.5.3"/><PackageReference Include="Moq" Version="4.20.70"/>
+ <ProjectReference Include="C:\AutoTest\AutoTest\VegaAutoTest\harness\Vega.AutoTest.Harness.csproj"/><Using Include="Xunit"/><Compile Include="Original/00_MachineConfigSubPathsTests.cs"/><Compile Include="Original/01_PmtCaliTablesConsistencyTests.cs"/><Compile Include="Original/02_Vega100BpsTableCoverageTests.cs"/><Compile Include="TestPaths.cs"/><Compile Include="ProductRegressionAdapter.cs"/>
+ <Reference Include="$(ProductBin)\*.dll"/><Content Include="$(ProductBin)\*.dll" Link="%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest"/>
+ </ItemGroup></Project>

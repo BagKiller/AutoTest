@@ -5,6 +5,7 @@ import io
 import sys
 import tempfile
 import unittest
+import subprocess
 from pathlib import Path
 from unittest.mock import patch
 
@@ -61,7 +62,27 @@ class IndividualTests(unittest.TestCase):
                       workItemsSha256=d.individual.coverage_contract.digest(source), requirements=[requirement])
         review_path = child / 'review-input.json'
         d.save(review_path, review)
+        self.discovery_receipt(child, slot['sha'], requirement['caseIds'])
+        if not requirement['caseIds'] or gap:
+            log = child / 'preparation' / 'authoring-attempt.log'
+            log.write_text('Fixture: attempted generation; dataset unavailable')
+            requirement['attemptEvidence'] = [dict(path=str(log.relative_to(child)),
+                sha256=d.coverage_contract.digest(log), action='Generate fixture', outcome='Dataset unavailable')]
+            d.save(review_path, review)
         return d.individual.freeze_one(d, p, slot['sha'], self.registry, self.sched, review_path)
+
+    def discovery_receipt(self, child, sha, ids):
+        records = []
+        for case in self.registry['cases']:
+            if case['id'] not in ids:
+                continue
+            for layer in case['layers']:
+                log = child / 'preparation' / (case['id'] + '-' + layer + '.log')
+                log.write_text('Fixture discovered: ' + layer)
+                records.append(dict(caseId=case['id'], layer=layer, exitCode=0, discoveredTests=[layer],
+                    log=str(log.relative_to(child)), logSha256=d.coverage_contract.digest(log)))
+        d.save(child / 'preparation' / 'case-check.json', dict(sha=sha, records=records,
+            fingerprints=d.coverage_contract.case_fingerprints(d, self.registry, ids, transitive=True)))
 
     def test_modes_and_legacy_resume(self):
         self.assertEqual(d.resolve_strategy(None, None), 'individual')
@@ -69,6 +90,37 @@ class IndividualTests(unittest.TestCase):
         self.assertEqual(d.resolve_strategy(None, {'strategy': 'individual'}), 'individual')
         with self.assertRaises(ValueError):
             d.resolve_strategy('individual', {})
+
+    def test_duplicate_operation_is_rejected_and_lock_releases(self):
+        import operation_lock
+        path = self.root / 'lock'
+        with operation_lock.acquire(path):
+            with self.assertRaisesRegex(RuntimeError, 'already running'):
+                with operation_lock.acquire(path):
+                    self.fail('second owner admitted')
+        with operation_lock.acquire(path):
+            pass
+
+    def test_completed_headless_cannot_be_accidentally_relaunched(self):
+        p = self.prepare()
+        self.freeze(p)
+        child = Path(p['commitSlots'][0]['batch'])
+        d.save(child / 'execution.json', dict(state='HEADLESS_DONE'))
+        with patch.object(d, 'execute') as execute:
+            with self.assertRaisesRegex(ValueError, 'already completed'):
+                d.individual.run_one(d, self.out, p, 'a', self.registry, self.sched)
+            execute.assert_not_called()
+
+    def test_unindexed_raw_result_is_preserved_in_aggregate(self):
+        self.registry['cases'][0]['layers'].pop('uia')
+        p = self.prepare()
+        self.freeze(p, ui=False)
+        child = Path(p['commitSlots'][0]['batch'])
+        d.save(child/'runner'/'orphan'/'result.json', dict(runId='orphan', caseId='wi7',
+            verdict='FAIL', verdictCode='ASSERTION_FAILED', target=dict(gitCommit='a'*40)))
+        summary = d.individual.aggregate(d, self.out, self.manifest, p, self.registry)
+        self.assertEqual(summary['runs'][0]['runId'], 'orphan')
+        self.assertEqual(summary['runs'][0]['verdict'], 'FAIL')
 
     def test_same_case_has_independent_sha_plans_and_directories(self):
         p = self.prepare()
@@ -233,6 +285,61 @@ class IndividualTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, 'Frozen child plans'):
                 self.invoke_main('--resume', child, '--plan-only')
 
+    def test_completion_check_cannot_collect_or_advance_cursor(self):
+        with patch.object(d, 'collect') as collect:
+            with self.assertRaisesRegex(ValueError, 'never collect'):
+                self.invoke_main('--check-complete')
+            collect.assert_not_called()
+
+    def test_revalidation_link_preserves_original_and_checks_evidence(self):
+        p = self.prepare()
+        old = d.individual.aggregate(d, self.out, self.manifest, p, self.registry)
+        d.save(self.out/'summary-before-revalidation.json', old)
+        campaign = self.out/'revalidation-test'
+        manifest = dict(self.manifest, batchId='revalidation-test', revalidationOf=str(self.out))
+        d.save(campaign/'manifest.json', manifest)
+        cp = d.individual.prepare(d, campaign, manifest, self.registry, self.sched)
+        d.save(campaign/'plan.json', cp)
+        protected = self.out/'plan.json'
+        digest = d.individual.coverage_contract.digest(protected)
+        d.save(self.out/'revalidation-link.json', dict(campaign=str(campaign), linkedAt='test',
+            originalEvidenceSha256={'plan.json':digest}))
+        linked = d.individual.aggregate(d, self.out, self.manifest, p, self.registry)
+        self.assertEqual(linked['batchId'], self.manifest['batchId'])
+        self.assertEqual(linked['originalRun'], old)
+        self.assertEqual(d.individual.coverage_contract.digest(protected), digest)
+        self.assertEqual(len(linked['pendingCommitValidations']), 2)
+        protected.write_text('{}')
+        with self.assertRaisesRegex(ValueError, 'Original frozen evidence changed'):
+            d.individual.aggregate(d, self.out, self.manifest, p, self.registry)
+
+    def test_revalidation_link_rejects_different_commit_set(self):
+        p = self.prepare()
+        campaign = self.out/'revalidation-test'
+        d.save(campaign/'manifest.json', dict(self.manifest, revalidationOf=str(self.out), commits=[]))
+        d.save(self.out/'revalidation-link.json', dict(campaign=str(campaign), linkedAt='test', originalEvidenceSha256={}))
+        with self.assertRaisesRegex(ValueError, 'same original commit set'):
+            d.individual.aggregate(d, self.out, self.manifest, p, self.registry)
+
+    def test_linked_historical_child_cannot_execute(self):
+        p = self.prepare()
+        d.save(self.out/'revalidation-link.json', dict(campaign='unused'))
+        with patch.object(d, 'execute') as execute:
+            with self.assertRaisesRegex(ValueError, 'Historical frozen batch'):
+                self.invoke_main('--resume', p['commitSlots'][0]['batch'], '--execute')
+            execute.assert_not_called()
+
+    def test_completion_check_fails_until_queue_is_finished(self):
+        self.prepare()
+        self.manifest['strategy']='individual'
+        d.save(self.out/'manifest.json',self.manifest)
+        with patch.object(d,'REGISTRY',self.root/'registry.json'), patch.object(d,'SCHEDULING',self.root/'scheduling.json'):
+            d.save(d.REGISTRY,self.registry)
+            d.save(d.SCHEDULING,self.sched)
+            with self.assertRaises(SystemExit) as error:
+                self.invoke_main('--resume',self.out,'--check-complete')
+            self.assertEqual(error.exception.code,2)
+
     def test_diff_change_is_detected_before_execution(self):
         p = self.prepare()
         self.freeze(p)
@@ -280,6 +387,349 @@ class IndividualTests(unittest.TestCase):
         self.assertEqual(result['workflowState'], 'FINISHED')
         self.assertEqual(result['statusCounts'], {'ERROR': 1, 'ACCEPTED': 1})
         self.assertEqual(result['acceptanceState'], 'INCOMPLETE')
+
+    def test_drain_runs_second_commit_after_first_build_failure(self):
+        p = self.prepare()
+        self.registry['cases'][0]['layers'].pop('uia')
+        self.freeze(p, ui=False)
+        self.freeze(p, index=1, ui=False)
+        executed = []
+        def execute(child, manifest, cp, outcomes, budget):
+            executed.append(manifest['head'])
+            if manifest['head'].startswith('a'):
+                raise RuntimeError('Fixture isolated build error')
+            d.save(child/'execution.json', dict(state='HEADLESS_DONE'))
+            outcomes['runs'].append(dict(caseId='wi7', phase='headless', verdict='PASS', runId='fixture-second'))
+            d.save(child/'outcomes.json', outcomes)
+        with patch.object(d, 'execute', side_effect=execute):
+            result = d.queue_driver.drain(d, self.out, self.manifest, p, self.registry, self.sched)
+        self.assertEqual(executed, ['a'*40, 'b'*40])
+        self.assertEqual(result['workflowState'], 'FINISHED')
+        self.assertEqual(result['statusCounts'], {'ERROR': 1, 'ACCEPTED': 1})
+        # Restart is idempotent: completed SHA cannot rebuild accidentally.
+        with patch.object(d, 'execute') as rerun:
+            d.queue_driver.drain(d, self.out, self.manifest, p, self.registry, self.sched)
+            rerun.assert_not_called()
+
+    def test_drain_preflights_whole_queue_before_starting_first_build(self):
+        p = self.prepare()
+        self.freeze(p)
+        with patch.object(d, 'execute') as execute, self.assertRaisesRegex(ValueError, 'ALL commits'):
+            d.queue_driver.drain(d, self.out, self.manifest, p, self.registry, self.sched)
+        execute.assert_not_called()
+
+    def test_drain_does_not_finish_required_ui_without_execution(self):
+        p = self.prepare()
+        self.freeze(p)
+        self.freeze(p, index=1)
+        child = Path(p['commitSlots'][0]['batch'])
+        d.save(child/'execution.json', dict(state='HEADLESS_DONE'))
+        with patch.object(d, 'execute') as execute:
+            result = d.queue_driver.drain(d, self.out, self.manifest, p, self.registry, self.sched)
+            execute.assert_not_called()
+        self.assertEqual(len(result['pendingCommitValidations']), 2)
+        self.assertTrue((child/'ui-request.json').exists())
+        self.assertFalse((child/'completion.json').exists())
+
+    def test_drain_accepts_verified_ui_blocker_and_continues_without_claiming_ui_pass(self):
+        p = self.prepare()
+        self.freeze(p)
+        self.freeze(p, index=1)
+        for slot in p['commitSlots']:
+            child = Path(slot['batch'])
+            d.save(child/'execution.json', dict(state='HEADLESS_DONE'))
+            cp = d.load(child/'plan.json')
+            for ui in cp['uiSlots']:
+                log = child/'ui'/ui['id']/'attempt.log'
+                log.parent.mkdir(parents=True, exist_ok=True)
+                log.write_text('Fixture actual desktop request failed: desktop unavailable')
+                d.save(log.with_name('blocker.json'), dict(reason='Desktop unavailable', attemptEvidence=[
+                    dict(path=str(log.relative_to(child)), sha256=d.coverage_contract.digest(log))]))
+        with patch.object(d, 'execute') as execute, patch.object(d, 'REGISTRY', self.root/'registry.json'):
+            d.save(d.REGISTRY, self.registry)
+            result = d.queue_driver.drain(d, self.out, self.manifest, p, self.registry, self.sched)
+            execute.assert_not_called()
+        self.assertEqual(result['workflowState'], 'FINISHED')
+        self.assertTrue(result['unverifiedUiSlots'])
+        self.assertNotEqual(result['acceptanceState'], 'COMPLETE')
+
+    def test_changed_or_empty_ui_blocker_does_not_finish_queue(self):
+        p = self.prepare()
+        self.freeze(p)
+        self.freeze(p, index=1)
+        child = Path(p['commitSlots'][0]['batch'])
+        d.save(child/'execution.json', dict(state='HEADLESS_DONE'))
+        ui = d.load(child/'plan.json')['uiSlots'][0]
+        log = child/'ui'/ui['id']/'attempt.log'
+        log.parent.mkdir(parents=True)
+        log.write_bytes(b'')
+        d.save(log.with_name('blocker.json'), dict(reason='Fixture', attemptEvidence=[
+            dict(path=str(log.relative_to(child)), sha256=d.coverage_contract.digest(log))]))
+        result = d.queue_driver.drain(d, self.out, self.manifest, p, self.registry, self.sched)
+        self.assertEqual(len(result['pendingCommitValidations']), 2)
+        log.write_text('changed after blocker receipt')
+        result = d.queue_driver.drain(d, self.out, self.manifest, p, self.registry, self.sched)
+        self.assertEqual(len(result['pendingCommitValidations']), 2)
+
+    def test_prepare_all_continues_after_one_authoring_failure(self):
+        p = self.prepare()
+        with patch.object(d.individual, 'prepare_one') as prepare, patch.object(
+                d.case_authoring, 'generate', side_effect=[RuntimeError('unsupported source'), None]) as generate:
+            d.queue_driver.prepare_all(d, p, self.registry, self.sched)
+        self.assertEqual(prepare.call_count, 2)
+        self.assertEqual(generate.call_count, 2)
+        child = Path(p['commitSlots'][0]['batch'])
+        self.assertEqual(d.load(child/'preparation'/'authoring.json')['state'], 'NEEDS_AUTHORING')
+        self.assertFalse((child/'plan.json').exists())
+
+    def test_deleted_product_test_is_not_retrieved_or_treated_as_executable(self):
+        p = self.prepare()
+        child = Path(p['commitSlots'][0]['batch'])
+        cm = d.load(child/'manifest.json')
+        cm['commits'][0]['files'] = ['A.Tests/Deleted.cs']
+        with patch.object(d, 'git', return_value='') as git:
+            result = d.case_authoring.generate(d, child, cm, self.registry)
+        self.assertEqual(result['state'], 'NEEDS_AUTHORING')
+        self.assertEqual(git.call_count, 1)
+        self.assertEqual(git.call_args.args[0], 'ls-tree')
+
+    def test_queue_actions_cannot_silently_run_on_merged_or_child_batches(self):
+        for strategy in ('merged', 'individual-commit'):
+            for action in ('--drain', '--prepare-all', '--check-complete'):
+                d.save(self.out/'manifest.json', dict(self.manifest, strategy=strategy))
+                with patch.object(sys, 'argv', ['daily.py', '--resume', str(self.out), action]):
+                    with self.assertRaisesRegex(ValueError, 'individual root'):
+                        d.main()
+        self.assertFalse((self.out/'execution.json').exists())
+
+    def test_completion_check_cannot_start_execution_and_revalidation_rejects_queue_flags(self):
+        for flags in (['--resume', str(self.out), '--check-complete', '--execute'],
+                      ['--revalidate-batch', str(self.out), '--drain']):
+            with patch.object(sys, 'argv', ['daily.py', *flags]), self.assertRaises(ValueError):
+                d.main()
+        self.assertFalse((self.out/'manifest.json').exists())
+
+    def test_gap_text_alone_is_not_an_authoring_attempt(self):
+        p = self.prepare()
+        slot = p['commitSlots'][0]
+        child = Path(slot['batch'])
+        with self.assertRaisesRegex(ValueError, 'actual authoring'):
+            d.coverage_contract.validate_preparation(d, child, d.load(child/'manifest.json'), self.registry,
+                [dict(id='remote', caseIds=[], gap='No registered cases')])
+
+    def test_discovery_log_drift_rejected(self):
+        p = self.prepare()
+        child = Path(p['commitSlots'][0]['batch'])
+        self.discovery_receipt(child, 'a'*40, ['wi7'])
+        (child/'preparation'/'wi7-logic.log').write_text('Changed discovery output')
+        with self.assertRaisesRegex(ValueError, 'discovery log'):
+            d.coverage_contract.validate_preparation(d, child, d.load(child/'manifest.json'), self.registry,
+                [dict(id='scenario', caseIds=['wi7'])])
+
+    def test_shared_harness_change_invalidates_discovery(self):
+        shared = self.root/'shared'
+        shared.mkdir()
+        (shared/'shared.csproj').write_text('<Project />')
+        (shared/'Shared.cs').write_text('// fixture dependency')
+        (self.root/'probe'/'probe.csproj').write_text('<Project><ItemGroup><ProjectReference Include="../shared/shared.csproj" /></ItemGroup></Project>')
+        p = self.prepare()
+        child = Path(p['commitSlots'][0]['batch'])
+        self.discovery_receipt(child, 'a'*40, ['wi7'])
+        (shared/'Shared.cs').write_text('// dependency drift')
+        with self.assertRaisesRegex(ValueError, 'sources changed'):
+            d.coverage_contract.validate_preparation(d, child, d.load(child/'manifest.json'), self.registry,
+                [dict(id='scenario', caseIds=['wi7'])])
+
+    def test_commit_scoped_case_never_leaks_to_other_sha(self):
+        self.registry['cases'][0]['targetSha'] = 'b'*40
+        p = self.prepare()
+        first = d.load(Path(p['commitSlots'][0]['batch'])/'preparation'/'plan.json')
+        second = d.load(Path(p['commitSlots'][1]['batch'])/'preparation'/'plan.json')
+        self.assertFalse(first['headless'])
+        self.assertTrue(second['headless'])
+
+    def test_case_generator_records_need_to_author_without_fabricating_tests(self):
+        p = self.prepare()
+        child = Path(p['commitSlots'][0]['batch'])
+        result = d.case_authoring.generate(d, child, d.load(child/'manifest.json'), self.registry)
+        self.assertEqual(result['state'], 'NEEDS_AUTHORING')
+        self.assertIsNone(result['caseId'])
+
+    def test_generated_projects_preserve_friend_assembly_names_and_original_assertions(self):
+        p = self.prepare()
+        child = Path(p['commitSlots'][0]['batch'])
+        cm = d.load(child/'manifest.json')
+        cm['commits'][0]['files'] = ['A.Tests/One.cs', 'B.Tests/Two.cs']
+        source = 'namespace Fixture; public class Checks { [Fact] public void Original() { Assert.Equal(1, 2); } }'
+        def git(*args, **kwargs):
+            return '\n'.join(cm['commits'][0]['files']) if args[0] == 'ls-tree' else source
+        with patch.object(d, 'git', side_effect=git), patch.object(d, 'REGISTRY', self.root/'registry.json'):
+            result = d.case_authoring.generate(d, child, cm, self.registry)
+        case = next(c for c in self.registry['cases'] if c['id'] == result['caseId'])
+        self.assertEqual(len(case['layers']), 2)
+        self.assertIn('partial-acceptance', case['tags'])
+        project = self.root/case['layers']['logic0']['project']
+        self.assertIn('<AssemblyName>A.Tests</AssemblyName>', project.read_text())
+        self.assertIn('Assert.Equal(1, 2)', (project.parent/'Original/00_One.cs').read_text())
+
+    def test_hardcoded_external_source_rejected_before_freeze(self):
+        (self.root/'probe'/'probe.csproj').write_text('<Project><ItemGroup><Compile Include="C:/retired-worktree/Old.cs" /></ItemGroup></Project>')
+        with self.assertRaisesRegex(ValueError, 'Hardcoded external'):
+            d.coverage_contract.case_fingerprints(d, self.registry, ['wi7'], transitive=True)
+
+    def test_checked_build_cannot_be_finished_as_executed(self):
+        p = self.prepare()
+        self.freeze(p, ui=False)
+        child = Path(p['commitSlots'][0]['batch'])
+        d.save(child/'execution.json', dict(state='COVERAGE_CHECKED'))
+        d.individual.refresh_child(d, child, self.registry)
+        with self.assertRaisesRegex(ValueError, 'not test execution'):
+            d.individual.finish_one(d, self.out, p, 'a', 'Discovery finished')
+
+    def test_missing_required_ui_remains_visible_without_any_ui_slot(self):
+        self.registry['cases'][0]['layers'].pop('uia')
+        p = self.prepare()
+        self.freeze(p)
+        result = d.individual.aggregate(d, self.out, self.manifest, p, self.registry)
+        self.assertFalse(result['pendingUiSlots'])
+        self.assertEqual(result['unverifiedUiSlots'][0]['kind'], 'missing-ui-coverage')
+
+    def test_failed_baseline_cannot_be_hidden_by_passing_work_item_case(self):
+        p = self.prepare()
+        cp = self.freeze(p, ui=False)
+        cp['clusters'].append(dict(id='baseline',kind='baseline',label='baseline',commits=[],cases=['regression']))
+        cp['casePhases']['regression']=['headless']
+        cm=d.load(Path(p['commitSlots'][0]['batch'])/'manifest.json')
+        for verdict in ['FAIL','ERROR','BLOCKED']:
+            rows=d.evaluate(cm,cp,dict(runs=[dict(caseId='wi7',phase='headless',verdict='PASS',runId='fixture-work-item'),
+                dict(caseId='regression',phase='headless',verdict=verdict,runId='fixture-regression')]),self.registry)
+            self.assertEqual(rows[0]['status'],verdict)
+
+    def test_preparation_build_can_freeze_but_changed_discovery_evidence_cannot_execute(self):
+        p=self.prepare();child=Path(p['commitSlots'][0]['batch'])
+        d.save(child/'execution.json',dict(state='COVERAGE_CHECKED'))
+        self.freeze(p,ui=False)
+        (child/'preparation'/'wi7-logic.log').write_text('changed after freeze')
+        with patch.object(d,'execute') as execute:
+            d.individual.run_one(d,self.out,p,'a',self.registry,self.sched)
+            execute.assert_not_called()
+        self.assertEqual(d.load(child/'execution.json')['state'],'ERROR')
+
+    def test_linked_source_outside_project_directory_is_frozen(self):
+        (self.root/'SharedStub.cs').write_text('// original shared logger')
+        (self.root/'probe'/'probe.csproj').write_text('<Project><ItemGroup><Compile Include="../SharedStub.cs" /></ItemGroup></Project>')
+        p=self.prepare();self.freeze(p,ui=False)
+        (self.root/'SharedStub.cs').write_text('// changed shared logger')
+        with patch.object(d,'execute') as execute:
+            d.individual.run_one(d,self.out,p,'a',self.registry,self.sched)
+            execute.assert_not_called()
+        self.assertEqual(d.load(Path(p['commitSlots'][0]['batch'])/'execution.json')['state'],'ERROR')
+
+    def test_atomic_json_write_does_not_extend_long_target_filename(self):
+        padding = 230-len(str(self.root.resolve()))
+        directory=self.root/('x'*padding)
+        path=directory/'result.json'
+        d.save(path,dict(value='retained'))
+        self.assertEqual(d.load(path),dict(value='retained'))
+        self.assertEqual([p.name for p in directory.iterdir()],['result.json'])
+
+    def test_preparation_build_failure_is_not_rebuilt_and_next_sha_still_executes(self):
+        p=self.prepare();self.registry['cases'][0]['layers'].pop('uia')
+        self.freeze(p,ui=False);self.freeze(p,index=1,ui=False)
+        first=Path(p['commitSlots'][0]['batch'])
+        d.save(first/'execution.json',dict(state='ERROR',phase='coverage-build',reason='Fixture compiler error'))
+        d.save(first/'preparation'/'case-check-error.json',dict(sha='a'*40,reason='Fixture compiler error'))
+        def execute(child,manifest,cp,outcomes,budget):
+            self.assertEqual(manifest['head'],'b'*40)
+            d.save(child/'execution.json',dict(state='HEADLESS_DONE'))
+            d.save(child/'outcomes.json',dict(runs=[dict(caseId='wi7',phase='headless',verdict='PASS',runId='fixture-second')]))
+        with patch.object(d,'execute',side_effect=execute) as call:
+            result=d.queue_driver.drain(d,self.out,self.manifest,p,self.registry,self.sched)
+        self.assertEqual(call.call_count,1)
+        self.assertEqual(result['workflowState'],'FINISHED')
+        self.assertEqual(result['statusCounts'],{'ERROR':1,'ACCEPTED':1})
+
+    def test_locked_scratch_cleanup_cannot_stop_remaining_commits(self):
+        p=self.prepare();self.registry['cases'][0]['layers'].pop('uia')
+        self.freeze(p,ui=False);self.freeze(p,index=1,ui=False)
+        def execute(child,manifest,cp,outcomes,budget):
+            d.save(child/'execution.json',dict(state='HEADLESS_DONE'))
+            d.save(child/'outcomes.json',dict(runs=[dict(caseId='wi7',phase='headless',verdict='PASS',runId='fixture-'+manifest['head'][0])]))
+        with patch.object(d,'execute',side_effect=execute), patch.object(d.queue_driver.artifact_cleanup,'reclaim',side_effect=PermissionError('Fixture scratch locked')):
+            result=d.queue_driver.drain(d,self.out,self.manifest,p,self.registry,self.sched)
+        self.assertEqual(result['workflowState'],'FINISHED')
+        self.assertEqual(result['statusCounts'],{'ACCEPTED':2})
+
+    def test_dependency_only_commit_reuses_executable_graph_case_without_manual_mapping(self):
+        p=self.prepare();child=Path(p['commitSlots'][0]['batch']);cm=d.load(child/'manifest.json')
+        cm['commits'][0]['files']=['packages.lock.json']
+        graph=self.root/'probes'/'Vega.AutoTest.LockGraphV3'/'Vega.AutoTest.LockGraphV3.csproj'
+        graph.parent.mkdir(parents=True);graph.write_text('<Project />')
+        with patch.object(d,'REGISTRY',self.root/'registry.json'):
+            result=d.case_authoring.generate(d,child,cm,self.registry)
+        self.assertEqual(result['state'],'REUSED_REQUIRES_CHECK')
+        case=next(c for c in self.registry['cases'] if c['id']==result['caseId'])
+        self.assertIn('partial-acceptance',case['tags'])
+        self.assertTrue(case['layers']['logic']['filter'])
+
+    def ui_session_fixture(self):
+        p = self.prepare()
+        cp = self.freeze(p)
+        child = Path(p['commitSlots'][0]['batch'])
+        cm = d.load(child/'manifest.json')
+        repo = self.root/'worktree'
+        binary = repo/'Vega/bin/Debug/net8.0-windows10.0.19041.0/win-x64'
+        resources = binary/'Resources'
+        resources.mkdir(parents=True)
+        hashes = {}
+        for name in ('ComponentConfig', 'HardwareProfiles'):
+            config = resources/(name+'.json')
+            config.write_text('{"fixture":true}')
+            hashes[name] = d.coverage_contract.digest(config)
+        d.save(child/'execution-target.json', dict(repo=str(repo)))
+        d.save(child/'build-reference.json', dict(commit=cm['head']))
+        session = self.root/'daily/sessions/fixture'
+        slot = cp['uiSlots'][0]
+        d.save(session/'session.json', dict(state='PREPARED', repo=str(repo), bin=str(binary),
+            model=slot['model'], profile=slot['profile'], preparedHashes=hashes))
+        return child, cm, cp, session
+
+    def test_ui_rejects_missing_session_or_other_profile_before_running_cases(self):
+        child, cm, cp, session = self.ui_session_fixture()
+        with patch.object(d, 'git', return_value=cm['head']), patch.object(d, 'run_case') as run:
+            with self.assertRaisesRegex(ValueError, 'requires --session'):
+                d.run_slot(child, cm, cp, cp['uiSlots'][0]['id'], None, dict(runs=[]))
+            state = d.load(session/'session.json')
+            state['profile'] = 'Other-profile'
+            d.save(session/'session.json', state)
+            with self.assertRaisesRegex(ValueError, 'target/model/profile'):
+                d.run_slot(child, cm, cp, cp['uiSlots'][0]['id'], session, dict(runs=[]))
+            run.assert_not_called()
+
+    def test_ui_rejects_changed_prepared_configuration(self):
+        child, cm, cp, session = self.ui_session_fixture()
+        state = d.load(session/'session.json')
+        (Path(state['bin'])/'Resources/ComponentConfig.json').write_text('changed')
+        with patch.object(d, 'git', return_value=cm['head']), patch.object(d, 'run_case') as run:
+            with self.assertRaisesRegex(ValueError, 'configuration missing/changed'):
+                d.run_slot(child, cm, cp, cp['uiSlots'][0]['id'], session, dict(runs=[]))
+            run.assert_not_called()
+
+    def test_valid_ui_session_restores_even_when_case_invocation_raises(self):
+        child, cm, cp, session = self.ui_session_fixture()
+        completed = subprocess.CompletedProcess([], 0, stdout='restored', stderr='')
+        with patch.object(d, 'git', return_value=cm['head']), patch.object(
+                d, 'run_case', side_effect=RuntimeError('fixture failure')), patch.object(
+                d.subprocess, 'run', return_value=completed) as process:
+            with self.assertRaisesRegex(RuntimeError, 'fixture failure'):
+                d.run_slot(child, cm, cp, cp['uiSlots'][0]['id'], session, dict(runs=[]))
+        self.assertEqual(process.call_count, 2)
+        self.assertIn('Restore', process.call_args.args[0])
+        self.assertTrue(list((child/'slots').glob('*/restore.json')))
+
+    def test_cli_emits_utf8_help_for_windows_json_consumers(self):
+        result=subprocess.run([sys.executable,'-B',str(Path(__file__).with_name('daily.py')),'--help'],capture_output=True,check=True)
+        self.assertIn('新 individual',result.stdout.decode('utf-8'))
 
 
 if __name__ == '__main__':

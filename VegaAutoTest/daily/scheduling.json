@@ -1,27 +1,77 @@
 {
   "schemaVersion": 1,
   "tagCases": {
-    "sizes": ["wi3644-core", "daily-recent10"],
-    "bfp": ["daily-recent10"],
-    "pmt": ["daily-recent10"],
-    "autooptics": ["daily-recent10"],
-    "notch": ["daily-recent10"],
-    "loadport": ["daily-recent10"],
-    "gem-handshake": ["daily-recent10"],
-    "run-isolation": ["daily-recent10", "daily-supplement"],
-    "ni-abort": ["daily-supplement"],
-    "io-hwv2": ["daily-recent10"],
-    "xy-notch-gate": ["daily-recent10"],
-    "afs-close": ["daily-recent10"]
+    "sizes": [
+      "wi3644-core",
+      "daily-recent10-v3"
+    ],
+    "bfp": [
+      "daily-recent10-v3"
+    ],
+    "pmt": [
+      "daily-recent10-v3"
+    ],
+    "autooptics": [
+      "daily-recent10-v3"
+    ],
+    "notch": [
+      "daily-recent10-v3"
+    ],
+    "loadport": [
+      "daily-recent10-v3"
+    ],
+    "gem-handshake": [
+      "daily-recent10-v3"
+    ],
+    "run-isolation": [
+      "daily-recent10-v3",
+      "daily-supplement"
+    ],
+    "ni-abort": [
+      "daily-supplement"
+    ],
+    "io-hwv2": [
+      "daily-recent10-v3"
+    ],
+    "xy-notch-gate": [
+      "daily-recent10-v3"
+    ],
+    "afs-close": [
+      "daily-recent10-v3"
+    ]
   },
-  "baselineCases": ["daily-recent10", "daily-supplement"],
+  "baselineCases": [
+    "daily-recent10-v3",
+    "daily-supplement"
+  ],
   "caseProfiles": {
-    "wi3677-ui-evidence": ["Vega300-HWv1"],
-    "wi3579": ["Vega100-PIC"],
-    "wi3611": ["Vega100-PIC"]
+    "wi3690-recovery": [
+      "Vega100-PIC"
+    ],
+    "wi3693-recovery": [
+      "Vega300-HWv1"
+    ],
+    "wi3652-dialog-recovery": [
+      "Vega300-HWv1"
+    ],
+    "wi3677-ui-evidence": [
+      "Vega300-HWv1"
+    ],
+    "wi3579": [
+      "Vega100-PIC"
+    ],
+    "wi3611": [
+      "Vega100-PIC"
+    ]
   },
   "defaultUiProfile": "Vega500",
-  "profileOrder": ["Vega100-PIC", "Vega100-Coherent", "Vega300-HWv1", "Vega300-HWv2", "Vega500"],
+  "profileOrder": [
+    "Vega100-PIC",
+    "Vega100-Coherent",
+    "Vega300-HWv1",
+    "Vega300-HWv2",
+    "Vega500"
+  ],
   "headlessLayerModels": {
     "logic": "不区分机型",
     "logic-none": "无匹配机型",

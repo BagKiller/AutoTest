@@ -1,0 +1,1057 @@
+[
+  {
+    "path": "VegaAutoTest\\daily\\AGENTS.md",
+    "bytes": 15147,
+    "sha256": "8765650fdf23411e5e0176912f96e0b9a5c4d4a5de3dfea16f81afdff1499b36"
+  },
+  {
+    "path": "VegaAutoTest\\daily\\artifact_cleanup.py",
+    "bytes": 4971,
+    "sha256": "16ac4c06363e027a0cc45943cc2f75dd089815f72bac3f68ba47125da90e6af7"
+  },
+  {
+    "path": "VegaAutoTest\\daily\\authenticator-flow.json",
+    "bytes": 2189,
+    "sha256": "0a64774f3f85d7baa7741ef11de8ae6e6ce385754db9359e8af2c737a850bd88"
+  },
+  {
+    "path": "VegaAutoTest\\daily\\Build-DailyVega.ps1",
+    "bytes": 5460,
+    "sha256": "f52c89d2f63962c989e8fc23bc63134b041fb5f09782c88511a0661e225e96bb"
+  },
+  {
+    "path": "VegaAutoTest\\daily\\capture_recovery_postprocess.py",
+    "bytes": 1600,
+    "sha256": "178937e66be6b9e26ce45c5d582832482a5cabdecf2229d16c72352df2ee7b80"
+  },
+  {
+    "path": "VegaAutoTest\\daily\\case_authoring.py",
+    "bytes": 10438,
+    "sha256": "77af09fea15cdd3db48680365b2d73c67b480953a897f16b274b715cc5b8251f"
+  },
+  {
+    "path": "VegaAutoTest\\daily\\coverage_preparation.py",
+    "bytes": 16022,
+    "sha256": "c94c744c607939993bfeed547d05c4be3cbbae497645857c457ae1f34419e435"
+  },
+  {
+    "path": "VegaAutoTest\\daily\\daily.py",
+    "bytes": 60474,
+    "sha256": "6f9419c930340093654a8a8cb92bb311b9d93049f7bef33de8b5d05c84f51fb7"
+  },
+  {
+    "path": "VegaAutoTest\\daily\\Ensure-DailyDatabase.ps1",
+    "bytes": 1487,
+    "sha256": "abcffa6e2633e6c57a02ab2e6dfe97c0fb3f8dea90028cb8424b4f049b335af6"
+  },
+  {
+    "path": "VegaAutoTest\\daily\\individual.py",
+    "bytes": 17860,
+    "sha256": "7644c77e91764f2bd4bb299e172e4438b15aef2449aceec4151b2b80b9f98147"
+  },
+  {
+    "path": "VegaAutoTest\\daily\\operation_lock.py",
+    "bytes": 1046,
+    "sha256": "b25ddad135b6ed44d09c05c1b1d4cf6d4ad540b5894fd202dd228f9977ee8bbc"
+  },
+  {
+    "path": "VegaAutoTest\\daily\\publish_revalidation.py",
+    "bytes": 3570,
+    "sha256": "38361756df52eee2adddb40625023a17913887cc8e96e26d3ad0cbe4378049f3"
+  },
+  {
+    "path": "VegaAutoTest\\daily\\queue_driver.py",
+    "bytes": 6316,
+    "sha256": "5872ecf083e4892017ef2bfe71603c4d3294134626731d9f79042e2f176d69d3"
+  },
+  {
+    "path": "VegaAutoTest\\daily\\README.md",
+    "bytes": 16718,
+    "sha256": "4534d4fd0a9bc7cea32da7b94fad64c41ca6d6f5569fdde6fc223142be315b4a"
+  },
+  {
+    "path": "VegaAutoTest\\daily\\record_recovery_ui.py",
+    "bytes": 1395,
+    "sha256": "d621e5959af309696e6fc725f234bb913a92f096bb251d55d466064ceb338875"
+  },
+  {
+    "path": "VegaAutoTest\\daily\\requirement_assets.py",
+    "bytes": 7183,
+    "sha256": "06166d6d2ddf632f9c79b4e76b9e799421224f146b852a81f3ec36e0760f2a8b"
+  },
+  {
+    "path": "VegaAutoTest\\daily\\revalidate_20261026.py",
+    "bytes": 5254,
+    "sha256": "ee985314f98912d12d61d1af948a527eb7890bc1dbf036636557277e087c23ce"
+  },
+  {
+    "path": "VegaAutoTest\\daily\\scheduling.json",
+    "bytes": 2152,
+    "sha256": "2621ef6bd3de79b1bfdbf6cfab60e73756494af2ccf028cdd02913afaa362e41"
+  },
+  {
+    "path": "VegaAutoTest\\daily\\Start-ModelValidation.ps1",
+    "bytes": 12819,
+    "sha256": "e4b65ca71b067f60c06b8080f7ac1b1b6a8655ef1e8525d1a9c924b2399abd28"
+  },
+  {
+    "path": "VegaAutoTest\\daily\\state.json",
+    "bytes": 1178,
+    "sha256": "599c5f13875e048d1ff83c90b58671f838a594fa0f541a479d5020865db42771"
+  },
+  {
+    "path": "VegaAutoTest\\daily\\Stop-ManagedVega.ps1",
+    "bytes": 3585,
+    "sha256": "f94801736befba6686271e8c36bf4a26b0c13b9e77dd2bf735012a21f56acc83"
+  },
+  {
+    "path": "VegaAutoTest\\daily\\test_artifact_cleanup.py",
+    "bytes": 4310,
+    "sha256": "14e96421279787dedd1d79ba2abfc4bc8ef4fdcee2a83e57e170b7e6594ed377"
+  },
+  {
+    "path": "VegaAutoTest\\daily\\test_individual.py",
+    "bytes": 34981,
+    "sha256": "81e31e5956e94e16cea989b200677b7d5acda8a21142b75c8170ad51e50b34aa"
+  },
+  {
+    "path": "VegaAutoTest\\daily\\test_requirement_assets.py",
+    "bytes": 4401,
+    "sha256": "0fe912aad090ba08505200ba510dac0881c6a20fa58f63b2743a500d2bfd878c"
+  },
+  {
+    "path": "VegaAutoTest\\daily\\write_recovery_report.py",
+    "bytes": 11948,
+    "sha256": "5d943f7866128200db38a7e4df2cdb41363534218f9c2ba09a4114bd40db7700"
+  },
+  {
+    "path": "VegaAutoTest\\daily\\build\\build-provenance.json",
+    "bytes": 320,
+    "sha256": "14c414aed5a8570a61d8346288b44fa0280b81270e6733475cb963bab29d26b9"
+  },
+  {
+    "path": "VegaAutoTest\\daily\\preflight\\20261020\\report.md",
+    "bytes": 5122,
+    "sha256": "9d982a2cb404cf2bc08aa8f7c4811333e9cc92b69e71e9613c70c74845d0de92"
+  },
+  {
+    "path": "VegaAutoTest\\runner\\Vega.AutoTest.Runner\\BuildStep.cs",
+    "bytes": 2807,
+    "sha256": "c5aac557de902512025483ec93faff645901edb0f8bef383facf08d8b7703eeb"
+  },
+  {
+    "path": "VegaAutoTest\\runner\\Vega.AutoTest.Runner\\CaseRegistry.cs",
+    "bytes": 2297,
+    "sha256": "7eee78643ce170521a36238b3db12eb10911d1fde9b4c2c4a25801959609d7b5"
+  },
+  {
+    "path": "VegaAutoTest\\runner\\Vega.AutoTest.Runner\\Program.cs",
+    "bytes": 29219,
+    "sha256": "a0dfb8db158b7068b2eac9656293656fcd9ce1cb88eeec10742eabd1f88092cb"
+  },
+  {
+    "path": "VegaAutoTest\\runner\\Vega.AutoTest.Runner\\ResultContractCheck.cs",
+    "bytes": 4044,
+    "sha256": "9725aedeaaff267fcbe7df00615037020cbfe5a59c789861645e139b46fc0e24"
+  },
+  {
+    "path": "VegaAutoTest\\runner\\Vega.AutoTest.Runner\\ResultModels.cs",
+    "bytes": 3748,
+    "sha256": "0458c75924ec2e9a54d9debebb01cadec8bbd6903b689155c50f0abed4700d48"
+  },
+  {
+    "path": "VegaAutoTest\\runner\\Vega.AutoTest.Runner\\ResultWriter.cs",
+    "bytes": 801,
+    "sha256": "200ce8fdabdf0ec11e29223667833c87519547048584db1b623cd5b8ec4e8e44"
+  },
+  {
+    "path": "VegaAutoTest\\runner\\Vega.AutoTest.Runner\\TargetProbe.cs",
+    "bytes": 2975,
+    "sha256": "399b15682897646538c45033eb82331e53bd3a9b749a1479f9e8f4ee7e9c5a5a"
+  },
+  {
+    "path": "VegaAutoTest\\runner\\Vega.AutoTest.Runner\\TestRunner.cs",
+    "bytes": 8450,
+    "sha256": "68cf50966dfeb4d6e380b34b21a8a938a11906f65fc5e7c8cc1d1a6ad739145e"
+  },
+  {
+    "path": "VegaAutoTest\\runner\\Vega.AutoTest.Runner\\Vega.AutoTest.Runner.csproj",
+    "bytes": 1253,
+    "sha256": "736a3f7846fcd8adcd57cafecc2ef90e3b0dafa02660daaba5373a08a81de8fb"
+  },
+  {
+    "path": "VegaAutoTest\\runner\\Vega.AutoTest.Runner\\VerdictResolver.cs",
+    "bytes": 7793,
+    "sha256": "c0f0ec43ccffa5e5bf1079eec6ac51132acfa2c0514aa8439df4ca05842a3b97"
+  },
+  {
+    "path": "VegaAutoTest\\runner\\Vega.AutoTest.Runner\\VerificationReport.cs",
+    "bytes": 4952,
+    "sha256": "4ea2bdc4793776dbbc1982c73c9f125d670cbade3855363a4e7059903fb6bbdc"
+  },
+  {
+    "path": "VegaAutoTest\\runner\\Vega.AutoTest.Runner.Tests\\FailureClassificationTests.cs",
+    "bytes": 2561,
+    "sha256": "dd24f0dcc1e5c74cc8ae8cb39f1f86a432e43dbd9ca5e491d2a70c12d14264d9"
+  },
+  {
+    "path": "VegaAutoTest\\runner\\Vega.AutoTest.Runner.Tests\\TimeoutEvidenceTests.cs",
+    "bytes": 2318,
+    "sha256": "026b7cd03bac0d825171ef45aa61a142d14faad0db7c87c8ce142b31f2339365"
+  },
+  {
+    "path": "VegaAutoTest\\runner\\Vega.AutoTest.Runner.Tests\\Vega.AutoTest.Runner.Tests.csproj",
+    "bytes": 655,
+    "sha256": "89d06e4019810887c1cbc95c3b28b205f7afd6e4f3d52a88de782fea8717bf1b"
+  },
+  {
+    "path": "VegaAutoTest\\harness\\AssertionRecorder.cs",
+    "bytes": 2259,
+    "sha256": "6e388955118731d8dc3a3b3891ff3543402f666fa49f04d64e025587a1aeb072"
+  },
+  {
+    "path": "VegaAutoTest\\harness\\ComboBoxReader.cs",
+    "bytes": 3451,
+    "sha256": "e67669dc2658de084aac058fb688e4c6b8bf217f4219a000265aa71461fcf0f8"
+  },
+  {
+    "path": "VegaAutoTest\\harness\\DeviceStateReader.cs",
+    "bytes": 3353,
+    "sha256": "7f3aa8f8ab28625ea3250bcee277cd9818f42984c774840de6959a9bc62e232b"
+  },
+  {
+    "path": "VegaAutoTest\\harness\\DialogClassifier.cs",
+    "bytes": 3733,
+    "sha256": "f733ca43216f04b1349f505859f431e42e74335baecccca28a0a1962ca8d29aa"
+  },
+  {
+    "path": "VegaAutoTest\\harness\\DialogHandler.cs",
+    "bytes": 6908,
+    "sha256": "2e5c335b927a9e975337cb5ea3e96bcb36f45bd31d374dbf77739939b0be4b3f"
+  },
+  {
+    "path": "VegaAutoTest\\harness\\EvidenceLog.cs",
+    "bytes": 863,
+    "sha256": "0e75267e53a5169f0bafc245243dca7afbb2039dd749b8bdcd6e8dd31694943f"
+  },
+  {
+    "path": "VegaAutoTest\\harness\\InspectionRegionPage.cs",
+    "bytes": 14196,
+    "sha256": "50283895984edbb6c9ed04af6a39c6402e1717080969e90f3260bbab2dfec7bc"
+  },
+  {
+    "path": "VegaAutoTest\\harness\\L1Client.cs",
+    "bytes": 2189,
+    "sha256": "75792e6ef50217aaea7e17d1c82a51987b6b54f88913d63e4ceffcf85ff2d37a"
+  },
+  {
+    "path": "VegaAutoTest\\harness\\L2TestBase.cs",
+    "bytes": 2932,
+    "sha256": "30d94cd503f7692c18db4cf120ee771f2be40c4297fffe3739101192ab8e8f6d"
+  },
+  {
+    "path": "VegaAutoTest\\harness\\LoginFlow.cs",
+    "bytes": 2018,
+    "sha256": "2ad020986b3be133478f5fa0e83451f0476c7801d643005a7419d245d0581e20"
+  },
+  {
+    "path": "VegaAutoTest\\harness\\ResultGalleryPage.cs",
+    "bytes": 18316,
+    "sha256": "383d89db7eb9860b41f9d9ff90148be97c6f3e3916182d1bad15a3a32da56a1b"
+  },
+  {
+    "path": "VegaAutoTest\\harness\\RunContext.cs",
+    "bytes": 833,
+    "sha256": "74c60e2e35097b9e7343629584bfbc39e80ac4eae4053068fedeed42ff9031a7"
+  },
+  {
+    "path": "VegaAutoTest\\harness\\ScanFlow.cs",
+    "bytes": 11136,
+    "sha256": "2663714919fa6b5165c4ec03732e4881e4a5c54c1748f157334243a291a2aa0d"
+  },
+  {
+    "path": "VegaAutoTest\\harness\\UiExpect.cs",
+    "bytes": 5627,
+    "sha256": "0d4c3409c459dcc685ddba456e87a11784526b62e8b8798deccf39998bc0070b"
+  },
+  {
+    "path": "VegaAutoTest\\harness\\UiProps.cs",
+    "bytes": 1943,
+    "sha256": "782e11fc62ac478fac44af1aae7136c4b356661278417ad8674476e39aef30bc"
+  },
+  {
+    "path": "VegaAutoTest\\harness\\UiSnapshot.cs",
+    "bytes": 4496,
+    "sha256": "bd14d0d62c4db40f887fa4ac1401f60cbb7394a569c8c7df6c73357bcd2ae57c"
+  },
+  {
+    "path": "VegaAutoTest\\harness\\UiTreeDumper.cs",
+    "bytes": 1805,
+    "sha256": "6a7e218e0875d34651ade2898be2ef0b9ab865141c33dbe7d7affa60310518f4"
+  },
+  {
+    "path": "VegaAutoTest\\harness\\Vega.AutoTest.Harness.csproj",
+    "bytes": 1143,
+    "sha256": "cbc503e317b7df74421d9068e24a602b30f1e93fdd85d3dd160228a9606c3148"
+  },
+  {
+    "path": "VegaAutoTest\\harness\\VegaApp.cs",
+    "bytes": 4256,
+    "sha256": "1dd5002c00e219ee909fcee531cbadab02ae22fbce17cf35703e1494d43a0a34"
+  },
+  {
+    "path": "VegaAutoTest\\harness\\VegaEnv.cs",
+    "bytes": 4554,
+    "sha256": "140af4fd271c6fece7f6929d777210404310a27e03b2d637ab9764a96d038943"
+  },
+  {
+    "path": "VegaAutoTest\\harness\\Waits.cs",
+    "bytes": 2827,
+    "sha256": "12fb134b6185dcf04baddb8b82c6446d6d453e57a59e75348bd9f9bb3f9c3ef8"
+  },
+  {
+    "path": "VegaAutoTest\\l2\\Vega.AutoTest.L2\\GalleryNthClickL2.cs",
+    "bytes": 6776,
+    "sha256": "968b2e041597bbad63e1dc9b7132aeb1683b8b352c9081e32feef5b66e9f9356"
+  },
+  {
+    "path": "VegaAutoTest\\l2\\Vega.AutoTest.L2\\IncidenceFilterTypeFor3611.cs",
+    "bytes": 446,
+    "sha256": "e2f82efceb2bb2241fd14ee9136a304845eba4f77f7076fbc063465c64329b9f"
+  },
+  {
+    "path": "VegaAutoTest\\l2\\Vega.AutoTest.L2\\L1RecipeReadL2.cs",
+    "bytes": 5279,
+    "sha256": "14a4335ce980d1f878a01a702233dc153dd81b525c9b4dfb1b0ba038779af08f"
+  },
+  {
+    "path": "VegaAutoTest\\l2\\Vega.AutoTest.L2\\ScanChainL2.cs",
+    "bytes": 6325,
+    "sha256": "a731c69315e1ed8b0a895ab29ac5dfec83a929be618cd2cf1d1e9d04f5bb36e6"
+  },
+  {
+    "path": "VegaAutoTest\\l2\\Vega.AutoTest.L2\\TestAssemblySetup.cs",
+    "bytes": 159,
+    "sha256": "52f7908e41898a287c437528b14f9b601dbb22530c7bee66e788a2c22e7276b9"
+  },
+  {
+    "path": "VegaAutoTest\\l2\\Vega.AutoTest.L2\\UiExpectPrimitiveL2.cs",
+    "bytes": 1934,
+    "sha256": "7c529f549ded6a01fcd0305b878babbcb8d24996c7473833b6a254caef0ae4b7"
+  },
+  {
+    "path": "VegaAutoTest\\l2\\Vega.AutoTest.L2\\Vega.AutoTest.L2.csproj",
+    "bytes": 1346,
+    "sha256": "6a011b5437acf7a44554d24c7f8fed64f421ef1c60f3734d3883cb7febc01279"
+  },
+  {
+    "path": "VegaAutoTest\\l2\\Vega.AutoTest.L2\\WorkItem3478L2.cs",
+    "bytes": 1740,
+    "sha256": "997e611abd9636df505cfc6d68c0ab261b0a57636b115644d66f64cbc51047a5"
+  },
+  {
+    "path": "VegaAutoTest\\l2\\Vega.AutoTest.L2\\WorkItem3547L2.cs",
+    "bytes": 5356,
+    "sha256": "3eca89fbef7750503ef70350c01dba277bf5853ef2ca3fcb4c8d42580636e783"
+  },
+  {
+    "path": "VegaAutoTest\\l2\\Vega.AutoTest.L2\\WorkItem3549L2.cs",
+    "bytes": 17941,
+    "sha256": "ecf9aa696917c5039505ec43ba9a8eb0f63f9970638b861be40cf85d901e1cc9"
+  },
+  {
+    "path": "VegaAutoTest\\l2\\Vega.AutoTest.L2\\WorkItem3575L2.cs",
+    "bytes": 18459,
+    "sha256": "2dd795343ea07950da905548e1618ecd966a333b09cfad72f172ad11f5f70755"
+  },
+  {
+    "path": "VegaAutoTest\\l2\\Vega.AutoTest.L2\\WorkItem3579L2.cs",
+    "bytes": 20375,
+    "sha256": "a791fef2cc9e28d5bf2d19a8521712b289f02a1d64478d29232ec151494d1946"
+  },
+  {
+    "path": "VegaAutoTest\\l2\\Vega.AutoTest.L2\\WorkItem3611L2.cs",
+    "bytes": 25692,
+    "sha256": "3afc1c1e028db7a71ee9a7cbb80b14acfcf4e9a2f6ffa900e0f0de4c62324edd"
+  },
+  {
+    "path": "VegaAutoTest\\l2\\Vega.AutoTest.L2\\WorkItem3631L2.cs",
+    "bytes": 11705,
+    "sha256": "b1804afcaf7f3750d3fd058acb747d45a67ca96ebff6ae15e2e8f325f89c30a9"
+  },
+  {
+    "path": "VegaAutoTest\\l2\\Vega.AutoTest.L2\\WorkItem3677L2.cs",
+    "bytes": 2553,
+    "sha256": "10f6596b399848700ae612beac67985022f683d4d64b1ec301fd957763d31464"
+  },
+  {
+    "path": "VegaAutoTest\\l2\\Vega.AutoTest.Wi3677UiEvidence\\Vega.AutoTest.Wi3677UiEvidence.csproj",
+    "bytes": 797,
+    "sha256": "14613678843e89e4a40f8753097a297e05a12746f49c60e5b6354f7b378a23bc"
+  },
+  {
+    "path": "VegaAutoTest\\probes\\Vega.AutoTest.CommitProbe\\DailyCommitBatchLogic.cs",
+    "bytes": 11482,
+    "sha256": "0788142d301717d4e52351b7466b6cd7a69a93dcbc77f1a8e56a2b061d10ee51"
+  },
+  {
+    "path": "VegaAutoTest\\probes\\Vega.AutoTest.CommitProbe\\DailySupplementLogic.cs",
+    "bytes": 10232,
+    "sha256": "02f45ffbde5d8031f64c2e89c5c4fba4bc67317c551419741d1d9f1db79dcfa0"
+  },
+  {
+    "path": "VegaAutoTest\\probes\\Vega.AutoTest.CommitProbe\\ModelMarkersService.cs",
+    "bytes": 1733,
+    "sha256": "0776ce24b0a639a6fa060a8ac9ce666bd8cc545a072cec1fa3d75073206720bb"
+  },
+  {
+    "path": "VegaAutoTest\\probes\\Vega.AutoTest.CommitProbe\\README.md",
+    "bytes": 1598,
+    "sha256": "5d7ef68ca7f3ce0dec58ebbea70362b30df6a4a0baf0d3519ac9f83e70594e41"
+  },
+  {
+    "path": "VegaAutoTest\\probes\\Vega.AutoTest.CommitProbe\\Vega.AutoTest.CommitProbe.csproj",
+    "bytes": 2995,
+    "sha256": "11cba04e88233491cd62604338262bfd50da7af83440c4f927d36e47b1723c4f"
+  },
+  {
+    "path": "VegaAutoTest\\probes\\Vega.AutoTest.CommitProbe\\WorkItem3644Logic.cs",
+    "bytes": 11411,
+    "sha256": "dcf54a91fadd20f44f0d0db0bd02898e91b8d75b65b2753f673544e3244b9ee5"
+  },
+  {
+    "path": "VegaAutoTest\\probes\\Vega.AutoTest.CommitProbe\\WorkItem3661Logic.cs",
+    "bytes": 14388,
+    "sha256": "929932c462ab0169f452f6ca0f3740e1a182448468fcc230e8fb915af240c2b8"
+  },
+  {
+    "path": "VegaAutoTest\\probes\\Vega.AutoTest.CommitProbeV2\\DailyCommitBatchLogic.cs",
+    "bytes": 11677,
+    "sha256": "34458706e99f7905e73544aceaed4c219428986aa20b46b628c094639492f7d6"
+  },
+  {
+    "path": "VegaAutoTest\\probes\\Vega.AutoTest.CommitProbeV2\\DailySupplementLogic.cs",
+    "bytes": 10406,
+    "sha256": "ffcb18576da275813e4bd58655a97c89215328a1e81ae006ff061dda3c559536"
+  },
+  {
+    "path": "VegaAutoTest\\probes\\Vega.AutoTest.CommitProbeV2\\ModelMarkersService.cs",
+    "bytes": 1765,
+    "sha256": "9b46c8c9646a5e9e110504eef2671a5a520ea61534ad23cc9430d0b01c800cb6"
+  },
+  {
+    "path": "VegaAutoTest\\probes\\Vega.AutoTest.CommitProbeV2\\origin.json",
+    "bytes": 860,
+    "sha256": "53dea6565484f6dbcb57db7c70c9f4ab5315c6d22b05db70df2b4d25ed06cb22"
+  },
+  {
+    "path": "VegaAutoTest\\probes\\Vega.AutoTest.CommitProbeV2\\Vega.AutoTest.CommitProbeV2.csproj",
+    "bytes": 3032,
+    "sha256": "b6c98cacf083c0b4998e256c03819e91ad60a7c12b6d5b611b21aea3ba75797a"
+  },
+  {
+    "path": "VegaAutoTest\\probes\\Vega.AutoTest.CommitProbeV2\\WorkItem3644Logic.cs",
+    "bytes": 11598,
+    "sha256": "a12a11cbf8b2dc3e6db7387609a5f4232f2516e03cbe0988f99682b5c49ea165"
+  },
+  {
+    "path": "VegaAutoTest\\probes\\Vega.AutoTest.CommitProbeV2\\WorkItem3661Logic.cs",
+    "bytes": 14619,
+    "sha256": "91f7381e6fb1641e879c223128d3789679c6fc5cb9f5a40be53295d22aedb79b"
+  },
+  {
+    "path": "VegaAutoTest\\probes\\Vega.AutoTest.CommitProbeV3\\DailyCommitBatchLogic.cs",
+    "bytes": 11677,
+    "sha256": "34458706e99f7905e73544aceaed4c219428986aa20b46b628c094639492f7d6"
+  },
+  {
+    "path": "VegaAutoTest\\probes\\Vega.AutoTest.CommitProbeV3\\DailySupplementLogic.cs",
+    "bytes": 10406,
+    "sha256": "ffcb18576da275813e4bd58655a97c89215328a1e81ae006ff061dda3c559536"
+  },
+  {
+    "path": "VegaAutoTest\\probes\\Vega.AutoTest.CommitProbeV3\\ModelMarkersService.cs",
+    "bytes": 1765,
+    "sha256": "9b46c8c9646a5e9e110504eef2671a5a520ea61534ad23cc9430d0b01c800cb6"
+  },
+  {
+    "path": "VegaAutoTest\\probes\\Vega.AutoTest.CommitProbeV3\\origin.json",
+    "bytes": 860,
+    "sha256": "53dea6565484f6dbcb57db7c70c9f4ab5315c6d22b05db70df2b4d25ed06cb22"
+  },
+  {
+    "path": "VegaAutoTest\\probes\\Vega.AutoTest.CommitProbeV3\\Vega.AutoTest.CommitProbeV3.csproj",
+    "bytes": 3092,
+    "sha256": "815933aaf43c8c057f4e5c05a32fbb8d94ec2cd9241de920edd1cfad606c62ac"
+  },
+  {
+    "path": "VegaAutoTest\\probes\\Vega.AutoTest.CommitProbeV3\\WorkItem3644Logic.cs",
+    "bytes": 11574,
+    "sha256": "ad12037475a85f50759ce421c1ad7a7d86b5744c0dbfa648684add9b644514eb"
+  },
+  {
+    "path": "VegaAutoTest\\probes\\Vega.AutoTest.CommitProbeV3\\WorkItem3661Logic.cs",
+    "bytes": 14619,
+    "sha256": "91f7381e6fb1641e879c223128d3789679c6fc5cb9f5a40be53295d22aedb79b"
+  },
+  {
+    "path": "VegaAutoTest\\probes\\Vega.AutoTest.DailyRecovery\\AcceptanceLogic.cs",
+    "bytes": 6057,
+    "sha256": "3b5e2a4425cade90312d5c875ef6d2e9c6ca341e0a54d396a3f6280dd2341772"
+  },
+  {
+    "path": "VegaAutoTest\\probes\\Vega.AutoTest.DailyRecovery\\PostprocessLogic.cs",
+    "bytes": 2073,
+    "sha256": "e247afb71a7f6bf4d0857cdbaf04d89988157b27d1d85e5a5b9cae672727be1f"
+  },
+  {
+    "path": "VegaAutoTest\\probes\\Vega.AutoTest.DailyRecovery\\UiEvidence.cs",
+    "bytes": 3042,
+    "sha256": "f597be90d5c9ab362472417a00f6dc79fa06d547b796609cdbdd22099485864c"
+  },
+  {
+    "path": "VegaAutoTest\\probes\\Vega.AutoTest.DailyRecovery\\Vega.AutoTest.DailyRecovery.csproj",
+    "bytes": 2188,
+    "sha256": "16eff1692429807c1c538fcf19cbe0c2f721145f49699e8107ec0951d99d545e"
+  },
+  {
+    "path": "VegaAutoTest\\probes\\Vega.AutoTest.IndividualCommits\\IndividualCommitTests.cs",
+    "bytes": 15908,
+    "sha256": "ad269b28210773bd329b6305205f6c0705286fa6bfd52198b96401c9eecc685e"
+  },
+  {
+    "path": "VegaAutoTest\\probes\\Vega.AutoTest.IndividualCommits\\Vega.AutoTest.IndividualCommits.csproj",
+    "bytes": 1537,
+    "sha256": "29d4dbc8780adc49da971f839b97dbaf5119d06bfcf73c6b5cbe89cde5e34f9d"
+  },
+  {
+    "path": "VegaAutoTest\\probes\\Vega.AutoTest.LockGraph\\DependencyLockLogic.cs",
+    "bytes": 2591,
+    "sha256": "2d8725470a21ee8395eee1fc2cb26635c90b9435d8f0e91f0ec47da7ad5ae6ff"
+  },
+  {
+    "path": "VegaAutoTest\\probes\\Vega.AutoTest.LockGraph\\Vega.AutoTest.LockGraph.csproj",
+    "bytes": 575,
+    "sha256": "90226439c369976ea88f90b3c5a7a86753c78c05bf1ce0f7b8f875a3e1490f54"
+  },
+  {
+    "path": "VegaAutoTest\\probes\\Vega.AutoTest.LockGraphV3\\DependencyLockLogic.cs",
+    "bytes": 3886,
+    "sha256": "e927e6429c575fd3df05d51f3999c1ef746832cf50ff5a6d447b2f1d27115967"
+  },
+  {
+    "path": "VegaAutoTest\\probes\\Vega.AutoTest.LockGraphV3\\Vega.AutoTest.LockGraphV3.csproj",
+    "bytes": 575,
+    "sha256": "90226439c369976ea88f90b3c5a7a86753c78c05bf1ce0f7b8f875a3e1490f54"
+  },
+  {
+    "path": "VegaAutoTest\\probes\\Vega.AutoTest.Wi3688\\Tests.cs",
+    "bytes": 4844,
+    "sha256": "64aef9db8010184eba80cfde6c154fbd2f4f6a78490cb4219834858050adac3e"
+  },
+  {
+    "path": "VegaAutoTest\\probes\\Vega.AutoTest.Wi3688\\UiEvidence.cs",
+    "bytes": 1641,
+    "sha256": "c00ed2a36b406c3171d172abd09314f3948b749bbd154cea9fc4eee669bcb786"
+  },
+  {
+    "path": "VegaAutoTest\\probes\\Vega.AutoTest.Wi3688\\Vega.AutoTest.Wi3688.csproj",
+    "bytes": 770,
+    "sha256": "e9df67e57b95404d734784f4d5a36665db73a3c80b4582c91c8cb8816053fb15"
+  },
+  {
+    "path": "VegaAutoTest\\probes\\Vega.AutoTest.Wi3689\\Tests.cs",
+    "bytes": 2560,
+    "sha256": "dd52582ffffbb89df4fec3884e9c9e1dc7ddea28fe353a9ed89239a725f4f1a1"
+  },
+  {
+    "path": "VegaAutoTest\\probes\\Vega.AutoTest.Wi3689\\UiEvidence.cs",
+    "bytes": 1365,
+    "sha256": "f952b4101b7b91b2d894e7edd806de2590ba6b08169d35f9a724a7161b51d1c5"
+  },
+  {
+    "path": "VegaAutoTest\\probes\\Vega.AutoTest.Wi3689\\Vega.AutoTest.Wi3689.csproj",
+    "bytes": 831,
+    "sha256": "9a9f54ed069c4497c0b678f08f344ea8b92f6ab3b3c3ae42a1ea887590d46079"
+  },
+  {
+    "path": "VegaAutoTest\\probes\\generated\\00b3004a58de\\Generated.0.csproj",
+    "bytes": 1313,
+    "sha256": "b0e7ef260f14439c67d7b0970a8b8e1682b491041d49f59c89549e0e73a586fa"
+  },
+  {
+    "path": "VegaAutoTest\\probes\\generated\\00b3004a58de\\Generated.csproj",
+    "bytes": 1051,
+    "sha256": "4c0317b0191fb45f655a54c1164c8befd7cb7266a0863fe3559c5dac1ac5034f"
+  },
+  {
+    "path": "VegaAutoTest\\probes\\generated\\00b3004a58de\\ProductRegressionAdapter.cs",
+    "bytes": 2831,
+    "sha256": "1f00f00d1495d75bf1711b9af641cbf40a30882f5ecaa019c03cae9f70cce429"
+  },
+  {
+    "path": "VegaAutoTest\\probes\\generated\\00b3004a58de\\TestPaths.cs",
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "path": "VegaAutoTest\\probes\\generated\\19c18be54684\\Generated.0.csproj",
+    "bytes": 1310,
+    "sha256": "e43515a1e22e033b4b571f004615e05f57983389a80e1bc4e8bad4002759ccaf"
+  },
+  {
+    "path": "VegaAutoTest\\probes\\generated\\19c18be54684\\Generated.csproj",
+    "bytes": 1051,
+    "sha256": "4c0317b0191fb45f655a54c1164c8befd7cb7266a0863fe3559c5dac1ac5034f"
+  },
+  {
+    "path": "VegaAutoTest\\probes\\generated\\19c18be54684\\ProductRegressionAdapter.cs",
+    "bytes": 2831,
+    "sha256": "1f00f00d1495d75bf1711b9af641cbf40a30882f5ecaa019c03cae9f70cce429"
+  },
+  {
+    "path": "VegaAutoTest\\probes\\generated\\19c18be54684\\TestPaths.cs",
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "path": "VegaAutoTest\\probes\\generated\\227ace851042\\Generated.0.csproj",
+    "bytes": 1440,
+    "sha256": "5621bdc3b12553331ec1adc48cdba1d9e839b8e200ae61e8c24098bca4d90daa"
+  },
+  {
+    "path": "VegaAutoTest\\probes\\generated\\227ace851042\\Generated.csproj",
+    "bytes": 1051,
+    "sha256": "4c0317b0191fb45f655a54c1164c8befd7cb7266a0863fe3559c5dac1ac5034f"
+  },
+  {
+    "path": "VegaAutoTest\\probes\\generated\\227ace851042\\ProductRegressionAdapter.cs",
+    "bytes": 2831,
+    "sha256": "1f00f00d1495d75bf1711b9af641cbf40a30882f5ecaa019c03cae9f70cce429"
+  },
+  {
+    "path": "VegaAutoTest\\probes\\generated\\227ace851042\\TestPaths.cs",
+    "bytes": 238,
+    "sha256": "5649943636a3ba1c6cf056eacc3c617e1afd0addb07ae2fb440c78d2a2d11860"
+  },
+  {
+    "path": "VegaAutoTest\\probes\\generated\\6b4cf4af7928\\Generated.csproj",
+    "bytes": 753,
+    "sha256": "ffe5e09748fab695536f8ef808cf9c15e119ac2b522ebb4c66f6774f0fe7fc88"
+  },
+  {
+    "path": "VegaAutoTest\\probes\\generated\\6b4cf4af7928\\RawCopyTests.cs",
+    "bytes": 4891,
+    "sha256": "fea37045dfb943f68ed0aa5945c2205f5dc81b85f05fdd08d718467332759dde"
+  },
+  {
+    "path": "VegaAutoTest\\probes\\generated\\9fa008a98a35\\Generated.0.csproj",
+    "bytes": 1383,
+    "sha256": "cdbbd8a33c7ce74c81b8f3c2af97b0e3caf06811c03997640e7939bf8336d09d"
+  },
+  {
+    "path": "VegaAutoTest\\probes\\generated\\9fa008a98a35\\Generated.1.csproj",
+    "bytes": 1320,
+    "sha256": "53d3ac5a990d8c00b7183ee37d1f7b0686dd2002b613d2c5a28689f693e8e502"
+  },
+  {
+    "path": "VegaAutoTest\\probes\\generated\\9fa008a98a35\\Generated.csproj",
+    "bytes": 1051,
+    "sha256": "4c0317b0191fb45f655a54c1164c8befd7cb7266a0863fe3559c5dac1ac5034f"
+  },
+  {
+    "path": "VegaAutoTest\\probes\\generated\\9fa008a98a35\\ProductRegressionAdapter.cs",
+    "bytes": 2831,
+    "sha256": "1f00f00d1495d75bf1711b9af641cbf40a30882f5ecaa019c03cae9f70cce429"
+  },
+  {
+    "path": "VegaAutoTest\\probes\\generated\\9fa008a98a35\\TestPaths.cs",
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "path": "VegaAutoTest\\probes\\generated\\b428717a56aa\\DuvNotchTests.cs",
+    "bytes": 1773,
+    "sha256": "2d1fe5ab1beb3e44081ee12999978e8589088a92231af93d03a696dba04697a4"
+  },
+  {
+    "path": "VegaAutoTest\\probes\\generated\\b428717a56aa\\Generated.csproj",
+    "bytes": 930,
+    "sha256": "0fea3fc307671eaeca888be811f0332b41b4f7d2e2b4ed776d69861ff91c5e10"
+  },
+  {
+    "path": "VegaAutoTest\\probes\\generated\\bd9ccb55d6de\\Generated.0.csproj",
+    "bytes": 1323,
+    "sha256": "fd307d0b90a7ea1c889e61d62558c8dccfc847cdda2f22bf63e44d9b9debd82b"
+  },
+  {
+    "path": "VegaAutoTest\\probes\\generated\\bd9ccb55d6de\\Generated.csproj",
+    "bytes": 1051,
+    "sha256": "4c0317b0191fb45f655a54c1164c8befd7cb7266a0863fe3559c5dac1ac5034f"
+  },
+  {
+    "path": "VegaAutoTest\\probes\\generated\\bd9ccb55d6de\\ProductRegressionAdapter.cs",
+    "bytes": 2831,
+    "sha256": "1f00f00d1495d75bf1711b9af641cbf40a30882f5ecaa019c03cae9f70cce429"
+  },
+  {
+    "path": "VegaAutoTest\\probes\\generated\\bd9ccb55d6de\\TestPaths.cs",
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "path": "VegaAutoTest\\probes\\generated\\d117a21d8bef\\Generated.0.csproj",
+    "bytes": 1319,
+    "sha256": "01414db5414881f7c4f823691444343f8f0680ef8d77a36ff9b8df4c5d97f3a1"
+  },
+  {
+    "path": "VegaAutoTest\\probes\\generated\\d117a21d8bef\\Generated.csproj",
+    "bytes": 1051,
+    "sha256": "4c0317b0191fb45f655a54c1164c8befd7cb7266a0863fe3559c5dac1ac5034f"
+  },
+  {
+    "path": "VegaAutoTest\\probes\\generated\\d117a21d8bef\\ProductRegressionAdapter.cs",
+    "bytes": 2831,
+    "sha256": "1f00f00d1495d75bf1711b9af641cbf40a30882f5ecaa019c03cae9f70cce429"
+  },
+  {
+    "path": "VegaAutoTest\\probes\\generated\\d117a21d8bef\\TestPaths.cs",
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "path": "VegaAutoTest\\probes\\generated\\eba9945afbca\\Generated.0.csproj",
+    "bytes": 1577,
+    "sha256": "8e6176d7bebbc9950f96f86c83b0a0b607f37154c2b341cc42bbb8276701fe9c"
+  },
+  {
+    "path": "VegaAutoTest\\probes\\generated\\eba9945afbca\\Generated.1.csproj",
+    "bytes": 1318,
+    "sha256": "f5741135b6f3f31494956aa9cd6e3ccec83ff8091dd7621adb74bf4eac5526ee"
+  },
+  {
+    "path": "VegaAutoTest\\probes\\generated\\eba9945afbca\\Generated.2.csproj",
+    "bytes": 1712,
+    "sha256": "c266b16fc544a3e5a759d314ee38c1a8e5dd57742f7714c5b616034e83d3d1d0"
+  },
+  {
+    "path": "VegaAutoTest\\probes\\generated\\eba9945afbca\\Generated.csproj",
+    "bytes": 1051,
+    "sha256": "4c0317b0191fb45f655a54c1164c8befd7cb7266a0863fe3559c5dac1ac5034f"
+  },
+  {
+    "path": "VegaAutoTest\\probes\\generated\\eba9945afbca\\ProductRegressionAdapter.cs",
+    "bytes": 2831,
+    "sha256": "1f00f00d1495d75bf1711b9af641cbf40a30882f5ecaa019c03cae9f70cce429"
+  },
+  {
+    "path": "VegaAutoTest\\probes\\generated\\eba9945afbca\\TestPaths.cs",
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "path": "VegaAutoTest\\probes\\generated\\00b3004a58de\\Original\\00_RamdiskFileNameContractTests.cs",
+    "bytes": 2479,
+    "sha256": "1729c7e9a141a35b42365a561b6c9fbc556fc16d87806b7186ec3faf1134a732"
+  },
+  {
+    "path": "VegaAutoTest\\probes\\generated\\19c18be54684\\Original\\00_NotchChannelResolverTests.cs",
+    "bytes": 1516,
+    "sha256": "54f0a1dcaeb25ab4d3a63f1d41047ab00037be50ffbd369670055241c3f3ef2b"
+  },
+  {
+    "path": "VegaAutoTest\\probes\\generated\\227ace851042\\Original\\00_MachineConfigSubPathsTests.cs",
+    "bytes": 1953,
+    "sha256": "ea4383448c2640d3b2e5c082eecb7f9303a4bb888e6c093a398e62adbd12fcda"
+  },
+  {
+    "path": "VegaAutoTest\\probes\\generated\\227ace851042\\Original\\01_PmtCaliTablesConsistencyTests.cs",
+    "bytes": 6978,
+    "sha256": "d817ea071cbcda1e58f3ebccea723c3613280ec82ab53c0991f09049530b3987"
+  },
+  {
+    "path": "VegaAutoTest\\probes\\generated\\227ace851042\\Original\\02_Vega100BpsTableCoverageTests.cs",
+    "bytes": 3739,
+    "sha256": "a06c36856b772785f8eeae7f69b1e9f271b8d7d540dd6fff3251314787a646ed"
+  },
+  {
+    "path": "VegaAutoTest\\probes\\generated\\9fa008a98a35\\Original\\00_SpatialAnalysisSubParameterWriteTests.cs",
+    "bytes": 6310,
+    "sha256": "f8b9959c29b9d4ff4c8ea701877326e0c5915a34567d5d67805922d97e8a40d8"
+  },
+  {
+    "path": "VegaAutoTest\\probes\\generated\\9fa008a98a35\\Original\\01_UseAdvancedAsOrdinaryTests.cs",
+    "bytes": 14962,
+    "sha256": "ce792ac7d0e9c1915a953abd3b61d9f8052a8f1ee87ad4a1118bc3267e7102a1"
+  },
+  {
+    "path": "VegaAutoTest\\probes\\generated\\9fa008a98a35\\Original\\02_SpaManagedDefinitionReconcilerTests.cs",
+    "bytes": 20182,
+    "sha256": "e108cd7d20b6f35c32510248116a844576550a88f2c511993944bd3ff6c5567f"
+  },
+  {
+    "path": "VegaAutoTest\\probes\\generated\\bd9ccb55d6de\\Original\\00_PMTCaliBuiltInDefaultsConsistencyTests.cs",
+    "bytes": 6472,
+    "sha256": "f50ec62733050449f901a8cabcbaa712c338b2aa7d0e04ad86033d921721e659"
+  },
+  {
+    "path": "VegaAutoTest\\probes\\generated\\d117a21d8bef\\Original\\00_SmallValueScientificConverterTests.cs",
+    "bytes": 3190,
+    "sha256": "d1b1308abf17aedc19b7d261fca79c5a351aaa5acb095835b9adf4b8ba4646ba"
+  },
+  {
+    "path": "VegaAutoTest\\probes\\generated\\eba9945afbca\\Original\\00_CircleFitFlatCompatibilityGateTests.cs",
+    "bytes": 9354,
+    "sha256": "4b789d6d3e1010eb7744e3d16f2889b0e9cce3da48cfe3d9f2017fd92f9ee7c4"
+  },
+  {
+    "path": "VegaAutoTest\\probes\\generated\\eba9945afbca\\Original\\01_EdgeScanInfoSerializationTests.cs",
+    "bytes": 2234,
+    "sha256": "027865280727ef2b8c383f6fc06b5df938b2caffb01c8dd77488a121ed50f100"
+  },
+  {
+    "path": "VegaAutoTest\\probes\\generated\\eba9945afbca\\Original\\02_FlatEdgeValidityTests.cs",
+    "bytes": 9504,
+    "sha256": "8fa6331d554e83ec6eb8a38798bf2f0ec4a267df8c4ab433dd4df349cd6c8dcf"
+  },
+  {
+    "path": "VegaAutoTest\\probes\\generated\\eba9945afbca\\Original\\03_FlatGeometryTests.cs",
+    "bytes": 26712,
+    "sha256": "35f4743fc3383c9c24e50afdd484e9f1c19f61fe9869a682a133c1e0c10b7b7a"
+  },
+  {
+    "path": "VegaAutoTest\\probes\\generated\\eba9945afbca\\Original\\04_SetupWaferAlignmentEdgeTypeValidationTests.cs",
+    "bytes": 1310,
+    "sha256": "c7f0f85da8c102cc9e12b5333d855e553e32a99723f426373652bb2b2534e1af"
+  },
+  {
+    "path": "VegaAutoTest\\probes\\generated\\eba9945afbca\\Original\\05_EdgeAnalysisPolarInnerRadiusTests.cs",
+    "bytes": 2157,
+    "sha256": "07a54776d97e6c68358f87371eca985b3f3670aaa8171c8fec550bb985e744ac"
+  },
+  {
+    "path": "VegaAutoTest\\probes\\generated\\eba9945afbca\\Original\\06_EdgeDetectionConfigScopeTests.cs",
+    "bytes": 2007,
+    "sha256": "5147c52678a3039d0402ccc75a7e3a23463068f69731ecb7a415711ef9813173"
+  },
+  {
+    "path": "VegaAutoTest\\probes\\generated\\eba9945afbca\\Original\\07_NotchScanRecipeLookupTests.cs",
+    "bytes": 3087,
+    "sha256": "081a987b4edc92fff70aa72994bc96ab548c2113c47143267077dbb408b62fcb"
+  },
+  {
+    "path": "VegaAutoTest\\probes\\generated\\eba9945afbca\\Original\\08_PolarPointAngleDifferenceTests.cs",
+    "bytes": 3451,
+    "sha256": "23a0902652e3c46bf81b7b606cd4a93abf6d17101e8b242445f2ff5d25b50d8b"
+  },
+  {
+    "path": "VegaAutoTest\\probes\\generated\\eba9945afbca\\Original\\09_WaferScanRangeCaptureWindowTests.cs",
+    "bytes": 2162,
+    "sha256": "c81e1aa9d2b85ddbccdaa8f7d7ac5d4704ad23370b219e2c97ca42541744c3ee"
+  },
+  {
+    "path": "VegaAutoTest\\probes\\generated\\eba9945afbca\\Original\\10_WaferScanRangeFlatGeometryTests.cs",
+    "bytes": 4910,
+    "sha256": "f507bbc744ad41fd9f9effcd4dd0ec8e4fae0d697da9ccd53ed1f5cbcace610e"
+  },
+  {
+    "path": "VegaAutoTest\\probes\\generated\\eba9945afbca\\Original\\11_WaferScanRangeNotchScanTailTests.cs",
+    "bytes": 2697,
+    "sha256": "35c104e9e4eb9b658c008cc7e1e12ba856c849f1db6e552b164140bff8d59df8"
+  },
+  {
+    "path": "VegaAutoTest\\probes\\generated\\eba9945afbca\\Original\\12_XYCalibtraionConfigYOffsetTests.cs",
+    "bytes": 2623,
+    "sha256": "7328ecc7ccb03dcc111f30d5a0bbf889ad02a36cf54916a3622344958134f2ef"
+  },
+  {
+    "path": "code_indicator\\clues.md",
+    "bytes": 4552,
+    "sha256": "29fe6b1b7e2defa18b0a2256c506b2b4d58133724c2e2fcf1743b9d481fad92a"
+  },
+  {
+    "path": "code_indicator\\vega-agent\\agent_core.py",
+    "bytes": 26359,
+    "sha256": "9ce07192740ca1185882e85ce8f61cc1c3762e4bf6afa002598b57a3db4f1cee"
+  },
+  {
+    "path": "code_indicator\\vega-agent\\app.py",
+    "bytes": 7997,
+    "sha256": "2c74610aa67d34ef8ab5a75c7d9cd17db6b0bf5fb6e14cb5f3d26182ad9c48b0"
+  },
+  {
+    "path": "code_indicator\\vega-agent\\auto_processor.py",
+    "bytes": 6194,
+    "sha256": "de6696c7e075cca080735b64e12ab5cd0578e6ac33e06c2f03e241ac6a65e673"
+  },
+  {
+    "path": "code_indicator\\vega-agent\\config.example.json",
+    "bytes": 352,
+    "sha256": "7587fffd7866031005a2f56512edea68a601ea1f80bfe0d1915a19afa654db13"
+  },
+  {
+    "path": "code_indicator\\vega-agent\\model_manager.py",
+    "bytes": 4437,
+    "sha256": "c86b1e06d20f770e728fd6107aaba3bb4626c724aa3f2fc8b464d62a88be8e6f"
+  },
+  {
+    "path": "code_indicator\\vega-agent\\policy.json",
+    "bytes": 463,
+    "sha256": "170a531757ef7308dd1dab433e9ab31ea5ce4da96e59def2db5c396a39deb32d"
+  },
+  {
+    "path": "code_indicator\\vega-agent\\README_WORKITEMS.md",
+    "bytes": 4101,
+    "sha256": "f9a81196d284ae802d75693933f9aa99e4263b77abd7faef91d60b92c1743851"
+  },
+  {
+    "path": "code_indicator\\vega-agent\\test_gemini.py",
+    "bytes": 1344,
+    "sha256": "3b514a33b57b29abbe0d3b86ce8edb060b5d2a80dfe273fcdc00dd148f9af78b"
+  },
+  {
+    "path": "code_indicator\\vega-autotest-mcp\\package-lock.json",
+    "bytes": 39698,
+    "sha256": "6a0bb31ceedb12a043bf83777d023af8d3e9f495a314c312a6b2c87953f4b74a"
+  },
+  {
+    "path": "code_indicator\\vega-autotest-mcp\\package.json",
+    "bytes": 466,
+    "sha256": "006b714484f3a18444b0772908e4b3dee081f00151b1a35750b996a35a4d03fc"
+  },
+  {
+    "path": "code_indicator\\vega-autotest-mcp\\tsconfig.json",
+    "bytes": 362,
+    "sha256": "a52b28aeb0d1edce434cb7a3dd753927d3cd694899d4d9ab5581e005db565d02"
+  },
+  {
+    "path": "code_indicator\\vega-mcp-server\\package-lock.json",
+    "bytes": 42650,
+    "sha256": "ef90c5d1353a080b4c55b4ba1f3bd941f7e0bcae8cbf56bfed1c0108c7d4d912"
+  },
+  {
+    "path": "code_indicator\\vega-mcp-server\\package.json",
+    "bytes": 477,
+    "sha256": "fda7d54176a366aec05624e193d2388c3df9c63eeec7457eef476c38b652e58d"
+  },
+  {
+    "path": "code_indicator\\vega-mcp-server\\tsconfig.json",
+    "bytes": 473,
+    "sha256": "be6edba304c5a2977fa3f89687203832fc0a20e9d1245589cb470b69fe478794"
+  },
+  {
+    "path": "code_indicator\\vega-agent\\static\\app.js",
+    "bytes": 28708,
+    "sha256": "d9b8895cd8633649e0e74e96f7b167174c6995912a76632375f006ef06a66231"
+  },
+  {
+    "path": "code_indicator\\vega-agent\\tools\\autotest.py",
+    "bytes": 11142,
+    "sha256": "487211cdfd26ec92f0ded4147f65907b1a6b15b7ed13c0b6b614b8fa87db1e6a"
+  },
+  {
+    "path": "code_indicator\\vega-agent\\tools\\azure_devops.py",
+    "bytes": 13567,
+    "sha256": "2ddeee0278273794be53b03ee41631761adddd4467c8ea84e9ad9dd79960a932"
+  },
+  {
+    "path": "code_indicator\\vega-agent\\tools\\close_loop.py",
+    "bytes": 13199,
+    "sha256": "44f37660aceefb26cc2e53159048a5d71155ac0cbfd942dce247bb01eba06a2c"
+  },
+  {
+    "path": "code_indicator\\vega-agent\\tools\\code_explorer.py",
+    "bytes": 10499,
+    "sha256": "92591a13e31f52ac3b936e6c6d5d9a7f12b78846ff523630fd5fd524a3e9c1c0"
+  },
+  {
+    "path": "code_indicator\\vega-agent\\tools\\dev_guide.py",
+    "bytes": 4427,
+    "sha256": "54c43c8434b0328a3ce2ef85dcbcd3501aa8534d57b6a14682085d591cdcaa04"
+  },
+  {
+    "path": "code_indicator\\vega-agent\\tools\\mcp_client.py",
+    "bytes": 15670,
+    "sha256": "2204256cc7ef1cf5463d1645ef61df760fcd8e4e25b45c75aa0bf38c40eff171"
+  },
+  {
+    "path": "code_indicator\\vega-agent\\tools\\policy.py",
+    "bytes": 10836,
+    "sha256": "e59737274c2bde341a08bdf354f476d0c44d404dd3d8ddc227fb3a5080b8f5cd"
+  },
+  {
+    "path": "code_indicator\\vega-agent\\tools\\repair.py",
+    "bytes": 10971,
+    "sha256": "541a04f0edd7f31c588ac66c02aa56f1c7efad17536e411d9ac744ab04501a06"
+  },
+  {
+    "path": "code_indicator\\vega-agent\\tools\\system_ops.py",
+    "bytes": 7281,
+    "sha256": "4012a10a50e8fe04ca27b8727c0091cde61f8b4395152cf3d2eee185402b6934"
+  },
+  {
+    "path": "code_indicator\\vega-agent\\tools\\test_close_loop.py",
+    "bytes": 1380,
+    "sha256": "e290474faa3395b2dff7b50d510321231acb25ef693c4ddae1a31c79b143ff27"
+  },
+  {
+    "path": "code_indicator\\vega-agent\\tools\\test_repair_flow.py",
+    "bytes": 4048,
+    "sha256": "b29a27e10a43b73573d78023bd1439d82a5af1091ced82b5f46ddbf6c3921501"
+  },
+  {
+    "path": "code_indicator\\vega-agent\\tools\\vega_control.py",
+    "bytes": 4539,
+    "sha256": "3a5ddd5a0bb59837f3da687a4a50e551e8b7067239a97bef5ba36503d9e8d903"
+  },
+  {
+    "path": "code_indicator\\vega-agent\\tools\\vega_runtime.py",
+    "bytes": 2709,
+    "sha256": "6c1cbeb23457d429d7bd2dc4f1b257eebc5a11b926e15521302162f6c0da095c"
+  },
+  {
+    "path": "code_indicator\\vega-agent\\tools\\__init__.py",
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "path": "code_indicator\\vega-autotest-mcp\\src\\index.ts",
+    "bytes": 7556,
+    "sha256": "c5beb8cf642bc37a1d92e135232340a5f12eb0e880298dbdef24164588fe18b6"
+  },
+  {
+    "path": "code_indicator\\vega-mcp-server\\src\\index.ts",
+    "bytes": 16051,
+    "sha256": "8c33852d7f1aa82cee25a1451a2ec94a45232b54a66295d69e0420a8abc8229e"
+  },
+  {
+    "path": "code_indicator\\vega-mcp-server\\src\\tools\\architecture-tracer.ts",
+    "bytes": 11007,
+    "sha256": "4d6c0564b7cc5cd0bf2d8df2f228fb4ae6511a9204be003864560c8a36306063"
+  },
+  {
+    "path": "code_indicator\\vega-mcp-server\\src\\tools\\code-search.ts",
+    "bytes": 6484,
+    "sha256": "667ee206a727e495f81cd968b0ed50b356a4c0728bd9f785b5e56c003964eaed"
+  },
+  {
+    "path": "code_indicator\\vega-mcp-server\\src\\tools\\component-explorer.ts",
+    "bytes": 9854,
+    "sha256": "ee38a0226c7151b54142bf25774a2957945eab323a70443bc593a43309e067e4"
+  },
+  {
+    "path": "code_indicator\\vega-mcp-server\\src\\tools\\interface-finder.ts",
+    "bytes": 10326,
+    "sha256": "f2a1dcb9bea08a2cac70dd7044a4f131705b87135ca6a963e916524c00907b0e"
+  },
+  {
+    "path": "code_indicator\\vega-mcp-server\\src\\tools\\project-structure.ts",
+    "bytes": 9482,
+    "sha256": "ad01427bc6ef8df17a8773a08f5e420feec6b2e74bc088b3d210e4823a6d646a"
+  },
+  {
+    "path": "code_indicator\\vega-mcp-server\\src\\tools\\vega-runtime.ts",
+    "bytes": 5720,
+    "sha256": "4b93b6c085702917e8e1b98923768ae238d524224a87b01dd0ff057fc4aa12a0"
+  }
+]

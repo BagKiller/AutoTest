@@ -86,10 +86,10 @@ def auto_process_loop():
 - 报告应包含问题分析、相关代码位置、根本原因、验证结论、建议方案和风险评估。
 - 验证结论必须遵守「验证纪律」：verdict 四态原样转述；BLOCKED 是环境问题不是 Bug；
   引用结论必须带 runId，并给出同目录 `report.md` 路径（Runner 自动生成，不要另写结论）；
-  builtFromCurrentSource=false 时注明"未重编，仅对旧二进制有效"
-  （未重编恒 false，只有 --rebuild 成功才 true）；channels.l1Api.available=false 时
+  builtFromCurrentSource=false 时注明"Runner 未自行重编"；存在本 SHA 独立构建/指纹证据时一并引用，
+  不误称为旧二进制、不改写该字段；channels.l1Api.available=false 时
   交叉验证未发生，不得表述为"强验证"。
-- 未登记用例时如实写"尚未登记自动化用例，需人工补充"，不要伪造验证过程。
+- 未登记用例时自行进入准备阶段，阅读需求/diff，补写真实测试、输入和断言，构建/发现、登记后再执行；不能只记录缺登记就结束。无法覆盖时保存实际尝试和具体缺口，不等待人工，不伪造通过。
 """
 
                     try:

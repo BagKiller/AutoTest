@@ -1,0 +1,12 @@
+{
+  "source": "C:\\AutoTest\\AutoTest\\VegaAutoTest\\probes\\Vega.AutoTest.CommitProbe",
+  "sha256": {
+    "DailyCommitBatchLogic.cs": "0788142d301717d4e52351b7466b6cd7a69a93dcbc77f1a8e56a2b061d10ee51",
+    "DailySupplementLogic.cs": "02f45ffbde5d8031f64c2e89c5c4fba4bc67317c551419741d1d9f1db79dcfa0",
+    "ModelMarkersService.cs": "0776ce24b0a639a6fa060a8ac9ce666bd8cc545a072cec1fa3d75073206720bb",
+    "Vega.AutoTest.CommitProbe.csproj": "11cba04e88233491cd62604338262bfd50da7af83440c4f927d36e47b1723c4f",
+    "WorkItem3644Logic.cs": "dcf54a91fadd20f44f0d0db0bd02898e91b8d75b65b2753f673544e3244b9ee5",
+    "WorkItem3661Logic.cs": "929932c462ab0169f452f6ca0f3740e1a182448468fcc230e8fb915af240c2b8"
+  },
+  "correction": "Normalize only directory separators; expected model-specific folder and assertion counts unchanged. Wrong folders still fail."
+}

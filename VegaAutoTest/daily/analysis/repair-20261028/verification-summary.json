@@ -1,0 +1,27 @@
+{
+  "at": "2026-10-28T15:38:49.591184+08:00",
+  "campaign": "C:\\AutoTest\\AutoTest\\VegaAutoTest\\daily\\runs\\20261027T233318+0800_9ad645\\revalidation-20261028T133825_cac375",
+  "originalBatch": "20261027T233318+0800_9ad645",
+  "workflow": "FINISHED",
+  "pending": 0,
+  "originalFrozenStatusCounts": {
+    "NEEDS_CASE": 2,
+    "FAIL": 7,
+    "ERROR": 1
+  },
+  "rawRunnerRuns": 30,
+  "rawRunnerVerdicts": {
+    "PASS": 23,
+    "FAIL": 7
+  },
+  "targetedRuns": 10,
+  "targetedPassed": 226,
+  "correctedBaselineRuns": 9,
+  "correctedBaselinePassed": 388,
+  "buildableCommits": 9,
+  "productBuildFailures": 1,
+  "downloadedAttachments": 4,
+  "fullUiRemoteAcceptance": false,
+  "frozenSourcesUnchanged": true,
+  "note": "Original frozen FAIL/ERROR and failed v2 bootstrap trials remain unchanged; v3 correction runs are separate evidence, not a rewrite of old verdicts."
+}

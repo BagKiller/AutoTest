@@ -1,0 +1,199 @@
+{
+  "batches": [
+    {
+      "batch": "20261019T154712+0800_546a27",
+      "acceptance": "INCOMPLETE",
+      "workflow": null,
+      "status": null,
+      "pending": 0,
+      "originalRuns": 2,
+      "verdictCodes": {
+        "ERROR/CONTRACT_VIOLATION": 1,
+        "PASS/OK": 1
+      },
+      "originalFailureReasons": {
+        "契约自检违例：channels.l2Uia.available=false 但存在通过的断言（检查字段是否被复用） ｜ 原判定 ERROR/HARNESS_EXCEPTION: HARNESS_EXCEPTION: 1 个用例异常（非断言失败） | HARNESS_EXCEPTION: 1 个用例异常（非断言失败） | HARNESS_EXCEPTION: 1 个用例异常（非断言失败） | HARNESS_EXCEPTION: 1 个用例异常（非断言失败）": 1
+      }
+    },
+    {
+      "batch": "20261019T233014+0800_ddc509",
+      "acceptance": "INCOMPLETE",
+      "workflow": null,
+      "status": null,
+      "pending": 0,
+      "originalRuns": 1,
+      "verdictCodes": {
+        "PASS/OK": 1
+      },
+      "originalFailureReasons": {}
+    },
+    {
+      "batch": "20261020T163511+0800_98fa0a",
+      "acceptance": "INCOMPLETE",
+      "workflow": null,
+      "status": {
+        "NEEDS_CASE": 9,
+        "ERROR": 1
+      },
+      "pending": 0,
+      "originalRuns": 4,
+      "verdictCodes": {
+        "ERROR/CONTRACT_VIOLATION": 1,
+        "PASS/OK": 3
+      },
+      "originalFailureReasons": {
+        "契约自检违例：channels.l2Uia.available=false 但存在通过的断言（检查字段是否被复用） ｜ 原判定 ERROR/HARNESS_EXCEPTION: HARNESS_EXCEPTION: 1 个用例异常（非断言失败） | OK: 1/1 断言通过": 1
+      }
+    },
+    {
+      "batch": "20261020T232633+0800_50ec37",
+      "acceptance": "INCOMPLETE",
+      "workflow": null,
+      "status": {
+        "NEEDS_CASE": 11,
+        "ERROR": 1
+      },
+      "pending": 0,
+      "originalRuns": 4,
+      "verdictCodes": {
+        "ERROR/CONTRACT_VIOLATION": 1,
+        "PASS/OK": 3
+      },
+      "originalFailureReasons": {
+        "契约自检违例：channels.l2Uia.available=false 但存在通过的断言（检查字段是否被复用） ｜ 原判定 ERROR/HARNESS_EXCEPTION: HARNESS_EXCEPTION: 1 个用例异常（非断言失败） | OK: 1/1 断言通过": 1
+      }
+    },
+    {
+      "batch": "20261021T232851+0800_10e3a0",
+      "acceptance": "INCOMPLETE",
+      "workflow": null,
+      "status": {
+        "NEEDS_CASE": 12,
+        "ERROR": 1
+      },
+      "pending": 0,
+      "originalRuns": 4,
+      "verdictCodes": {
+        "ERROR/CONTRACT_VIOLATION": 1,
+        "PASS/OK": 3
+      },
+      "originalFailureReasons": {
+        "契约自检违例：channels.l2Uia.available=false 但存在通过的断言（检查字段是否被复用） ｜ 原判定 ERROR/HARNESS_EXCEPTION: HARNESS_EXCEPTION: 1 个用例异常（非断言失败） | OK: 1/1 断言通过": 1
+      }
+    },
+    {
+      "batch": "20261022T232956+0800_f04cbb",
+      "acceptance": "INCOMPLETE",
+      "workflow": null,
+      "status": {
+        "NEEDS_CASE": 15,
+        "ERROR": 1
+      },
+      "pending": 0,
+      "originalRuns": 4,
+      "verdictCodes": {
+        "ERROR/CONTRACT_VIOLATION": 1,
+        "PASS/OK": 3
+      },
+      "originalFailureReasons": {
+        "契约自检违例：channels.l2Uia.available=false 但存在通过的断言（检查字段是否被复用） ｜ 原判定 ERROR/HARNESS_EXCEPTION: HARNESS_EXCEPTION: 1 个用例异常（非断言失败） | OK: 1/1 断言通过": 1
+      }
+    },
+    {
+      "batch": "20261023T233045+0800_adf235",
+      "acceptance": "INCOMPLETE",
+      "workflow": null,
+      "status": {
+        "NEEDS_CASE": 10
+      },
+      "pending": 10,
+      "originalRuns": 0,
+      "verdictCodes": {},
+      "originalFailureReasons": {}
+    },
+    {
+      "batch": "20261024T232858+0800_97ce23",
+      "acceptance": "NO_COMMITS",
+      "workflow": null,
+      "status": {},
+      "pending": 0,
+      "originalRuns": 0,
+      "verdictCodes": {},
+      "originalFailureReasons": {}
+    },
+    {
+      "batch": "20261025T233151+0800_7f69db",
+      "acceptance": "NO_COMMITS",
+      "workflow": null,
+      "status": {},
+      "pending": 0,
+      "originalRuns": 0,
+      "verdictCodes": {},
+      "originalFailureReasons": {}
+    },
+    {
+      "batch": "20261026T233206+0800_ed766f",
+      "acceptance": "HAS_FAIL",
+      "workflow": "FINISHED",
+      "status": {
+        "FAIL": 1,
+        "BLOCKED": 2,
+        "ERROR": 2
+      },
+      "pending": 0,
+      "originalRuns": 6,
+      "verdictCodes": {
+        "ERROR/CONTRACT_VIOLATION": 5,
+        "PASS/OK": 1
+      },
+      "originalFailureReasons": {
+        "契约自检违例：channels.l2Uia.available=false 但存在通过的断言（检查字段是否被复用） ｜ 原判定 ERROR/HARNESS_EXCEPTION: OK: 80/80 断言通过 | HARNESS_EXCEPTION: 23 个用例异常（非断言失败） | HARNESS_EXCEPTION: 23 个用例异常（非断言失败） | HARNESS_EXCEPTION: 13 个用例异常（非断言失败）": 1,
+        "契约自检违例：channels.l2Uia.available=false 但存在通过的断言（检查字段是否被复用） ｜ 原判定 ERROR/HARNESS_EXCEPTION: HARNESS_EXCEPTION: 13 个用例异常（非断言失败） | HARNESS_EXCEPTION: 23 个用例异常（非断言失败） | HARNESS_EXCEPTION: 23 个用例异常（非断言失败） | OK: 80/80 断言通过": 1,
+        "契约自检违例：channels.l2Uia.available=false 但存在通过的断言（检查字段是否被复用） ｜ 原判定 ERROR/HARNESS_EXCEPTION: HARNESS_EXCEPTION: 1 个用例异常（非断言失败） | HARNESS_EXCEPTION: 1 个用例异常（非断言失败）": 1,
+        "契约自检违例：channels.l2Uia.available=false 但存在通过的断言（检查字段是否被复用） ｜ 原判定 ERROR/HARNESS_EXCEPTION: HARNESS_EXCEPTION: 5 个用例异常（非断言失败） | OK: 1/1 断言通过": 1,
+        "契约自检违例：channels.l2Uia.available=false 但存在通过的断言（检查字段是否被复用） ｜ 原判定 ERROR/HARNESS_EXCEPTION: HARNESS_EXCEPTION: 1 个用例异常（非断言失败） | OK: 1/1 断言通过": 1
+      }
+    },
+    {
+      "batch": "20261027T233318+0800_9ad645",
+      "acceptance": "INCOMPLETE",
+      "workflow": "AWAITING_PREPARATION",
+      "status": {
+        "NEEDS_CASE": 1,
+        "PENDING": 9
+      },
+      "pending": 9,
+      "originalRuns": 2,
+      "verdictCodes": {
+        "PASS/OK": 2
+      },
+      "originalFailureReasons": {}
+    }
+  ],
+  "registryIssues": [
+    {
+      "caseId": "wi3688-disk-full",
+      "layer": "logic",
+      "issue": "hardcoded temporary product source",
+      "path": "probes/Vega.AutoTest.Wi3688/Vega.AutoTest.Wi3688.csproj"
+    },
+    {
+      "caseId": "wi3688-disk-full",
+      "layer": "uia",
+      "issue": "hardcoded temporary product source",
+      "path": "probes/Vega.AutoTest.Wi3688/Vega.AutoTest.Wi3688.csproj"
+    },
+    {
+      "caseId": "wi3689-exporter-partial",
+      "layer": "logic",
+      "issue": "hardcoded temporary product source",
+      "path": "probes/Vega.AutoTest.Wi3689/Vega.AutoTest.Wi3689.csproj"
+    },
+    {
+      "caseId": "wi3689-exporter-partial",
+      "layer": "uia",
+      "issue": "hardcoded temporary product source",
+      "path": "probes/Vega.AutoTest.Wi3689/Vega.AutoTest.Wi3689.csproj"
+    }
+  ]
+}

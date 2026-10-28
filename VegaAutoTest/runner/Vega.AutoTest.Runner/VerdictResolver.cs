@@ -60,7 +60,7 @@ public static class VerdictResolver
         }
 
         // trx failure message 关键字归因：主窗口超时 / 设备永不空闲属环境问题，不算 FAIL
-        var (mainWindowTimeout, deviceNeverIdle, harnessFailures) = ClassifyFailures(run.Tests);
+        var (mainWindowTimeout, deviceNeverIdle, harnessFailures) = ClassifyFailures(run.Tests, assertions);
         if (harnessFailures > 0)
         {
             return new LayerVerdict { Verdict = "ERROR", Code = "HARNESS_EXCEPTION",
@@ -131,7 +131,7 @@ public static class VerdictResolver
     /// 不是 harness 异常；真正的 harness 异常（VegaApp 启动崩溃等）堆栈指向 harness 程序集。
     /// </summary>
     private static (bool MainWindowTimeout, bool DeviceNeverIdle, int HarnessFailures) ClassifyFailures(
-        IReadOnlyList<TestEntry> tests)
+        IReadOnlyList<TestEntry> tests, IReadOnlyList<AssertionRecord> assertions)
     {
         var mainWindowTimeout = false;
         var deviceNeverIdle = false;
@@ -140,6 +140,28 @@ public static class VerdictResolver
         foreach (var test in tests.Where(t => t.Outcome == "Failed"))
         {
             var message = test.Message ?? string.Empty;
+            // TRX retains the top-level assertion text but does not expose the
+            // exception type separately. Do not mistake a logic assertion for a
+            // harness exception, or an assertion mentioning 'idle' for a timeout.
+            var firstLine = message.Split('\n', 2)[0].Trim();
+            if (firstLine.StartsWith("Assert.", StringComparison.Ordinal)
+                || firstLine.StartsWith("Xunit.Sdk.", StringComparison.Ordinal))
+            {
+                continue;
+            }
+            // Assert.True(customMessage) loses its type in TRX. Accept typed
+            // recorder evidence only when both message AND test stack match.
+            // An arbitrary FAIL record or a wrapped initialization error is not
+            // sufficient to reclassify a harness exception.
+            if (!string.IsNullOrEmpty(test.Name) && assertions.Any(a =>
+                a.Result == "FAIL" && a.Actual is { } actual
+                && actual.Split('\n', 2)[0].Trim() is { } recorded
+                && recorded.StartsWith("Xunit.Sdk.", StringComparison.Ordinal)
+                && recorded.EndsWith("Exception: " + firstLine, StringComparison.Ordinal)
+                && actual.Contains("at " + test.Name + "(", StringComparison.Ordinal)))
+            {
+                continue;
+            }
             if (message.Contains("主窗口") || message.Contains("MainWindow", StringComparison.OrdinalIgnoreCase))
             {
                 mainWindowTimeout = true;

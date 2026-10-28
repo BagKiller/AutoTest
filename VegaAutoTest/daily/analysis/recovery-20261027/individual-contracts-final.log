@@ -1,0 +1,32 @@
+test_cannot_execute_or_finish_before_review_freeze (test_individual.IndividualTests.test_cannot_execute_or_finish_before_review_freeze) ... ok
+test_cli_child_cannot_replan_after_freeze (test_individual.IndividualTests.test_cli_child_cannot_replan_after_freeze) ... ok
+test_cli_collection_is_explicitly_awaiting_preparation_not_execution (test_individual.IndividualTests.test_cli_collection_is_explicitly_awaiting_preparation_not_execution) ... ok
+test_cli_full_queue_advances_after_failure_and_requires_child_ui (test_individual.IndividualTests.test_cli_full_queue_advances_after_failure_and_requires_child_ui) ... ok
+test_completed_headless_cannot_be_accidentally_relaunched (test_individual.IndividualTests.test_completed_headless_cannot_be_accidentally_relaunched) ... ok
+test_completion_check_cannot_collect_or_advance_cursor (test_individual.IndividualTests.test_completion_check_cannot_collect_or_advance_cursor) ... ok
+test_completion_check_fails_until_queue_is_finished (test_individual.IndividualTests.test_completion_check_fails_until_queue_is_finished) ... ok
+test_diff_change_is_detected_before_execution (test_individual.IndividualTests.test_diff_change_is_detected_before_execution) ... ok
+test_duplicate_operation_is_rejected_and_lock_releases (test_individual.IndividualTests.test_duplicate_operation_is_rejected_and_lock_releases) ... ok
+test_empty_registry_mapping_is_not_executable_coverage (test_individual.IndividualTests.test_empty_registry_mapping_is_not_executable_coverage) ... ok
+test_explicit_gap_is_reported_but_other_tests_can_execute (test_individual.IndividualTests.test_explicit_gap_is_reported_but_other_tests_can_execute) ... ok
+test_legacy_plans_remain_unchanged (test_individual.IndividualTests.test_legacy_plans_remain_unchanged) ... ok
+test_linked_historical_child_cannot_execute (test_individual.IndividualTests.test_linked_historical_child_cannot_execute) ... ok
+test_merged_strategy_keeps_cross_commit_deduplication (test_individual.IndividualTests.test_merged_strategy_keeps_cross_commit_deduplication) ... ok
+test_modes_and_legacy_resume (test_individual.IndividualTests.test_modes_and_legacy_resume) ... ok
+test_previous_item_must_be_finished_and_failure_does_not_block_next (test_individual.IndividualTests.test_previous_item_must_be_finished_and_failure_does_not_block_next) ... ok
+test_queue_is_not_acceptance_and_reports_missing_case (test_individual.IndividualTests.test_queue_is_not_acceptance_and_reports_missing_case) ... ok
+test_real_case_reuse_and_ui_execution_are_still_required (test_individual.IndividualTests.test_real_case_reuse_and_ui_execution_are_still_required) ... ok
+test_registry_added_after_collection_is_used_at_freeze (test_individual.IndividualTests.test_registry_added_after_collection_is_used_at_freeze) ... ok
+test_required_ui_missing_cannot_be_accepted_despite_logic_pass (test_individual.IndividualTests.test_required_ui_missing_cannot_be_accepted_despite_logic_pass) ... ok
+test_revalidation_link_preserves_original_and_checks_evidence (test_individual.IndividualTests.test_revalidation_link_preserves_original_and_checks_evidence) ... ok
+test_revalidation_link_rejects_different_commit_set (test_individual.IndividualTests.test_revalidation_link_rejects_different_commit_set) ... ok
+test_same_case_has_independent_sha_plans_and_directories (test_individual.IndividualTests.test_same_case_has_independent_sha_plans_and_directories) ... ok
+test_source_or_assertion_changes_rejected_after_freeze (test_individual.IndividualTests.test_source_or_assertion_changes_rejected_after_freeze) ... ok
+test_unavailable_work_item_source_forces_gap (test_individual.IndividualTests.test_unavailable_work_item_source_forces_gap) ... ok
+test_unindexed_raw_result_is_preserved_in_aggregate (test_individual.IndividualTests.test_unindexed_raw_result_is_preserved_in_aggregate) ... ok
+test_unrelated_new_registry_case_does_not_break_frozen_plan (test_individual.IndividualTests.test_unrelated_new_registry_case_does_not_break_frozen_plan) ... ok
+
+----------------------------------------------------------------------
+Ran 27 tests in 1.950s
+
+OK

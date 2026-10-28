@@ -90,7 +90,7 @@ const server = new McpServer({ name: "vega-autotest", version: "1.0.0" });
 
 server.registerTool(
   "autotest_list_cases",
-  { description: "列出 VegaAutoTest registry 里已登记的用例。没登记的工作项不能自动验证。" },
+  { description: "列出已登记用例。未登记时先由 AI 阅读需求/diff、补写真实测试和数据、构建发现并登记，再执行；不能以缺登记结束任务。" },
   async () => {
     if (!existsSync(RUNNER_DIR)) return text({ status: "error", message: `Runner 不存在: ${RUNNER_DIR}` });
     try {
