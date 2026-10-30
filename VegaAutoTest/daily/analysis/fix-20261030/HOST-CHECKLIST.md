@@ -1,7 +1,7 @@
 # 2026-10-30 修复集上机验证清单
 
 本机(D:\Code\Vega\VegaAutomation)已完成代码修复与本地回归;验证机(C:\AutoTest\AutoTest\VegaAutoTest)需按下表执行。
-修复集对应提交:<提交后填 SHA>;适用验证机副本 HEAD >= 该提交。
+修复集基线提交: `a79b7376f03debd3332fdb660bf350febc08f63c`。2026-10-30 验证机已执行 fast-forward pull 并核对；随后补齐启动器缺失的 `-RuntimeCheck` 参数。
 
 ## 0. 部署前置(不完成则以下全部无效)
 
@@ -11,6 +11,8 @@
 4. `& $python -B .\daily\autopilot.py --status` 确认无残留活动控制器。
 
 ## 1. 当晚批次预期(对照旧失败模式)
+
+以下是执行到相应场景时的预期，不是今晚必然出现的结果。每日仅收集当日新提交，不自动重放历史 Uniformity SHA；验证该历史修复需要独立 revalidation，并显式选用 fix01 用例。五个 UI slot 中，仅当首个 slot 的所有用例均返回共享登录/就绪 BLOCKED 且控制器没有额外异常时，才触发其余四个 slot 跳过。成功进入业务测试时应记录真实结果，不要求凑成“1 个 BLOCKED + 4 个跳过”。
 
 | 旧失败模式(归档证据) | 修复后预期 | 判定点 |
 | --- | --- | --- |
@@ -26,7 +28,7 @@
 
 1. `timeline`:设备状态时间线。到过"空闲"又回"忙碌"= 扫描后置任务;一直"忙碌"= 初始化链卡死。
 2. `mongoReachability`:`unreachable` = MongoDB 未启动(README 记载的 Busy 首因),先查 `Ensure-DailyDatabase.ps1`。
-3. `loginSubmitted=false` + `dialogError` = 认证器读密失败,核对 `C:\AutoTest\runtime\AuthenticatorApp\Authenticator.exe` 与被测 Vega 的 RootCondition/机器 ID 对齐(见 `authenticator-flow.json`)。
+3. `loginSubmitted=false` 时结合 `dialogError`、Runner 的 LOGIN_NOT_READY 原因及认证器日志判断是否读密失败，再核对 `C:\AutoTest\runtime\AuthenticatorApp\Authenticator.exe` 与被测 Vega 的 RootCondition/机器 ID 对齐(见 `authenticator-flow.json`)；该字段本身不能证明密码已正确或登录已成功。
 4. `verdictCode=VEGA_PROCESS_EXITED` = Vega 启动后自灭,查取证日志的启动段与 Windows 事件日志,不是登录问题。
 5. `stateChannel` 确认状态读取通道;UIA 通道下状态栏结构变化会让 state 恒空,需对照 `_wi*_l2.txt` 的树 dump。
 
@@ -43,13 +45,13 @@
 - **确认**:两轮复验 CS0103"当前上下文中不存在名称 FileName"。取该提交 `Vega.Data.Calibration/CaliCommonDataDefinition.cs` `LoadRaw()`:两处 `Path.Combine(ConfigsSubPath, FileName)` 中 `FileName` 未定义(应使用 `PmtCaliConfigPaths.ConditionsFileName`)。
 - 处置:产品缺陷,归产品团队修;修复合入后按独立 revalidation 复跑该 SHA。**不得**由自动化工程改产品源码绕过。
 
-### 3.3 5b822733(组件配置编辑器,WI 3690)— 需要验收标准拍板
+### 3.3 5b822733(组件配置编辑器,WI 3690)— 2026-10-30 验收标准决定
 
 - 事实:编辑器保存后 18 个 Condition 字符串顺序变化;未发现显示属性泄漏;死条件/Feature UI 未验。
-- 待拍板:验收要求是"保存后字符串逐字节保持原序"还是"逻辑表达式语义等价"。
-  - 若逐字节:维持 FAIL,转产品确认排序是否可接受。
-  - 若语义等价:补一个语义等价比较的独立复验用例(不修改历史冻结计划),PASS 后闭环。
-- 未拍板前该提交保持 FAIL,不得重跑刷绿。
+- 决定：Condition 按逻辑表达式语义等价验收，允许不改变含义的条件项重排，不要求表达式字符串逐字节一致。其余配置内容必须保持；Profile 展示字段不得写回。
+- 依据：WI 3690 第 5 条要求保存前后配置内容一致、Profile 列只做展示，未明确要求文本格式或表达式排列顺序原样保留。本决定将“内容一致”解释为装配行为与配置数据保持一致。
+- 独立复验必须保留 AND/OR 优先级、括号、否定以及机型/Profile/Feature 条件含义；不能靠简单排序字符串判等。还需覆盖有效/无效条件的装配与过滤结果、死条件提示和未启用 Feature 提示。
+- 历史 FAIL、冻结计划和原始 Runner 结果保持不变。该标准决定本身不构成通过证据；补充独立复验通过后才能报告相应验收完成。本次未运行复验。
 
 ### 3.4 f7ed2b5d(后处理修复,PR 5000)— 缺独立对照基准
 

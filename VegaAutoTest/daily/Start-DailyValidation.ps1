@@ -1,11 +1,12 @@
 [CmdletBinding()]
-param([string]$Batch, [switch]$Watch, [string]$LaunchDirectory)
+param([string]$Batch, [switch]$Watch, [string]$LaunchDirectory, [switch]$RuntimeCheck)
 $ErrorActionPreference='Stop'
 $python='C:\Users\Administrator\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\python.exe'
 $controller=Join-Path $PSScriptRoot 'autopilot.py'
 $env:PYTHONIOENCODING='utf-8'
-& $python -B $controller --runtime-check | Out-Null
+$runtimeResult=& $python -B $controller --runtime-check
 if($LASTEXITCODE -ne 0){throw 'Daily runtime check failed; no batch was collected'}
+if($RuntimeCheck){$runtimeResult;return}
 
 $current=& $python -B $controller --status | ConvertFrom-Json
 if($current.processAlive){$current | ConvertTo-Json -Depth 20;return}
