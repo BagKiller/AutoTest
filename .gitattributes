@@ -1,0 +1,17 @@
+# These frozen test sources were authored with LF. Preserve their recorded bytes
+# on Windows checkouts instead of allowing core.autocrlf to invalidate evidence.
+/VegaAutoTest/probes/Vega.AutoTest.CommitProbe/DailyCommitBatchLogic.cs -text
+/VegaAutoTest/probes/Vega.AutoTest.CommitProbe/DailySupplementLogic.cs -text
+/VegaAutoTest/probes/Vega.AutoTest.CommitProbe/ModelMarkersService.cs -text
+/VegaAutoTest/probes/Vega.AutoTest.CommitProbe/Vega.AutoTest.CommitProbe.csproj -text
+/VegaAutoTest/probes/Vega.AutoTest.CommitProbe/WorkItem3644Logic.cs -text
+/VegaAutoTest/probes/Vega.AutoTest.CommitProbe/WorkItem3661Logic.cs -text
+/VegaAutoTest/probes/Vega.AutoTest.DailyUi20261028/TargetUiAcceptance.cs -text
+/VegaAutoTest/probes/Vega.AutoTest.DailyUi20261028/Vega.AutoTest.DailyUi20261028.csproj -text
+/VegaAutoTest/probes/Vega.AutoTest.LockGraphV3/DependencyLockLogic.cs -text
+/VegaAutoTest/probes/Vega.AutoTest.LockGraphV3/Vega.AutoTest.LockGraphV3.csproj -text
+/VegaAutoTest/probes/generated/6b4cf4af7928/Generated.csproj -text
+/VegaAutoTest/probes/generated/6b4cf4af7928/RawCopyTests.cs -text
+/VegaAutoTest/probes/generated/b428717a56aa/DuvNotchTests.cs -text
+/VegaAutoTest/probes/generated/b428717a56aa/Generated.csproj -text
+VegaAutoTest/probes/authored/** -text

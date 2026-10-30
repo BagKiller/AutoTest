@@ -509,6 +509,54 @@ class IndividualTests(unittest.TestCase):
                 d.main()
         self.assertFalse((self.out/'manifest.json').exists())
 
+    def test_blocked_ui_run_remains_unverified_after_workflow_finishes(self):
+        p = self.prepare()
+        self.freeze(p)
+        child = Path(p['commitSlots'][0]['batch'])
+        ui = d.load(child/'plan.json')['uiSlots'][0]
+        d.save(child/'execution.json', dict(state='HEADLESS_DONE'))
+        d.save(child/'outcomes.json', dict(runs=[dict(caseId='wi7', phase=ui['id'],
+            verdict='BLOCKED', verdictCode='NO_UI_EVIDENCE', runId='blocked-ui-fixture')]))
+        d.save(child/'completion.json', dict(at='fixture', reason='UI blocked; configuration restored'))
+        result = d.individual.aggregate(d, self.out, self.manifest, p, self.registry)
+        self.assertTrue(any(s.get('slotId') == ui['id'] and s.get('workflowFinished')
+                            for s in result['unverifiedUiSlots']))
+        self.assertEqual(result['commits'][0]['status'], 'BLOCKED')
+
+    def test_discovery_reclaims_only_owned_compilation_scratch_and_retains_receipt_logs(self):
+        p = self.prepare()
+        child = Path(p['commitSlots'][0]['batch'])
+        cm = d.load(child/'manifest.json')
+        self.registry['cases'][0]['layers'].pop('uia')
+        artifacts = []
+        def discover(command, **kwargs):
+            scratch = Path(command[command.index('--artifacts-path')+1])
+            scratch.mkdir(parents=True)
+            (scratch/'compiled.dll').write_bytes(b'compiled fixture')
+            artifacts.append(scratch)
+            kwargs['stdout'].write('The following Tests are available:\n    Fixture.RealAssertion\n')
+            return subprocess.CompletedProcess(command, 0)
+        with patch.object(d, 'WORKSPACES', self.root/'workspaces'), patch.object(d, 'git', return_value=cm['head']), patch.object(d, 'run_bounded', side_effect=discover):
+            receipt=d.queue_driver.check_cases(d,child,cm,self.registry,['wi7'],self.root/'worktree')
+        self.assertFalse(artifacts[0].exists())
+        self.assertTrue((child/receipt['records'][0]['log']).exists())
+        self.assertTrue((child/'preparation/case-check.json').exists())
+        self.assertTrue(list((child/'preparation/checks').rglob('test-artifacts-cleanup.json')))
+
+    def test_discovery_superset_does_not_falsely_report_source_drift_or_select_extra_cases(self):
+        p = self.prepare()
+        child = Path(p['commitSlots'][0]['batch'])
+        self.registry['cases'].append(dict(id='extra-baseline',workItems=[7000],tags=[],layers={
+            'logic':dict(project='probe/probe.csproj',filter='FullyQualifiedName~Extra')}))
+        original_receipt=self.discovery_receipt
+        def discover_superset(child,sha,ids):
+            original_receipt(child,sha,[*ids,'extra-baseline'])
+        with patch.object(self,'discovery_receipt',side_effect=discover_superset):
+            cp=self.freeze(p,ui=False)
+        self.assertEqual({c['id'] for c in cp['frozenCases']['cases']},{'wi7'})
+        receipt=d.load(child/'preparation/case-check.json')
+        self.assertEqual({c['id'] for c in receipt['fingerprints']['cases']},{'wi7','extra-baseline'})
+
     def test_gap_text_alone_is_not_an_authoring_attempt(self):
         p = self.prepare()
         slot = p['commitSlots'][0]

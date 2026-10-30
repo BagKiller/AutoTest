@@ -1,5 +1,26 @@
 # Vega 每日提交批次验证
 
+## 2026-10-29 无人值守入口
+
+实际夜间触发器是本机 Windows 任务 `VegaAutoTest-DailyValidation`，北京时间23:30直接执行项目程序，采用当前用户交互会话以支持真实 UI；原 Codex 定时聊天只读取结果。安装/修复任务使用 `daily/Install-DailyValidationTask.ps1`，不保存用户密码。控制器会自己定位桌面应用安装的 CLI，不依赖聊天临时注入的 PATH；`--runtime-check` 可以只检查该环境而不收集或运行测试。
+
+```powershell
+# 定时任务只启动独立控制进程；该进程负责整批准备、生成业务测试、执行和收尾
+& .\daily\Start-DailyValidation.ps1
+# 查看真实进度（不构建、不收集、不修改游标）
+& $python -B .\daily\autopilot.py --status
+# 明确恢复一个已有队列；历史专项验证应先新建 revalidation 批次
+& .\daily\Start-DailyValidation.ps1 -Batch <根批次路径>
+```
+
+启动器的 STARTED 只证明监督进程已启动。批次 `controller/state.json` 记录真实阶段，`controller/processes/` 保留子进程归属和超时，`controller-launches/<启动>/result.json` 记录监督重试。聊天会话结束不影响后台推进。已有活动进程时只返回当前状态，避免重复构建。
+
+模型生成器 `model_author.py` 使用已登录的本机 Codex CLI 默认可用模型（高推理），不额外读取或复制 API 密钥。模型只返回结构化测试源码及需求审核，没有 shell、写文件、多代理或 MCP 工具；程序校验相对路径、机型、用例ID和来源，再写入每次独立版本的测试项目。`preparation/model/` 保存请求、响应、真实错误；`authored.json` 保存生成的需求到用例映射。先生成业务测试，再编译/发现和实际运行，不把生成文字当成通过。
+
+每个提交模型推理累计最多20分钟，源码请求有界且最后一轮必须产出，一次编译修正。单项失败保留实际错误、未验范围，继续其他提交。必需 UI 使用可执行 L2/FlaUI 测试实际启动目标软件、登录并操作目标流程，结束后核对配置恢复。没有实际业务结果或缺真实输入/硬件时不宣称完整验收。
+
+控制进程会直接执行 `daily.py --resume <根> --check-complete` 的同一 CLI 实现，并保存原输出和退出检查。`FINISHED` 只证明队列没有未收尾项；是否验收通过仍看根 report/summary 和原始 Runner 结果。下方旧手动命令保留用于故障排查。
+
 ## 2026-10-28 新执行入口
 
 新批次先收集，接着 `--resume <根> --prepare-all`，AI 审核并补齐**全部**提交的测试。对每项运行 `--check-cases <SHA> --case-ids <ID列表>`，通过实际编译/发现后再 `--freeze-commit <SHA> --review-file <JSON>`。全部计划准备好后统一 `--resume <根> --drain`；队列推进、失败后继续及收尾由代码执行。需要实际 UI 时 drain 返回 2，完成对应 ui-request 后再次 drain，最后 `--check-complete` 必须返回 0。准备阶段允许先处理后续 SHA，执行仍严格串行。

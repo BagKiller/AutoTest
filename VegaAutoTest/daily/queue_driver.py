@@ -4,6 +4,7 @@ No LLM is invoked here. A failed SHA cannot terminate the remaining queue.
 Missing UI session receipts are requests for actual work, never fabricated PASS.
 """
 from pathlib import Path
+import hashlib
 import subprocess
 import artifact_cleanup
 
@@ -35,10 +36,14 @@ def check_cases(d, child, manifest, registry, ids, repo):
         for name, layer in by_id[cid]['layers'].items():
             project = (d.ROOT / layer['project']).resolve()
             log_path = evidence / (cid + '-' + name + '.log')
-            artifacts = d.WORKSPACES.parent / 'test-artifacts' / ('check-' + manifest['head'][:12] + '-' + name)
             environment = d.runner_env(repo)
-            discovery_dir = evidence / 'discovery' / cid / name
+            discovery_dir = evidence / 'd' / hashlib.sha256((cid + '/' + name).encode()).hexdigest()[:12]
             discovery_dir.mkdir(parents=True, exist_ok=True)
+            # Same ownership convention as Runner: case/layer/campaign isolated
+            # scratch, with a retained receipt permitting safe reclamation.
+            artifacts = d.WORKSPACES.parent / 'test-artifacts' / hashlib.sha256(
+                str(discovery_dir.resolve()).encode()).hexdigest().upper()[:24]
+            d.save(discovery_dir / 'test-artifacts.json', dict(artifacts=str(artifacts)))
             environment.update(VEGA_AUTOTEST_RUNDIR=str(discovery_dir), VEGA_AUTOTEST_OUTDIR=str(discovery_dir))
             with log_path.open('w', encoding='utf-8') as log:
                 result = d.run_bounded([str(d.DOTNET), 'test', str(project), '--list-tests',
@@ -59,6 +64,11 @@ def check_cases(d, child, manifest, registry, ids, repo):
     target = d.load(child / 'execution-target.json', {})
     if target.get('repo') == str(repo):
         d.save(child / 'execution.json', dict(state='COVERAGE_CHECKED', evidence=target['evidence']))
+    try:
+        d.save(child / 'preparation' / 'discovery-scratch-cleanup.json',
+               artifact_cleanup.reclaim(d, child / 'preparation'))
+    except Exception as error:
+        d.save(child / 'preparation' / 'discovery-cleanup-error.json', dict(reason=str(error), logsPreserved=True))
     if any(r['exitCode'] != 0 or not r['discoveredTests'] for r in records):
         raise RuntimeError('Case build/discovery failed; inspect preparation/checks and repair before freezing')
     return receipt

@@ -235,6 +235,10 @@ def aggregate(d, out, manifest, plan, registry):
         if (child / 'plan.json').exists():
             missing_ui = [dict(commit=slot['sha'], batch=slot['batch'], slotId=s) for s in summary['pendingUiSlots']]
             unverified_ui += [dict(item, workflowFinished=bool(completion)) for item in missing_ui]
+            for slot_id in set(summary.get('unverifiedUiSlots', [])) - set(summary['pendingUiSlots']):
+                unverified_ui.append(dict(commit=slot['sha'], batch=slot['batch'], slotId=slot_id,
+                    kind='ui-not-verified', reason='UI Runner returned BLOCKED/ERROR; no UI acceptance established',
+                    workflowFinished=bool(completion)))
             if not completion:
                 ui += missing_ui
             cp = d.load(child / 'plan.json')

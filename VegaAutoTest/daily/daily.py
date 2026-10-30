@@ -164,7 +164,7 @@ def describe(row, source, start, end, origin):
                 noProductChange=no_product_change(files))
 
 
-def collect(last, offline):
+def collect(last, offline, on_collected=None):
     now = now_cn()
     start = now.replace(hour=0, minute=0, second=0, microsecond=0)
     source = REPO if offline else sync()
@@ -207,6 +207,10 @@ def collect(last, offline):
         diff = git("show", "--format=fuller", "--first-parent", "--no-ext-diff", commit["sha"], repo=source)
         (out / (commit["sha"][:8] + ".diff")).write_text(diff, encoding="utf-8")
     save(out / "manifest.json", manifest)
+    if on_collected:
+        # The independent controller persists its resume pointer before the
+        # collection cursor advances. A chat/process crash cannot lose the batch.
+        on_collected(out, manifest)
     if not last and not offline and not history_changed:
         # Do not retain an acceptance backlog. Reports preserve unresolved evidence,
         # while later daily runs are scoped only to newly collected commits.
@@ -420,7 +424,10 @@ def prepare_target(out, manifest):
 def run_case(out, repo, log_dir, case_id, layers, phase, timeout, outcomes):
     """One Runner verify call. The verdict is copied from result.json, never derived here."""
     log_dir.mkdir(parents=True, exist_ok=True)
-    log_path = log_dir / f"runner-{phase}-{case_id}-{now_cn():%H%M%S}.log"
+    # Generated IDs can be long, while nested campaign/SHA/slot directories
+    # already approach MAX_PATH. Full case/phase/timestamps remain in outcomes;
+    # the filesystem basename must not repeat them.
+    log_path = log_dir / ('r-' + uuid.uuid4().hex[:12] + '.log')
     entry = dict(caseId=case_id, phase=phase, layers=layers, startedAt=now_cn().isoformat(), log=str(log_path))
     try:
         env = runner_env(repo)
@@ -477,6 +484,11 @@ def execute(out, manifest, plan_data, outcomes, budget_minutes):
     save(out / "execution.json", dict(state="HEADLESS", evidence=str(evidence)))
     deadline = time.monotonic() + budget_minutes * 60
     for item in plan_data["headless"]:
+        # Restarting an interrupted controller must consume this campaign's
+        # verified raw results rather than repeat completed tests. An invocation
+        # error or budget placeholder has no raw result and may be retried.
+        if completed_headless(out, manifest['head'], item, outcomes):
+            continue
         if time.monotonic() + item["timeoutSeconds"] > deadline:
             outcomes["runs"].append(dict(caseId=item["caseId"], phase="headless", layers=item["layers"], runId=None,
                                          verdict=None, verdictCode="NOT_RUN_BUDGET",
@@ -487,6 +499,23 @@ def execute(out, manifest, plan_data, outcomes, budget_minutes):
         run_case(out, repo, evidence, item["caseId"], item["layers"], "headless", item["timeoutSeconds"], outcomes)
     save(out / "execution.json", dict(state="HEADLESS_DONE", evidence=str(evidence),
                                       pendingUiSlots=[s["id"] for s in plan_data["uiSlots"]]))
+
+
+def completed_headless(out, sha, item, outcomes):
+    for entry in reversed(outcomes['runs']):
+        if entry.get('caseId') != item['caseId'] or entry.get('phase') != 'headless':
+            continue
+        if not entry.get('resultPath'):
+            return False
+        path = Path(entry['resultPath']).resolve()
+        if not path.is_relative_to((out / 'runner').resolve()) or not path.is_file():
+            return False
+        raw = load(path)
+        return (raw.get('target', {}).get('gitCommit') == sha and raw.get('caseId') == item['caseId']
+                and raw.get('runId') == entry.get('runId')
+                and raw.get('verdict') in ('PASS', 'FAIL', 'ERROR', 'BLOCKED')
+                and (not entry.get('sha256') or coverage_contract.digest(path) == entry['sha256']))
+    return False
 
 
 def run_slot(out, manifest, plan_data, slot_id, session, outcomes):
@@ -669,6 +698,9 @@ def report(out, manifest, plan_data, outcomes, rows):
                            verdictCode=e.get("verdictCode")) for e in latest.values()],
                 pendingUiSlots=[s["id"] for s in plan_data["uiSlots"]
                                 if any((i["caseId"], s["id"]) not in latest for i in s["cases"])],
+                unverifiedUiSlots=[s["id"] for s in plan_data["uiSlots"]
+                                   if any(latest.get((i["caseId"], s["id"]), {}).get('verdict') in (None, 'BLOCKED', 'ERROR')
+                                          for i in s['cases'])],
                 commits=[dict(sha=r["sha"], status=r["status"], reason=r["reason"]) for r in rows],
                 note="acceptanceState 表示验收完整性，不是第二套 verdict；正式 verdict 只来自各 Runner result.json。")
     save(out / "summary.json", data)

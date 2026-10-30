@@ -24,6 +24,11 @@ daily/build/
 daily/state.json
 daily/sessions/
 daily/.operation.lock
+daily/.controller.lock
+daily/controller-active.json
+daily/controller-runtime.json
+daily/controller-quarantined-profiles.json
+daily/controller-launches/
 __pycache__/
 *.py[cod]
 

@@ -62,6 +62,89 @@
     ],
     "wi3611": [
       "Vega100-PIC"
+    ],
+    "simulation-ui-00b3004a58de": [
+      "Vega300-HWv1",
+      "Vega500"
+    ],
+    "simulation-ui-6b4cf4af7928": [
+      "Vega500"
+    ],
+    "simulation-ui-227ace851042": [
+      "Vega100-PIC"
+    ],
+    "simulation-ui-bd9ccb55d6de": [
+      "Vega300-HWv1",
+      "Vega500"
+    ],
+    "simulation-ui-19c18be54684": [
+      "Vega100-PIC"
+    ],
+    "simulation-ui-9fa008a98a35": [
+      "Vega300-HWv1"
+    ],
+    "simulation-ui-d117a21d8bef": [
+      "Vega300-HWv1"
+    ],
+    "simulation-ui-eba9945afbca": [
+      "Vega300-HWv1"
+    ],
+    "simulation-ui-b428717a56aa": [
+      "Vega300-HWv1"
+    ],
+    "authored-v9c24106368-055b805acc67-bf3704-contrast": [],
+    "authored-v9c24106368-055b805acc67-bf3704-seconds-window": [],
+    "authored-v9c24106368-055b805acc67-bf3704-vm-contract": [],
+    "authored-v9c24106368-055b805acc67-bf3704-acquisition-statistics": [],
+    "authored-v9c24106368-055b805acc67-bf3704-record-lifecycle": [],
+    "authored-v9c24106368-055b805acc67-bf3704-ui-workflow": [
+      "Vega100-PIC",
+      "Vega100-Coherent",
+      "Vega300-HWv1",
+      "Vega300-HWv2",
+      "Vega500"
+    ],
+    "authored-v1013043576-055b805acc67-bf3704-contrast": [],
+    "authored-v1013043576-055b805acc67-bf3704-seconds-window": [],
+    "authored-v1013043576-055b805acc67-bf3704-vm-contract": [],
+    "authored-v1013043576-055b805acc67-bf3704-acquisition-statistics": [],
+    "authored-v1013043576-055b805acc67-bf3704-record-lifecycle": [],
+    "authored-v1013043576-055b805acc67-bf3704-ui-workflow": [
+      "Vega100-PIC",
+      "Vega100-Coherent",
+      "Vega300-HWv1",
+      "Vega300-HWv2",
+      "Vega500"
+    ],
+    "authored-v0250ff55dc-9acb461b7cf8-wi3670-component": [],
+    "authored-v0250ff55dc-9acb461b7cf8-wi3670-workflow": [
+      "Vega100-PIC",
+      "Vega100-Coherent",
+      "Vega300-HWv1",
+      "Vega300-HWv2",
+      "Vega500"
+    ],
+    "authored-vf339a20d06-e05bb7f732f6-native-saturation": [],
+    "authored-vf339a20d06-e05bb7f732f6-xaml-selection": [],
+    "authored-v27ffeb903e-e05bb7f732f6-native-saturation": [],
+    "authored-v27ffeb903e-e05bb7f732f6-xaml-selection": [],
+    "authored-vc95a6a1a9d-8894b083ccb4-unobserved-handler": [],
+    "authored-vc95a6a1a9d-8894b083ccb4-fallback-log": [],
+    "authored-vdceebf0e01-d07d0e7045b7-uniformity-component-contract": [],
+    "authored-vdceebf0e01-d07d0e7045b7-uniformity-import-reentry-statistics": [
+      "Vega100-PIC",
+      "Vega100-Coherent",
+      "Vega300-HWv1",
+      "Vega300-HWv2",
+      "Vega500"
+    ],
+    "authored-v62156ef44b-d07d0e7045b7-uniformity-component-contract": [],
+    "authored-v62156ef44b-d07d0e7045b7-uniformity-import-reentry-statistics": [
+      "Vega100-PIC",
+      "Vega100-Coherent",
+      "Vega300-HWv1",
+      "Vega300-HWv2",
+      "Vega500"
     ]
   },
   "defaultUiProfile": "Vega500",

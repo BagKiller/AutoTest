@@ -218,7 +218,12 @@ def validate_preparation(d, child, manifest, registry, requirements):
         receipt = d.load(child / 'preparation' / 'case-check.json', {})
         if receipt.get('sha') != manifest['head']:
             raise ValueError('Run --check-cases at this exact SHA before freezing new cases')
-        if receipt.get('fingerprints') != case_fingerprints(d, registry, ids, transitive=True,
+        checked_ids = {case['id'] for case in receipt.get('fingerprints', {}).get('cases', [])}
+        if not set(ids).issubset(checked_ids):
+            raise ValueError('Selected case was not included in this discovery receipt')
+        # Discovery can include baselines or other reviewed candidates. Verify
+        # the whole checked set, while freezing only the selected acceptance set.
+        if receipt.get('fingerprints') != case_fingerprints(d, registry, checked_ids, transitive=True,
                                                           linked_sources=receipt.get('fingerprintVersion', 2) >= 3):
             raise ValueError('Case sources changed since discovery; run --check-cases again')
         by_id = {c['id']: c for c in registry['cases']}

@@ -1185,6 +1185,859 @@
           "requiresL1Api": false
         }
       }
+    },
+    {
+      "id": "commit-c30defb85f29-lock-graph",
+      "title": "Committed dependency graph: Project/RID aware",
+      "targetSha": "c30defb85f294f0f66c60382a76c7fdda44cce54",
+      "workItems": [],
+      "tags": [
+        "generated",
+        "partial-acceptance"
+      ],
+      "evidenceFiles": [],
+      "layers": {
+        "logic": {
+          "project": "probes/Vega.AutoTest.LockGraphV3/Vega.AutoTest.LockGraphV3.csproj",
+          "filter": "FullyQualifiedName~DependencyLockLogic",
+          "timeoutSeconds": 300,
+          "minAssertions": 1,
+          "requiresVegaExe": true,
+          "requiresL1Api": false
+        }
+      }
+    },
+    {
+      "id": "simulation-ui-00b3004a58de",
+      "title": "Actual target-version workflow observations at 00b3004a",
+      "targetSha": "00b3004a58decb90f1edba05b6bc2fb446c25e80",
+      "workItems": [
+        3660,
+        3706
+      ],
+      "tags": [
+        "actual-ui"
+      ],
+      "evidenceFiles": [],
+      "layers": {
+        "uia": {
+          "project": "probes/Vega.AutoTest.DailyUi20261028/Vega.AutoTest.DailyUi20261028.csproj",
+          "filter": "FullyQualifiedName~Vega.AutoTest.DailyUi20261028.TargetUiAcceptance",
+          "timeoutSeconds": 300,
+          "minAssertions": 1,
+          "requiresVegaExe": true,
+          "requiresL1Api": false
+        }
+      }
+    },
+    {
+      "id": "simulation-ui-6b4cf4af7928",
+      "title": "Actual target-version workflow observations at 6b4cf4af",
+      "targetSha": "6b4cf4af7928fc7173131df26627b24d6f386e97",
+      "workItems": [
+        3688
+      ],
+      "tags": [
+        "actual-ui"
+      ],
+      "evidenceFiles": [],
+      "layers": {
+        "uia": {
+          "project": "probes/Vega.AutoTest.DailyUi20261028/Vega.AutoTest.DailyUi20261028.csproj",
+          "filter": "FullyQualifiedName~Vega.AutoTest.DailyUi20261028.TargetUiAcceptance",
+          "timeoutSeconds": 300,
+          "minAssertions": 1,
+          "requiresVegaExe": true,
+          "requiresL1Api": false
+        }
+      }
+    },
+    {
+      "id": "simulation-ui-227ace851042",
+      "title": "Actual target-version workflow observations at 227ace85",
+      "targetSha": "227ace85104287d877d8b6869210e573e06bd817",
+      "workItems": [
+        3695
+      ],
+      "tags": [
+        "actual-ui"
+      ],
+      "evidenceFiles": [],
+      "layers": {
+        "uia": {
+          "project": "probes/Vega.AutoTest.DailyUi20261028/Vega.AutoTest.DailyUi20261028.csproj",
+          "filter": "FullyQualifiedName~Vega.AutoTest.DailyUi20261028.TargetUiAcceptance",
+          "timeoutSeconds": 300,
+          "minAssertions": 1,
+          "requiresVegaExe": true,
+          "requiresL1Api": false
+        }
+      }
+    },
+    {
+      "id": "simulation-ui-bd9ccb55d6de",
+      "title": "Actual target-version workflow observations at bd9ccb55",
+      "targetSha": "bd9ccb55d6de34617bb8c676fef7d8e2c9b0b6e0",
+      "workItems": [
+        3705
+      ],
+      "tags": [
+        "actual-ui"
+      ],
+      "evidenceFiles": [],
+      "layers": {
+        "uia": {
+          "project": "probes/Vega.AutoTest.DailyUi20261028/Vega.AutoTest.DailyUi20261028.csproj",
+          "filter": "FullyQualifiedName~Vega.AutoTest.DailyUi20261028.TargetUiAcceptance",
+          "timeoutSeconds": 300,
+          "minAssertions": 1,
+          "requiresVegaExe": true,
+          "requiresL1Api": false
+        }
+      }
+    },
+    {
+      "id": "simulation-ui-19c18be54684",
+      "title": "Actual target-version workflow observations at 19c18be5",
+      "targetSha": "19c18be54684cccc9b0c02b29a021300953f713d",
+      "workItems": [
+        3636
+      ],
+      "tags": [
+        "actual-ui"
+      ],
+      "evidenceFiles": [],
+      "layers": {
+        "uia": {
+          "project": "probes/Vega.AutoTest.DailyUi20261028/Vega.AutoTest.DailyUi20261028.csproj",
+          "filter": "FullyQualifiedName~Vega.AutoTest.DailyUi20261028.TargetUiAcceptance",
+          "timeoutSeconds": 300,
+          "minAssertions": 1,
+          "requiresVegaExe": true,
+          "requiresL1Api": false
+        }
+      }
+    },
+    {
+      "id": "simulation-ui-9fa008a98a35",
+      "title": "Actual target-version workflow observations at 9fa008a9",
+      "targetSha": "9fa008a98a3547a9480f3196e7758f683ca9a5da",
+      "workItems": [
+        3678
+      ],
+      "tags": [
+        "actual-ui"
+      ],
+      "evidenceFiles": [],
+      "layers": {
+        "uia": {
+          "project": "probes/Vega.AutoTest.DailyUi20261028/Vega.AutoTest.DailyUi20261028.csproj",
+          "filter": "FullyQualifiedName~Vega.AutoTest.DailyUi20261028.TargetUiAcceptance",
+          "timeoutSeconds": 300,
+          "minAssertions": 1,
+          "requiresVegaExe": true,
+          "requiresL1Api": false
+        }
+      }
+    },
+    {
+      "id": "simulation-ui-d117a21d8bef",
+      "title": "Actual target-version workflow observations at d117a21d",
+      "targetSha": "d117a21d8befd0cd03a70aa9a95da223c33a0728",
+      "workItems": [
+        3709
+      ],
+      "tags": [
+        "actual-ui"
+      ],
+      "evidenceFiles": [],
+      "layers": {
+        "uia": {
+          "project": "probes/Vega.AutoTest.DailyUi20261028/Vega.AutoTest.DailyUi20261028.csproj",
+          "filter": "FullyQualifiedName~Vega.AutoTest.DailyUi20261028.TargetUiAcceptance",
+          "timeoutSeconds": 300,
+          "minAssertions": 1,
+          "requiresVegaExe": true,
+          "requiresL1Api": false
+        }
+      }
+    },
+    {
+      "id": "simulation-ui-eba9945afbca",
+      "title": "Actual target-version workflow observations at eba9945a",
+      "targetSha": "eba9945afbca703d94c011bb664ec627fb2dd33d",
+      "workItems": [
+        3707
+      ],
+      "tags": [
+        "actual-ui"
+      ],
+      "evidenceFiles": [],
+      "layers": {
+        "uia": {
+          "project": "probes/Vega.AutoTest.DailyUi20261028/Vega.AutoTest.DailyUi20261028.csproj",
+          "filter": "FullyQualifiedName~Vega.AutoTest.DailyUi20261028.TargetUiAcceptance",
+          "timeoutSeconds": 300,
+          "minAssertions": 1,
+          "requiresVegaExe": true,
+          "requiresL1Api": false
+        }
+      }
+    },
+    {
+      "id": "simulation-ui-b428717a56aa",
+      "title": "Actual target-version workflow observations at b428717a",
+      "targetSha": "b428717a56aaba31fc343a34dc76d5c776104dda",
+      "workItems": [],
+      "tags": [
+        "actual-ui"
+      ],
+      "evidenceFiles": [],
+      "layers": {
+        "uia": {
+          "project": "probes/Vega.AutoTest.DailyUi20261028/Vega.AutoTest.DailyUi20261028.csproj",
+          "filter": "FullyQualifiedName~Vega.AutoTest.DailyUi20261028.TargetUiAcceptance",
+          "timeoutSeconds": 300,
+          "minAssertions": 1,
+          "requiresVegaExe": true,
+          "requiresL1Api": false
+        }
+      }
+    },
+    {
+      "id": "commit-055b805acc67-product-tests",
+      "title": "Original product regression assertions at 055b805acc67",
+      "targetSha": "055b805acc67c26aa4f534e04e0a7238e33fac85",
+      "workItems": [
+        3704
+      ],
+      "tags": [
+        "generated",
+        "partial-acceptance"
+      ],
+      "evidenceFiles": [],
+      "layers": {
+        "logic0": {
+          "project": "probes/generated/055b805acc67/Generated.0.csproj",
+          "filter": "FullyQualifiedName~Vega.AutoTest.Generated.ProductRegressionAdapter",
+          "timeoutSeconds": 600,
+          "minAssertions": 1,
+          "requiresVegaExe": true,
+          "requiresL1Api": false
+        }
+      }
+    },
+    {
+      "id": "commit-b3791912b0e6-product-tests",
+      "title": "Original product regression assertions at b3791912b0e6",
+      "targetSha": "b3791912b0e6d133c19613a38c1f62a862812b19",
+      "workItems": [
+        3711
+      ],
+      "tags": [
+        "generated",
+        "partial-acceptance"
+      ],
+      "evidenceFiles": [],
+      "layers": {
+        "logic0": {
+          "project": "probes/generated/b3791912b0e6/Generated.0.csproj",
+          "filter": "FullyQualifiedName~Vega.AutoTest.Generated.ProductRegressionAdapter",
+          "timeoutSeconds": 600,
+          "minAssertions": 1,
+          "requiresVegaExe": true,
+          "requiresL1Api": false
+        }
+      }
+    },
+    {
+      "id": "commit-68810455e019-product-tests",
+      "title": "Original product regression assertions at 68810455e019",
+      "targetSha": "68810455e019a22db8e7a3578371e3526de54557",
+      "workItems": [],
+      "tags": [
+        "generated",
+        "partial-acceptance"
+      ],
+      "evidenceFiles": [],
+      "layers": {
+        "logic0": {
+          "project": "probes/generated/68810455e019/Generated.0.csproj",
+          "filter": "FullyQualifiedName~Vega.AutoTest.Generated.ProductRegressionAdapter",
+          "timeoutSeconds": 600,
+          "minAssertions": 1,
+          "requiresVegaExe": true,
+          "requiresL1Api": false
+        }
+      }
+    },
+    {
+      "id": "authored-v9c24106368-055b805acc67-bf3704-contrast",
+      "title": "DIC contrast percentage, zero and missing-data boundaries",
+      "targetSha": "055b805acc67c26aa4f534e04e0a7238e33fac85",
+      "workItems": [
+        3704
+      ],
+      "tags": [
+        "ai-authored"
+      ],
+      "evidenceFiles": [],
+      "layers": {
+        "logic": {
+          "project": "probes/authored/v9c24106368/055b805acc67/Authored.logic.csproj",
+          "filter": "FullyQualifiedName~Vega.AutoTest.Authored.BF3704ContrastTests.",
+          "timeoutSeconds": 600,
+          "minAssertions": 12,
+          "requiresVegaExe": true,
+          "requiresL1Api": false
+        }
+      }
+    },
+    {
+      "id": "authored-v9c24106368-055b805acc67-bf3704-seconds-window",
+      "title": "Elapsed-second rolling windows, cutoff, resizing and reset",
+      "targetSha": "055b805acc67c26aa4f534e04e0a7238e33fac85",
+      "workItems": [
+        3704
+      ],
+      "tags": [
+        "ai-authored"
+      ],
+      "evidenceFiles": [],
+      "layers": {
+        "logic": {
+          "project": "probes/authored/v9c24106368/055b805acc67/Authored.logic.csproj",
+          "filter": "FullyQualifiedName~Vega.AutoTest.Authored.BF3704RollingTests.",
+          "timeoutSeconds": 600,
+          "minAssertions": 34,
+          "requiresVegaExe": true,
+          "requiresL1Api": false
+        }
+      }
+    },
+    {
+      "id": "authored-v9c24106368-055b805acc67-bf3704-vm-contract",
+      "title": "BF command gates, validation, notifications, countdown formatting and localization",
+      "targetSha": "055b805acc67c26aa4f534e04e0a7238e33fac85",
+      "workItems": [
+        3704
+      ],
+      "tags": [
+        "ai-authored"
+      ],
+      "evidenceFiles": [],
+      "layers": {
+        "logic": {
+          "project": "probes/authored/v9c24106368/055b805acc67/Authored.logic.csproj",
+          "filter": "FullyQualifiedName~Vega.AutoTest.Authored.BF3704ViewModelContractTests.",
+          "timeoutSeconds": 600,
+          "minAssertions": 50,
+          "requiresVegaExe": true,
+          "requiresL1Api": false
+        }
+      }
+    },
+    {
+      "id": "authored-v9c24106368-055b805acc67-bf3704-acquisition-statistics",
+      "title": "Production acquisition loop integrates both channels and every recorded batch",
+      "targetSha": "055b805acc67c26aa4f534e04e0a7238e33fac85",
+      "workItems": [
+        3704
+      ],
+      "tags": [
+        "ai-authored"
+      ],
+      "evidenceFiles": [],
+      "layers": {
+        "logic": {
+          "project": "probes/authored/v9c24106368/055b805acc67/Authored.logic.csproj",
+          "filter": "FullyQualifiedName~Vega.AutoTest.Authored.BF3704AcquisitionStatisticsTests.",
+          "timeoutSeconds": 600,
+          "minAssertions": 34,
+          "requiresVegaExe": true,
+          "requiresL1Api": false
+        }
+      }
+    },
+    {
+      "id": "authored-v9c24106368-055b805acc67-bf3704-record-lifecycle",
+      "title": "Manual stop, navigation, DAQ failure and real one-minute completion",
+      "targetSha": "055b805acc67c26aa4f534e04e0a7238e33fac85",
+      "workItems": [
+        3704
+      ],
+      "tags": [
+        "ai-authored"
+      ],
+      "evidenceFiles": [],
+      "layers": {
+        "logic": {
+          "project": "probes/authored/v9c24106368/055b805acc67/Authored.logic.csproj",
+          "filter": "FullyQualifiedName~Vega.AutoTest.Authored.BF3704RecordingLifecycleTests.",
+          "timeoutSeconds": 600,
+          "minAssertions": 19,
+          "requiresVegaExe": true,
+          "requiresL1Api": false
+        }
+      }
+    },
+    {
+      "id": "authored-v9c24106368-055b805acc67-bf3704-ui-workflow",
+      "title": "BF screen seconds selection, duration validation, recording and displayed results",
+      "targetSha": "055b805acc67c26aa4f534e04e0a7238e33fac85",
+      "workItems": [
+        3704
+      ],
+      "tags": [
+        "ai-authored"
+      ],
+      "evidenceFiles": [],
+      "layers": {
+        "uia": {
+          "project": "probes/authored/v9c24106368/055b805acc67/Authored.uia.csproj",
+          "filter": "FullyQualifiedName~Vega.AutoTest.Authored.BF3704UiWorkflowTests.",
+          "timeoutSeconds": 600,
+          "minAssertions": 22,
+          "requiresVegaExe": true,
+          "requiresL1Api": false
+        }
+      }
+    },
+    {
+      "id": "authored-v1013043576-055b805acc67-bf3704-contrast",
+      "title": "DIC contrast percentage, zero and missing-data boundaries",
+      "targetSha": "055b805acc67c26aa4f534e04e0a7238e33fac85",
+      "workItems": [
+        3704
+      ],
+      "tags": [
+        "ai-authored"
+      ],
+      "evidenceFiles": [],
+      "layers": {
+        "logic": {
+          "project": "probes/authored/v1013043576/055b805acc67/Authored.logic.csproj",
+          "filter": "FullyQualifiedName~Vega.AutoTest.Authored.BF3704ContrastTests.",
+          "timeoutSeconds": 600,
+          "minAssertions": 12,
+          "requiresVegaExe": true,
+          "requiresL1Api": false
+        }
+      }
+    },
+    {
+      "id": "authored-v1013043576-055b805acc67-bf3704-seconds-window",
+      "title": "Elapsed-second rolling windows, cutoff, resizing and reset",
+      "targetSha": "055b805acc67c26aa4f534e04e0a7238e33fac85",
+      "workItems": [
+        3704
+      ],
+      "tags": [
+        "ai-authored"
+      ],
+      "evidenceFiles": [],
+      "layers": {
+        "logic": {
+          "project": "probes/authored/v1013043576/055b805acc67/Authored.logic.csproj",
+          "filter": "FullyQualifiedName~Vega.AutoTest.Authored.BF3704RollingTests.",
+          "timeoutSeconds": 600,
+          "minAssertions": 34,
+          "requiresVegaExe": true,
+          "requiresL1Api": false
+        }
+      }
+    },
+    {
+      "id": "authored-v1013043576-055b805acc67-bf3704-vm-contract",
+      "title": "BF command gates, validation, notifications, countdown formatting and localization",
+      "targetSha": "055b805acc67c26aa4f534e04e0a7238e33fac85",
+      "workItems": [
+        3704
+      ],
+      "tags": [
+        "ai-authored"
+      ],
+      "evidenceFiles": [],
+      "layers": {
+        "logic": {
+          "project": "probes/authored/v1013043576/055b805acc67/Authored.logic.csproj",
+          "filter": "FullyQualifiedName~Vega.AutoTest.Authored.BF3704ViewModelContractTests.",
+          "timeoutSeconds": 600,
+          "minAssertions": 50,
+          "requiresVegaExe": true,
+          "requiresL1Api": false
+        }
+      }
+    },
+    {
+      "id": "authored-v1013043576-055b805acc67-bf3704-acquisition-statistics",
+      "title": "Production acquisition loop integrates both channels and recorded batches",
+      "targetSha": "055b805acc67c26aa4f534e04e0a7238e33fac85",
+      "workItems": [
+        3704
+      ],
+      "tags": [
+        "ai-authored"
+      ],
+      "evidenceFiles": [],
+      "layers": {
+        "logic": {
+          "project": "probes/authored/v1013043576/055b805acc67/Authored.logic.csproj",
+          "filter": "FullyQualifiedName~Vega.AutoTest.Authored.BF3704AcquisitionStatisticsTests.",
+          "timeoutSeconds": 600,
+          "minAssertions": 34,
+          "requiresVegaExe": true,
+          "requiresL1Api": false
+        }
+      }
+    },
+    {
+      "id": "authored-v1013043576-055b805acc67-bf3704-record-lifecycle",
+      "title": "Manual stop, navigation, DAQ failure and real one-minute completion",
+      "targetSha": "055b805acc67c26aa4f534e04e0a7238e33fac85",
+      "workItems": [
+        3704
+      ],
+      "tags": [
+        "ai-authored"
+      ],
+      "evidenceFiles": [],
+      "layers": {
+        "logic": {
+          "project": "probes/authored/v1013043576/055b805acc67/Authored.logic.csproj",
+          "filter": "FullyQualifiedName~Vega.AutoTest.Authored.BF3704RecordingLifecycleTests.",
+          "timeoutSeconds": 600,
+          "minAssertions": 19,
+          "requiresVegaExe": true,
+          "requiresL1Api": false
+        }
+      }
+    },
+    {
+      "id": "authored-v1013043576-055b805acc67-bf3704-ui-workflow",
+      "title": "BF screen seconds selection, duration validation, recording and displayed results",
+      "targetSha": "055b805acc67c26aa4f534e04e0a7238e33fac85",
+      "workItems": [
+        3704
+      ],
+      "tags": [
+        "ai-authored"
+      ],
+      "evidenceFiles": [],
+      "layers": {
+        "uia": {
+          "project": "probes/authored/v1013043576/055b805acc67/Authored.uia.csproj",
+          "filter": "FullyQualifiedName~Vega.AutoTest.Authored.BF3704UiWorkflowTests.",
+          "timeoutSeconds": 600,
+          "minAssertions": 22,
+          "requiresVegaExe": true,
+          "requiresL1Api": false
+        }
+      }
+    },
+    {
+      "id": "authored-v0250ff55dc-9acb461b7cf8-wi3670-component",
+      "title": "DF recipe synchronization filtering, selection, guards and selective writeback",
+      "targetSha": "9acb461b7cf876f8087a3b76d53e0b98d87b7e11",
+      "workItems": [
+        3670
+      ],
+      "tags": [
+        "ai-authored"
+      ],
+      "evidenceFiles": [],
+      "layers": {
+        "logic": {
+          "project": "probes/authored/v0250ff55dc/9acb461b7cf8/Authored.logic.csproj",
+          "filter": "FullyQualifiedName~Vega.AutoTest.Authored.DfRecipeSyncComponentTests.",
+          "timeoutSeconds": 600,
+          "minAssertions": 70,
+          "requiresVegaExe": true,
+          "requiresL1Api": false
+        }
+      }
+    },
+    {
+      "id": "authored-v0250ff55dc-9acb461b7cf8-wi3670-workflow",
+      "title": "DF queue Sync Recipe validates, cancels and updates the selected target size",
+      "targetSha": "9acb461b7cf876f8087a3b76d53e0b98d87b7e11",
+      "workItems": [
+        3670
+      ],
+      "tags": [
+        "ai-authored"
+      ],
+      "evidenceFiles": [],
+      "layers": {
+        "uia": {
+          "project": "probes/authored/v0250ff55dc/9acb461b7cf8/Authored.uia.csproj",
+          "filter": "FullyQualifiedName~Vega.AutoTest.Authored.DfRecipeSyncWorkflowTests.",
+          "timeoutSeconds": 600,
+          "minAssertions": 18,
+          "requiresVegaExe": true,
+          "requiresL1Api": false
+        }
+      }
+    },
+    {
+      "id": "commit-e05bb7f732f6-lock-graph",
+      "title": "Committed dependency graph: Project/RID aware",
+      "targetSha": "e05bb7f732f699a153fb9117617c7567cb068dff",
+      "workItems": [],
+      "tags": [
+        "generated",
+        "partial-acceptance"
+      ],
+      "evidenceFiles": [],
+      "layers": {
+        "logic": {
+          "project": "probes/Vega.AutoTest.LockGraphV3/Vega.AutoTest.LockGraphV3.csproj",
+          "filter": "FullyQualifiedName~DependencyLockLogic",
+          "timeoutSeconds": 300,
+          "minAssertions": 1,
+          "requiresVegaExe": true,
+          "requiresL1Api": false
+        }
+      }
+    },
+    {
+      "id": "commit-d07d0e7045b7-product-tests",
+      "title": "Original product regression assertions at d07d0e7045b7",
+      "targetSha": "d07d0e7045b747753a1d1a70769e9853ee35ddd2",
+      "workItems": [
+        3722
+      ],
+      "tags": [
+        "generated",
+        "partial-acceptance"
+      ],
+      "evidenceFiles": [],
+      "layers": {
+        "logic0": {
+          "project": "probes/generated/d07d0e7045b7/Generated.0.csproj",
+          "filter": "FullyQualifiedName~Vega.AutoTest.Generated.ProductRegressionAdapter",
+          "timeoutSeconds": 600,
+          "minAssertions": 1,
+          "requiresVegaExe": true,
+          "requiresL1Api": false
+        }
+      }
+    },
+    {
+      "id": "authored-vf339a20d06-e05bb7f732f6-native-saturation",
+      "title": "Vega saturation counting executes the locked OpenCV native dependency",
+      "targetSha": "e05bb7f732f699a153fb9117617c7567cb068dff",
+      "workItems": [],
+      "tags": [
+        "ai-authored"
+      ],
+      "evidenceFiles": [],
+      "layers": {
+        "logic": {
+          "project": "probes/authored/vf339a20d06/e05bb7f732f6/Authored.logic.csproj",
+          "filter": "FullyQualifiedName~Vega.AutoTest.Authored.ImagingDependencyRegression.",
+          "timeoutSeconds": 600,
+          "minAssertions": 21,
+          "requiresVegaExe": true,
+          "requiresL1Api": false
+        }
+      }
+    },
+    {
+      "id": "authored-vf339a20d06-e05bb7f732f6-xaml-selection",
+      "title": "Vega selection behaviors remain functional with Microsoft.Xaml.Behaviors 1.1.135",
+      "targetSha": "e05bb7f732f699a153fb9117617c7567cb068dff",
+      "workItems": [],
+      "tags": [
+        "ai-authored"
+      ],
+      "evidenceFiles": [],
+      "layers": {
+        "logic": {
+          "project": "probes/authored/vf339a20d06/e05bb7f732f6/Authored.logic.csproj",
+          "filter": "FullyQualifiedName~Vega.AutoTest.Authored.XamlBehaviorDependencyRegression.",
+          "timeoutSeconds": 600,
+          "minAssertions": 26,
+          "requiresVegaExe": true,
+          "requiresL1Api": false
+        }
+      }
+    },
+    {
+      "id": "authored-v27ffeb903e-e05bb7f732f6-native-saturation",
+      "title": "Vega saturation counting executes the locked OpenCV native dependency",
+      "targetSha": "e05bb7f732f699a153fb9117617c7567cb068dff",
+      "workItems": [],
+      "tags": [
+        "ai-authored"
+      ],
+      "evidenceFiles": [],
+      "layers": {
+        "logic": {
+          "project": "probes/authored/v27ffeb903e/e05bb7f732f6/Authored.logic.csproj",
+          "filter": "FullyQualifiedName~Vega.AutoTest.Authored.ImagingDependencyRegression.",
+          "timeoutSeconds": 600,
+          "minAssertions": 21,
+          "requiresVegaExe": true,
+          "requiresL1Api": false
+        }
+      }
+    },
+    {
+      "id": "authored-v27ffeb903e-e05bb7f732f6-xaml-selection",
+      "title": "Vega selection behaviors remain functional with Microsoft.Xaml.Behaviors 1.1.135",
+      "targetSha": "e05bb7f732f699a153fb9117617c7567cb068dff",
+      "workItems": [],
+      "tags": [
+        "ai-authored"
+      ],
+      "evidenceFiles": [],
+      "layers": {
+        "logic": {
+          "project": "probes/authored/v27ffeb903e/e05bb7f732f6/Authored.logic.csproj",
+          "filter": "FullyQualifiedName~Vega.AutoTest.Authored.XamlBehaviorDependencyRegression.",
+          "timeoutSeconds": 600,
+          "minAssertions": 26,
+          "requiresVegaExe": true,
+          "requiresL1Api": false
+        }
+      }
+    },
+    {
+      "id": "authored-vc95a6a1a9d-8894b083ccb4-unobserved-handler",
+      "title": "Background unobserved exceptions are observed and throttled without dispatching feedback",
+      "targetSha": "8894b083ccb44dc7abda592bfa7e42c813204712",
+      "workItems": [
+        3637,
+        3718,
+        3725
+      ],
+      "tags": [
+        "ai-authored"
+      ],
+      "evidenceFiles": [],
+      "layers": {
+        "logic": {
+          "project": "probes/authored/vc95a6a1a9d/8894b083ccb4/Authored.logic.csproj",
+          "filter": "FullyQualifiedName~Vega.AutoTest.Authored.UnobservedTaskRegressionTests.",
+          "timeoutSeconds": 600,
+          "minAssertions": 6,
+          "requiresVegaExe": true,
+          "requiresL1Api": false
+        }
+      }
+    },
+    {
+      "id": "authored-vc95a6a1a9d-8894b083ccb4-fallback-log",
+      "title": "Fallback logging retains diagnostics, supports concurrent append, enforces its size guard and swallows failures",
+      "targetSha": "8894b083ccb44dc7abda592bfa7e42c813204712",
+      "workItems": [
+        3637,
+        3718,
+        3725
+      ],
+      "tags": [
+        "ai-authored"
+      ],
+      "evidenceFiles": [],
+      "layers": {
+        "logic": {
+          "project": "probes/authored/vc95a6a1a9d/8894b083ccb4/Authored.logic.csproj",
+          "filter": "FullyQualifiedName~Vega.AutoTest.Authored.FallbackLogRegressionTests.",
+          "timeoutSeconds": 600,
+          "minAssertions": 41,
+          "requiresVegaExe": true,
+          "requiresL1Api": false
+        }
+      }
+    },
+    {
+      "id": "authored-vdceebf0e01-d07d0e7045b7-uniformity-component-contract",
+      "title": "Independent tails, measured boundaries, legacy migration and algorithm factor consumption",
+      "targetSha": "d07d0e7045b747753a1d1a70769e9853ee35ddd2",
+      "workItems": [
+        3722
+      ],
+      "tags": [
+        "ai-authored"
+      ],
+      "evidenceFiles": [],
+      "layers": {
+        "logic": {
+          "project": "probes/authored/vdceebf0e01/d07d0e7045b7/Authored.logic.csproj",
+          "filter": "FullyQualifiedName~Vega.AutoTest.Authored.UniformityComponentTests.",
+          "timeoutSeconds": 600,
+          "minAssertions": 70,
+          "requiresVegaExe": true,
+          "requiresL1Api": false
+        }
+      }
+    },
+    {
+      "id": "authored-vdceebf0e01-d07d0e7045b7-uniformity-import-reentry-statistics",
+      "title": "Import legacy results and reload edited disk results through actual Uniformity navigation",
+      "targetSha": "d07d0e7045b747753a1d1a70769e9853ee35ddd2",
+      "workItems": [
+        3722
+      ],
+      "tags": [
+        "ai-authored"
+      ],
+      "evidenceFiles": [],
+      "layers": {
+        "uia": {
+          "project": "probes/authored/vdceebf0e01/d07d0e7045b7/Authored.uia.csproj",
+          "filter": "FullyQualifiedName~Vega.AutoTest.Authored.UniformityWorkflowTests.",
+          "timeoutSeconds": 600,
+          "minAssertions": 25,
+          "requiresVegaExe": true,
+          "requiresL1Api": false
+        }
+      }
+    },
+    {
+      "id": "authored-v62156ef44b-d07d0e7045b7-uniformity-component-contract",
+      "title": "Independent tails, measured boundaries, legacy migration and algorithm factor consumption",
+      "targetSha": "d07d0e7045b747753a1d1a70769e9853ee35ddd2",
+      "workItems": [
+        3722
+      ],
+      "tags": [
+        "ai-authored"
+      ],
+      "evidenceFiles": [],
+      "layers": {
+        "logic": {
+          "project": "probes/authored/v62156ef44b/d07d0e7045b7/Authored.logic.csproj",
+          "filter": "FullyQualifiedName~Vega.AutoTest.Authored.UniformityComponentTests.",
+          "timeoutSeconds": 600,
+          "minAssertions": 70,
+          "requiresVegaExe": true,
+          "requiresL1Api": false
+        }
+      }
+    },
+    {
+      "id": "authored-v62156ef44b-d07d0e7045b7-uniformity-import-reentry-statistics",
+      "title": "Import legacy results and reload edited disk results through actual Uniformity navigation",
+      "targetSha": "d07d0e7045b747753a1d1a70769e9853ee35ddd2",
+      "workItems": [
+        3722
+      ],
+      "tags": [
+        "ai-authored"
+      ],
+      "evidenceFiles": [],
+      "layers": {
+        "uia": {
+          "project": "probes/authored/v62156ef44b/d07d0e7045b7/Authored.uia.csproj",
+          "filter": "FullyQualifiedName~Vega.AutoTest.Authored.UniformityWorkflowTests.",
+          "timeoutSeconds": 600,
+          "minAssertions": 25,
+          "requiresVegaExe": true,
+          "requiresL1Api": false
+        }
+      }
     }
   ]
 }
