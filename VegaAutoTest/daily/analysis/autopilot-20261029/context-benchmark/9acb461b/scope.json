@@ -1,0 +1,9 @@
+{
+  "sha": "9acb461b7cf876f8087a3b76d53e0b98d87b7e11",
+  "diff": "C:\\AutoTest\\AutoTest\\VegaAutoTest\\daily\\runs\\20261028T233512+0800_89fd3e\\revalidation-20261029T103639_eb3c92\\9acb461b.diff",
+  "workItems": [
+    3670
+  ],
+  "sourceManifest": "C:\\AutoTest\\AutoTest\\VegaAutoTest\\daily\\runs\\20261028T233512+0800_89fd3e\\revalidation-20261029T103639_eb3c92\\manifest.json",
+  "requiredReview": "Read this commit diff and work-item acceptance steps; check actual UI coverage before execution"
+}

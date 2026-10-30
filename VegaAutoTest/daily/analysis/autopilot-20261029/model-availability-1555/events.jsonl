@@ -1,0 +1,8 @@
+2026-10-29T07:55:21.675045Z  WARN codex_core::shell_snapshot: Failed to create shell snapshot for powershell: Shell snapshot not supported yet for PowerShell
+{"type":"thread.started","thread_id":"01a186a8-08c2-7e70-b45c-e1deed9d9ba3"}
+2026-10-29T07:55:21.803177Z  WARN codex_core_plugins::manifest: ignoring interface.defaultPrompt[0]: prompt must be at most 128 characters path=file:///C:/Users/Administrator/.codex/.tmp/plugins/plugins/ngs-analysis/.codex-plugin/plugin.json
+{"type":"turn.started"}
+2026-10-29T07:55:23.545631Z  WARN codex_core_plugins::manifest: ignoring interface.defaultPrompt[0]: prompt must be at most 128 characters path=file:///C:/Users/Administrator/.codex/.tmp/plugins/plugins/ngs-analysis/.codex-plugin/plugin.json
+2026-10-29T07:55:23.555710Z  WARN codex_core_plugins::manifest: ignoring interface.defaultPrompt[0]: prompt must be at most 128 characters path=file:///C:/Users/Administrator/.codex/.tmp/plugins/plugins/ngs-analysis/.codex-plugin/plugin.json
+{"type":"item.completed","item":{"id":"item_0","type":"agent_message","text":"{\"neededSources\":[],\"files\":[],\"cases\":[],\"requirements\":[]}"}}
+{"type":"turn.completed","usage":{"input_tokens":12183,"cached_input_tokens":9600,"cache_write_input_tokens":0,"output_tokens":79,"reasoning_output_tokens":53}}

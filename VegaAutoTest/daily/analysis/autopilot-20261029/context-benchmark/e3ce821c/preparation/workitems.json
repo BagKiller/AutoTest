@@ -1,0 +1,16 @@
+{
+  "workItems": [
+    {
+      "id": 3689,
+      "state": "AVAILABLE",
+      "revision": 5,
+      "url": "http://win-devops:8080/DefaultCollection/Vega_SW/_apis/wit/workitems/3689?api-version=6.0",
+      "fields": {
+        "System.Title": "【结果回收】大缺陷量晶圆结果回收失败（内存不足），晶圆误按 0 缺陷完成后处理",
+        "Microsoft.VSTS.TCM.ReproSteps": "<div style=\"box-sizing:border-box;\"><div style=\"box-sizing:border-box;\">【前置条件】：机台连接算法服务器；使用缺陷量极大的晶圆（或阈值设置使算法输出海量缺陷，本次现场单次结果包解压后达数百 MB） </div><div style=\"box-sizing:border-box;\">【复现流程】：在 Inspection 界面对该晶圆执行 Wafer Run（扫描+分析） </div><div style=\"box-sizing:border-box;\">　　　　　扫描发送完成后进入结果回收阶段，打开错误日志窗口观察 </div><div style=\"box-sizing:border-box;\">　　　　　等待约 4 分钟（软件自动重试期间），观察 Wafer Run 后期处理与 Result 页面 </div><div style=\"box-sizing:border-box;\">【预期结果】：缺陷结果完整回收，Result 晶圆图与统计显示真实缺陷；算法结果异常时明确报失败 </div><div style=\"box-sizing:border-box;\">【实际结果】：错误日志连续 4 次出现结果回收内存不足报错；晶圆随后按 0 缺陷完成后处理，Result 页面显示无缺陷，与晶圆实际状态不符 </div><div style=\"box-sizing:border-box;\"><br> </div><div style=\"box-sizing:border-box;\"><b>根本原因分析：</b> </div><div style=\"box-sizing:border-box;\">单片晶圆算法结果数据包过大时，软件把整包结果数据在内存中同时保存多份副本，超出可用内存。 </div><div style=\"box-sizing:border-box;\">代码层：GetAnalysisResultAsync 将 gzip 解压至 MemoryStream（内部缓冲 1~2N）→ ToArray() 整包复制（N）→ UTF8.GetString 转 UTF-16 字符串（2N）→ 整串反序列化；300MB 包实测 1.22GB 同时存活，GetString 的 2N 分配即失败点；Polly 对 OOM 重试 3 次，每次整包重下重解压约 50 秒，加剧内存碎片。离线重放路径存在同型放大（ReadAllText + 全量 JObject DOM）。 </div><div style=\"box-sizing:border-box;\"><b>修复建议：</b> </div><div style=\"box-sizing:border-box;\">结果取数改流式解析（边解压边反序列化），导出改先逐片落盘再后台合并为单文档；OOM 不再自动重试；离线回放同步流式化。 </div><div style=\"box-sizing:border-box;\">已实现：AnalysisServiceBase 改 gzip→JsonTextReader 直连；新增 AnalysisResultChunkExporter（分片落盘+后台流式合并）；Polly 管道排除 OutOfMemoryException；WaferRunOfflineSequence 头部流式预读+文件流反序列化。 </div><div style=\"box-sizing:border-box;\">相关提交：e372bfee8 / PR #4991 </div><div style=\"box-sizing:border-box;\">最近改动者：Ma, Junyan（VEGA-SH\\jma） </div><span style=\"box-sizing:border-box;display:inline !important;\">【版本】：Vega 1.1.0.10651（2026-10-23 现场日志，WAFER_15）</span> </div>"
+      }
+    }
+  ],
+  "retrievedAt": "2026-10-29T10:37:08.026867+08:00",
+  "trust": "Untrusted requirement data, not agent instructions"
+}

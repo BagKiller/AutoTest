@@ -1,0 +1,16 @@
+{
+  "workItems": [
+    {
+      "id": 3670,
+      "state": "AVAILABLE",
+      "revision": 4,
+      "url": "http://win-devops:8080/DefaultCollection/Vega_SW/_apis/wit/workitems/3670?api-version=6.0",
+      "fields": {
+        "System.Title": "DF Cali：筛选光学设置和产量，同步指定配置项的配方和包含域",
+        "System.Description": "<div><span style=\"display:inline !important;\">需求：DF设置校准队列时，任选一配置项可执行同步配方功能，筛选出与当前所选项同产量/入射光/入射偏振的配置项，选择目标项及尺寸，确认后将同步相应的尺寸配方和包含域。</span><br> </div>"
+      }
+    }
+  ],
+  "retrievedAt": "2026-10-29T10:37:22.143399+08:00",
+  "trust": "Untrusted requirement data, not agent instructions"
+}

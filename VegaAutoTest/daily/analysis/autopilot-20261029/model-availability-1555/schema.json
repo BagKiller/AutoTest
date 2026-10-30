@@ -1,0 +1,146 @@
+{
+  "type": "object",
+  "properties": {
+    "neededSources": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "files": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "path": {
+            "type": "string"
+          },
+          "content": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "path",
+          "content"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "cases": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "key": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "className": {
+            "type": "string"
+          },
+          "layer": {
+            "type": "string",
+            "enum": [
+              "logic",
+              "uia"
+            ]
+          },
+          "profiles": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "minAssertions": {
+            "type": "integer",
+            "minimum": 1
+          }
+        },
+        "required": [
+          "key",
+          "title",
+          "className",
+          "layer",
+          "profiles",
+          "minAssertions"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "requirements": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "workItems": {
+            "type": "array",
+            "items": {
+              "type": "integer"
+            }
+          },
+          "steps": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "expected": {
+            "type": "string"
+          },
+          "oracle": {
+            "type": "string"
+          },
+          "uiRequired": {
+            "type": "boolean"
+          },
+          "profiles": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "caseKeys": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "existingCaseIds": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "gap": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "workItems",
+          "steps",
+          "expected",
+          "oracle",
+          "uiRequired",
+          "profiles",
+          "caseKeys",
+          "existingCaseIds",
+          "gap"
+        ],
+        "additionalProperties": false
+      }
+    }
+  },
+  "required": [
+    "neededSources",
+    "files",
+    "cases",
+    "requirements"
+  ],
+  "additionalProperties": false
+}

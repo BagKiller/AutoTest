@@ -1,0 +1,1312 @@
+{
+  "campaign": "C:\\AutoTest\\AutoTest\\VegaAutoTest\\daily\\runs\\20261027T233318+0800_9ad645\\revalidation-20261028T164432_577c69",
+  "workflowState": "FINISHED",
+  "acceptanceState": "INCOMPLETE",
+  "statusCounts": {
+    "BLOCKED": 8,
+    "ERROR": 1,
+    "NEEDS_CASE": 1
+  },
+  "pending": 0,
+  "commits": [
+    {
+      "sha": "00b3004a58decb90f1edba05b6bc2fb446c25e80",
+      "title": "已合并 PR 5015: fix: Xilinx ramdisk 落盘名与算法 bin 契约断裂——fileBaseName 把 run 种子关回采集层（WI #3706）",
+      "status": "BLOCKED",
+      "buildSucceeded": true,
+      "runs": [
+        {
+          "sha": "00b3004a58decb90f1edba05b6bc2fb446c25e80",
+          "caseId": "commit-00b3004a58de-cache-isolation",
+          "phase": "headless",
+          "verdict": "PASS",
+          "code": "OK",
+          "runId": "20261028T094312Z_wi0_d210984",
+          "passed": 4,
+          "failed": 0,
+          "skipped": 0,
+          "resultPath": "C:\\AutoTest\\AutoTest\\VegaAutoTest\\daily\\runs\\20261027T233318+0800_9ad645\\revalidation-20261028T164432_577c69\\commits\\00b3004a58decb90f1edba05b6bc2fb446c25e80\\runner\\20261028T094312Z_wi0_d210984\\result.json"
+        },
+        {
+          "sha": "00b3004a58decb90f1edba05b6bc2fb446c25e80",
+          "caseId": "commit-00b3004a58de-product-tests",
+          "phase": "headless",
+          "verdict": "PASS",
+          "code": "OK",
+          "runId": "20261028T094411Z_wi0_7690018",
+          "passed": 1,
+          "failed": 0,
+          "skipped": 0,
+          "resultPath": "C:\\AutoTest\\AutoTest\\VegaAutoTest\\daily\\runs\\20261027T233318+0800_9ad645\\revalidation-20261028T164432_577c69\\commits\\00b3004a58decb90f1edba05b6bc2fb446c25e80\\runner\\20261028T094411Z_wi0_7690018\\result.json"
+        },
+        {
+          "sha": "00b3004a58decb90f1edba05b6bc2fb446c25e80",
+          "caseId": "daily-recent10-v3",
+          "phase": "headless",
+          "verdict": "PASS",
+          "code": "OK",
+          "runId": "20261028T094424Z_wi0_df6330c",
+          "passed": 320,
+          "failed": 0,
+          "skipped": 0,
+          "resultPath": "C:\\AutoTest\\AutoTest\\VegaAutoTest\\daily\\runs\\20261027T233318+0800_9ad645\\revalidation-20261028T164432_577c69\\commits\\00b3004a58decb90f1edba05b6bc2fb446c25e80\\runner\\20261028T094424Z_wi0_df6330c\\result.json"
+        },
+        {
+          "sha": "00b3004a58decb90f1edba05b6bc2fb446c25e80",
+          "caseId": "daily-supplement",
+          "phase": "headless",
+          "verdict": "PASS",
+          "code": "OK",
+          "runId": "20261028T094602Z_wi0_e985deb",
+          "passed": 18,
+          "failed": 0,
+          "skipped": 0,
+          "resultPath": "C:\\AutoTest\\AutoTest\\VegaAutoTest\\daily\\runs\\20261027T233318+0800_9ad645\\revalidation-20261028T164432_577c69\\commits\\00b3004a58decb90f1edba05b6bc2fb446c25e80\\runner\\20261028T094602Z_wi0_e985deb\\result.json"
+        },
+        {
+          "sha": "00b3004a58decb90f1edba05b6bc2fb446c25e80",
+          "caseId": "simulation-ui-00b3004a58de",
+          "phase": "ui-Vega300-HWv1",
+          "verdict": "BLOCKED",
+          "code": "ZERO_ASSERTIONS_MATCHED",
+          "runId": "20261028T094712Z_wi0_1b2d8e3",
+          "passed": 0,
+          "failed": 0,
+          "skipped": 1,
+          "resultPath": "C:\\AutoTest\\AutoTest\\VegaAutoTest\\daily\\runs\\20261027T233318+0800_9ad645\\revalidation-20261028T164432_577c69\\commits\\00b3004a58decb90f1edba05b6bc2fb446c25e80\\runner\\20261028T094712Z_wi0_1b2d8e3\\result.json"
+        },
+        {
+          "sha": "00b3004a58decb90f1edba05b6bc2fb446c25e80",
+          "caseId": "simulation-ui-00b3004a58de",
+          "phase": "ui-Vega500",
+          "verdict": "BLOCKED",
+          "code": "ZERO_ASSERTIONS_MATCHED",
+          "runId": "20261028T094734Z_wi0_ea9ba5a",
+          "passed": 0,
+          "failed": 0,
+          "skipped": 1,
+          "resultPath": "C:\\AutoTest\\AutoTest\\VegaAutoTest\\daily\\runs\\20261027T233318+0800_9ad645\\revalidation-20261028T164432_577c69\\commits\\00b3004a58decb90f1edba05b6bc2fb446c25e80\\runner\\20261028T094734Z_wi0_ea9ba5a\\result.json"
+        }
+      ],
+      "uiAttempts": 2,
+      "lockedRestore": null,
+      "defaultLockedRestore": null,
+      "report": "C:\\AutoTest\\AutoTest\\VegaAutoTest\\daily\\runs\\20261027T233318+0800_9ad645\\revalidation-20261028T164432_577c69\\commits\\00b3004a58decb90f1edba05b6bc2fb446c25e80\\report.md"
+    },
+    {
+      "sha": "6b4cf4af7928fc7173131df26627b24d6f386e97",
+      "title": "已合并 PR 4998: fix: 限制状态栏日志刷新，收敛原始数据拷贝失败日志",
+      "status": "BLOCKED",
+      "buildSucceeded": true,
+      "runs": [
+        {
+          "sha": "6b4cf4af7928fc7173131df26627b24d6f386e97",
+          "caseId": "commit-6b4cf4af7928-behavior",
+          "phase": "headless",
+          "verdict": "PASS",
+          "code": "OK",
+          "runId": "20261028T094828Z_wi0_3ed1444",
+          "passed": 2,
+          "failed": 0,
+          "skipped": 0,
+          "resultPath": "C:\\AutoTest\\AutoTest\\VegaAutoTest\\daily\\runs\\20261027T233318+0800_9ad645\\revalidation-20261028T164432_577c69\\commits\\6b4cf4af7928fc7173131df26627b24d6f386e97\\runner\\20261028T094828Z_wi0_3ed1444\\result.json"
+        },
+        {
+          "sha": "6b4cf4af7928fc7173131df26627b24d6f386e97",
+          "caseId": "daily-recent10-v3",
+          "phase": "headless",
+          "verdict": "PASS",
+          "code": "OK",
+          "runId": "20261028T094839Z_wi0_6faa792",
+          "passed": 320,
+          "failed": 0,
+          "skipped": 0,
+          "resultPath": "C:\\AutoTest\\AutoTest\\VegaAutoTest\\daily\\runs\\20261027T233318+0800_9ad645\\revalidation-20261028T164432_577c69\\commits\\6b4cf4af7928fc7173131df26627b24d6f386e97\\runner\\20261028T094839Z_wi0_6faa792\\result.json"
+        },
+        {
+          "sha": "6b4cf4af7928fc7173131df26627b24d6f386e97",
+          "caseId": "daily-supplement",
+          "phase": "headless",
+          "verdict": "PASS",
+          "code": "OK",
+          "runId": "20261028T095031Z_wi0_7c61298",
+          "passed": 18,
+          "failed": 0,
+          "skipped": 0,
+          "resultPath": "C:\\AutoTest\\AutoTest\\VegaAutoTest\\daily\\runs\\20261027T233318+0800_9ad645\\revalidation-20261028T164432_577c69\\commits\\6b4cf4af7928fc7173131df26627b24d6f386e97\\runner\\20261028T095031Z_wi0_7c61298\\result.json"
+        },
+        {
+          "sha": "6b4cf4af7928fc7173131df26627b24d6f386e97",
+          "caseId": "simulation-ui-6b4cf4af7928",
+          "phase": "ui-Vega500",
+          "verdict": "BLOCKED",
+          "code": "ZERO_ASSERTIONS_MATCHED",
+          "runId": "20261028T095122Z_wi0_7274a65",
+          "passed": 0,
+          "failed": 0,
+          "skipped": 1,
+          "resultPath": "C:\\AutoTest\\AutoTest\\VegaAutoTest\\daily\\runs\\20261027T233318+0800_9ad645\\revalidation-20261028T164432_577c69\\commits\\6b4cf4af7928fc7173131df26627b24d6f386e97\\runner\\20261028T095122Z_wi0_7274a65\\result.json"
+        }
+      ],
+      "uiAttempts": 1,
+      "lockedRestore": null,
+      "defaultLockedRestore": null,
+      "report": "C:\\AutoTest\\AutoTest\\VegaAutoTest\\daily\\runs\\20261027T233318+0800_9ad645\\revalidation-20261028T164432_577c69\\commits\\6b4cf4af7928fc7173131df26627b24d6f386e97\\report.md"
+    },
+    {
+      "sha": "227ace85104287d877d8b6869210e573e06bd817",
+      "title": "已合并 PR 5005: fix: Vega100 高产率+斜入射S偏振 BPS 查表报错（补 V100 子表 HT+S 规则 + 编辑器推荐值同源）",
+      "status": "BLOCKED",
+      "buildSucceeded": true,
+      "runs": [
+        {
+          "sha": "227ace85104287d877d8b6869210e573e06bd817",
+          "caseId": "commit-227ace851042-product-tests",
+          "phase": "headless",
+          "verdict": "PASS",
+          "code": "OK",
+          "runId": "20261028T095214Z_wi0_704ed77",
+          "passed": 6,
+          "failed": 0,
+          "skipped": 0,
+          "resultPath": "C:\\AutoTest\\AutoTest\\VegaAutoTest\\daily\\runs\\20261027T233318+0800_9ad645\\revalidation-20261028T164432_577c69\\commits\\227ace85104287d877d8b6869210e573e06bd817\\runner\\20261028T095214Z_wi0_704ed77\\result.json"
+        },
+        {
+          "sha": "227ace85104287d877d8b6869210e573e06bd817",
+          "caseId": "daily-recent10-v3",
+          "phase": "headless",
+          "verdict": "PASS",
+          "code": "OK",
+          "runId": "20261028T095316Z_wi0_a4e2baa",
+          "passed": 320,
+          "failed": 0,
+          "skipped": 0,
+          "resultPath": "C:\\AutoTest\\AutoTest\\VegaAutoTest\\daily\\runs\\20261027T233318+0800_9ad645\\revalidation-20261028T164432_577c69\\commits\\227ace85104287d877d8b6869210e573e06bd817\\runner\\20261028T095316Z_wi0_a4e2baa\\result.json"
+        },
+        {
+          "sha": "227ace85104287d877d8b6869210e573e06bd817",
+          "caseId": "daily-supplement",
+          "phase": "headless",
+          "verdict": "PASS",
+          "code": "OK",
+          "runId": "20261028T095426Z_wi0_3bb8481",
+          "passed": 18,
+          "failed": 0,
+          "skipped": 0,
+          "resultPath": "C:\\AutoTest\\AutoTest\\VegaAutoTest\\daily\\runs\\20261027T233318+0800_9ad645\\revalidation-20261028T164432_577c69\\commits\\227ace85104287d877d8b6869210e573e06bd817\\runner\\20261028T095426Z_wi0_3bb8481\\result.json"
+        },
+        {
+          "sha": "227ace85104287d877d8b6869210e573e06bd817",
+          "caseId": "simulation-ui-227ace851042",
+          "phase": "ui-Vega100-PIC",
+          "verdict": "BLOCKED",
+          "code": "ZERO_ASSERTIONS_MATCHED",
+          "runId": "20261028T095513Z_wi0_4092024",
+          "passed": 0,
+          "failed": 0,
+          "skipped": 1,
+          "resultPath": "C:\\AutoTest\\AutoTest\\VegaAutoTest\\daily\\runs\\20261027T233318+0800_9ad645\\revalidation-20261028T164432_577c69\\commits\\227ace85104287d877d8b6869210e573e06bd817\\runner\\20261028T095513Z_wi0_4092024\\result.json"
+        }
+      ],
+      "uiAttempts": 1,
+      "lockedRestore": null,
+      "defaultLockedRestore": null,
+      "report": "C:\\AutoTest\\AutoTest\\VegaAutoTest\\daily\\runs\\20261027T233318+0800_9ad645\\revalidation-20261028T164432_577c69\\commits\\227ace85104287d877d8b6869210e573e06bd817\\report.md"
+    },
+    {
+      "sha": "bd9ccb55d6de34617bb8c676fef7d8e2c9b0b6e0",
+      "title": "已合并 PR 5012: fix: PMT 校准共享条件表内置兜底对齐发布 JSON，加载失败时衰减系数不再静默算错",
+      "status": "ERROR",
+      "buildSucceeded": false,
+      "runs": [],
+      "uiAttempts": 0,
+      "lockedRestore": null,
+      "defaultLockedRestore": null,
+      "report": "C:\\AutoTest\\AutoTest\\VegaAutoTest\\daily\\runs\\20261027T233318+0800_9ad645\\revalidation-20261028T164432_577c69\\commits\\bd9ccb55d6de34617bb8c676fef7d8e2c9b0b6e0\\report.md"
+    },
+    {
+      "sha": "19c18be54684cccc9b0c02b29a021300953f713d",
+      "title": "已合并 PR 4950: feat: Vega100 对位数据源固定 可选DN 或 DW通道",
+      "status": "BLOCKED",
+      "buildSucceeded": true,
+      "runs": [
+        {
+          "sha": "19c18be54684cccc9b0c02b29a021300953f713d",
+          "caseId": "commit-19c18be54684-product-tests",
+          "phase": "headless",
+          "verdict": "PASS",
+          "code": "OK",
+          "runId": "20261028T095615Z_wi0_0921cdd",
+          "passed": 8,
+          "failed": 0,
+          "skipped": 0,
+          "resultPath": "C:\\AutoTest\\AutoTest\\VegaAutoTest\\daily\\runs\\20261027T233318+0800_9ad645\\revalidation-20261028T164432_577c69\\commits\\19c18be54684cccc9b0c02b29a021300953f713d\\runner\\20261028T095615Z_wi0_0921cdd\\result.json"
+        },
+        {
+          "sha": "19c18be54684cccc9b0c02b29a021300953f713d",
+          "caseId": "daily-recent10-v3",
+          "phase": "headless",
+          "verdict": "PASS",
+          "code": "OK",
+          "runId": "20261028T095730Z_wi0_ecfa649",
+          "passed": 324,
+          "failed": 0,
+          "skipped": 0,
+          "resultPath": "C:\\AutoTest\\AutoTest\\VegaAutoTest\\daily\\runs\\20261027T233318+0800_9ad645\\revalidation-20261028T164432_577c69\\commits\\19c18be54684cccc9b0c02b29a021300953f713d\\runner\\20261028T095730Z_wi0_ecfa649\\result.json"
+        },
+        {
+          "sha": "19c18be54684cccc9b0c02b29a021300953f713d",
+          "caseId": "daily-supplement",
+          "phase": "headless",
+          "verdict": "PASS",
+          "code": "OK",
+          "runId": "20261028T095840Z_wi0_f366866",
+          "passed": 18,
+          "failed": 0,
+          "skipped": 0,
+          "resultPath": "C:\\AutoTest\\AutoTest\\VegaAutoTest\\daily\\runs\\20261027T233318+0800_9ad645\\revalidation-20261028T164432_577c69\\commits\\19c18be54684cccc9b0c02b29a021300953f713d\\runner\\20261028T095840Z_wi0_f366866\\result.json"
+        },
+        {
+          "sha": "19c18be54684cccc9b0c02b29a021300953f713d",
+          "caseId": "simulation-ui-19c18be54684",
+          "phase": "ui-Vega100-PIC",
+          "verdict": "BLOCKED",
+          "code": "ZERO_ASSERTIONS_MATCHED",
+          "runId": "20261028T095929Z_wi0_0d43196",
+          "passed": 0,
+          "failed": 0,
+          "skipped": 1,
+          "resultPath": "C:\\AutoTest\\AutoTest\\VegaAutoTest\\daily\\runs\\20261027T233318+0800_9ad645\\revalidation-20261028T164432_577c69\\commits\\19c18be54684cccc9b0c02b29a021300953f713d\\runner\\20261028T095929Z_wi0_0d43196\\result.json"
+        }
+      ],
+      "uiAttempts": 1,
+      "lockedRestore": null,
+      "defaultLockedRestore": null,
+      "report": "C:\\AutoTest\\AutoTest\\VegaAutoTest\\daily\\runs\\20261027T233318+0800_9ad645\\revalidation-20261028T164432_577c69\\commits\\19c18be54684cccc9b0c02b29a021300953f713d\\report.md"
+    },
+    {
+      "sha": "9fa008a98a3547a9480f3196e7758f683ca9a5da",
+      "title": "已合并 PR 5014: fix: SPA 缺陷定义以 TargetDefectMap 为源头并挂存储层对账（WI 3678）",
+      "status": "BLOCKED",
+      "buildSucceeded": true,
+      "runs": [
+        {
+          "sha": "9fa008a98a3547a9480f3196e7758f683ca9a5da",
+          "caseId": "commit-9fa008a98a35-product-tests",
+          "phase": "headless",
+          "verdict": "PASS",
+          "code": "OK",
+          "runId": "20261028T100038Z_wi0_c3ea547",
+          "passed": 39,
+          "failed": 0,
+          "skipped": 0,
+          "resultPath": "C:\\AutoTest\\AutoTest\\VegaAutoTest\\daily\\runs\\20261027T233318+0800_9ad645\\revalidation-20261028T164432_577c69\\commits\\9fa008a98a3547a9480f3196e7758f683ca9a5da\\runner\\20261028T100038Z_wi0_c3ea547\\result.json"
+        },
+        {
+          "sha": "9fa008a98a3547a9480f3196e7758f683ca9a5da",
+          "caseId": "daily-recent10-v3",
+          "phase": "headless",
+          "verdict": "PASS",
+          "code": "OK",
+          "runId": "20261028T100201Z_wi0_1538673",
+          "passed": 324,
+          "failed": 0,
+          "skipped": 0,
+          "resultPath": "C:\\AutoTest\\AutoTest\\VegaAutoTest\\daily\\runs\\20261027T233318+0800_9ad645\\revalidation-20261028T164432_577c69\\commits\\9fa008a98a3547a9480f3196e7758f683ca9a5da\\runner\\20261028T100201Z_wi0_1538673\\result.json"
+        },
+        {
+          "sha": "9fa008a98a3547a9480f3196e7758f683ca9a5da",
+          "caseId": "daily-supplement",
+          "phase": "headless",
+          "verdict": "PASS",
+          "code": "OK",
+          "runId": "20261028T100313Z_wi0_834c4fb",
+          "passed": 18,
+          "failed": 0,
+          "skipped": 0,
+          "resultPath": "C:\\AutoTest\\AutoTest\\VegaAutoTest\\daily\\runs\\20261027T233318+0800_9ad645\\revalidation-20261028T164432_577c69\\commits\\9fa008a98a3547a9480f3196e7758f683ca9a5da\\runner\\20261028T100313Z_wi0_834c4fb\\result.json"
+        },
+        {
+          "sha": "9fa008a98a3547a9480f3196e7758f683ca9a5da",
+          "caseId": "simulation-ui-9fa008a98a35",
+          "phase": "ui-Vega300-HWv1",
+          "verdict": "BLOCKED",
+          "code": "ZERO_ASSERTIONS_MATCHED",
+          "runId": "20261028T100409Z_wi0_0b16a18",
+          "passed": 0,
+          "failed": 0,
+          "skipped": 1,
+          "resultPath": "C:\\AutoTest\\AutoTest\\VegaAutoTest\\daily\\runs\\20261027T233318+0800_9ad645\\revalidation-20261028T164432_577c69\\commits\\9fa008a98a3547a9480f3196e7758f683ca9a5da\\runner\\20261028T100409Z_wi0_0b16a18\\result.json"
+        }
+      ],
+      "uiAttempts": 1,
+      "lockedRestore": null,
+      "defaultLockedRestore": null,
+      "report": "C:\\AutoTest\\AutoTest\\VegaAutoTest\\daily\\runs\\20261027T233318+0800_9ad645\\revalidation-20261028T164432_577c69\\commits\\9fa008a98a3547a9480f3196e7758f683ca9a5da\\report.md"
+    },
+    {
+      "sha": "d117a21d8befd0cd03a70aa9a95da223c33a0728",
+      "title": "已合并 PR 5020: fix: Uniformity Verify 标准差过小时界面显示 0.000 误导，小值改科学计数法",
+      "status": "BLOCKED",
+      "buildSucceeded": true,
+      "runs": [
+        {
+          "sha": "d117a21d8befd0cd03a70aa9a95da223c33a0728",
+          "caseId": "commit-d117a21d8bef-product-tests",
+          "phase": "headless",
+          "verdict": "PASS",
+          "code": "OK",
+          "runId": "20261028T100519Z_wi0_701e639",
+          "passed": 11,
+          "failed": 0,
+          "skipped": 0,
+          "resultPath": "C:\\AutoTest\\AutoTest\\VegaAutoTest\\daily\\runs\\20261027T233318+0800_9ad645\\revalidation-20261028T164432_577c69\\commits\\d117a21d8befd0cd03a70aa9a95da223c33a0728\\runner\\20261028T100519Z_wi0_701e639\\result.json"
+        },
+        {
+          "sha": "d117a21d8befd0cd03a70aa9a95da223c33a0728",
+          "caseId": "daily-recent10-v3",
+          "phase": "headless",
+          "verdict": "PASS",
+          "code": "OK",
+          "runId": "20261028T100559Z_wi0_8498649",
+          "passed": 324,
+          "failed": 0,
+          "skipped": 0,
+          "resultPath": "C:\\AutoTest\\AutoTest\\VegaAutoTest\\daily\\runs\\20261027T233318+0800_9ad645\\revalidation-20261028T164432_577c69\\commits\\d117a21d8befd0cd03a70aa9a95da223c33a0728\\runner\\20261028T100559Z_wi0_8498649\\result.json"
+        },
+        {
+          "sha": "d117a21d8befd0cd03a70aa9a95da223c33a0728",
+          "caseId": "wi3644-core",
+          "phase": "headless",
+          "verdict": "PASS",
+          "code": "OK",
+          "runId": "20261028T100709Z_wi0_071c589",
+          "passed": 99,
+          "failed": 0,
+          "skipped": 0,
+          "resultPath": "C:\\AutoTest\\AutoTest\\VegaAutoTest\\daily\\runs\\20261027T233318+0800_9ad645\\revalidation-20261028T164432_577c69\\commits\\d117a21d8befd0cd03a70aa9a95da223c33a0728\\runner\\20261028T100709Z_wi0_071c589\\result.json"
+        },
+        {
+          "sha": "d117a21d8befd0cd03a70aa9a95da223c33a0728",
+          "caseId": "daily-supplement",
+          "phase": "headless",
+          "verdict": "PASS",
+          "code": "OK",
+          "runId": "20261028T100757Z_wi0_b3ad58a",
+          "passed": 18,
+          "failed": 0,
+          "skipped": 0,
+          "resultPath": "C:\\AutoTest\\AutoTest\\VegaAutoTest\\daily\\runs\\20261027T233318+0800_9ad645\\revalidation-20261028T164432_577c69\\commits\\d117a21d8befd0cd03a70aa9a95da223c33a0728\\runner\\20261028T100757Z_wi0_b3ad58a\\result.json"
+        },
+        {
+          "sha": "d117a21d8befd0cd03a70aa9a95da223c33a0728",
+          "caseId": "simulation-ui-d117a21d8bef",
+          "phase": "ui-Vega300-HWv1",
+          "verdict": "BLOCKED",
+          "code": "ZERO_ASSERTIONS_MATCHED",
+          "runId": "20261028T100842Z_wi0_34b7cc5",
+          "passed": 0,
+          "failed": 0,
+          "skipped": 1,
+          "resultPath": "C:\\AutoTest\\AutoTest\\VegaAutoTest\\daily\\runs\\20261027T233318+0800_9ad645\\revalidation-20261028T164432_577c69\\commits\\d117a21d8befd0cd03a70aa9a95da223c33a0728\\runner\\20261028T100842Z_wi0_34b7cc5\\result.json"
+        }
+      ],
+      "uiAttempts": 1,
+      "lockedRestore": null,
+      "defaultLockedRestore": null,
+      "report": "C:\\AutoTest\\AutoTest\\VegaAutoTest\\daily\\runs\\20261027T233318+0800_9ad645\\revalidation-20261028T164432_577c69\\commits\\d117a21d8befd0cd03a70aa9a95da223c33a0728\\report.md"
+    },
+    {
+      "sha": "eba9945afbca703d94c011bb664ec627fb2dd33d",
+      "title": "已合并 PR 5017: feat: 增加 Flat 平边晶圆对位并修复扫描范围与偏移告警",
+      "status": "BLOCKED",
+      "buildSucceeded": true,
+      "runs": [
+        {
+          "sha": "eba9945afbca703d94c011bb664ec627fb2dd33d",
+          "caseId": "commit-eba9945afbca-product-tests",
+          "phase": "headless",
+          "verdict": "PASS",
+          "code": "OK",
+          "runId": "20261028T100949Z_wi0_13d228c",
+          "passed": 150,
+          "failed": 0,
+          "skipped": 0,
+          "resultPath": "C:\\AutoTest\\AutoTest\\VegaAutoTest\\daily\\runs\\20261027T233318+0800_9ad645\\revalidation-20261028T164432_577c69\\commits\\eba9945afbca703d94c011bb664ec627fb2dd33d\\runner\\20261028T100949Z_wi0_13d228c\\result.json"
+        },
+        {
+          "sha": "eba9945afbca703d94c011bb664ec627fb2dd33d",
+          "caseId": "daily-recent10-v3",
+          "phase": "headless",
+          "verdict": "PASS",
+          "code": "OK",
+          "runId": "20261028T101117Z_wi0_3402ca2",
+          "passed": 324,
+          "failed": 0,
+          "skipped": 0,
+          "resultPath": "C:\\AutoTest\\AutoTest\\VegaAutoTest\\daily\\runs\\20261027T233318+0800_9ad645\\revalidation-20261028T164432_577c69\\commits\\eba9945afbca703d94c011bb664ec627fb2dd33d\\runner\\20261028T101117Z_wi0_3402ca2\\result.json"
+        },
+        {
+          "sha": "eba9945afbca703d94c011bb664ec627fb2dd33d",
+          "caseId": "daily-supplement",
+          "phase": "headless",
+          "verdict": "PASS",
+          "code": "OK",
+          "runId": "20261028T101226Z_wi0_26aee05",
+          "passed": 18,
+          "failed": 0,
+          "skipped": 0,
+          "resultPath": "C:\\AutoTest\\AutoTest\\VegaAutoTest\\daily\\runs\\20261027T233318+0800_9ad645\\revalidation-20261028T164432_577c69\\commits\\eba9945afbca703d94c011bb664ec627fb2dd33d\\runner\\20261028T101226Z_wi0_26aee05\\result.json"
+        },
+        {
+          "sha": "eba9945afbca703d94c011bb664ec627fb2dd33d",
+          "caseId": "wi3644-core",
+          "phase": "headless",
+          "verdict": "PASS",
+          "code": "OK",
+          "runId": "20261028T101303Z_wi0_85dbe30",
+          "passed": 99,
+          "failed": 0,
+          "skipped": 0,
+          "resultPath": "C:\\AutoTest\\AutoTest\\VegaAutoTest\\daily\\runs\\20261027T233318+0800_9ad645\\revalidation-20261028T164432_577c69\\commits\\eba9945afbca703d94c011bb664ec627fb2dd33d\\runner\\20261028T101303Z_wi0_85dbe30\\result.json"
+        },
+        {
+          "sha": "eba9945afbca703d94c011bb664ec627fb2dd33d",
+          "caseId": "simulation-ui-eba9945afbca",
+          "phase": "ui-Vega300-HWv1",
+          "verdict": "BLOCKED",
+          "code": "ZERO_ASSERTIONS_MATCHED",
+          "runId": "20261028T101401Z_wi0_9031116",
+          "passed": 0,
+          "failed": 0,
+          "skipped": 1,
+          "resultPath": "C:\\AutoTest\\AutoTest\\VegaAutoTest\\daily\\runs\\20261027T233318+0800_9ad645\\revalidation-20261028T164432_577c69\\commits\\eba9945afbca703d94c011bb664ec627fb2dd33d\\runner\\20261028T101401Z_wi0_9031116\\result.json"
+        }
+      ],
+      "uiAttempts": 1,
+      "lockedRestore": null,
+      "defaultLockedRestore": null,
+      "report": "C:\\AutoTest\\AutoTest\\VegaAutoTest\\daily\\runs\\20261027T233318+0800_9ad645\\revalidation-20261028T164432_577c69\\commits\\eba9945afbca703d94c011bb664ec627fb2dd33d\\report.md"
+    },
+    {
+      "sha": "b428717a56aaba31fc343a34dc76d5c776104dda",
+      "title": "已合并 PR 5028: 代提交: refactor: 重构 DUV Notch 检测链路为外边缘提取+谷检测粗定位+深度中心精修",
+      "status": "BLOCKED",
+      "buildSucceeded": true,
+      "runs": [
+        {
+          "sha": "b428717a56aaba31fc343a34dc76d5c776104dda",
+          "caseId": "commit-b428717a56aa-behavior",
+          "phase": "headless",
+          "verdict": "PASS",
+          "code": "OK",
+          "runId": "20261028T101424Z_wi0_ea06520",
+          "passed": 4,
+          "failed": 0,
+          "skipped": 0,
+          "resultPath": "C:\\AutoTest\\AutoTest\\VegaAutoTest\\daily\\runs\\20261027T233318+0800_9ad645\\revalidation-20261028T164432_577c69\\commits\\b428717a56aaba31fc343a34dc76d5c776104dda\\runner\\20261028T101424Z_wi0_ea06520\\result.json"
+        },
+        {
+          "sha": "b428717a56aaba31fc343a34dc76d5c776104dda",
+          "caseId": "daily-recent10-v3",
+          "phase": "headless",
+          "verdict": "PASS",
+          "code": "OK",
+          "runId": "20261028T101503Z_wi0_e012863",
+          "passed": 324,
+          "failed": 0,
+          "skipped": 0,
+          "resultPath": "C:\\AutoTest\\AutoTest\\VegaAutoTest\\daily\\runs\\20261027T233318+0800_9ad645\\revalidation-20261028T164432_577c69\\commits\\b428717a56aaba31fc343a34dc76d5c776104dda\\runner\\20261028T101503Z_wi0_e012863\\result.json"
+        },
+        {
+          "sha": "b428717a56aaba31fc343a34dc76d5c776104dda",
+          "caseId": "daily-supplement",
+          "phase": "headless",
+          "verdict": "PASS",
+          "code": "OK",
+          "runId": "20261028T101613Z_wi0_69b90fa",
+          "passed": 18,
+          "failed": 0,
+          "skipped": 0,
+          "resultPath": "C:\\AutoTest\\AutoTest\\VegaAutoTest\\daily\\runs\\20261027T233318+0800_9ad645\\revalidation-20261028T164432_577c69\\commits\\b428717a56aaba31fc343a34dc76d5c776104dda\\runner\\20261028T101613Z_wi0_69b90fa\\result.json"
+        },
+        {
+          "sha": "b428717a56aaba31fc343a34dc76d5c776104dda",
+          "caseId": "simulation-ui-b428717a56aa",
+          "phase": "ui-Vega300-HWv1",
+          "verdict": "BLOCKED",
+          "code": "ZERO_ASSERTIONS_MATCHED",
+          "runId": "20261028T101659Z_wi0_98e6716",
+          "passed": 0,
+          "failed": 0,
+          "skipped": 1,
+          "resultPath": "C:\\AutoTest\\AutoTest\\VegaAutoTest\\daily\\runs\\20261027T233318+0800_9ad645\\revalidation-20261028T164432_577c69\\commits\\b428717a56aaba31fc343a34dc76d5c776104dda\\runner\\20261028T101659Z_wi0_98e6716\\result.json"
+        }
+      ],
+      "uiAttempts": 1,
+      "lockedRestore": null,
+      "defaultLockedRestore": null,
+      "report": "C:\\AutoTest\\AutoTest\\VegaAutoTest\\daily\\runs\\20261027T233318+0800_9ad645\\revalidation-20261028T164432_577c69\\commits\\b428717a56aaba31fc343a34dc76d5c776104dda\\report.md"
+    },
+    {
+      "sha": "c30defb85f294f0f66c60382a76c7fdda44cce54",
+      "title": "chore: 自动更新 NuGet 锁文件 [skip ci]",
+      "status": "NEEDS_CASE",
+      "buildSucceeded": true,
+      "runs": [
+        {
+          "sha": "c30defb85f294f0f66c60382a76c7fdda44cce54",
+          "caseId": "commit-c30defb85f29-behavior",
+          "phase": "headless",
+          "verdict": "PASS",
+          "code": "OK",
+          "runId": "20261028T101720Z_wi0_6ae9e21",
+          "passed": 1,
+          "failed": 0,
+          "skipped": 0,
+          "resultPath": "C:\\AutoTest\\AutoTest\\VegaAutoTest\\daily\\runs\\20261027T233318+0800_9ad645\\revalidation-20261028T164432_577c69\\commits\\c30defb85f294f0f66c60382a76c7fdda44cce54\\runner\\20261028T101720Z_wi0_6ae9e21\\result.json"
+        },
+        {
+          "sha": "c30defb85f294f0f66c60382a76c7fdda44cce54",
+          "caseId": "daily-recent10-v3",
+          "phase": "headless",
+          "verdict": "PASS",
+          "code": "OK",
+          "runId": "20261028T101730Z_wi0_75f2188",
+          "passed": 324,
+          "failed": 0,
+          "skipped": 0,
+          "resultPath": "C:\\AutoTest\\AutoTest\\VegaAutoTest\\daily\\runs\\20261027T233318+0800_9ad645\\revalidation-20261028T164432_577c69\\commits\\c30defb85f294f0f66c60382a76c7fdda44cce54\\runner\\20261028T101730Z_wi0_75f2188\\result.json"
+        },
+        {
+          "sha": "c30defb85f294f0f66c60382a76c7fdda44cce54",
+          "caseId": "daily-supplement",
+          "phase": "headless",
+          "verdict": "PASS",
+          "code": "OK",
+          "runId": "20261028T101850Z_wi0_939075a",
+          "passed": 18,
+          "failed": 0,
+          "skipped": 0,
+          "resultPath": "C:\\AutoTest\\AutoTest\\VegaAutoTest\\daily\\runs\\20261027T233318+0800_9ad645\\revalidation-20261028T164432_577c69\\commits\\c30defb85f294f0f66c60382a76c7fdda44cce54\\runner\\20261028T101850Z_wi0_939075a\\result.json"
+        }
+      ],
+      "uiAttempts": 0,
+      "lockedRestore": {
+        "lockBefore": "6AA0B9DF1A16CBC7EBC2A67CF934653B5F7EA0E65F7A7D72D7A2FFAD5038B280",
+        "mode": "locked restore against exact committed root lock; Simulator native-card exclusion as in normal build",
+        "lockAfter": "6AA0B9DF1A16CBC7EBC2A67CF934653B5F7EA0E65F7A7D72D7A2FFAD5038B280",
+        "lockUnchanged": true,
+        "at": "2026-10-28T17:40:20.5095723+08:00",
+        "exitCode": 1
+      },
+      "defaultLockedRestore": {
+        "exitCode": 1,
+        "project": "Vega.PD.ILaserDevice\\Vega.PD.ILaserDevice.csproj",
+        "lockAfter": "6AA0B9DF1A16CBC7EBC2A67CF934653B5F7EA0E65F7A7D72D7A2FFAD5038B280",
+        "at": "2026-10-28T17:48:07.1734053+08:00",
+        "lockUnchanged": true,
+        "mode": "locked restore against exact committed root lock",
+        "lockBefore": "6AA0B9DF1A16CBC7EBC2A67CF934653B5F7EA0E65F7A7D72D7A2FFAD5038B280",
+        "defaultTargets": true
+      },
+      "report": "C:\\AutoTest\\AutoTest\\VegaAutoTest\\daily\\runs\\20261027T233318+0800_9ad645\\revalidation-20261028T164432_577c69\\commits\\c30defb85f294f0f66c60382a76c7fdda44cce54\\report.md"
+    }
+  ],
+  "headlessRuns": [
+    {
+      "sha": "00b3004a58decb90f1edba05b6bc2fb446c25e80",
+      "caseId": "commit-00b3004a58de-cache-isolation",
+      "phase": "headless",
+      "verdict": "PASS",
+      "code": "OK",
+      "runId": "20261028T094312Z_wi0_d210984",
+      "passed": 4,
+      "failed": 0,
+      "skipped": 0,
+      "resultPath": "C:\\AutoTest\\AutoTest\\VegaAutoTest\\daily\\runs\\20261027T233318+0800_9ad645\\revalidation-20261028T164432_577c69\\commits\\00b3004a58decb90f1edba05b6bc2fb446c25e80\\runner\\20261028T094312Z_wi0_d210984\\result.json"
+    },
+    {
+      "sha": "00b3004a58decb90f1edba05b6bc2fb446c25e80",
+      "caseId": "commit-00b3004a58de-product-tests",
+      "phase": "headless",
+      "verdict": "PASS",
+      "code": "OK",
+      "runId": "20261028T094411Z_wi0_7690018",
+      "passed": 1,
+      "failed": 0,
+      "skipped": 0,
+      "resultPath": "C:\\AutoTest\\AutoTest\\VegaAutoTest\\daily\\runs\\20261027T233318+0800_9ad645\\revalidation-20261028T164432_577c69\\commits\\00b3004a58decb90f1edba05b6bc2fb446c25e80\\runner\\20261028T094411Z_wi0_7690018\\result.json"
+    },
+    {
+      "sha": "00b3004a58decb90f1edba05b6bc2fb446c25e80",
+      "caseId": "daily-recent10-v3",
+      "phase": "headless",
+      "verdict": "PASS",
+      "code": "OK",
+      "runId": "20261028T094424Z_wi0_df6330c",
+      "passed": 320,
+      "failed": 0,
+      "skipped": 0,
+      "resultPath": "C:\\AutoTest\\AutoTest\\VegaAutoTest\\daily\\runs\\20261027T233318+0800_9ad645\\revalidation-20261028T164432_577c69\\commits\\00b3004a58decb90f1edba05b6bc2fb446c25e80\\runner\\20261028T094424Z_wi0_df6330c\\result.json"
+    },
+    {
+      "sha": "00b3004a58decb90f1edba05b6bc2fb446c25e80",
+      "caseId": "daily-supplement",
+      "phase": "headless",
+      "verdict": "PASS",
+      "code": "OK",
+      "runId": "20261028T094602Z_wi0_e985deb",
+      "passed": 18,
+      "failed": 0,
+      "skipped": 0,
+      "resultPath": "C:\\AutoTest\\AutoTest\\VegaAutoTest\\daily\\runs\\20261027T233318+0800_9ad645\\revalidation-20261028T164432_577c69\\commits\\00b3004a58decb90f1edba05b6bc2fb446c25e80\\runner\\20261028T094602Z_wi0_e985deb\\result.json"
+    },
+    {
+      "sha": "6b4cf4af7928fc7173131df26627b24d6f386e97",
+      "caseId": "commit-6b4cf4af7928-behavior",
+      "phase": "headless",
+      "verdict": "PASS",
+      "code": "OK",
+      "runId": "20261028T094828Z_wi0_3ed1444",
+      "passed": 2,
+      "failed": 0,
+      "skipped": 0,
+      "resultPath": "C:\\AutoTest\\AutoTest\\VegaAutoTest\\daily\\runs\\20261027T233318+0800_9ad645\\revalidation-20261028T164432_577c69\\commits\\6b4cf4af7928fc7173131df26627b24d6f386e97\\runner\\20261028T094828Z_wi0_3ed1444\\result.json"
+    },
+    {
+      "sha": "6b4cf4af7928fc7173131df26627b24d6f386e97",
+      "caseId": "daily-recent10-v3",
+      "phase": "headless",
+      "verdict": "PASS",
+      "code": "OK",
+      "runId": "20261028T094839Z_wi0_6faa792",
+      "passed": 320,
+      "failed": 0,
+      "skipped": 0,
+      "resultPath": "C:\\AutoTest\\AutoTest\\VegaAutoTest\\daily\\runs\\20261027T233318+0800_9ad645\\revalidation-20261028T164432_577c69\\commits\\6b4cf4af7928fc7173131df26627b24d6f386e97\\runner\\20261028T094839Z_wi0_6faa792\\result.json"
+    },
+    {
+      "sha": "6b4cf4af7928fc7173131df26627b24d6f386e97",
+      "caseId": "daily-supplement",
+      "phase": "headless",
+      "verdict": "PASS",
+      "code": "OK",
+      "runId": "20261028T095031Z_wi0_7c61298",
+      "passed": 18,
+      "failed": 0,
+      "skipped": 0,
+      "resultPath": "C:\\AutoTest\\AutoTest\\VegaAutoTest\\daily\\runs\\20261027T233318+0800_9ad645\\revalidation-20261028T164432_577c69\\commits\\6b4cf4af7928fc7173131df26627b24d6f386e97\\runner\\20261028T095031Z_wi0_7c61298\\result.json"
+    },
+    {
+      "sha": "227ace85104287d877d8b6869210e573e06bd817",
+      "caseId": "commit-227ace851042-product-tests",
+      "phase": "headless",
+      "verdict": "PASS",
+      "code": "OK",
+      "runId": "20261028T095214Z_wi0_704ed77",
+      "passed": 6,
+      "failed": 0,
+      "skipped": 0,
+      "resultPath": "C:\\AutoTest\\AutoTest\\VegaAutoTest\\daily\\runs\\20261027T233318+0800_9ad645\\revalidation-20261028T164432_577c69\\commits\\227ace85104287d877d8b6869210e573e06bd817\\runner\\20261028T095214Z_wi0_704ed77\\result.json"
+    },
+    {
+      "sha": "227ace85104287d877d8b6869210e573e06bd817",
+      "caseId": "daily-recent10-v3",
+      "phase": "headless",
+      "verdict": "PASS",
+      "code": "OK",
+      "runId": "20261028T095316Z_wi0_a4e2baa",
+      "passed": 320,
+      "failed": 0,
+      "skipped": 0,
+      "resultPath": "C:\\AutoTest\\AutoTest\\VegaAutoTest\\daily\\runs\\20261027T233318+0800_9ad645\\revalidation-20261028T164432_577c69\\commits\\227ace85104287d877d8b6869210e573e06bd817\\runner\\20261028T095316Z_wi0_a4e2baa\\result.json"
+    },
+    {
+      "sha": "227ace85104287d877d8b6869210e573e06bd817",
+      "caseId": "daily-supplement",
+      "phase": "headless",
+      "verdict": "PASS",
+      "code": "OK",
+      "runId": "20261028T095426Z_wi0_3bb8481",
+      "passed": 18,
+      "failed": 0,
+      "skipped": 0,
+      "resultPath": "C:\\AutoTest\\AutoTest\\VegaAutoTest\\daily\\runs\\20261027T233318+0800_9ad645\\revalidation-20261028T164432_577c69\\commits\\227ace85104287d877d8b6869210e573e06bd817\\runner\\20261028T095426Z_wi0_3bb8481\\result.json"
+    },
+    {
+      "sha": "19c18be54684cccc9b0c02b29a021300953f713d",
+      "caseId": "commit-19c18be54684-product-tests",
+      "phase": "headless",
+      "verdict": "PASS",
+      "code": "OK",
+      "runId": "20261028T095615Z_wi0_0921cdd",
+      "passed": 8,
+      "failed": 0,
+      "skipped": 0,
+      "resultPath": "C:\\AutoTest\\AutoTest\\VegaAutoTest\\daily\\runs\\20261027T233318+0800_9ad645\\revalidation-20261028T164432_577c69\\commits\\19c18be54684cccc9b0c02b29a021300953f713d\\runner\\20261028T095615Z_wi0_0921cdd\\result.json"
+    },
+    {
+      "sha": "19c18be54684cccc9b0c02b29a021300953f713d",
+      "caseId": "daily-recent10-v3",
+      "phase": "headless",
+      "verdict": "PASS",
+      "code": "OK",
+      "runId": "20261028T095730Z_wi0_ecfa649",
+      "passed": 324,
+      "failed": 0,
+      "skipped": 0,
+      "resultPath": "C:\\AutoTest\\AutoTest\\VegaAutoTest\\daily\\runs\\20261027T233318+0800_9ad645\\revalidation-20261028T164432_577c69\\commits\\19c18be54684cccc9b0c02b29a021300953f713d\\runner\\20261028T095730Z_wi0_ecfa649\\result.json"
+    },
+    {
+      "sha": "19c18be54684cccc9b0c02b29a021300953f713d",
+      "caseId": "daily-supplement",
+      "phase": "headless",
+      "verdict": "PASS",
+      "code": "OK",
+      "runId": "20261028T095840Z_wi0_f366866",
+      "passed": 18,
+      "failed": 0,
+      "skipped": 0,
+      "resultPath": "C:\\AutoTest\\AutoTest\\VegaAutoTest\\daily\\runs\\20261027T233318+0800_9ad645\\revalidation-20261028T164432_577c69\\commits\\19c18be54684cccc9b0c02b29a021300953f713d\\runner\\20261028T095840Z_wi0_f366866\\result.json"
+    },
+    {
+      "sha": "9fa008a98a3547a9480f3196e7758f683ca9a5da",
+      "caseId": "commit-9fa008a98a35-product-tests",
+      "phase": "headless",
+      "verdict": "PASS",
+      "code": "OK",
+      "runId": "20261028T100038Z_wi0_c3ea547",
+      "passed": 39,
+      "failed": 0,
+      "skipped": 0,
+      "resultPath": "C:\\AutoTest\\AutoTest\\VegaAutoTest\\daily\\runs\\20261027T233318+0800_9ad645\\revalidation-20261028T164432_577c69\\commits\\9fa008a98a3547a9480f3196e7758f683ca9a5da\\runner\\20261028T100038Z_wi0_c3ea547\\result.json"
+    },
+    {
+      "sha": "9fa008a98a3547a9480f3196e7758f683ca9a5da",
+      "caseId": "daily-recent10-v3",
+      "phase": "headless",
+      "verdict": "PASS",
+      "code": "OK",
+      "runId": "20261028T100201Z_wi0_1538673",
+      "passed": 324,
+      "failed": 0,
+      "skipped": 0,
+      "resultPath": "C:\\AutoTest\\AutoTest\\VegaAutoTest\\daily\\runs\\20261027T233318+0800_9ad645\\revalidation-20261028T164432_577c69\\commits\\9fa008a98a3547a9480f3196e7758f683ca9a5da\\runner\\20261028T100201Z_wi0_1538673\\result.json"
+    },
+    {
+      "sha": "9fa008a98a3547a9480f3196e7758f683ca9a5da",
+      "caseId": "daily-supplement",
+      "phase": "headless",
+      "verdict": "PASS",
+      "code": "OK",
+      "runId": "20261028T100313Z_wi0_834c4fb",
+      "passed": 18,
+      "failed": 0,
+      "skipped": 0,
+      "resultPath": "C:\\AutoTest\\AutoTest\\VegaAutoTest\\daily\\runs\\20261027T233318+0800_9ad645\\revalidation-20261028T164432_577c69\\commits\\9fa008a98a3547a9480f3196e7758f683ca9a5da\\runner\\20261028T100313Z_wi0_834c4fb\\result.json"
+    },
+    {
+      "sha": "d117a21d8befd0cd03a70aa9a95da223c33a0728",
+      "caseId": "commit-d117a21d8bef-product-tests",
+      "phase": "headless",
+      "verdict": "PASS",
+      "code": "OK",
+      "runId": "20261028T100519Z_wi0_701e639",
+      "passed": 11,
+      "failed": 0,
+      "skipped": 0,
+      "resultPath": "C:\\AutoTest\\AutoTest\\VegaAutoTest\\daily\\runs\\20261027T233318+0800_9ad645\\revalidation-20261028T164432_577c69\\commits\\d117a21d8befd0cd03a70aa9a95da223c33a0728\\runner\\20261028T100519Z_wi0_701e639\\result.json"
+    },
+    {
+      "sha": "d117a21d8befd0cd03a70aa9a95da223c33a0728",
+      "caseId": "daily-recent10-v3",
+      "phase": "headless",
+      "verdict": "PASS",
+      "code": "OK",
+      "runId": "20261028T100559Z_wi0_8498649",
+      "passed": 324,
+      "failed": 0,
+      "skipped": 0,
+      "resultPath": "C:\\AutoTest\\AutoTest\\VegaAutoTest\\daily\\runs\\20261027T233318+0800_9ad645\\revalidation-20261028T164432_577c69\\commits\\d117a21d8befd0cd03a70aa9a95da223c33a0728\\runner\\20261028T100559Z_wi0_8498649\\result.json"
+    },
+    {
+      "sha": "d117a21d8befd0cd03a70aa9a95da223c33a0728",
+      "caseId": "wi3644-core",
+      "phase": "headless",
+      "verdict": "PASS",
+      "code": "OK",
+      "runId": "20261028T100709Z_wi0_071c589",
+      "passed": 99,
+      "failed": 0,
+      "skipped": 0,
+      "resultPath": "C:\\AutoTest\\AutoTest\\VegaAutoTest\\daily\\runs\\20261027T233318+0800_9ad645\\revalidation-20261028T164432_577c69\\commits\\d117a21d8befd0cd03a70aa9a95da223c33a0728\\runner\\20261028T100709Z_wi0_071c589\\result.json"
+    },
+    {
+      "sha": "d117a21d8befd0cd03a70aa9a95da223c33a0728",
+      "caseId": "daily-supplement",
+      "phase": "headless",
+      "verdict": "PASS",
+      "code": "OK",
+      "runId": "20261028T100757Z_wi0_b3ad58a",
+      "passed": 18,
+      "failed": 0,
+      "skipped": 0,
+      "resultPath": "C:\\AutoTest\\AutoTest\\VegaAutoTest\\daily\\runs\\20261027T233318+0800_9ad645\\revalidation-20261028T164432_577c69\\commits\\d117a21d8befd0cd03a70aa9a95da223c33a0728\\runner\\20261028T100757Z_wi0_b3ad58a\\result.json"
+    },
+    {
+      "sha": "eba9945afbca703d94c011bb664ec627fb2dd33d",
+      "caseId": "commit-eba9945afbca-product-tests",
+      "phase": "headless",
+      "verdict": "PASS",
+      "code": "OK",
+      "runId": "20261028T100949Z_wi0_13d228c",
+      "passed": 150,
+      "failed": 0,
+      "skipped": 0,
+      "resultPath": "C:\\AutoTest\\AutoTest\\VegaAutoTest\\daily\\runs\\20261027T233318+0800_9ad645\\revalidation-20261028T164432_577c69\\commits\\eba9945afbca703d94c011bb664ec627fb2dd33d\\runner\\20261028T100949Z_wi0_13d228c\\result.json"
+    },
+    {
+      "sha": "eba9945afbca703d94c011bb664ec627fb2dd33d",
+      "caseId": "daily-recent10-v3",
+      "phase": "headless",
+      "verdict": "PASS",
+      "code": "OK",
+      "runId": "20261028T101117Z_wi0_3402ca2",
+      "passed": 324,
+      "failed": 0,
+      "skipped": 0,
+      "resultPath": "C:\\AutoTest\\AutoTest\\VegaAutoTest\\daily\\runs\\20261027T233318+0800_9ad645\\revalidation-20261028T164432_577c69\\commits\\eba9945afbca703d94c011bb664ec627fb2dd33d\\runner\\20261028T101117Z_wi0_3402ca2\\result.json"
+    },
+    {
+      "sha": "eba9945afbca703d94c011bb664ec627fb2dd33d",
+      "caseId": "daily-supplement",
+      "phase": "headless",
+      "verdict": "PASS",
+      "code": "OK",
+      "runId": "20261028T101226Z_wi0_26aee05",
+      "passed": 18,
+      "failed": 0,
+      "skipped": 0,
+      "resultPath": "C:\\AutoTest\\AutoTest\\VegaAutoTest\\daily\\runs\\20261027T233318+0800_9ad645\\revalidation-20261028T164432_577c69\\commits\\eba9945afbca703d94c011bb664ec627fb2dd33d\\runner\\20261028T101226Z_wi0_26aee05\\result.json"
+    },
+    {
+      "sha": "eba9945afbca703d94c011bb664ec627fb2dd33d",
+      "caseId": "wi3644-core",
+      "phase": "headless",
+      "verdict": "PASS",
+      "code": "OK",
+      "runId": "20261028T101303Z_wi0_85dbe30",
+      "passed": 99,
+      "failed": 0,
+      "skipped": 0,
+      "resultPath": "C:\\AutoTest\\AutoTest\\VegaAutoTest\\daily\\runs\\20261027T233318+0800_9ad645\\revalidation-20261028T164432_577c69\\commits\\eba9945afbca703d94c011bb664ec627fb2dd33d\\runner\\20261028T101303Z_wi0_85dbe30\\result.json"
+    },
+    {
+      "sha": "b428717a56aaba31fc343a34dc76d5c776104dda",
+      "caseId": "commit-b428717a56aa-behavior",
+      "phase": "headless",
+      "verdict": "PASS",
+      "code": "OK",
+      "runId": "20261028T101424Z_wi0_ea06520",
+      "passed": 4,
+      "failed": 0,
+      "skipped": 0,
+      "resultPath": "C:\\AutoTest\\AutoTest\\VegaAutoTest\\daily\\runs\\20261027T233318+0800_9ad645\\revalidation-20261028T164432_577c69\\commits\\b428717a56aaba31fc343a34dc76d5c776104dda\\runner\\20261028T101424Z_wi0_ea06520\\result.json"
+    },
+    {
+      "sha": "b428717a56aaba31fc343a34dc76d5c776104dda",
+      "caseId": "daily-recent10-v3",
+      "phase": "headless",
+      "verdict": "PASS",
+      "code": "OK",
+      "runId": "20261028T101503Z_wi0_e012863",
+      "passed": 324,
+      "failed": 0,
+      "skipped": 0,
+      "resultPath": "C:\\AutoTest\\AutoTest\\VegaAutoTest\\daily\\runs\\20261027T233318+0800_9ad645\\revalidation-20261028T164432_577c69\\commits\\b428717a56aaba31fc343a34dc76d5c776104dda\\runner\\20261028T101503Z_wi0_e012863\\result.json"
+    },
+    {
+      "sha": "b428717a56aaba31fc343a34dc76d5c776104dda",
+      "caseId": "daily-supplement",
+      "phase": "headless",
+      "verdict": "PASS",
+      "code": "OK",
+      "runId": "20261028T101613Z_wi0_69b90fa",
+      "passed": 18,
+      "failed": 0,
+      "skipped": 0,
+      "resultPath": "C:\\AutoTest\\AutoTest\\VegaAutoTest\\daily\\runs\\20261027T233318+0800_9ad645\\revalidation-20261028T164432_577c69\\commits\\b428717a56aaba31fc343a34dc76d5c776104dda\\runner\\20261028T101613Z_wi0_69b90fa\\result.json"
+    },
+    {
+      "sha": "c30defb85f294f0f66c60382a76c7fdda44cce54",
+      "caseId": "commit-c30defb85f29-behavior",
+      "phase": "headless",
+      "verdict": "PASS",
+      "code": "OK",
+      "runId": "20261028T101720Z_wi0_6ae9e21",
+      "passed": 1,
+      "failed": 0,
+      "skipped": 0,
+      "resultPath": "C:\\AutoTest\\AutoTest\\VegaAutoTest\\daily\\runs\\20261027T233318+0800_9ad645\\revalidation-20261028T164432_577c69\\commits\\c30defb85f294f0f66c60382a76c7fdda44cce54\\runner\\20261028T101720Z_wi0_6ae9e21\\result.json"
+    },
+    {
+      "sha": "c30defb85f294f0f66c60382a76c7fdda44cce54",
+      "caseId": "daily-recent10-v3",
+      "phase": "headless",
+      "verdict": "PASS",
+      "code": "OK",
+      "runId": "20261028T101730Z_wi0_75f2188",
+      "passed": 324,
+      "failed": 0,
+      "skipped": 0,
+      "resultPath": "C:\\AutoTest\\AutoTest\\VegaAutoTest\\daily\\runs\\20261027T233318+0800_9ad645\\revalidation-20261028T164432_577c69\\commits\\c30defb85f294f0f66c60382a76c7fdda44cce54\\runner\\20261028T101730Z_wi0_75f2188\\result.json"
+    },
+    {
+      "sha": "c30defb85f294f0f66c60382a76c7fdda44cce54",
+      "caseId": "daily-supplement",
+      "phase": "headless",
+      "verdict": "PASS",
+      "code": "OK",
+      "runId": "20261028T101850Z_wi0_939075a",
+      "passed": 18,
+      "failed": 0,
+      "skipped": 0,
+      "resultPath": "C:\\AutoTest\\AutoTest\\VegaAutoTest\\daily\\runs\\20261027T233318+0800_9ad645\\revalidation-20261028T164432_577c69\\commits\\c30defb85f294f0f66c60382a76c7fdda44cce54\\runner\\20261028T101850Z_wi0_939075a\\result.json"
+    }
+  ],
+  "uiRuns": [
+    {
+      "sha": "00b3004a58decb90f1edba05b6bc2fb446c25e80",
+      "caseId": "simulation-ui-00b3004a58de",
+      "phase": "ui-Vega300-HWv1",
+      "verdict": "BLOCKED",
+      "code": "ZERO_ASSERTIONS_MATCHED",
+      "runId": "20261028T094712Z_wi0_1b2d8e3",
+      "passed": 0,
+      "failed": 0,
+      "skipped": 1,
+      "resultPath": "C:\\AutoTest\\AutoTest\\VegaAutoTest\\daily\\runs\\20261027T233318+0800_9ad645\\revalidation-20261028T164432_577c69\\commits\\00b3004a58decb90f1edba05b6bc2fb446c25e80\\runner\\20261028T094712Z_wi0_1b2d8e3\\result.json"
+    },
+    {
+      "sha": "00b3004a58decb90f1edba05b6bc2fb446c25e80",
+      "caseId": "simulation-ui-00b3004a58de",
+      "phase": "ui-Vega500",
+      "verdict": "BLOCKED",
+      "code": "ZERO_ASSERTIONS_MATCHED",
+      "runId": "20261028T094734Z_wi0_ea9ba5a",
+      "passed": 0,
+      "failed": 0,
+      "skipped": 1,
+      "resultPath": "C:\\AutoTest\\AutoTest\\VegaAutoTest\\daily\\runs\\20261027T233318+0800_9ad645\\revalidation-20261028T164432_577c69\\commits\\00b3004a58decb90f1edba05b6bc2fb446c25e80\\runner\\20261028T094734Z_wi0_ea9ba5a\\result.json"
+    },
+    {
+      "sha": "6b4cf4af7928fc7173131df26627b24d6f386e97",
+      "caseId": "simulation-ui-6b4cf4af7928",
+      "phase": "ui-Vega500",
+      "verdict": "BLOCKED",
+      "code": "ZERO_ASSERTIONS_MATCHED",
+      "runId": "20261028T095122Z_wi0_7274a65",
+      "passed": 0,
+      "failed": 0,
+      "skipped": 1,
+      "resultPath": "C:\\AutoTest\\AutoTest\\VegaAutoTest\\daily\\runs\\20261027T233318+0800_9ad645\\revalidation-20261028T164432_577c69\\commits\\6b4cf4af7928fc7173131df26627b24d6f386e97\\runner\\20261028T095122Z_wi0_7274a65\\result.json"
+    },
+    {
+      "sha": "227ace85104287d877d8b6869210e573e06bd817",
+      "caseId": "simulation-ui-227ace851042",
+      "phase": "ui-Vega100-PIC",
+      "verdict": "BLOCKED",
+      "code": "ZERO_ASSERTIONS_MATCHED",
+      "runId": "20261028T095513Z_wi0_4092024",
+      "passed": 0,
+      "failed": 0,
+      "skipped": 1,
+      "resultPath": "C:\\AutoTest\\AutoTest\\VegaAutoTest\\daily\\runs\\20261027T233318+0800_9ad645\\revalidation-20261028T164432_577c69\\commits\\227ace85104287d877d8b6869210e573e06bd817\\runner\\20261028T095513Z_wi0_4092024\\result.json"
+    },
+    {
+      "sha": "19c18be54684cccc9b0c02b29a021300953f713d",
+      "caseId": "simulation-ui-19c18be54684",
+      "phase": "ui-Vega100-PIC",
+      "verdict": "BLOCKED",
+      "code": "ZERO_ASSERTIONS_MATCHED",
+      "runId": "20261028T095929Z_wi0_0d43196",
+      "passed": 0,
+      "failed": 0,
+      "skipped": 1,
+      "resultPath": "C:\\AutoTest\\AutoTest\\VegaAutoTest\\daily\\runs\\20261027T233318+0800_9ad645\\revalidation-20261028T164432_577c69\\commits\\19c18be54684cccc9b0c02b29a021300953f713d\\runner\\20261028T095929Z_wi0_0d43196\\result.json"
+    },
+    {
+      "sha": "9fa008a98a3547a9480f3196e7758f683ca9a5da",
+      "caseId": "simulation-ui-9fa008a98a35",
+      "phase": "ui-Vega300-HWv1",
+      "verdict": "BLOCKED",
+      "code": "ZERO_ASSERTIONS_MATCHED",
+      "runId": "20261028T100409Z_wi0_0b16a18",
+      "passed": 0,
+      "failed": 0,
+      "skipped": 1,
+      "resultPath": "C:\\AutoTest\\AutoTest\\VegaAutoTest\\daily\\runs\\20261027T233318+0800_9ad645\\revalidation-20261028T164432_577c69\\commits\\9fa008a98a3547a9480f3196e7758f683ca9a5da\\runner\\20261028T100409Z_wi0_0b16a18\\result.json"
+    },
+    {
+      "sha": "d117a21d8befd0cd03a70aa9a95da223c33a0728",
+      "caseId": "simulation-ui-d117a21d8bef",
+      "phase": "ui-Vega300-HWv1",
+      "verdict": "BLOCKED",
+      "code": "ZERO_ASSERTIONS_MATCHED",
+      "runId": "20261028T100842Z_wi0_34b7cc5",
+      "passed": 0,
+      "failed": 0,
+      "skipped": 1,
+      "resultPath": "C:\\AutoTest\\AutoTest\\VegaAutoTest\\daily\\runs\\20261027T233318+0800_9ad645\\revalidation-20261028T164432_577c69\\commits\\d117a21d8befd0cd03a70aa9a95da223c33a0728\\runner\\20261028T100842Z_wi0_34b7cc5\\result.json"
+    },
+    {
+      "sha": "eba9945afbca703d94c011bb664ec627fb2dd33d",
+      "caseId": "simulation-ui-eba9945afbca",
+      "phase": "ui-Vega300-HWv1",
+      "verdict": "BLOCKED",
+      "code": "ZERO_ASSERTIONS_MATCHED",
+      "runId": "20261028T101401Z_wi0_9031116",
+      "passed": 0,
+      "failed": 0,
+      "skipped": 1,
+      "resultPath": "C:\\AutoTest\\AutoTest\\VegaAutoTest\\daily\\runs\\20261027T233318+0800_9ad645\\revalidation-20261028T164432_577c69\\commits\\eba9945afbca703d94c011bb664ec627fb2dd33d\\runner\\20261028T101401Z_wi0_9031116\\result.json"
+    },
+    {
+      "sha": "b428717a56aaba31fc343a34dc76d5c776104dda",
+      "caseId": "simulation-ui-b428717a56aa",
+      "phase": "ui-Vega300-HWv1",
+      "verdict": "BLOCKED",
+      "code": "ZERO_ASSERTIONS_MATCHED",
+      "runId": "20261028T101659Z_wi0_98e6716",
+      "passed": 0,
+      "failed": 0,
+      "skipped": 1,
+      "resultPath": "C:\\AutoTest\\AutoTest\\VegaAutoTest\\daily\\runs\\20261027T233318+0800_9ad645\\revalidation-20261028T164432_577c69\\commits\\b428717a56aaba31fc343a34dc76d5c776104dda\\runner\\20261028T101659Z_wi0_98e6716\\result.json"
+    }
+  ],
+  "restoration": [
+    {
+      "sha": "00b3004a58decb90f1edba05b6bc2fb446c25e80",
+      "profile": "Vega300-HWv1",
+      "session": "C:\\AutoTest\\AutoTest\\VegaAutoTest\\daily\\sessions\\20261028T174701_Vega300-HWv1_180c39",
+      "configurationRestored": true,
+      "machineConfigurationRestored": true
+    },
+    {
+      "sha": "00b3004a58decb90f1edba05b6bc2fb446c25e80",
+      "profile": "Vega500",
+      "session": "C:\\AutoTest\\AutoTest\\VegaAutoTest\\daily\\sessions\\20261028T174726_Vega500_fbd394",
+      "configurationRestored": true,
+      "machineConfigurationRestored": true
+    },
+    {
+      "sha": "6b4cf4af7928fc7173131df26627b24d6f386e97",
+      "profile": "Vega500",
+      "session": "C:\\AutoTest\\AutoTest\\VegaAutoTest\\daily\\sessions\\20261028T175114_Vega500_a0a67a",
+      "configurationRestored": true,
+      "machineConfigurationRestored": true
+    },
+    {
+      "sha": "227ace85104287d877d8b6869210e573e06bd817",
+      "profile": "Vega100-PIC",
+      "session": "C:\\AutoTest\\AutoTest\\VegaAutoTest\\daily\\sessions\\20261028T175505_Vega100-PIC_6b4a44",
+      "configurationRestored": true,
+      "machineConfigurationRestored": true
+    },
+    {
+      "sha": "19c18be54684cccc9b0c02b29a021300953f713d",
+      "profile": "Vega100-PIC",
+      "session": "C:\\AutoTest\\AutoTest\\VegaAutoTest\\daily\\sessions\\20261028T175922_Vega100-PIC_8b9616",
+      "configurationRestored": true,
+      "machineConfigurationRestored": true
+    },
+    {
+      "sha": "9fa008a98a3547a9480f3196e7758f683ca9a5da",
+      "profile": "Vega300-HWv1",
+      "session": "C:\\AutoTest\\AutoTest\\VegaAutoTest\\daily\\sessions\\20261028T180401_Vega300-HWv1_6ac78a",
+      "configurationRestored": true,
+      "machineConfigurationRestored": true
+    },
+    {
+      "sha": "d117a21d8befd0cd03a70aa9a95da223c33a0728",
+      "profile": "Vega300-HWv1",
+      "session": "C:\\AutoTest\\AutoTest\\VegaAutoTest\\daily\\sessions\\20261028T180833_Vega300-HWv1_b22226",
+      "configurationRestored": true,
+      "machineConfigurationRestored": true
+    },
+    {
+      "sha": "eba9945afbca703d94c011bb664ec627fb2dd33d",
+      "profile": "Vega300-HWv1",
+      "session": "C:\\AutoTest\\AutoTest\\VegaAutoTest\\daily\\sessions\\20261028T181352_Vega300-HWv1_efc143",
+      "configurationRestored": true,
+      "machineConfigurationRestored": true
+    },
+    {
+      "sha": "b428717a56aaba31fc343a34dc76d5c776104dda",
+      "profile": "Vega300-HWv1",
+      "session": "C:\\AutoTest\\AutoTest\\VegaAutoTest\\daily\\sessions\\20261028T181650_Vega300-HWv1_f638e6",
+      "configurationRestored": true,
+      "machineConfigurationRestored": true
+    }
+  ],
+  "sourceAudit": [
+    {
+      "sha": "00b3004a58decb90f1edba05b6bc2fb446c25e80",
+      "sourceClean": true,
+      "buildSucceeded": true,
+      "builtBinariesUnchanged": true
+    },
+    {
+      "sha": "6b4cf4af7928fc7173131df26627b24d6f386e97",
+      "sourceClean": true,
+      "buildSucceeded": true,
+      "builtBinariesUnchanged": true
+    },
+    {
+      "sha": "227ace85104287d877d8b6869210e573e06bd817",
+      "sourceClean": true,
+      "buildSucceeded": true,
+      "builtBinariesUnchanged": true
+    },
+    {
+      "sha": "bd9ccb55d6de34617bb8c676fef7d8e2c9b0b6e0",
+      "sourceClean": true,
+      "buildSucceeded": false,
+      "builtBinariesUnchanged": null
+    },
+    {
+      "sha": "19c18be54684cccc9b0c02b29a021300953f713d",
+      "sourceClean": true,
+      "buildSucceeded": true,
+      "builtBinariesUnchanged": true
+    },
+    {
+      "sha": "9fa008a98a3547a9480f3196e7758f683ca9a5da",
+      "sourceClean": true,
+      "buildSucceeded": true,
+      "builtBinariesUnchanged": true
+    },
+    {
+      "sha": "d117a21d8befd0cd03a70aa9a95da223c33a0728",
+      "sourceClean": true,
+      "buildSucceeded": true,
+      "builtBinariesUnchanged": true
+    },
+    {
+      "sha": "eba9945afbca703d94c011bb664ec627fb2dd33d",
+      "sourceClean": true,
+      "buildSucceeded": true,
+      "builtBinariesUnchanged": true
+    },
+    {
+      "sha": "b428717a56aaba31fc343a34dc76d5c776104dda",
+      "sourceClean": true,
+      "buildSucceeded": true,
+      "builtBinariesUnchanged": true
+    },
+    {
+      "sha": "c30defb85f294f0f66c60382a76c7fdda44cce54",
+      "sourceClean": true,
+      "buildSucceeded": true,
+      "builtBinariesUnchanged": true
+    }
+  ],
+  "originalEvidenceFilesVerified": 5295,
+  "frozenPlansVerified": 10,
+  "unverifiedUiSlots": [
+    {
+      "commit": "00b3004a58decb90f1edba05b6bc2fb446c25e80",
+      "batch": "C:\\AutoTest\\AutoTest\\VegaAutoTest\\daily\\runs\\20261027T233318+0800_9ad645\\revalidation-20261028T164432_577c69\\commits\\00b3004a58decb90f1edba05b6bc2fb446c25e80",
+      "slotId": "ui-Vega300-HWv1",
+      "kind": "ui-not-verified",
+      "reason": "UI Runner returned BLOCKED/ERROR; no UI acceptance established",
+      "workflowFinished": true
+    },
+    {
+      "commit": "00b3004a58decb90f1edba05b6bc2fb446c25e80",
+      "batch": "C:\\AutoTest\\AutoTest\\VegaAutoTest\\daily\\runs\\20261027T233318+0800_9ad645\\revalidation-20261028T164432_577c69\\commits\\00b3004a58decb90f1edba05b6bc2fb446c25e80",
+      "slotId": "ui-Vega500",
+      "kind": "ui-not-verified",
+      "reason": "UI Runner returned BLOCKED/ERROR; no UI acceptance established",
+      "workflowFinished": true
+    },
+    {
+      "commit": "6b4cf4af7928fc7173131df26627b24d6f386e97",
+      "batch": "C:\\AutoTest\\AutoTest\\VegaAutoTest\\daily\\runs\\20261027T233318+0800_9ad645\\revalidation-20261028T164432_577c69\\commits\\6b4cf4af7928fc7173131df26627b24d6f386e97",
+      "slotId": "ui-Vega500",
+      "kind": "ui-not-verified",
+      "reason": "UI Runner returned BLOCKED/ERROR; no UI acceptance established",
+      "workflowFinished": true
+    },
+    {
+      "commit": "227ace85104287d877d8b6869210e573e06bd817",
+      "batch": "C:\\AutoTest\\AutoTest\\VegaAutoTest\\daily\\runs\\20261027T233318+0800_9ad645\\revalidation-20261028T164432_577c69\\commits\\227ace85104287d877d8b6869210e573e06bd817",
+      "slotId": "ui-Vega100-PIC",
+      "kind": "ui-not-verified",
+      "reason": "UI Runner returned BLOCKED/ERROR; no UI acceptance established",
+      "workflowFinished": true
+    },
+    {
+      "commit": "bd9ccb55d6de34617bb8c676fef7d8e2c9b0b6e0",
+      "batch": "C:\\AutoTest\\AutoTest\\VegaAutoTest\\daily\\runs\\20261027T233318+0800_9ad645\\revalidation-20261028T164432_577c69\\commits\\bd9ccb55d6de34617bb8c676fef7d8e2c9b0b6e0",
+      "requirementId": "bd9ccb55-actual-ui",
+      "profiles": [
+        "Vega300-HWv1",
+        "Vega500"
+      ],
+      "reason": "Exact-SHA build/discovery failed: Target build failed: CS0103: 当前上下文中不存在名称“FileName”; see C:\\AutoTest\\AutoTest\\VegaAutoTest\\daily\\runs\\20261027T233318+0800_9ad645\\revalidation-20261028T164432_577c69\\commits\\bd9ccb55d6de34617bb8c676fef7d8e2c9b0b6e0\\attempts\\20261028T170818_ff7592\\build; No executable case prepared for this acceptance scenario; Required UI case/profile missing: Vega300-HWv1; Required UI case/profile missing: Vega500",
+      "kind": "missing-ui-coverage",
+      "workflowFinished": true
+    },
+    {
+      "commit": "19c18be54684cccc9b0c02b29a021300953f713d",
+      "batch": "C:\\AutoTest\\AutoTest\\VegaAutoTest\\daily\\runs\\20261027T233318+0800_9ad645\\revalidation-20261028T164432_577c69\\commits\\19c18be54684cccc9b0c02b29a021300953f713d",
+      "slotId": "ui-Vega100-PIC",
+      "kind": "ui-not-verified",
+      "reason": "UI Runner returned BLOCKED/ERROR; no UI acceptance established",
+      "workflowFinished": true
+    },
+    {
+      "commit": "9fa008a98a3547a9480f3196e7758f683ca9a5da",
+      "batch": "C:\\AutoTest\\AutoTest\\VegaAutoTest\\daily\\runs\\20261027T233318+0800_9ad645\\revalidation-20261028T164432_577c69\\commits\\9fa008a98a3547a9480f3196e7758f683ca9a5da",
+      "slotId": "ui-Vega300-HWv1",
+      "kind": "ui-not-verified",
+      "reason": "UI Runner returned BLOCKED/ERROR; no UI acceptance established",
+      "workflowFinished": true
+    },
+    {
+      "commit": "d117a21d8befd0cd03a70aa9a95da223c33a0728",
+      "batch": "C:\\AutoTest\\AutoTest\\VegaAutoTest\\daily\\runs\\20261027T233318+0800_9ad645\\revalidation-20261028T164432_577c69\\commits\\d117a21d8befd0cd03a70aa9a95da223c33a0728",
+      "slotId": "ui-Vega300-HWv1",
+      "kind": "ui-not-verified",
+      "reason": "UI Runner returned BLOCKED/ERROR; no UI acceptance established",
+      "workflowFinished": true
+    },
+    {
+      "commit": "eba9945afbca703d94c011bb664ec627fb2dd33d",
+      "batch": "C:\\AutoTest\\AutoTest\\VegaAutoTest\\daily\\runs\\20261027T233318+0800_9ad645\\revalidation-20261028T164432_577c69\\commits\\eba9945afbca703d94c011bb664ec627fb2dd33d",
+      "slotId": "ui-Vega300-HWv1",
+      "kind": "ui-not-verified",
+      "reason": "UI Runner returned BLOCKED/ERROR; no UI acceptance established",
+      "workflowFinished": true
+    },
+    {
+      "commit": "b428717a56aaba31fc343a34dc76d5c776104dda",
+      "batch": "C:\\AutoTest\\AutoTest\\VegaAutoTest\\daily\\runs\\20261027T233318+0800_9ad645\\revalidation-20261028T164432_577c69\\commits\\b428717a56aaba31fc343a34dc76d5c776104dda",
+      "slotId": "ui-Vega300-HWv1",
+      "kind": "ui-not-verified",
+      "reason": "UI Runner returned BLOCKED/ERROR; no UI acceptance established",
+      "workflowFinished": true
+    }
+  ],
+  "fullDayScopeAudit": {
+    "remoteHead": "68810455e019a22db8e7a3578371e3526de54557",
+    "yesterdayCount": 10,
+    "originalCount": 10,
+    "additionalYesterdayCommits": [],
+    "note": "Read-only fetch and full-day committer timestamp scope audit; daily cursor unchanged"
+  },
+  "structuredAssertionsPassed": 3490,
+  "scope": "Actual fresh independent builds and component executions; full UI/remote/device acceptance is not established"
+}

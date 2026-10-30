@@ -1,0 +1,21 @@
+{
+  "version": 1,
+  "id": "vega",
+  "kind": "cron",
+  "name": "Vega 每日提交验证",
+  "prompt": "每天北京时间23:30检查 Vega 每日提交验证。实际执行由本机 Windows 任务 VegaAutoTest-DailyValidation 直接启动项目控制器；本聊天负责读取进度和结果，不再自行逐 SHA 准备用例、收集或执行队列。先读 C:\\AutoTest\\AutoTest\\VegaAutoTest\\daily\\AGENTS.md 和 README.md 的2026-10-29入口。\n\n使用固定 Python C:\\Users\\Administrator\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\python.exe，所有 shell login=false。运行 C:\\AutoTest\\AutoTest\\VegaAutoTest\\daily\\autopilot.py --status，并读取 Get-ScheduledTaskInfo -TaskName VegaAutoTest-DailyValidation。状态中的 batch 是真实活动批次，controller/state.json、controller/processes 和 controller-launches 记录执行，不从旧 report 推断本轮失败。\n\n有活着的控制器时只跟进其日志和最终结果，不重复收集、不重发同一 SHA、不停止后台进程。定时触发后任务确未启动时，可启动已有 Windows 任务；已有未完成批次由控制器恢复，不能重放历史报告。任务若被用户禁用，不擅自启用。控制器错误时读取真实 stderr、模型事件、构建、Runner 及恢复证据；不能再以“稍后继续”冒充完成。独立监督进程负责有界重启和推进，聊天提前结束不能终止它。\n\n只有 controller.phase=FINISHED 且该批 controller/completion-check.json exitCode=0，才能报告整批流程已收尾；STARTED、生成源码、编译/发现成功均不是完成。随后读取根 report/summary，明确逐提交正式 Runner verdict、实际 runId、生成的针对性用例、未验的实际 UI/外部数据/真机范围和配置恢复情况。流程收尾不等于全部验收通过；运行中就明确说仍在运行，不将 PENDING/NEEDS_CASE 称为所有测试失败。不修改原始结果、冻结文件或产品源码，不触发真机、不绕过授权、不 push、不创建PR、不发送外部消息、不泄露凭据。记录本轮真实批次、状态及证据位置到自动化记忆。",
+  "status": "ACTIVE",
+  "rrule": "FREQ=DAILY;BYHOUR=23;BYMINUTE=30;BYSECOND=0",
+  "model": "gpt-6.1",
+  "reasoning_effort": "high",
+  "execution_environment": "local",
+  "target": {
+    "type": "project",
+    "project_id": "b77cc254-2aae-478c-82bb-085de6ab9e90"
+  },
+  "cwds": [
+    "C:\\AutoTest"
+  ],
+  "created_at": 1792396118916,
+  "updated_at": 1793243495799
+}

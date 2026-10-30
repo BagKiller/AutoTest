@@ -1,0 +1,13 @@
+{
+  "logonType": "Interactive",
+  "entrySha256": "83D6157FB0448B2915706A8BC292647BE2689AB071EE3881130114CBB921A48E",
+  "localTimeZone": "China Standard Time",
+  "multipleInstances": "IgnoreNew",
+  "nextRunTime": "2026-10-29T23:30:30.0000000+08:00",
+  "registeredAt": "2026-10-29T16:12:54.8001432+08:00",
+  "taskName": "VegaAutoTest-DailyValidation",
+  "action": {
+    "arguments": "-NoProfile -NonInteractive -WindowStyle Hidden -File \"C:\\AutoTest\\AutoTest\\VegaAutoTest\\daily\\Start-DailyValidation.ps1\" -Watch",
+    "execute": "C:\\Users\\Administrator\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\native\\powershell\\pwsh.exe"
+  }
+}

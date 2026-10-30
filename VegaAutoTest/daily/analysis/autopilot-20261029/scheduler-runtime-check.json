@@ -1,0 +1,9 @@
+{
+  "codexExecutable": "C:\\Users\\Administrator\\AppData\\Local\\OpenAI\\Codex\\bin\\896a0166b774037a\\codex.exe",
+  "pythonExecutable": "C:\\Users\\Administrator\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\python.exe",
+  "cliStructuredInferenceAvailable": true,
+  "checkedAt": "2026-10-29T11:13:00.828582+08:00",
+  "pid": 5232,
+  "sessionName": null,
+  "inheritedPathHasCodex": false
+}
