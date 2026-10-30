@@ -79,26 +79,35 @@ public static class VerdictResolver
                 Reason = "设备状态始终非空闲" };
         }
 
-        var failed = assertions.Count(a => a.Result == "FAIL");
+        var prerequisiteTests = run.Tests.Where(t => t.Outcome == "Failed"
+            && PrerequisiteCode(t.Message) is not null).ToArray();
+        var failed = assertions.Count(a => a.Result == "FAIL"
+            && !(prerequisiteTests.Length > 0 && PrerequisiteCode(a.Actual) is not null));
         if (failed > 0)
         {
             return new LayerVerdict { Verdict = "FAIL", Code = "ASSERTION_FAILED",
                 Reason = $"{failed} 条断言失败" };
         }
 
-        var failedTests = run.Tests.Count(t => t.Outcome == "Failed");
+        var failedTests = run.Tests.Count(t => t.Outcome == "Failed") - prerequisiteTests.Length;
         if (failedTests > 0)
         {
             return new LayerVerdict { Verdict = "FAIL", Code = "ASSERTION_FAILED",
                 Reason = $"{failedTests} 个用例失败" };
         }
 
+        if (prerequisiteTests.Length > 0)
+            return new LayerVerdict { Verdict = "BLOCKED",
+                Code = PrerequisiteCode(prerequisiteTests[0].Message)!,
+                Reason = prerequisiteTests[0].Message ?? "UI prerequisite unavailable" };
+
         // 按本层 minAssertions 校验（修正 #3）：跑完但没命中足够断言 = 没真正到目标界面
         var matched = assertions.Count(a => a.Result == "PASS");
         if (matched < layer.MinAssertions)
         {
-            return new LayerVerdict { Verdict = "BLOCKED", Code = "ZERO_ASSERTIONS_MATCHED",
-                Reason = $"仅命中 {matched}/{layer.MinAssertions} 条断言，未真正到达目标界面" };
+            return new LayerVerdict { Verdict = "BLOCKED",
+                Code = matched == 0 ? "ZERO_ASSERTIONS_MATCHED" : "ASSERTION_COUNT_BELOW_MINIMUM",
+                Reason = $"仅命中 {matched}/{layer.MinAssertions} 条通过断言；需核对用例覆盖和登记门槛，不能据此推断业务通过或界面是否到达" };
         }
 
         return new LayerVerdict { Verdict = "PASS", Code = "OK",
@@ -126,6 +135,35 @@ public static class VerdictResolver
     }
 
     /// <summary>
+    /// 当前前置异常，以及归档里 WaitReady 用 Assert.Fail 打出的原文。
+    /// 只认失败消息的第一行，避免业务断言引用这句时被改判。
+    /// </summary>
+    private static string? PrerequisiteCode(string? message)
+        => UiPrerequisiteException.ReadCode(message) ?? LegacyReadinessCode(message);
+
+    private static string? LegacyReadinessCode(string? message)
+    {
+        var first = (message ?? "").Split('\n', 2)[0].Trim();
+        const string marker = "登录/就绪超时，最后状态 '";
+        var index = first.IndexOf(marker, StringComparison.Ordinal);
+        if (index < 0)
+            return null;
+        var prefix = first[..index];
+        if (prefix.Length != 0 && prefix != "Xunit.Sdk.FailException: ")
+            return null;
+        var start = index + marker.Length;
+        var end = first.IndexOf('\'', start);
+        if (end < 0 || end != first.Length - 1)
+            return null;
+        return first[start..end] switch
+        {
+            "忙碌" or "初始化" or "启动中" or "错误" or "锁定" => "DEVICE_NEVER_IDLE",
+            "空闲" => "UI_NOT_READY",
+            _ => "LOGIN_NOT_READY",
+        };
+    }
+
+    /// <summary>
     /// 从 trx failure message/stacktrace 归因。主窗口超时 / 设备永不空闲属环境问题，不算 FAIL。
     /// 用例自身硬断言（Assert.True/Fail）的堆栈首帧指向 L2 用例文件——有帧即断言失败，
     /// 不是 harness 异常；真正的 harness 异常（VegaApp 启动崩溃等）堆栈指向 harness 程序集。
@@ -144,6 +182,8 @@ public static class VerdictResolver
             // exception type separately. Do not mistake a logic assertion for a
             // harness exception, or an assertion mentioning 'idle' for a timeout.
             var firstLine = message.Split('\n', 2)[0].Trim();
+            if (PrerequisiteCode(firstLine) is not null)
+                continue;
             if (firstLine.StartsWith("Assert.", StringComparison.Ordinal)
                 || firstLine.StartsWith("Xunit.Sdk.", StringComparison.Ordinal))
             {

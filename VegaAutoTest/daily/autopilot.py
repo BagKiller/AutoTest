@@ -57,9 +57,16 @@ class Supervisor:
             record.update(state='EXITED', exitCode=code)
             return subprocess.CompletedProcess(command, code)
         except subprocess.TimeoutExpired:
-            self.stop(record)
-            process.wait(timeout=15)
             record.update(state='TIMEOUT')
+            try:
+                self.stop(record)
+            except (OSError, subprocess.SubprocessError) as error:
+                record['terminationError'] = str(error)
+            if process.poll() is None:
+                # Popen owns the process handle; this cannot target a reused PID.
+                process.kill()
+                record['terminationFallback'] = 'owned-process-handle'
+            process.wait(timeout=15)
             raise RuntimeError('Owned stage exceeded ' + str(timeout) + 's; see ' + str(record_path)) from None
         finally:
             record['finishedAt'] = d.now_cn().isoformat()
@@ -70,7 +77,7 @@ class Supervisor:
         if record.get('identity') and identity(record['pid']) == record['identity']:
             if os.name == 'nt':
                 subprocess.run(['taskkill', '/PID', str(record['pid']), '/T', '/F'],
-                    stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, timeout=20)
+                    stdout=subprocess.PIPE, stderr=subprocess.PIPE, timeout=20, check=True)
             else:
                 os.kill(record['pid'], 15)
 
@@ -84,6 +91,8 @@ class Supervisor:
             while record.get('identity') and identity(record['pid']) == record['identity']:
                 if time.time() >= record['deadline']:
                     self.stop(record)
+                    if identity(record['pid']) == record['identity']:
+                        raise RuntimeError('Owned process is still alive after termination: ' + str(path))
                     break
                 time.sleep(2)
             record.update(state='RECOVERED_AFTER_CONTROLLER_EXIT', recoveredAt=d.now_cn().isoformat())
@@ -251,6 +260,9 @@ def prepare_commit(root, slot, plan, registry, sched):
             try:
                 d.queue_driver.check_cases(d, child, manifest, registry, ids, repo)
                 break
+            except d.queue_driver.CaseRuntimePreflightError:
+                # Compiler repair must not alter a runtime verdict or threshold.
+                raise
             except Exception:
                 diagnostics = '\n'.join(p.read_text(encoding='utf-8', errors='replace')[-10000:]
                     for p in (child / 'preparation' / 'checks').glob('*.log'))
@@ -275,7 +287,9 @@ def prepare_commit(root, slot, plan, registry, sched):
             records = checked.get('records', [])
             valid = {c['id'] for c in checked.get('fingerprints', {}).get('cases', []) if
                 all(any(r['caseId'] == c['id'] and r['layer'] == layer and r['exitCode'] == 0 and
-                        r.get('discoveredTests') for r in records) for layer in c['layers'])}
+                        r.get('discoveredTests') and
+                        (manifest.get('preflightPolicy') != 'headless-runner-v1' or layer == 'uia'
+                         or r.get('runtimeUsable')) for r in records) for layer in c['layers'])}
             for req in requirements:
                 invalid = set(req['caseIds']) - valid
                 if invalid:
@@ -399,15 +413,41 @@ def restore_or_quarantine(root, child):
         return False
 
 
+READINESS_BLOCK = {'DEVICE_NEVER_IDLE', 'MAIN_WINDOW_TIMEOUT', 'LOGIN_NOT_READY', 'UI_NOT_READY', 'VEGA_PROCESS_EXITED'}
+
+
+def shared_readiness_block(runs, slot):
+    """The whole slot is a shared login/readiness failure only when every case is."""
+    found = []
+    for item in slot.get('cases') or []:
+        matches = [r for r in runs if r.get('caseId') == item['caseId'] and r.get('phase') == slot['id']]
+        if not matches:
+            return None
+        entry = matches[-1]
+        if entry.get('verdict') != 'BLOCKED' or entry.get('verdictCode') not in READINESS_BLOCK:
+            return None
+        found.append(entry)
+    return found[-1] if found else None
+
+
 def ui(root, child):
     cp = d.load(child / 'plan.json')
     repo = Path(d.load(child / 'execution-target.json')['repo'])
     _, summary = d.individual.refresh_child(d, child, d.load(d.REGISTRY))
+    smoke_block = None
     for slot in cp['uiSlots']:
         if slot['id'] not in summary['pendingUiSlots']:
             continue
         evidence = child / 'ui' / slot['id'] / 'controller'
         evidence.mkdir(parents=True, exist_ok=True)
+        if smoke_block:
+            path = evidence / 'readiness-skipped.json'
+            d.save(path, smoke_block)
+            d.save(evidence.parent / 'blocker.json', dict(
+                reason='Same login/readiness failure as ' + smoke_block['slot'] + ': ' + smoke_block['code'],
+                attemptEvidence=[attempt(child, path, 'Skip remaining profiles after a shared readiness failure',
+                                          smoke_block.get('reason') or smoke_block['code'])]))
+            continue
         quarantine = d.load(d.ROOT / 'daily' / 'controller-quarantined-profiles.json', {}).get(slot['profile'])
         if quarantine:
             source = Path(quarantine['evidence'])
@@ -443,6 +483,10 @@ def ui(root, child):
         if slot['id'] in result['pendingUiSlots']:
             d.save(evidence.parent / 'blocker.json', dict(reason=error or 'UI attempt did not produce a complete Runner result',
                 attemptEvidence=[attempt(child, evidence / 'attempt.json', 'Prepare/run actual UI and restore', error or 'UI incomplete')]))
+        block = shared_readiness_block(result.get('runs', []), slot)
+        if block and error is None:
+            smoke_block = dict(slot=slot['id'], code=block.get('verdictCode'),
+                reason=block.get('verdictReason') or block.get('verdictCode'), runId=block.get('runId'))
 
 
 def preflight(root):

@@ -102,7 +102,7 @@ public static class VerificationReport
         var dirty = target.GitDirty ? "，工作区有未提交改动" : "";
         return target.BuiltFromCurrentSource
             ? $"已用当前源码重编（builtFromCurrentSource=true）{dirty}"
-            : $"未重编（builtFromCurrentSource=false，结论仅对旧二进制有效）{dirty}";
+            : $"Runner 未自行重编（builtFromCurrentSource=false；结论针对本次记录的二进制，来源另核对独立构建及指纹）{dirty}";
     }
 
     private static string ShortCommit(string? commit)

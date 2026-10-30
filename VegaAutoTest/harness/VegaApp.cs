@@ -19,6 +19,12 @@ public sealed class VegaApp : IDisposable
     private readonly UIA3Automation _automation;
     private readonly EvidenceLog _log;
 
+    /// <summary>被测 Vega 进程是否已退出（崩溃/自灭检测；Launch 失败时恒 true）。</summary>
+    public bool HasExited => _app.HasExited;
+
+    /// <summary>被测 Vega 进程 ID（诊断用；进程不存在时为 null）。</summary>
+    public int? ProcessId => _app.HasExited ? null : _app.ProcessId;
+
     private VegaApp(Application app, UIA3Automation automation, EvidenceLog log)
     {
         _app = app;

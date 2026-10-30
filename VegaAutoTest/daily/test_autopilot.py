@@ -36,6 +36,48 @@ class ControllerTests(unittest.TestCase):
             requirements=[dict(id='bounds', workItems=[7000], steps=['Call product'], expected='Reject invalid bound',
                 oracle='Requirement 7000', uiRequired=False, profiles=[], caseKeys=['bounds'], existingCaseIds=[], gap='')])
 
+    def test_generated_test_cannot_swallow_ui_prerequisite(self):
+        response = self.response()
+        response['files'][0]['content'] = 'void T(){ try { } catch (Exception error) { } }'
+        with self.assertRaisesRegex(ValueError, 'must not catch Exception'):
+            m.install(a.d, self.child, self.manifest, response, self.registry, self.sched, 'v1')
+
+    def test_readiness_block_on_first_profile_skips_the_other_profiles(self):
+        slots = [
+            dict(id='ui-a', profile='Vega100-PIC', model='Vega100', profileArg='PIC', cases=[dict(caseId='ui-case')]),
+            dict(id='ui-b', profile='Vega500', model='Vega500', profileArg='Default', cases=[dict(caseId='ui-case')]),
+        ]
+        a.d.save(self.child / 'plan.json', dict(uiSlots=slots))
+        a.d.save(self.child / 'manifest.json', dict(head='a' * 40))
+        a.d.save(self.child / 'execution-target.json', dict(repo=str(self.root / 'wt')))
+        calls = []
+
+        def run_slot(child, manifest, plan, slot_id, session, outcomes):
+            calls.append(slot_id)
+
+        def refresh(daily, child, registry):
+            runs = []
+            if calls:
+                runs = [dict(caseId='ui-case', phase=calls[-1], verdict='BLOCKED', verdictCode='DEVICE_NEVER_IDLE',
+                             verdictReason='设备状态始终非空闲', runId='readiness')]
+            return [dict(status='BLOCKED')], dict(pendingUiSlots=['ui-a', 'ui-b'], runs=runs)
+
+        with patch.object(a, 'ps', return_value='SessionPath=' + str(self.root / 'daily' / 'sessions' / 's')), \
+             patch.object(a.d, 'run_slot', side_effect=run_slot), \
+             patch.object(a, 'restore_or_quarantine', return_value=True), \
+             patch.object(a.d.individual, 'refresh_child', side_effect=refresh), \
+             patch.object(a, 'progress'):
+            a.ui(self.child.parents[1], self.child)
+        self.assertEqual(calls, ['ui-a'])
+        blocker = a.d.load(self.child / 'ui' / 'ui-b' / 'blocker.json')
+        self.assertIn('DEVICE_NEVER_IDLE', blocker['reason'])
+        self.assertTrue(blocker['attemptEvidence'])
+
+    def test_business_ui_failure_still_runs_remaining_profiles(self):
+        self.assertIsNone(a.shared_readiness_block(
+            [dict(caseId='ui-case', phase='ui-a', verdict='FAIL', verdictCode='ASSERTION_FAILED')],
+            dict(id='ui-a', cases=[dict(caseId='ui-case')])))
+
     def test_generated_files_cannot_escape_probe_root(self):
         for name in ['../../../../daily/daily.py', 'C:/outside.cs', '../escape.cs', 'build.targets', 'a.csproj']:
             response = self.response()

@@ -112,7 +112,7 @@ setx VEGA_SW_ROOT "D:\Code\Vega\Vega_SW.ChenLR\Vega_SW.chen.ChenLR"
 | `VEGA_AUTOTEST_EXE` | 按 `VEGA_SW_ROOT` 推导 | 指定被测 Vega.exe 路径（Runner 会自动下传，手跑才需要） |
 | `VEGA_AUTOTEST_OUTDIR` | `<VegaAutoTest>\runs\manual` | 手跑时取证/断言落盘目录（默认锚定本仓库，对主仓库零写入；Runner 会自动下传） |
 | `VEGA_AUTOTEST_RUNDIR` | 不设 | Runner 注入用；手跑不要设 |
-| `VEGA_AUTOTEST_USER` / `VEGA_AUTOTEST_PASSWORD` | 1 / 1 | 测试登录凭据 |
+| `VEGA_AUTOTEST_USER` / `VEGA_AUTOTEST_PASSWORD` | su / 从官方认证器读取 | 登录凭据。未设置密码时打开 `C:\AutoTest\runtime\AuthenticatorApp\Authenticator.exe`，按当前机型读取超级用户密码，不写入仓库 |
 | `VEGA_AUTOTEST_AGENT_URL` | `http://localhost:18901/vega-agent/` | L1 API 基址 |
 | `VEGA_AUTOTEST_JOB` | 空 | 目标 Job 名称（树内 Contains 匹配） |
 

@@ -200,6 +200,6 @@ cd C:\AutoTest\AutoTest\VegaAutoTest
 报告须保存版本指纹、实际进程 PID/启动时间、机型/Simulator 配置、输入数据、关键操作截图或 UI 快照、结果对比及 Runner runId/result.json。未实际完成必需 UI 的项目不得完整验收，须明确原因；既有 logic PASS 仍只代表其原执行范围。
 
 1. 配置修改前保存内容与 SHA256，Vega 停止后才改 `SelectedToolType`、`RootCondition`、`Features`、`SelectedProfiles` 和独立 `UserDataFolder`（`Start-ModelValidation.ps1 -Action Prepare`）。RootCondition 为 `<机型>,Simulator,GemSim,Gen2`；官方认证器里 Simulator 勾选、Gem 不勾选、Gen2。不得只改机型名称而漏掉 OuterToInner、硬件能力或用户数据目录，不得修改正式授权绕过机型检查。
-2. 认证与登录按 `AGENTS.md` 和 `authenticator-flow.json` 用 computer-use 操作官方认证器；密码只在内存与子进程环境中使用（L2 登录读取 `VEGA_AUTOTEST_USER`/`VEGA_AUTOTEST_PASSWORD`），不写入报告或仓库。取不到合法授权时该会话记 BLOCKED，继续下一个。
+2. 登录由测试宿主打开 `C:\AutoTest\runtime\AuthenticatorApp\Authenticator.exe`，按当前 Vega 的 RootCondition 和机器 ID，在「超级用户密码」页生成并读取密码，账号使用 `su`。密码只留在内存，不写入报告、剪贴板或仓库。`VEGA_AUTOTEST_USER` / `VEGA_AUTOTEST_PASSWORD` 仍可覆盖。认证器缺失或读不到密码时该会话记 BLOCKED。启动验证密钥仍按 `authenticator-flow.json` 处理。
 3. 每个会话有界执行，失败最多恢复重试一次，继续其他会话；`finally` 停止本轮进程、恢复配置并核对 SHA256。无论成功失败都生成报告。禁止触发真实硬件，GemSim 结果不能当作 SEPLAT/E87 Host 验收。
 4. 不 push、不创建 PR、不写工作项状态。原始 Runner 报告不手改，历史批次不删除。

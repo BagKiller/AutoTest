@@ -7,6 +7,11 @@ from pathlib import Path
 import hashlib
 import subprocess
 import artifact_cleanup
+import uuid
+
+
+class CaseRuntimePreflightError(RuntimeError):
+    """A runnable test failed its runtime contract; compiler repair cannot fix it."""
 
 
 def prepare_all(d, plan, registry, sched):
@@ -26,6 +31,8 @@ def prepare_all(d, plan, registry, sched):
 
 
 def check_cases(d, child, manifest, registry, ids, repo):
+    if (child / 'plan.json').exists():
+        raise ValueError('Cannot check or trial-run frozen cases; create a new revalidation campaign')
     if d.git('rev-parse', 'HEAD', repo=repo) != manifest['head']:
         raise ValueError('Case discovery must use the exact target SHA')
     by_id = {c['id']: c for c in registry['cases']}
@@ -35,7 +42,7 @@ def check_cases(d, child, manifest, registry, ids, repo):
     for cid in ids:
         for name, layer in by_id[cid]['layers'].items():
             project = (d.ROOT / layer['project']).resolve()
-            log_path = evidence / (cid + '-' + name + '.log')
+            log_path = evidence / ('discovery-' + hashlib.sha256((cid + '/' + name).encode()).hexdigest()[:16] + '.log')
             environment = d.runner_env(repo)
             discovery_dir = evidence / 'd' / hashlib.sha256((cid + '/' + name).encode()).hexdigest()[:12]
             discovery_dir.mkdir(parents=True, exist_ok=True)
@@ -71,6 +78,35 @@ def check_cases(d, child, manifest, registry, ids, repo):
         d.save(child / 'preparation' / 'discovery-cleanup-error.json', dict(reason=str(error), logsPreserved=True))
     if any(r['exitCode'] != 0 or not r['discoveredTests'] for r in records):
         raise RuntimeError('Case build/discovery failed; inspect preparation/checks and repair before freezing')
+    if manifest.get('preflightPolicy') == 'headless-runner-v1':
+        # Trial results never enter official outcomes. Actual UI requires an
+        # authorized prepared session, so discovery is not UI acceptance.
+        headless = [r for r in records if r['layer'] != 'uia']
+        if headless:
+            d.build_runner(child / 'preparation')
+        for record in records:
+            if record['layer'] == 'uia':
+                record['runtimeState'] = 'REQUIRES_PREPARED_UI_SESSION'
+                continue
+            trial = child / 'preparation' / 'trials' / uuid.uuid4().hex[:12]
+            outcomes = dict(runs=[])
+            layer = by_id[record['caseId']]['layers'][record['layer']]
+            d.run_case(trial, repo, trial, record['caseId'], [record['layer']], 'headless',
+                       layer.get('timeoutSeconds', 600) + 120, outcomes)
+            run = outcomes['runs'][-1]
+            record['runtime'] = run
+            # Preserve real business failures; never ask a model to weaken them.
+            record['runtimeUsable'] = bool(run.get('runId') and
+                (run.get('verdict') == 'PASS' or (run.get('verdict') == 'FAIL'
+                                                and run.get('verdictCode') == 'ASSERTION_FAILED')))
+            record['runtimeState'] = 'EXECUTED' if record['runtimeUsable'] else 'PREPARATION_FAILED'
+            d.save(child / 'preparation' / 'case-check.json', receipt)
+        d.save(child / 'preparation' / 'case-check.json', receipt)
+        failures = [r for r in headless if not r.get('runtimeUsable')]
+        if failures:
+            raise CaseRuntimePreflightError('Runner preflight failed: ' + '; '.join(
+                r['caseId'] + '/' + r['layer'] + ': ' + str(r['runtime'].get('verdictCode'))
+                + ' ' + str(r['runtime'].get('verdictReason', '')) for r in failures))
     return receipt
 
 
@@ -108,7 +144,7 @@ def drain(d, out, manifest, plan, registry, sched):
             reason += '; execution: ' + execution.get('reason', execution['state']) + '; required UI not executed'
         if not runs:
             reason += '; no Runner result; see coverage/execution evidence'
-        reason += '; coverage gaps retained in frozen review; no UI session created by drain'
+        reason += '; coverage gaps retained in frozen review; UI execution is recorded by run-slot/controller'
         if summary['pendingUiSlots']:
             reason += '; UI not executed: see ui/<slot>/blocker.json and attempt evidence'
         d.individual.finish_one(d, out, plan, slot['sha'], reason)

@@ -41,13 +41,14 @@ public abstract class L2TestBase : IDisposable
         States = new DeviceStateReader(Log);
     }
 
-    /// <summary>清理残留 → 启动 Vega → 等主窗口（180s）。主窗口失败直接断言失败。</summary>
+    /// <summary>清理残留 → 启动 Vega → 等主窗口；前置失败不冒充业务断言失败。</summary>
     protected void LaunchAndPrepare()
     {
         VegaApp.KillLeftover(Log);
         Vega = VegaApp.Launch(Log);
         MainWindow = Vega.WaitForMainWindow();
-        Assert.NotNull(MainWindow);
+        if (MainWindow is null)
+            throw new UiPrerequisiteException("MAIN_WINDOW_TIMEOUT", "目标 Vega 主窗口未就绪；见启动日志。");
     }
 
     public void Dispose()

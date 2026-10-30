@@ -201,6 +201,11 @@ def freeze(d, child, manifest, registry, sched, review_path, require_evidence=Fa
         if receipt_path.exists():
             evidence_names.add(str(receipt_path.relative_to(child)))
             evidence_names.update(r['log'] for r in d.load(receipt_path)['records'])
+            for record in d.load(receipt_path)['records']:
+                runtime = record.get('runtime', {})
+                for key in ('log', 'resultPath'):
+                    if runtime.get(key) and Path(runtime[key]).is_file():
+                        evidence_names.add(str(Path(runtime[key]).resolve().relative_to(child.resolve())))
         evidence_names.update(attempt['path'] for requirement in requirements for attempt in requirement.get('attemptEvidence', []))
         cp['preparationEvidenceFingerprints'] = {name: digest(child / name) for name in evidence_names}
         receipt = d.load(child / 'preparation' / 'case-check.json', {})
@@ -235,6 +240,20 @@ def validate_preparation(d, child, manifest, registry, requirements):
                 log = (child / match[0]['log']).resolve()
                 if not log.is_relative_to(child.resolve()) or not log.is_file() or digest(log) != match[0]['logSha256']:
                     raise ValueError('Missing/changed discovery log: ' + cid + '/' + layer)
+                if manifest.get('preflightPolicy') == 'headless-runner-v1' and layer != 'uia':
+                    record = match[0]
+                    runtime = record.get('runtime', {})
+                    result_path = Path(runtime.get('resultPath', '')).resolve()
+                    if (not record.get('runtimeUsable') or not runtime.get('runId')
+                            or not result_path.is_relative_to((child / 'preparation' / 'trials').resolve())
+                            or not result_path.is_file() or digest(result_path) != runtime.get('sha256')):
+                        raise ValueError('Missing/changed Runner preflight: ' + cid + '/' + layer)
+                    result = d.load(result_path)
+                    if (result.get('caseId') != cid or result.get('target', {}).get('gitCommit') != manifest['head']
+                            or result.get('runId') != runtime['runId'] or result.get('verdict') != runtime.get('verdict')
+                            or not (result.get('verdict') == 'PASS' or
+                                    (result.get('verdict') == 'FAIL' and result.get('verdictCode') == 'ASSERTION_FAILED'))):
+                        raise ValueError('Runner preflight case/target/verdict mismatch: ' + cid + '/' + layer)
     for requirement in requirements:
         if requirement.get('caseIds') and not requirement.get('gap'):
             continue

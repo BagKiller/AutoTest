@@ -19,6 +19,8 @@ public sealed record DialogExpectation(string Describe, Func<string, string, boo
 public sealed class DialogHandler
 {
     public bool LoggedInSeen { get; private set; }
+    public string? LastHandlingError { get; private set; }
+    private bool _loginAttempted;
 
     private EvidenceLog Log { get; }
 
@@ -35,9 +37,10 @@ public sealed class DialogHandler
                 HandleOne(w);
             }
         }
-        catch
+        catch (UiPrerequisiteException) { throw; }
+        catch (Exception error)
         {
-            // 树变化中的瞬时异常忽略
+            LastHandlingError = error.GetType().Name;
         }
     }
 
@@ -114,6 +117,10 @@ public sealed class DialogHandler
         switch (DialogClassifier.Classify(w))
         {
             case DialogDecision.Login:
+                // One submission per launched session. An unchanged/rejected
+                // login dialog must not repeatedly submit credentials.
+                if (_loginAttempted) break;
+                _loginAttempted = true;
                 Log.Step($"发现登录窗口: '{UiProps.Name(w)}'，自动登录 {VegaEnv.UserName}/***");
                 TryLogin(w);
                 LoggedInSeen = true;
@@ -158,8 +165,11 @@ public sealed class DialogHandler
     private void TryLogin(AutomationElement loginWindow)
     {
         var edits = loginWindow.FindAllDescendants(cf => cf.ByControlType(ControlType.Edit));
+        if (edits.Length < 2)
+            throw new UiPrerequisiteException("LOGIN_NOT_READY", "登录窗口缺少账号或密码控件。");
+        var password = AuthenticatorPassword.Resolve(Log);
         edits[0].Patterns.Value.Pattern.SetValue(VegaEnv.UserName);
-        edits[1].Patterns.Value.Pattern.SetValue(VegaEnv.Password);
+        edits[1].Patterns.Value.Pattern.SetValue(password);
         Log.Step("  凭据已填");
 
         var ok = loginWindow.FindFirstDescendant(cf => cf.ByAutomationId("VegaLoginWindowOK"))?.AsButton();
@@ -169,7 +179,8 @@ public sealed class DialogHandler
             ok = buttons.Length > 0 ? buttons[^1].AsButton() : null;
         }
 
-        Assert.NotNull(ok);
+        if (ok is null)
+            throw new UiPrerequisiteException("LOGIN_NOT_READY", "登录窗口缺少提交控件。");
         ok!.Invoke();
         Log.Step("  登录已提交");
     }

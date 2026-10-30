@@ -66,9 +66,14 @@ are provided by the controller. Do not emit csproj, props, targets, scripts or p
 All test classes use namespace Vega.AutoTest.Authored and public xUnit [Fact] test methods.
 Use Vega.AutoTest.Harness.AssertionRecorder to record observed PASS/FAIL then Flush in finally;
 each test must actually execute the production behavior. Record Fail before throwing on mismatch.
+Derive minAssertions from the actual successful execution paths, including loops and parameter rows;
+do not guess or inflate the count. Runtime preflight will reject an inconsistent threshold.
+UI prerequisite exceptions from the harness must propagate unchanged; do not convert them into Xunit
+business assertion failures. Never retry login credentials inside a generated test.
 Every caseKey must have a matching className and nonempty methods. Select only relevant cases.
 Each generated class belongs to ONE layer. UI cases must derive L2TestBase, call LaunchAndPrepare,
-use LoginFlow(Dialogs, States, Log).WaitReady(MainWindow!, TimeSpan.FromMinutes(3)), perform the
+use LoginFlow(Dialogs, States, Log).Watch(Vega).WaitReady(MainWindow!, TimeSpan.FromMinutes(3)),
+perform the
 actual requested screen actions and compare business output, not just startup or page presence.
 L2TestBase exposes protected Log, Assertions, Vega, MainWindow, Dialogs, States; Dispose flushes.
 UIA uses FlaUI3 through harness. Do not invoke arbitrary native APIs, processes, network, reflection
@@ -250,6 +255,14 @@ def add_sources(d, payload, manifest, names):
     payload['sourceRequestErrors'] = errors
 
 
+def reject_swallowed_ui_prerequisite(name, content):
+    """A catch-all would record LoginFlow/L2TestBase failures as business FAIL."""
+    if re.search(r'catch\s*\(\s*UiPrerequisiteException\b', content):
+        raise ValueError('Generated test must let UI prerequisite exceptions propagate: ' + name)
+    if re.search(r'catch\s*\(\s*Exception\b', content):
+        raise ValueError('Generated test must not catch Exception; a login or main-window failure would be recorded as a business FAIL: ' + name)
+
+
 def install(d, child, manifest, response, registry, sched, version):
     """Only new versioned probe files and new case/profile definitions may be written."""
     sha = manifest['head']
@@ -312,6 +325,9 @@ def install(d, child, manifest, response, registry, sched, version):
         raise ValueError('Product change has no generated acceptance scenarios')
     if cases and not any(p.suffix == '.cs' for p, _ in normalized.values()):
         raise ValueError('Executable cases need generated test source')
+    for name, (_, content) in normalized.items():
+        if name.endswith('.cs'):
+            reject_swallowed_ui_prerequisite(name, content)
     # Never edit a frozen probe, including on controller retries/recovery.
     if destination.exists():
         raise ValueError('Generated version already exists; use a new immutable attempt version')
@@ -335,7 +351,9 @@ def install(d, child, manifest, response, registry, sched, version):
 
 
 def project_text(d):
-    harness = escape(str(d.ROOT / 'harness' / 'Vega.AutoTest.Harness.csproj'))
+    # Authored projects always live in probes/authored/<version>/<sha>/.
+    # Relative references allow the same revision to run on the validation host.
+    harness = '../../../../harness/Vega.AutoTest.Harness.csproj'
     return f'''<Project Sdk="Microsoft.NET.Sdk">
  <PropertyGroup><TargetFramework>net8.0-windows10.0.19041.0</TargetFramework><UseWPF>true</UseWPF>
  <ImplicitUsings>enable</ImplicitUsings><Nullable>enable</Nullable><IsTestProject>true</IsTestProject>

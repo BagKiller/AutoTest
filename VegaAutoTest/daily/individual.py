@@ -21,7 +21,8 @@ def prepare(d, out, manifest, registry, sched):
         child = out / 'commits' / sha
         cm = dict(manifest, batchId=manifest['batchId'] + '_' + sha[:12], head=sha,
                   commits=[commit], mode='individual-commit', strategy='individual-commit',
-                  parentBatch=str(out), collectionHead=manifest['head'])
+                  parentBatch=str(out), collectionHead=manifest['head'],
+                  preflightPolicy='headless-runner-v1')
         d.save(child / 'manifest.json', cm)
         source_diff = out / (sha[:8] + '.diff')
         # Keep the root's immutable diff and expose its location in each child plan.
@@ -250,6 +251,7 @@ def aggregate(d, out, manifest, plan, registry):
         lines.append(f"| {slot['order']} | `{slot['sha'][:8]}` | {d.md(slot['title'])} | {row['status']} | {d.md(row['reason'])} | [report](commits/{slot['sha']}/report.md) |")
         if completion:
             lines += ['', f"`{slot['sha'][:8]}` 执行收尾记录：{d.md(completion['reason'])}", '']
+    lines += d.baseline_lines(rows)
     counts = {}
     for row in rows:
         counts[row['status']] = counts.get(row['status'], 0)+1

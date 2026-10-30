@@ -15,6 +15,7 @@ public sealed class DeviceStateReader
 {
     private readonly EvidenceLog _log;
     private string _stateChannel = "";
+    public string Channel => _stateChannel;
 
     public DeviceStateReader(EvidenceLog log) => _log = log;
 

@@ -145,6 +145,14 @@
       "Vega300-HWv1",
       "Vega300-HWv2",
       "Vega500"
+    ],
+    "authored-v20261030fix01-d07d0e7045b7-uniformity-component-contract": [],
+    "authored-v20261030fix01-d07d0e7045b7-uniformity-import-reentry-statistics": [
+      "Vega100-PIC",
+      "Vega100-Coherent",
+      "Vega300-HWv1",
+      "Vega300-HWv2",
+      "Vega500"
     ]
   },
   "defaultUiProfile": "Vega500",

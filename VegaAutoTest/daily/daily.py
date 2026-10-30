@@ -452,7 +452,8 @@ def run_case(out, repo, log_dir, case_id, layers, phase, timeout, outcomes):
                      resultPath=str(result_path), reportPath=str(result_path.with_name("report.md")),
                      sha256=hashlib.sha256(result_path.read_bytes()).hexdigest())
     except Exception as exc:  # noqa: BLE001 — 记成工具异常，继续下一个用例
-        entry.update(verdict="ERROR", verdictCode="DAILY_RUNNER_INVOCATION", verdictReason=str(exc), runId=None)
+        entry.update(verdict="ERROR", verdictCode="DAILY_RUNNER_INVOCATION", verdictReason=str(exc),
+                     exceptionType=type(exc).__name__, runId=None)
     entry["finishedAt"] = now_cn().isoformat()
     outcomes["runs"].append(entry)
     save(out / "outcomes.json", outcomes)
@@ -597,20 +598,33 @@ def evaluate(manifest, plan_data, outcomes, registry):
         wi_clusters = [cl for cl in mine if cl["kind"] == "workItem"]
         tag_cases = sorted({cid for cl in mine if cl["kind"] == "pathTag" for cid in cl["cases"]})
         wi_cases = sorted({cid for cl in wi_clusters for cid in cl["cases"]})
-        required_cases = sorted(set(wi_cases + tag_cases + baseline_cases))
-        cells = {cid: case_state(cid, plan_data, latest) for cid in required_cases}
+        own_cases = sorted(set(wi_cases + tag_cases))
+        cells = {cid: case_state(cid, plan_data, latest) for cid in sorted(set(own_cases + baseline_cases))}
+        def failure_details(verdict, case_ids):
+            return '; '.join(dict.fromkeys(
+                f"{cid} [{e.get('phase', '?')}] {e.get('verdictCode', verdict)}: {e.get('verdictReason', '见原始结果')}"
+                for cid in case_ids for e in cells[cid][1] if e.get('verdict') == verdict))
         evidence = [dict(caseId=cid, verdict=cells[cid][0], runIds=[e.get("runId") for e in cells[cid][1]],
                          codes=[e.get("verdictCode") for e in cells[cid][1]], partial=cid in partial)
                     for cid in sorted(cells)]
+        baseline_evidence = []
+        for cid in baseline_cases:
+            verdict, entries = cells[cid]
+            baseline_evidence.append(dict(caseId=cid, verdict=verdict,
+                verdictCode=entries[-1].get("verdictCode") if entries else None,
+                reason=entries[-1].get("verdictReason") if entries else None,
+                runIds=[e.get("runId") for e in entries]))
+        present = [item["verdict"] for item in baseline_evidence]
+        baseline_verdict = None if not present or any(item is None for item in present) else min(
+            present, key=lambda verdict: VERDICT_RANK.get(verdict, 3))
         if c.get("noProductChange"):
             status, reason = "NOT_APPLICABLE", "仅文档改动"
-        elif any(cells[cid][0] == "FAIL" for cid in cells):
-            failed = [cid for cid in cells if cells[cid][0] == "FAIL"]
-            status, reason = "FAIL", f"用例失败: {', '.join(failed)}；同簇提交见计划，需隔离/二分"
-        elif any(cells[cid][0] == "ERROR" for cid in required_cases):
-            status, reason = "ERROR", "验证工具异常"
-        elif any(cells[cid][0] == "BLOCKED" for cid in required_cases):
-            status, reason = "BLOCKED", "前置/环境不满足，无法判定"
+        elif any(cells[cid][0] == "FAIL" for cid in own_cases):
+            status, reason = "FAIL", '用例失败: ' + failure_details('FAIL', own_cases)
+        elif any(cells[cid][0] == "ERROR" for cid in own_cases):
+            status, reason = "ERROR", '验证工具异常: ' + failure_details('ERROR', own_cases)
+        elif any(cells[cid][0] == "BLOCKED" for cid in own_cases):
+            status, reason = "BLOCKED", '前置/环境不满足: ' + failure_details('BLOCKED', own_cases)
         elif any(r.get('gaps') for r in plan_data.get('coverageRequirements', [])):
             status, reason = 'NEEDS_CASE', '需求覆盖未齐：' + '; '.join(
                 gap for r in plan_data['coverageRequirements'] for gap in r.get('gaps', []))
@@ -621,8 +635,8 @@ def evaluate(manifest, plan_data, outcomes, registry):
         elif any(not cl["cases"] for cl in wi_clusters):
             missing = [cl["label"] for cl in wi_clusters if not cl["cases"]]
             status, reason = "NEEDS_CASE", f"{', '.join(missing)} 未在 registry.json 登记用例"
-        elif any(cells[cid][0] is None for cid in required_cases):
-            waiting = sorted({ph for cid in required_cases if cells[cid][0] is None for ph in phases.get(cid, ["headless"])})
+        elif any(cells[cid][0] is None for cid in own_cases):
+            waiting = sorted({ph for cid in own_cases if cells[cid][0] is None for ph in phases.get(cid, ["headless"])})
             status, reason = "PENDING", f"等待执行: {', '.join(waiting)}"
         elif any(cid in partial for cid in wi_cases):
             status, reason = "PARTIAL", "登记用例全部 PASS，但标记为 partial-acceptance"
@@ -630,27 +644,63 @@ def evaluate(manifest, plan_data, outcomes, registry):
             status, reason = "ACCEPTED", "工作项登记用例在目标 HEAD 的独立构建上全部 PASS"
         if status in ("ACCEPTED", "PARTIAL") and any(cells[cid][0] in ("ERROR", "BLOCKED") for cid in tag_cases):
             reason += "；关联路径探针未得出 PASS"
+        if status in ("ACCEPTED", "PARTIAL") and baseline_cases and any(item["verdict"] is None for item in baseline_evidence):
+            waiting = [item["caseId"] for item in baseline_evidence if item["verdict"] is None]
+            status, reason = "PENDING", "等待公共基线执行: " + ", ".join(waiting)
+        elif baseline_verdict in ("FAIL", "ERROR", "BLOCKED"):
+            detail = failure_details(baseline_verdict, baseline_cases)
+            reason += f"；公共基线未通过（{baseline_verdict}）：{detail}。该结果在批次报告只计一次"
         rows.append(dict(sha=c["sha"], sha8=sha8, title=c["title"], origin=c.get("origin", "carryover" if c.get("carryover") else "today"),
                          workItems=c.get("workItems", []), clusters=[cl["id"] for cl in mine], status=status,
-                         reason=reason, evidence=evidence, unmappedFiles=c.get("unmappedFiles", [])))
+                         reason=reason, evidence=evidence, baselineVerdict=baseline_verdict,
+                         baselineEvidence=baseline_evidence, unmappedFiles=c.get("unmappedFiles", [])))
     return rows
+
+
+def baseline_open(row):
+    """A shared baseline that is missing or not PASS still blocks calling the commit accepted."""
+    return bool(row.get("baselineEvidence")) and row.get("baselineVerdict") != "PASS"
 
 
 def acceptance_state(rows):
     if not rows:
         return "NO_COMMITS"
-    if any(r["status"] == "FAIL" for r in rows):
+    if any(r["status"] == "FAIL" or r.get("baselineVerdict") == "FAIL" for r in rows):
         return "HAS_FAIL"
-    if all(r["status"] in CLOSED for r in rows):
+    if any(r.get("baselineVerdict") in ("ERROR", "BLOCKED") for r in rows):
+        return "INCOMPLETE"
+    if all(r["status"] in CLOSED and not baseline_open(r) for r in rows):
         return "COMPLETE"
     return "INCOMPLETE"
+
+
+def baseline_lines(rows):
+    """One row per distinct failing baseline, listing every affected commit."""
+    groups = {}
+    for row in rows:
+        for item in row.get("baselineEvidence") or []:
+            if item.get("verdict") in (None, "PASS"):
+                continue
+            key = (item.get("caseId"), item.get("verdict"), item.get("verdictCode"))
+            bucket = groups.setdefault(key, [])
+            if row.get("sha8") not in bucket:
+                bucket.append(row.get("sha8"))
+    if not groups:
+        return []
+    lines = ["", "## 公共基线（每个失败只计一次）", "",
+             "下列结论来自每日回归底线。同一失败列出受影响提交，不把每个提交再记成一次独立失败。", "",
+             "| 用例 | 结论 | 受影响提交 |", "| --- | --- | --- |"]
+    for (case_id, verdict, code), shas in groups.items():
+        lines.append(f"| {case_id} | {verdict} / {code or '—'} | {', '.join(shas)} |")
+    lines.append("")
+    return lines
 
 
 def update_pending(manifest, rows, out):
     if manifest.get("mode") != "daily" or not STATE.exists():
         return
     state = load(STATE)
-    closed = {r["sha"]: r for r in rows if r["status"] in CLOSED}
+    closed = {r["sha"]: r for r in rows if r["status"] in CLOSED and not baseline_open(r)}
     if not closed:
         return
     state["pendingCommits"] = [s for s in state.get("pendingCommits", []) if s not in closed]
@@ -695,7 +745,8 @@ def report(out, manifest, plan_data, outcomes, rows):
     data = dict(batchId=manifest["batchId"], acceptanceState=state, commitCount=len(rows), statusCounts=counts,
                 target=manifest["head"], remoteFresh=manifest["remoteFresh"], built=bool(build),
                 runs=[dict(caseId=e["caseId"], phase=e["phase"], runId=e.get("runId"), verdict=e.get("verdict"),
-                           verdictCode=e.get("verdictCode")) for e in latest.values()],
+                           verdictCode=e.get("verdictCode"), verdictReason=e.get('verdictReason'),
+                           log=e.get('log'), resultPath=e.get('resultPath')) for e in latest.values()],
                 pendingUiSlots=[s["id"] for s in plan_data["uiSlots"]
                                 if any((i["caseId"], s["id"]) not in latest for i in s["cases"])],
                 unverifiedUiSlots=[s["id"] for s in plan_data["uiSlots"]
@@ -769,6 +820,7 @@ def report(out, manifest, plan_data, outcomes, rows):
         L += ['', '审核/登记不是测试通过证明；正式结论仍须本提交 Runner 原始结果。', '']
     if plan_data["hardware"]:
         L += ["## 需真机验证", ""] + [f"- {h['tag']}（提交 {', '.join(h['commits'])}）：{h['note']}" for h in plan_data["hardware"]] + [""]
+    L += baseline_lines(rows)
     failed = [r for r in rows if r["status"] == "FAIL"]
     if failed:
         L += ["## 失败隔离建议", "", "多提交合并验证无法直接定位引入者。按失败用例所在簇的提交，从早到晚逐个在独立 worktree 上复跑同一用例。", ""]
@@ -781,7 +833,7 @@ def report(out, manifest, plan_data, outcomes, rows):
     L += ["## 规则", "",
           "- 收集：北京时间当天 00:00 至执行时刻按 committer time 取 master 全部可达提交，补收上次收集后新出现的提交；历史未验收提交只留在原报告，不重新编入或重放。",
           "- 归簇：提交说明里的工作项号优先，同一工作项的提交合为一簇；无工作项号时用路径规则给出候选探针；未覆盖文件按模块成簇待分析。",
-          "- 验收：只有工作项登记用例（非 partial-acceptance）在目标 HEAD 上全部 PASS 才记“已验收”并移出待验队列；路径探针只算部分验收。",
+          "- 验收：只有工作项登记用例（非 partial-acceptance）在目标 HEAD 上全部 PASS 才记“已验收”并移出待验队列；路径探针只算部分验收。公共基线失败在批次报告只计一次，并挡住整批完整验收。",
           "- 判定只来自 Runner result.json；本报告不改写任何 verdict。", ""]
     (out / "report.md").write_text("\n".join(L), encoding="utf-8")
     return data

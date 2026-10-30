@@ -30,10 +30,14 @@ public static class VegaEnv
     /// <summary>取证文件落盘目录（默认 &lt;VegaAutoTest&gt;\runs\manual，保证对主仓库零写入）。</summary>
     public static string OutDir => LazyOutDir.Value;
 
-    /// <summary>仿真环境测试账号；真实环境用环境变量覆盖，不要把有效凭据写进源码。</summary>
-    public static string UserName => Env("VEGA_AUTOTEST_USER") ?? "1";
+    /// <summary>登录账号。未设置时使用超级用户 su，不再回落到测试账号 1。</summary>
+    public static string UserName => Env("VEGA_AUTOTEST_USER") ?? "su";
 
-    public static string Password => Env("VEGA_AUTOTEST_PASSWORD") ?? "1";
+    /// <summary>调用方显式放入的密码。未设置时向官方认证器读取，不再回落到 1。</summary>
+    public static string? PasswordOverride => Env("VEGA_AUTOTEST_PASSWORD");
+
+    /// <summary>官方认证器。登录密码只从这里的「超级用户密码」读取。</summary>
+    public static string AuthenticatorExe { get; } = @"C:\AutoTest\runtime\AuthenticatorApp\Authenticator.exe";
 
     /// <summary>L1 AgentControlService 基址（本地部署，缺失时 oracle 弱断言）。</summary>
     public static string AgentBaseUrl => Env("VEGA_AUTOTEST_AGENT_URL") ?? "http://localhost:18901/vega-agent/";

@@ -81,6 +81,11 @@ class IndividualTests(unittest.TestCase):
                 log.write_text('Fixture discovered: ' + layer)
                 records.append(dict(caseId=case['id'], layer=layer, exitCode=0, discoveredTests=[layer],
                     log=str(log.relative_to(child)), logSha256=d.coverage_contract.digest(log)))
+                if layer != 'uia':
+                    result = child / 'preparation' / 'trials' / case['id'] / layer / 'result.json'
+                    d.save(result, dict(caseId=case['id'], target=dict(gitCommit=sha), runId='fixture-run', verdict='PASS'))
+                    records[-1].update(runtimeUsable=True, runtime=dict(resultPath=str(result), runId='fixture-run',
+                        verdict='PASS', sha256=d.coverage_contract.digest(result)))
         d.save(child / 'preparation' / 'case-check.json', dict(sha=sha, records=records,
             fingerprints=d.coverage_contract.case_fingerprints(d, self.registry, ids, transitive=True)))
 
@@ -536,12 +541,83 @@ class IndividualTests(unittest.TestCase):
             artifacts.append(scratch)
             kwargs['stdout'].write('The following Tests are available:\n    Fixture.RealAssertion\n')
             return subprocess.CompletedProcess(command, 0)
+        # This test isolates discovery scratch cleanup, not runtime preflight.
+        cm.pop('preflightPolicy', None)
         with patch.object(d, 'WORKSPACES', self.root/'workspaces'), patch.object(d, 'git', return_value=cm['head']), patch.object(d, 'run_bounded', side_effect=discover):
             receipt=d.queue_driver.check_cases(d,child,cm,self.registry,['wi7'],self.root/'worktree')
         self.assertFalse(artifacts[0].exists())
         self.assertTrue((child/receipt['records'][0]['log']).exists())
         self.assertTrue((child/'preparation/case-check.json').exists())
         self.assertTrue(list((child/'preparation/checks').rglob('test-artifacts-cleanup.json')))
+
+    def test_new_campaign_rejects_discovery_without_real_runner_result(self):
+        p = self.prepare()
+        child = Path(p['commitSlots'][0]['batch'])
+        cm = d.load(child / 'manifest.json')
+        self.discovery_receipt(child, cm['head'], ['wi7'])
+        receipt = d.load(child / 'preparation/case-check.json')
+        receipt['records'][0].pop('runtime')
+        d.save(child / 'preparation/case-check.json', receipt)
+        with self.assertRaisesRegex(ValueError, 'Runner preflight'):
+            d.coverage_contract.validate_preparation(d, child, cm, self.registry, [dict(id='r', caseIds=['wi7'])])
+
+    def test_preflight_cannot_borrow_another_commit_result(self):
+        p = self.prepare()
+        child = Path(p['commitSlots'][0]['batch'])
+        cm = d.load(child / 'manifest.json')
+        self.discovery_receipt(child, cm['head'], ['wi7'])
+        receipt = d.load(child / 'preparation/case-check.json')
+        run = receipt['records'][0]['runtime']
+        result = Path(run['resultPath'])
+        raw = d.load(result)
+        raw['target']['gitCommit'] = 'f' * 40
+        d.save(result, raw)
+        run['sha256'] = d.coverage_contract.digest(result)
+        d.save(child / 'preparation/case-check.json', receipt)
+        with self.assertRaisesRegex(ValueError, 'target/verdict mismatch'):
+            d.coverage_contract.validate_preparation(d, child, cm, self.registry, [dict(id='r', caseIds=['wi7'])])
+
+    def test_runtime_preflight_preserves_business_fail_and_defers_actual_ui(self):
+        p = self.prepare()
+        child = Path(p['commitSlots'][0]['batch'])
+        cm = d.load(child / 'manifest.json')
+        def discover(command, **kwargs):
+            kwargs['stdout'].write('The following Tests are available:\n    Fixture.BusinessTest\n')
+            return subprocess.CompletedProcess(command, 0)
+        def trial(out, repo, log, cid, layers, phase, timeout, outcomes):
+            self.assertEqual(layers, ['logic'])
+            raw = out / 'runner/result.json'
+            d.save(raw, dict(caseId=cid, target=dict(gitCommit=cm['head']), runId='trial-fail',
+                verdict='FAIL', verdictCode='ASSERTION_FAILED'))
+            outcomes['runs'].append(dict(caseId=cid, resultPath=str(raw), runId='trial-fail',
+                verdict='FAIL', verdictCode='ASSERTION_FAILED', sha256=d.coverage_contract.digest(raw)))
+        with patch.object(d, 'WORKSPACES', self.root / 'workspaces'), patch.object(d, 'git', return_value=cm['head']), \
+             patch.object(d, 'run_bounded', side_effect=discover), patch.object(d, 'build_runner'), \
+             patch.object(d, 'run_case', side_effect=trial) as invoke:
+            receipt = d.queue_driver.check_cases(d, child, cm, self.registry, ['wi7'], self.root / 'worktree')
+        invoke.assert_called_once()
+        self.assertTrue(receipt['records'][0]['runtimeUsable'])
+        self.assertEqual(receipt['records'][1]['runtimeState'], 'REQUIRES_PREPARED_UI_SESSION')
+        self.assertFalse((child / 'outcomes.json').exists())
+        d.coverage_contract.validate_preparation(d, child, cm, self.registry, [dict(id='r', caseIds=['wi7'])])
+
+    def test_runtime_count_mismatch_is_not_a_compiler_repair(self):
+        p = self.prepare()
+        child = Path(p['commitSlots'][0]['batch'])
+        cm = d.load(child / 'manifest.json')
+        def discover(command, **kwargs):
+            kwargs['stdout'].write('The following Tests are available:\n    Fixture.BusinessTest\n')
+            return subprocess.CompletedProcess(command, 0)
+        def trial(*args):
+            args[-1]['runs'].append(dict(runId='blocked', verdict='BLOCKED',
+                verdictCode='ASSERTION_COUNT_BELOW_MINIMUM', verdictReason='65/70'))
+        with patch.object(d, 'WORKSPACES', self.root / 'workspaces'), patch.object(d, 'git', return_value=cm['head']), \
+             patch.object(d, 'run_bounded', side_effect=discover), patch.object(d, 'build_runner'), \
+             patch.object(d, 'run_case', side_effect=trial):
+            with self.assertRaises(d.queue_driver.CaseRuntimePreflightError):
+                d.queue_driver.check_cases(d, child, cm, self.registry, ['wi7'], self.root / 'worktree')
+        self.assertEqual(self.registry['cases'][0]['layers']['logic'].get('minAssertions'), None)
+        self.assertFalse(d.load(child / 'preparation/case-check.json')['records'][0]['runtimeUsable'])
 
     def test_discovery_superset_does_not_falsely_report_source_drift_or_select_extra_cases(self):
         p = self.prepare()
@@ -643,6 +719,7 @@ class IndividualTests(unittest.TestCase):
         self.assertEqual(result['unverifiedUiSlots'][0]['kind'], 'missing-ui-coverage')
 
     def test_failed_baseline_cannot_be_hidden_by_passing_work_item_case(self):
+        self.registry['cases'][0]['layers'].pop('uia')
         p = self.prepare()
         cp = self.freeze(p, ui=False)
         cp['clusters'].append(dict(id='baseline',kind='baseline',label='baseline',commits=[],cases=['regression']))
@@ -650,8 +727,27 @@ class IndividualTests(unittest.TestCase):
         cm=d.load(Path(p['commitSlots'][0]['batch'])/'manifest.json')
         for verdict in ['FAIL','ERROR','BLOCKED']:
             rows=d.evaluate(cm,cp,dict(runs=[dict(caseId='wi7',phase='headless',verdict='PASS',runId='fixture-work-item'),
-                dict(caseId='regression',phase='headless',verdict=verdict,runId='fixture-regression')]),self.registry)
-            self.assertEqual(rows[0]['status'],verdict)
+                dict(caseId='regression',phase='headless',verdict=verdict,verdictCode=verdict,runId='fixture-regression')]),self.registry)
+            self.assertEqual(rows[0]['status'], 'ACCEPTED')
+            self.assertEqual(rows[0]['baselineVerdict'], verdict)
+            self.assertIn('regression', rows[0]['reason'])
+            state = d.acceptance_state(rows)
+            self.assertNotEqual(state, 'COMPLETE')
+            self.assertEqual(state, 'HAS_FAIL' if verdict == 'FAIL' else 'INCOMPLETE')
+            self.assertTrue(d.baseline_open(rows[0]))
+
+    def test_shared_baseline_failure_is_listed_once_for_every_affected_commit(self):
+        rows = [
+            dict(sha8='aaaaaaa1', status='ACCEPTED', baselineVerdict='FAIL',
+                 baselineEvidence=[dict(caseId='daily-supplement', verdict='FAIL', verdictCode='ASSERTION_FAILED')]),
+            dict(sha8='bbbbbbb2', status='ACCEPTED', baselineVerdict='FAIL',
+                 baselineEvidence=[dict(caseId='daily-supplement', verdict='FAIL', verdictCode='ASSERTION_FAILED')]),
+        ]
+        text = '\n'.join(d.baseline_lines(rows))
+        self.assertEqual(text.count('daily-supplement'), 1)
+        self.assertIn('aaaaaaa1', text)
+        self.assertIn('bbbbbbb2', text)
+        self.assertEqual(d.acceptance_state(rows), 'HAS_FAIL')
 
     def test_preparation_build_can_freeze_but_changed_discovery_evidence_cannot_execute(self):
         p=self.prepare();child=Path(p['commitSlots'][0]['batch'])

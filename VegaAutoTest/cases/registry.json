@@ -2038,6 +2038,50 @@
           "requiresL1Api": false
         }
       }
+    },
+    {
+      "id": "authored-v20261030fix01-d07d0e7045b7-uniformity-component-contract",
+      "title": "Independent tails, measured boundaries, legacy migration and algorithm factor consumption",
+      "targetSha": "d07d0e7045b747753a1d1a70769e9853ee35ddd2",
+      "workItems": [
+        3722
+      ],
+      "tags": [
+        "ai-authored"
+      ],
+      "evidenceFiles": [],
+      "layers": {
+        "logic": {
+          "project": "probes/authored/v20261030fix01/d07d0e7045b7/Authored.logic.csproj",
+          "filter": "FullyQualifiedName~Vega.AutoTest.Authored.UniformityComponentTests.",
+          "timeoutSeconds": 600,
+          "minAssertions": 65,
+          "requiresVegaExe": true,
+          "requiresL1Api": false
+        }
+      }
+    },
+    {
+      "id": "authored-v20261030fix01-d07d0e7045b7-uniformity-import-reentry-statistics",
+      "title": "Import legacy results and reload edited disk results through actual Uniformity navigation",
+      "targetSha": "d07d0e7045b747753a1d1a70769e9853ee35ddd2",
+      "workItems": [
+        3722
+      ],
+      "tags": [
+        "ai-authored"
+      ],
+      "evidenceFiles": [],
+      "layers": {
+        "uia": {
+          "project": "probes/authored/v20261030fix01/d07d0e7045b7/Authored.uia.csproj",
+          "filter": "FullyQualifiedName~Vega.AutoTest.Authored.UniformityWorkflowTests.",
+          "timeoutSeconds": 600,
+          "minAssertions": 25,
+          "requiresVegaExe": true,
+          "requiresL1Api": false
+        }
+      }
     }
   ]
 }
