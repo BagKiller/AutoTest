@@ -1,0 +1,17 @@
+{"batch": "C:\\Users\\10155\\AppData\\Local\\Temp\\tmp7gt9lgua\\daily\\runs\\waiting", "pid": 44880, "identity": "134378036776585097", "phase": "STARTING", "updatedAt": "2026-10-30T11:14:37.903794+08:00"}
+{"batch": "C:\\Users\\10155\\AppData\\Local\\Temp\\tmp7gt9lgua\\daily\\runs\\waiting", "pid": 44880, "identity": "134378036776585097", "phase": "WAITING_MODEL", "updatedAt": "2026-10-30T11:14:37.904977+08:00", "reason": "usage limit", "report": "C:\\Users\\10155\\AppData\\Local\\Temp\\tmp7gt9lgua\\daily\\runs\\waiting\\report.md"}
+{"batch": "C:\\Users\\10155\\AppData\\Local\\Temp\\tmpygkvetz7\\daily\\runs\\batch", "pid": 44880, "identity": "134378036776585097", "phase": "PREPARE_ALL", "updatedAt": "2026-10-30T11:14:37.913834+08:00"}
+{"batch": "C:\\Users\\10155\\AppData\\Local\\Temp\\tmpygkvetz7\\daily\\runs\\batch", "pid": 44880, "identity": "134378036776585097", "phase": "EXECUTING", "updatedAt": "2026-10-30T11:14:37.915843+08:00"}
+{"batch": "C:\\Users\\10155\\AppData\\Local\\Temp\\tmpygkvetz7\\daily\\runs\\batch", "pid": 44880, "identity": "134378036776585097", "phase": "FINISHED", "updatedAt": "2026-10-30T11:14:37.918155+08:00", "report": "C:\\Users\\10155\\AppData\\Local\\Temp\\tmpygkvetz7\\daily\\runs\\batch\\report.md", "statusCounts": {"NEEDS_CASE": 1}, "acceptanceState": "INCOMPLETE"}
+{"batch": "C:\\Users\\10155\\AppData\\Local\\Temp\\tmp38fi2xah\\daily\\runs\\old", "pid": 44880, "identity": "134378036776585097", "phase": "STARTING", "updatedAt": "2026-10-29T00:00:00+08:00"}
+{"batch": "C:\\Users\\10155\\AppData\\Local\\Temp\\tmp38fi2xah\\daily\\runs\\new", "pid": 44880, "identity": "134378036776585097", "phase": "STARTING", "updatedAt": "2026-10-29T00:00:00+08:00"}
+[headless] authored-very-long-business-scenario-very-long-business-scenario-very-long-business-scenario-very-long-business-scenario-very-long-business-scenario-very-long-business-scenario-very-long-business-scenario-very-long-business-scenario-: PASS / OK runId=run
+{"batch": "C:\\Users\\10155\\AppData\\Local\\Temp\\tmpf6irjldd\\daily\\runs\\batch", "pid": 44880, "identity": "134378036776585097", "phase": "BUILD_DISCOVERY", "updatedAt": "2026-10-30T11:14:37.951149+08:00", "sha": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"}
+{"batch": "C:\\Users\\10155\\AppData\\Local\\Temp\\tmpf6irjldd\\daily\\runs\\batch", "pid": 44880, "identity": "134378036776585097", "phase": "PREPARED", "updatedAt": "2026-10-30T11:14:37.953150+08:00", "sha": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"}
+{"batch": "C:\\Users\\10155\\AppData\\Local\\Temp\\tmp9jsfbec8\\daily\\runs\\pending", "pid": 44880, "identity": "134378036776585097", "phase": "STARTING", "updatedAt": "2026-10-30T11:14:37.964817+08:00"}
+{"batch": "C:\\Users\\10155\\AppData\\Local\\Temp\\tmpqhg_5qoy\\daily\\runs\\new-batch", "pid": 44880, "identity": "134378036776585097", "phase": "COLLECTED", "updatedAt": "2026-10-30T11:14:37.993540+08:00"}
+................................................................................................
+----------------------------------------------------------------------
+Ran 96 tests in 3.183s
+
+OK
