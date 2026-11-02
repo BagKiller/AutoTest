@@ -1,12 +1,14 @@
 ## 2026-11-02 日常策略更新（用户要求，优先于下方旧策略）
 
-新日常批次默认 testingPolicy 不设置：**逐提交独立校验**。收集当天及游标之后新增提交，每个提交在自己的 SHA 上独立准备、独立构建、独立执行、独立报告与收尾；单个提交失败不截断队列，不做跨提交 DLL/runId 复用。这是 nightly 默认，控制器不静默改变策略。
+新日常批次默认 testingPolicy=latest-head：收集当天及游标之后新增提交，保存 collected-commits.json 和 collected-diffs/，只在收集时固定的最新 HEAD 上生成/审核测试、构建一次并运行一个整合测试项。最新 HEAD 包含本批全部提交，一次构建即可完成整体测试校验；用户明确不需要逐提交失败定位与二分分析。需求分析仍逐提交进行（每个提交的 diff 和工单单独读取、单独生成测试），仅构建与执行合并。报告标注 perCommitAcceptance=false，不宣称逐提交独立验收。
 
-`--strategy latest-head` 仍是显式可选项：只在收集时固定的最新 HEAD 上构建一次并运行一个整合测试项，用于快速回归当日整体改动；它明确不宣称逐提交独立验收，报告必须标注 perCommitAcceptance=false。latest-head 的共享工作区与回收规则见下方历史小节。历史专项 revalidation 与旧批次保持原策略，不迁移、不改冻结输入。
+`--strategy individual` 是显式可选项：每个提交在自己的 SHA 上独立准备、独立构建、独立执行、独立报告与收尾，用于用户单独要求的逐提交专项复验；nightly 控制器不会自行创建 individual 批次。历史专项 revalidation 与旧批次保持原策略，不迁移、不改冻结输入。
+
+latest-head 批次共享工作区：日常专用目录为 C:\AutoTest\workspaces\daily-latest。下一批仅在上一批 completion.json 已保存、工作区无未提交/未跟踪修改且 Git 归属匹配时，以正常 git worktree remove 回收并在相同路径创建新 HEAD 工作区，防止残留 DLL；失败/未完成/异常归属保留并报错。磁盘占用因此为单个 worktree（约 9-11G），不随当晚提交数或批次数增长；历史报告与证据长期保留。
 
 新批次收集成功而旧活动批次尚未收尾时，旧批次 controller/state.json 与 ACTIVE 指针记 phase=SUPERSEDED 并记录 supersededBy；这仅表示被新批次取代，不表示旧批次完成或通过，其原始报告与证据保持不变。`daily/latest-workspace-owner.json` 是验证机运行时状态，不入库。
 
-## 2026-11-02 需求编排修复（仍适用于 latest-head 显式批次）
+## 2026-11-02 需求编排修复（适用于 latest-head 默认批次）
 
 latest-head 批次仅共享产品构建，不把需求分析合为单次推理。requirement-scopes.json 保留重新解析的原始提交需求，模型逐提交读取完整 diff（不截断）和对应工单，在固定目标 HEAD 上生成测试。每个 scope 单独保存预算、候选响应、场景和恢复记录；单项生成失败不能覆盖其他项。原 collected-commits.json、collected-diffs 保持原始证据。
 

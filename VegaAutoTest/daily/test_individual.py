@@ -90,9 +90,10 @@ class IndividualTests(unittest.TestCase):
             fingerprints=d.coverage_contract.case_fingerprints(d, self.registry, ids, transitive=True)))
 
     def test_modes_and_legacy_resume(self):
-        self.assertEqual(d.resolve_strategy(None, None), 'individual')
+        self.assertEqual(d.resolve_strategy(None, None), 'latest-head')
         self.assertEqual(d.resolve_strategy(None, {}), 'merged')
         self.assertEqual(d.resolve_strategy(None, {'strategy': 'individual'}), 'individual')
+        self.assertEqual(d.resolve_strategy(None, {'strategy': 'latest-head'}), 'latest-head')
         with self.assertRaises(ValueError):
             d.resolve_strategy('individual', {})
 
@@ -280,7 +281,7 @@ class IndividualTests(unittest.TestCase):
         self.assertEqual(result['nextAction']['sha'], 'a'*40)
         self.assertEqual(result['pendingUiSlots'], [])
 
-    def test_default_daily_validates_each_commit_individually(self):
+    def test_default_daily_validates_one_fixed_latest_head(self):
         for c in self.commits:
             (self.out / (c['sha'][:8] + '.diff')).write_text('diff ' + c['sha'])
         with patch.object(d, 'collect', return_value=(self.out, self.manifest)), patch.object(d, 'execute') as execute:
@@ -289,25 +290,26 @@ class IndividualTests(unittest.TestCase):
                 d.save(d.SCHEDULING, self.sched)
                 result = self.invoke_main('--execute')
             execute.assert_not_called()
-        # Nightly default: every commit gets its own independent validation slot.
-        self.assertNotIn('testingPolicy', result)
-        self.assertEqual(len(result['pendingCommitValidations']), 2)
-        self.assertEqual(result['nextAction']['sha'], 'a'*40)
+        # Nightly default: one integrated HEAD target; original commits and
+        # diffs are preserved as immutable collection evidence.
+        self.assertEqual(result['nextAction']['sha'], self.manifest['head'])
+        self.assertEqual(len(result['pendingCommitValidations']), 1)
+        self.assertEqual(result['testingPolicy'], 'latest-head')
+        self.assertFalse(result['perCommitAcceptance'])
+        self.assertEqual(result['collectedCommitCount'], 2)
 
-    def test_latest_head_requires_explicit_strategy_request(self):
+    def test_explicit_individual_strategy_keeps_every_commit_slot(self):
         for c in self.commits:
             (self.out / (c['sha'][:8] + '.diff')).write_text('diff ' + c['sha'])
         with patch.object(d, 'collect', return_value=(self.out, self.manifest)), patch.object(d, 'execute') as execute:
             with patch.object(d, 'REGISTRY', self.root / 'registry.json'), patch.object(d, 'SCHEDULING', self.root / 'scheduling.json'):
                 d.save(d.REGISTRY, self.registry)
                 d.save(d.SCHEDULING, self.sched)
-                result = self.invoke_main('--execute', '--strategy', 'latest-head')
+                result = self.invoke_main('--execute', '--strategy', 'individual')
             execute.assert_not_called()
-        self.assertEqual(result['nextAction']['sha'], self.manifest['head'])
-        self.assertEqual(len(result['pendingCommitValidations']), 1)
-        self.assertEqual(result['testingPolicy'], 'latest-head')
-        self.assertFalse(result['perCommitAcceptance'])
-        self.assertEqual(result['collectedCommitCount'], 2)
+        self.assertNotIn('testingPolicy', result)
+        self.assertEqual(len(result['pendingCommitValidations']), 2)
+        self.assertEqual(result['nextAction']['sha'], 'a'*40)
 
     def test_cli_child_cannot_replan_after_freeze(self):
         p = self.prepare()

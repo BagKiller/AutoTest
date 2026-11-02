@@ -653,9 +653,12 @@ def resolve_resume(path):
 
 
 def collected(root, manifest):
-    # Nightly batches validate each commit independently. An integrated HEAD
-    # campaign exists only when its manifest was explicitly configured that way
-    # (daily.py --strategy latest-head); the controller never upgrades a batch.
+    # Nightly batches validate one fixed latest HEAD: requirement analysis stays
+    # per-commit (requirement-scopes.json), build/test/report run once. A
+    # per-commit queue exists only when explicitly requested via
+    # daily.py --strategy individual; the controller never creates one itself.
+    import latest_head
+    latest_head.configure(d, root, manifest)
     d.save(root / 'manifest.json', manifest)
     previous = d.load(ACTIVE, {})
     if (previous.get('batch') and previous.get('phase') not in ('FINISHED', 'SUPERSEDED')

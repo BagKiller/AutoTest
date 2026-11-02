@@ -852,9 +852,9 @@ def resolve_strategy(requested, existing_manifest):
     stored = existing_manifest.get("strategy", "merged") if existing_manifest is not None else None
     if requested and stored and requested != stored:
         raise ValueError("Cannot switch strategy for an existing batch; create a new batch")
-    # Nightly default is per-commit individual validation. latest-head runs only
-    # when explicitly requested with --strategy latest-head.
-    return requested or stored or "individual"
+    # Nightly default is one integrated latest-HEAD regression. Per-commit
+    # individual validation remains available as an explicit request only.
+    return requested or stored or "latest-head"
 
 
 def main():
@@ -871,7 +871,7 @@ def main():
     parser.add_argument('--drain', action='store_true', help='Execute the entire frozen queue deterministically; exit 2 only when actual UI work remains')
     parser.add_argument('--revalidate-batch', type=Path, help='Explicit targeted simulation of an existing manifest in a NEW child campaign; leaves original plans/results and daily cursor intact')
     parser.add_argument("--strategy", choices=("individual", "merged", "latest-head"),
-                        help="默认逐提交独立校验；merged 保留原总体编排；latest-head 为显式请求的整 HEAD 合并回归")
+                        help="默认 latest-head：收集固定最新 HEAD 一次构建并整体校验；individual 为显式逐提交独立校验；merged 保留旧编排")
     parser.add_argument("--run-commit", help="逐提交队列中执行一项的独立构建及无界面测试（需 --resume --execute）")
     parser.add_argument("--finish-commit", help="记录一项流程已收尾（含失败/未验范围和恢复证据），再允许下一项")
     parser.add_argument("--completion-reason")
@@ -945,11 +945,11 @@ def main():
         strategy = resolve_strategy(args.strategy, None)
         out, manifest = collect(args.last, args.offline)
         manifest["strategy"] = strategy
-        # Only an explicit --strategy latest-head request creates an integrated
-        # HEAD batch. The nightly default stays per-commit individual validation.
-        # configure() rewrites the manifest to one HEAD target and keeps
-        # strategy='individual', so the queue machinery below is shared.
-        if args.strategy == "latest-head" and not args.last:
+        # The nightly default (and any explicit latest-head request) configures
+        # the integrated HEAD batch. configure() rewrites the manifest to one
+        # HEAD target and keeps strategy='individual', so the queue machinery
+        # below is shared; only --strategy individual keeps every commit slot.
+        if strategy == "latest-head" and not args.last:
             import latest_head
             latest_head.configure(sys.modules[__name__], out, manifest)
             strategy = "individual"
