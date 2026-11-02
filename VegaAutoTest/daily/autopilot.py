@@ -653,9 +653,27 @@ def resolve_resume(path):
 
 
 def collected(root, manifest):
-    import latest_head
-    latest_head.configure(d, root, manifest)
+    # Nightly batches validate each commit independently. An integrated HEAD
+    # campaign exists only when its manifest was explicitly configured that way
+    # (daily.py --strategy latest-head); the controller never upgrades a batch.
     d.save(root / 'manifest.json', manifest)
+    previous = d.load(ACTIVE, {})
+    if (previous.get('batch') and previous.get('phase') not in ('FINISHED', 'SUPERSEDED')
+            and Path(previous['batch']).resolve() != root.resolve()):
+        # The old batch is superseded by tonight's new collection; its own
+        # reports keep the original verdicts. SUPERSEDED never means finished
+        # or passed. progress() then repoints ACTIVE at the new batch.
+        original_phase = previous.get('phase', 'SUPERSEDED')
+        previous['phase'] = 'SUPERSEDED'
+        previous['supersededBy'] = str(root)
+        d.save(ACTIVE, previous)
+        old_state = d.load(Path(previous['batch']) / 'controller' / 'state.json', {})
+        old_state.update(phase='SUPERSEDED', supersededBy=str(root),
+                         supersededAt=d.now_cn().isoformat())
+        d.save(Path(previous['batch']) / 'controller' / 'state.json', old_state)
+        d.save(root / 'controller' / 'superseded-pointer.json',
+               dict(batch=previous['batch'], phase=original_phase,
+                    supersededBy=str(root), supersededAt=d.now_cn().isoformat()))
     progress(root, 'COLLECTED')
 
 

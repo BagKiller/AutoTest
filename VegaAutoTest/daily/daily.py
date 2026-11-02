@@ -852,6 +852,8 @@ def resolve_strategy(requested, existing_manifest):
     stored = existing_manifest.get("strategy", "merged") if existing_manifest is not None else None
     if requested and stored and requested != stored:
         raise ValueError("Cannot switch strategy for an existing batch; create a new batch")
+    # Nightly default is per-commit individual validation. latest-head runs only
+    # when explicitly requested with --strategy latest-head.
     return requested or stored or "individual"
 
 
@@ -868,7 +870,8 @@ def main():
     parser.add_argument('--repo-root', type=Path, help='Already built exact-SHA worktree for --check-cases; omitted creates a fresh target build')
     parser.add_argument('--drain', action='store_true', help='Execute the entire frozen queue deterministically; exit 2 only when actual UI work remains')
     parser.add_argument('--revalidate-batch', type=Path, help='Explicit targeted simulation of an existing manifest in a NEW child campaign; leaves original plans/results and daily cursor intact')
-    parser.add_argument("--strategy", choices=("individual", "merged"), help="新批默认逐提交；merged 保留原总体编排，历史批次沿用原模式")
+    parser.add_argument("--strategy", choices=("individual", "merged", "latest-head"),
+                        help="默认逐提交独立校验；merged 保留原总体编排；latest-head 为显式请求的整 HEAD 合并回归")
     parser.add_argument("--run-commit", help="逐提交队列中执行一项的独立构建及无界面测试（需 --resume --execute）")
     parser.add_argument("--finish-commit", help="记录一项流程已收尾（含失败/未验范围和恢复证据），再允许下一项")
     parser.add_argument("--completion-reason")
@@ -942,9 +945,14 @@ def main():
         strategy = resolve_strategy(args.strategy, None)
         out, manifest = collect(args.last, args.offline)
         manifest["strategy"] = strategy
-        if args.strategy is None and not args.last:
+        # Only an explicit --strategy latest-head request creates an integrated
+        # HEAD batch. The nightly default stays per-commit individual validation.
+        # configure() rewrites the manifest to one HEAD target and keeps
+        # strategy='individual', so the queue machinery below is shared.
+        if args.strategy == "latest-head" and not args.last:
             import latest_head
             latest_head.configure(sys.modules[__name__], out, manifest)
+            strategy = "individual"
         save(out / "manifest.json", manifest)
     if (queue_action or args.check_complete) and strategy != 'individual':
         raise ValueError('Queue preparation/drain/completion checks require an individual root batch')

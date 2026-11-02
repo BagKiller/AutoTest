@@ -259,7 +259,36 @@ class ControllerTests(unittest.TestCase):
         manifest = dict(batchId='new-batch', commits=[], head='a' * 40)
         a.collected(root, manifest)
         self.assertEqual(a.d.load(a.ACTIVE)['batch'], str(root))
-        self.assertEqual(a.d.load(root / 'manifest.json')['strategy'], 'individual')
+        # The controller persists the manifest as collected; strategy selection
+        # belongs to daily.py and is never silently rewritten here.
+        self.assertEqual(a.d.load(root / 'manifest.json'), manifest)
+
+    def test_new_collection_supersedes_an_unfinished_active_pointer(self):
+        previous_root = self.root / 'daily/runs/old-batch'
+        (previous_root / 'controller').mkdir(parents=True)
+        a.d.save(a.ACTIVE, dict(batch=str(previous_root), phase='EXECUTING'))
+        a.d.save(previous_root / 'controller/state.json', dict(phase='EXECUTING'))
+        root = self.root / 'daily/runs/new-batch'
+        (root / 'controller').mkdir(parents=True)
+        a.collected(root, dict(batchId='new-batch', commits=[], head='a' * 40))
+        # ACTIVE now points at the new batch; the old batch carries SUPERSEDED.
+        self.assertEqual(a.d.load(a.ACTIVE)['batch'], str(root))
+        old_state = a.d.load(previous_root / 'controller/state.json')
+        self.assertEqual(old_state['phase'], 'SUPERSEDED')
+        self.assertEqual(old_state['supersededBy'], str(root))
+        record = a.d.load(root / 'controller/superseded-pointer.json')
+        self.assertEqual(record['batch'], str(previous_root))
+        self.assertEqual(record['phase'], 'EXECUTING')
+
+    def test_superseded_or_finished_pointer_is_not_marked_again(self):
+        previous_root = self.root / 'daily/runs/old-batch'
+        previous_root.mkdir(parents=True)
+        a.d.save(a.ACTIVE, dict(batch=str(previous_root), phase='SUPERSEDED'))
+        root = self.root / 'daily/runs/new-batch'
+        (root / 'controller').mkdir(parents=True)
+        a.collected(root, dict(batchId='new-batch', commits=[], head='a' * 40))
+        self.assertEqual(a.d.load(a.ACTIVE)['batch'], str(root))
+        self.assertFalse((root / 'controller/superseded-pointer.json').exists())
 
     def test_restart_reuses_only_raw_results_from_same_campaign_sha_and_case(self):
         raw = self.child / 'runner/run/result.json'

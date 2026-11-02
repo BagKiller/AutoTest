@@ -280,7 +280,7 @@ class IndividualTests(unittest.TestCase):
         self.assertEqual(result['nextAction']['sha'], 'a'*40)
         self.assertEqual(result['pendingUiSlots'], [])
 
-    def test_default_daily_has_one_latest_head_target(self):
+    def test_default_daily_validates_each_commit_individually(self):
         for c in self.commits:
             (self.out / (c['sha'][:8] + '.diff')).write_text('diff ' + c['sha'])
         with patch.object(d, 'collect', return_value=(self.out, self.manifest)), patch.object(d, 'execute') as execute:
@@ -288,6 +288,20 @@ class IndividualTests(unittest.TestCase):
                 d.save(d.REGISTRY, self.registry)
                 d.save(d.SCHEDULING, self.sched)
                 result = self.invoke_main('--execute')
+            execute.assert_not_called()
+        # Nightly default: every commit gets its own independent validation slot.
+        self.assertNotIn('testingPolicy', result)
+        self.assertEqual(len(result['pendingCommitValidations']), 2)
+        self.assertEqual(result['nextAction']['sha'], 'a'*40)
+
+    def test_latest_head_requires_explicit_strategy_request(self):
+        for c in self.commits:
+            (self.out / (c['sha'][:8] + '.diff')).write_text('diff ' + c['sha'])
+        with patch.object(d, 'collect', return_value=(self.out, self.manifest)), patch.object(d, 'execute') as execute:
+            with patch.object(d, 'REGISTRY', self.root / 'registry.json'), patch.object(d, 'SCHEDULING', self.root / 'scheduling.json'):
+                d.save(d.REGISTRY, self.registry)
+                d.save(d.SCHEDULING, self.sched)
+                result = self.invoke_main('--execute', '--strategy', 'latest-head')
             execute.assert_not_called()
         self.assertEqual(result['nextAction']['sha'], self.manifest['head'])
         self.assertEqual(len(result['pendingCommitValidations']), 1)
