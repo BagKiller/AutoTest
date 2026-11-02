@@ -153,6 +153,39 @@
       "Vega300-HWv1",
       "Vega300-HWv2",
       "Vega500"
+    ],
+    "authored-v4c8f7777cc-1c6ef991b4b4-component-library-localization": [],
+    "authored-v4c8f7777cc-1c6ef991b4b4-component-library-navigation": [
+      "Vega100-PIC",
+      "Vega100-Coherent",
+      "Vega300-HWv1",
+      "Vega300-HWv2",
+      "Vega500"
+    ],
+    "authored-v4c8f7777cc-1c6ef991b4b4-force-abort-ui-audit": [
+      "Vega100-PIC",
+      "Vega100-Coherent",
+      "Vega300-HWv1",
+      "Vega300-HWv2",
+      "Vega500"
+    ],
+    "authored-v6ff8ebfc51-b2edbb8776c5-offline-name-rules": [],
+    "authored-v6ff8ebfc51-b2edbb8776c5-offline-name-dialog-contract": [],
+    "authored-v6ff8ebfc51-b2edbb8776c5-offline-name-ui-validation": [
+      "Vega100-PIC",
+      "Vega100-Coherent",
+      "Vega300-HWv1",
+      "Vega300-HWv2",
+      "Vega500"
+    ],
+    "authored-vf983c77d92-b2edbb8776c5-offline-name-rules": [],
+    "authored-vf983c77d92-b2edbb8776c5-offline-name-dialog-contract": [],
+    "authored-vf983c77d92-b2edbb8776c5-offline-name-ui-validation": [
+      "Vega100-PIC",
+      "Vega100-Coherent",
+      "Vega300-HWv1",
+      "Vega300-HWv2",
+      "Vega500"
     ]
   },
   "defaultUiProfile": "Vega500",

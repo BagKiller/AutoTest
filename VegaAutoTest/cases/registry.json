@@ -2082,6 +2082,301 @@
           "requiresL1Api": false
         }
       }
+    },
+    {
+      "id": "commit-038f6e01c80e-product-tests",
+      "title": "Original product regression assertions at 038f6e01c80e",
+      "targetSha": "038f6e01c80ea9a66edd81b4b6e3f91a236c7612",
+      "workItems": [
+        3724
+      ],
+      "tags": [
+        "generated",
+        "partial-acceptance"
+      ],
+      "evidenceFiles": [],
+      "layers": {
+        "logic0": {
+          "project": "probes/generated/038f6e01c80e/Generated.0.csproj",
+          "filter": "FullyQualifiedName~Vega.AutoTest.Generated.ProductRegressionAdapter",
+          "timeoutSeconds": 600,
+          "minAssertions": 1,
+          "requiresVegaExe": true,
+          "requiresL1Api": false
+        }
+      }
+    },
+    {
+      "id": "commit-b2edbb8776c5-product-tests",
+      "title": "Original product regression assertions at b2edbb8776c5",
+      "targetSha": "b2edbb8776c51d94db15ca9c5536189de6aca880",
+      "workItems": [
+        3730,
+        32142,
+        32191
+      ],
+      "tags": [
+        "generated",
+        "partial-acceptance"
+      ],
+      "evidenceFiles": [],
+      "layers": {
+        "logic0": {
+          "project": "probes/generated/b2edbb8776c5/Generated.0.csproj",
+          "filter": "FullyQualifiedName~Vega.AutoTest.Generated.ProductRegressionAdapter",
+          "timeoutSeconds": 600,
+          "minAssertions": 1,
+          "requiresVegaExe": true,
+          "requiresL1Api": false
+        }
+      }
+    },
+    {
+      "id": "authored-v4c8f7777cc-1c6ef991b4b4-component-library-localization",
+      "title": "Retired compiled resource disappears across invariant, English, and Chinese lookups",
+      "targetSha": "1c6ef991b4b42406d6c1fccefcb4786eb0003e8e",
+      "workItems": [
+        3734,
+        3735
+      ],
+      "tags": [
+        "ai-authored"
+      ],
+      "evidenceFiles": [],
+      "layers": {
+        "logic": {
+          "project": "probes/authored/v4c8f7777cc/1c6ef991b4b4/Authored.logic.csproj",
+          "filter": "FullyQualifiedName~Vega.AutoTest.Authored.ComponentLibraryResourcesTests.",
+          "timeoutSeconds": 600,
+          "minAssertions": 9,
+          "requiresVegaExe": true,
+          "requiresL1Api": false
+        }
+      }
+    },
+    {
+      "id": "authored-v4c8f7777cc-1c6ef991b4b4-component-library-navigation",
+      "title": "Component Library is absent and neighboring diagnostic, configuration, and instrument documents open",
+      "targetSha": "1c6ef991b4b42406d6c1fccefcb4786eb0003e8e",
+      "workItems": [
+        3734,
+        3735
+      ],
+      "tags": [
+        "ai-authored"
+      ],
+      "evidenceFiles": [],
+      "layers": {
+        "uia": {
+          "project": "probes/authored/v4c8f7777cc/1c6ef991b4b4/Authored.uia.csproj",
+          "filter": "FullyQualifiedName~Vega.AutoTest.Authored.ComponentLibraryNavigationUiTests.",
+          "timeoutSeconds": 600,
+          "minAssertions": 7,
+          "requiresVegaExe": true,
+          "requiresL1Api": false
+        }
+      }
+    },
+    {
+      "id": "authored-v4c8f7777cc-1c6ef991b4b4-force-abort-ui-audit",
+      "title": "Actual Force Abort confirmation records Cancel and Ok with operation, severity, and timestamps",
+      "targetSha": "1c6ef991b4b42406d6c1fccefcb4786eb0003e8e",
+      "workItems": [
+        3734,
+        3735
+      ],
+      "tags": [
+        "ai-authored"
+      ],
+      "evidenceFiles": [],
+      "layers": {
+        "uia": {
+          "project": "probes/authored/v4c8f7777cc/1c6ef991b4b4/Authored.uia.csproj",
+          "filter": "FullyQualifiedName~Vega.AutoTest.Authored.ForceAbortAuditUiTests.",
+          "timeoutSeconds": 600,
+          "minAssertions": 8,
+          "requiresVegaExe": true,
+          "requiresL1Api": false
+        }
+      }
+    },
+    {
+      "id": "authored-v6ff8ebfc51-b2edbb8776c5-offline-name-rules",
+      "title": "Offline name normalization, runtime composition, automatic formats and bilingual resources",
+      "targetSha": "b2edbb8776c51d94db15ca9c5536189de6aca880",
+      "workItems": [
+        3730,
+        32142,
+        32191
+      ],
+      "tags": [
+        "ai-authored"
+      ],
+      "evidenceFiles": [],
+      "layers": {
+        "logic": {
+          "project": "probes/authored/v6ff8ebfc51/b2edbb8776c5/Authored.logic.csproj",
+          "filter": "FullyQualifiedName~Vega.AutoTest.Authored.OfflineNamingRulesRegression.",
+          "timeoutSeconds": 600,
+          "minAssertions": 122,
+          "requiresVegaExe": true,
+          "requiresL1Api": false
+        }
+      }
+    },
+    {
+      "id": "authored-v6ff8ebfc51-b2edbb8776c5-offline-name-dialog-contract",
+      "title": "Recipe option writeback, Workspace cancellation and custom-name message payload",
+      "targetSha": "b2edbb8776c51d94db15ca9c5536189de6aca880",
+      "workItems": [
+        3730,
+        32142,
+        32191
+      ],
+      "tags": [
+        "ai-authored"
+      ],
+      "evidenceFiles": [],
+      "layers": {
+        "logic": {
+          "project": "probes/authored/v6ff8ebfc51/b2edbb8776c5/Authored.logic.csproj",
+          "filter": "FullyQualifiedName~Vega.AutoTest.Authored.OfflineNamingDialogRegression.",
+          "timeoutSeconds": 600,
+          "minAssertions": 43,
+          "requiresVegaExe": true,
+          "requiresL1Api": false
+        }
+      }
+    },
+    {
+      "id": "authored-v6ff8ebfc51-b2edbb8776c5-offline-name-ui-validation",
+      "title": "Both reachable offline dialogs display default names and block invalid or excessive input",
+      "targetSha": "b2edbb8776c51d94db15ca9c5536189de6aca880",
+      "workItems": [
+        3730,
+        32142,
+        32191
+      ],
+      "tags": [
+        "ai-authored"
+      ],
+      "evidenceFiles": [],
+      "layers": {
+        "uia": {
+          "project": "probes/authored/v6ff8ebfc51/b2edbb8776c5/Authored.uia.csproj",
+          "filter": "FullyQualifiedName~Vega.AutoTest.Authored.OfflineNamingUiRegression.",
+          "timeoutSeconds": 600,
+          "minAssertions": 68,
+          "requiresVegaExe": true,
+          "requiresL1Api": false
+        }
+      }
+    },
+    {
+      "id": "authored-vf983c77d92-b2edbb8776c5-offline-name-rules",
+      "title": "Offline name normalization, runtime composition, automatic formats and bilingual resources",
+      "targetSha": "b2edbb8776c51d94db15ca9c5536189de6aca880",
+      "workItems": [
+        3730,
+        32142,
+        32191
+      ],
+      "tags": [
+        "ai-authored"
+      ],
+      "evidenceFiles": [],
+      "layers": {
+        "logic": {
+          "project": "probes/authored/vf983c77d92/b2edbb8776c5/Authored.logic.csproj",
+          "filter": "FullyQualifiedName~Vega.AutoTest.Authored.OfflineNamingRulesRegression.",
+          "timeoutSeconds": 600,
+          "minAssertions": 122,
+          "requiresVegaExe": true,
+          "requiresL1Api": false
+        }
+      }
+    },
+    {
+      "id": "authored-vf983c77d92-b2edbb8776c5-offline-name-dialog-contract",
+      "title": "Recipe option writeback, Workspace cancellation and custom-name message payload",
+      "targetSha": "b2edbb8776c51d94db15ca9c5536189de6aca880",
+      "workItems": [
+        3730,
+        32142,
+        32191
+      ],
+      "tags": [
+        "ai-authored"
+      ],
+      "evidenceFiles": [],
+      "layers": {
+        "logic": {
+          "project": "probes/authored/vf983c77d92/b2edbb8776c5/Authored.logic.csproj",
+          "filter": "FullyQualifiedName~Vega.AutoTest.Authored.OfflineNamingDialogRegression.",
+          "timeoutSeconds": 600,
+          "minAssertions": 43,
+          "requiresVegaExe": true,
+          "requiresL1Api": false
+        }
+      }
+    },
+    {
+      "id": "authored-vf983c77d92-b2edbb8776c5-offline-name-ui-validation",
+      "title": "Both reachable offline dialogs display default names and block invalid or excessive input",
+      "targetSha": "b2edbb8776c51d94db15ca9c5536189de6aca880",
+      "workItems": [
+        3730,
+        32142,
+        32191
+      ],
+      "tags": [
+        "ai-authored"
+      ],
+      "evidenceFiles": [],
+      "layers": {
+        "uia": {
+          "project": "probes/authored/vf983c77d92/b2edbb8776c5/Authored.uia.csproj",
+          "filter": "FullyQualifiedName~Vega.AutoTest.Authored.OfflineNamingUiRegression.",
+          "timeoutSeconds": 600,
+          "minAssertions": 68,
+          "requiresVegaExe": true,
+          "requiresL1Api": false
+        }
+      }
+    },
+    {
+      "id": "commit-e34ec9125340-product-tests",
+      "title": "Original product regression assertions at e34ec9125340",
+      "targetSha": "e34ec9125340eb0a979e41e9720d702b88d2ed6c",
+      "workItems": [
+        3698,
+        3717,
+        3723,
+        3724,
+        3727,
+        3730,
+        3733,
+        3734,
+        3735,
+        3736,
+        32142,
+        32191
+      ],
+      "tags": [
+        "generated",
+        "partial-acceptance"
+      ],
+      "evidenceFiles": [],
+      "layers": {
+        "logic0": {
+          "project": "probes/generated/e34ec9125340/Generated.0.csproj",
+          "filter": "FullyQualifiedName~Vega.AutoTest.Generated.ProductRegressionAdapter",
+          "timeoutSeconds": 600,
+          "minAssertions": 1,
+          "requiresVegaExe": true,
+          "requiresL1Api": false
+        }
+      }
     }
   ]
 }

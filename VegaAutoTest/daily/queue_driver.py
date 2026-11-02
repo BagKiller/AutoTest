@@ -76,15 +76,17 @@ def check_cases(d, child, manifest, registry, ids, repo):
                artifact_cleanup.reclaim(d, child / 'preparation'))
     except Exception as error:
         d.save(child / 'preparation' / 'discovery-cleanup-error.json', dict(reason=str(error), logsPreserved=True))
-    if any(r['exitCode'] != 0 or not r['discoveredTests'] for r in records):
-        raise RuntimeError('Case build/discovery failed; inspect preparation/checks and repair before freezing')
+    discovery_failed = any(r['exitCode'] != 0 or not r['discoveredTests'] for r in records)
     if manifest.get('preflightPolicy') == 'headless-runner-v1':
         # Trial results never enter official outcomes. Actual UI requires an
         # authorized prepared session, so discovery is not UI acceptance.
-        headless = [r for r in records if r['layer'] != 'uia']
+        headless = [r for r in records if r['layer'] != 'uia' and r['exitCode'] == 0 and r['discoveredTests']]
         if headless:
             d.build_runner(child / 'preparation')
         for record in records:
+            if record['exitCode'] != 0 or not record['discoveredTests']:
+                record['runtimeState'] = 'DISCOVERY_FAILED'
+                continue
             if record['layer'] == 'uia':
                 record['runtimeState'] = 'REQUIRES_PREPARED_UI_SESSION'
                 continue
@@ -107,6 +109,8 @@ def check_cases(d, child, manifest, registry, ids, repo):
             raise CaseRuntimePreflightError('Runner preflight failed: ' + '; '.join(
                 r['caseId'] + '/' + r['layer'] + ': ' + str(r['runtime'].get('verdictCode'))
                 + ' ' + str(r['runtime'].get('verdictReason', '')) for r in failures))
+    if discovery_failed:
+        raise RuntimeError('Case build/discovery failed; valid cases retained in preparation/case-check.json')
     return receipt
 
 

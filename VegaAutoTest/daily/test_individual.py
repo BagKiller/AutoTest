@@ -274,11 +274,26 @@ class IndividualTests(unittest.TestCase):
             with patch.object(d, 'REGISTRY', self.root / 'registry.json'), patch.object(d, 'SCHEDULING', self.root / 'scheduling.json'):
                 d.save(d.REGISTRY, self.registry)
                 d.save(d.SCHEDULING, self.sched)
-                result = self.invoke_main('--execute')
+                result = self.invoke_main('--execute', '--strategy', 'individual')
             execute.assert_not_called()
         self.assertEqual(result['workflowState'], 'AWAITING_PREPARATION')
         self.assertEqual(result['nextAction']['sha'], 'a'*40)
         self.assertEqual(result['pendingUiSlots'], [])
+
+    def test_default_daily_has_one_latest_head_target(self):
+        for c in self.commits:
+            (self.out / (c['sha'][:8] + '.diff')).write_text('diff ' + c['sha'])
+        with patch.object(d, 'collect', return_value=(self.out, self.manifest)), patch.object(d, 'execute') as execute:
+            with patch.object(d, 'REGISTRY', self.root / 'registry.json'), patch.object(d, 'SCHEDULING', self.root / 'scheduling.json'):
+                d.save(d.REGISTRY, self.registry)
+                d.save(d.SCHEDULING, self.sched)
+                result = self.invoke_main('--execute')
+            execute.assert_not_called()
+        self.assertEqual(result['nextAction']['sha'], self.manifest['head'])
+        self.assertEqual(len(result['pendingCommitValidations']), 1)
+        self.assertEqual(result['testingPolicy'], 'latest-head')
+        self.assertFalse(result['perCommitAcceptance'])
+        self.assertEqual(result['collectedCommitCount'], 2)
 
     def test_cli_child_cannot_replan_after_freeze(self):
         p = self.prepare()
@@ -618,6 +633,35 @@ class IndividualTests(unittest.TestCase):
                 d.queue_driver.check_cases(d, child, cm, self.registry, ['wi7'], self.root / 'worktree')
         self.assertEqual(self.registry['cases'][0]['layers']['logic'].get('minAssertions'), None)
         self.assertFalse(d.load(child / 'preparation/case-check.json')['records'][0]['runtimeUsable'])
+
+    def test_failed_discovery_does_not_suppress_valid_case_runtime(self):
+        p = self.prepare()
+        child = Path(p['commitSlots'][0]['batch'])
+        cm = d.load(child / 'manifest.json')
+        import copy
+        good = copy.deepcopy(self.registry['cases'][0])
+        good['id'] = 'good'
+        good['layers'] = dict(logic=good['layers']['logic'])
+        good['layers']['logic']['filter'] = 'FullyQualifiedName~GoodTest'
+        bad = copy.deepcopy(good)
+        bad['id'] = 'bad'
+        bad['layers']['logic']['filter'] = 'FullyQualifiedName~BadTest'
+        self.registry['cases'].extend([good, bad])
+        def discover(command, **kwargs):
+            failed = 'FullyQualifiedName~BadTest' in command
+            kwargs['stdout'].write('compile error' if failed else 'The following Tests are available:\n    GoodTest.Assertion\n')
+            return subprocess.CompletedProcess(command, 1 if failed else 0)
+        def trial(*args):
+            args[-1]['runs'].append(dict(runId='valid', verdict='PASS'))
+        with patch.object(d, 'WORKSPACES', self.root / 'workspaces'), patch.object(d, 'git', return_value=cm['head']), \
+             patch.object(d, 'run_bounded', side_effect=discover), patch.object(d, 'build_runner'), \
+             patch.object(d, 'run_case', side_effect=trial) as run:
+            with self.assertRaisesRegex(RuntimeError, 'valid cases retained'):
+                d.queue_driver.check_cases(d, child, cm, self.registry, ['bad', 'good'], self.root / 'worktree')
+        self.assertEqual(run.call_count, 1)
+        records = {r['caseId']: r for r in d.load(child / 'preparation/case-check.json')['records']}
+        self.assertTrue(records['good']['runtimeUsable'])
+        self.assertEqual(records['bad']['runtimeState'], 'DISCOVERY_FAILED')
 
     def test_discovery_superset_does_not_falsely_report_source_drift_or_select_extra_cases(self):
         p = self.prepare()

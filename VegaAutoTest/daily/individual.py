@@ -219,6 +219,10 @@ def aggregate(d, out, manifest, plan, registry):
              '模式：individual。每个提交在自己的 SHA 上独立构建、测试、实际 UI 和报告；不跨提交共享 runId。',
              '此根目录是串行队列，不是完成测试的证明。总体编排保留为 --strategy merged。', '',
              '| 顺序 | 提交 | 标题 | 状态 | 原因 | 独立报告 |', '| --- | --- | --- | --- | --- | --- |']
+    if manifest.get('testingPolicy') == 'latest-head':
+        lines[0] = '# Vega 最新 HEAD 整合回归报告'
+        lines[2] = '本批只构建并测试固定 HEAD：' + manifest['head'] + '。结果不代表逐提交独立验收。'
+        lines[3] = '本批收集提交数：' + str(manifest.get('collectedCommitCount', 0)) + '；原始提交和 diff 见 collected-commits.json、collected-diffs/。'
     for slot in plan['commitSlots']:
         child = Path(slot['batch'])
         child_rows, summary = refresh_child(d, child, registry)
@@ -244,6 +248,11 @@ def aggregate(d, out, manifest, plan, registry):
                 ui += missing_ui
             cp = d.load(child / 'plan.json')
             for requirement in cp.get('coverageRequirements', []):
+                if requirement.get('uiAssessment') == 'UNKNOWN':
+                    unverified_ui.append(dict(commit=slot['sha'], batch=slot['batch'],
+                        requirementId=requirement['id'], profiles=[], kind='ui-assessment-incomplete',
+                        reason='UI requirements have not been determined; acceptance remains incomplete',
+                        workflowFinished=bool(completion)))
                 if requirement.get('uiRequired') and any('Required UI' in gap for gap in requirement.get('gaps', [])):
                     unverified_ui.append(dict(commit=slot['sha'], batch=slot['batch'],
                         requirementId=requirement['id'], profiles=requirement.get('profiles', []),
@@ -268,6 +277,10 @@ def aggregate(d, out, manifest, plan, registry):
                 nextAction=(dict(sha=pending[0]['sha'], batch=pending[0]['batch'],
                                 action='prepare-review-freeze' if not (Path(pending[0]['batch']) / 'plan.json').exists() else 'execute-ui-restore-finish') if pending else None),
                 report=str(out / 'report.md'))
+    if manifest.get('testingPolicy') == 'latest-head':
+        data.update(testingPolicy='latest-head', testedHead=manifest['head'],
+                    collectedCommitCount=manifest.get('collectedCommitCount', 0),
+                    perCommitAcceptance=False)
     d.save(out / 'summary.json', data)
     lines += ['', f'验收完整性：{state}；尚未收尾的提交数：{len(pending)}。', '',
               '缺用例/必需 UI 未完成不能以探针 PASS 替代。单项失败记录后继续下一项，历史积压不重放。',

@@ -179,7 +179,7 @@ def freeze(d, child, manifest, registry, sched, review_path, require_evidence=Fa
         raise ValueError('Review every work item, including explicit gaps for unavailable requirements')
     for record in sources['workItems']:
         if record['state'] != 'AVAILABLE':
-            normalized.append(dict(id='source-' + str(record['id']), caseIds=[], uiRequired=True,
+            normalized.append(dict(id='source-' + str(record['id']), caseIds=[], uiRequired=False, uiAssessment='UNKNOWN',
                                    gaps=['Work-item acceptance requirements unavailable: ' + str(record['id'])]))
     # The reviewed case may be reused for commits without work-item references.
     reviewed_manifest = dict(manifest, reviewCaseIds=sorted({cid for r in normalized for cid in r.get('caseIds', [])}))

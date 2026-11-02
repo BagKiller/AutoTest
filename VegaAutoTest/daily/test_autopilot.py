@@ -38,9 +38,44 @@ class ControllerTests(unittest.TestCase):
 
     def test_generated_test_cannot_swallow_ui_prerequisite(self):
         response = self.response()
+        response['cases'][0].update(layer='uia', profiles=['Vega100-PIC'])
         response['files'][0]['content'] = 'void T(){ try { } catch (Exception error) { } }'
         with self.assertRaisesRegex(ValueError, 'must not catch Exception'):
             m.install(a.d, self.child, self.manifest, response, self.registry, self.sched, 'v1')
+
+    def test_logic_exception_assertion_is_not_a_ui_login_failure(self):
+        response = self.response()
+        response['files'][0]['content'] = 'void T(){ Exception error=null; try { Product(); } catch(Exception ex) { error=ex; } Assert.NotNull(error); }'
+        req = m.install(a.d, self.child, self.manifest, response, self.registry, self.sched, 'vlogic')
+        self.assertEqual(len(req), 1)
+
+    def test_validation_retry_file_patch_preserves_scenarios_through_install_and_recovery(self):
+        original = self.response()
+        original['cases'][0].update(layer='uia', profiles=['Vega100-PIC'])
+        original['files'][0]['content'] = 'void T(){ try { Launch(); } catch(Exception ex) { } }'
+        patch_response = dict(neededSources=[], files=[dict(path='Behavior.cs', content='void T(){ Launch(); }')], cases=[], requirements=[])
+        responses = iter([original, patch_response])
+        def infer(api, folder, payload, **kwargs):
+            value = next(responses)
+            api.save(folder / 'response.json', value)
+            (folder / 'events.jsonl').write_text('')
+            (folder / 'request.txt').write_text('policy\nINPUT DATA:\n' + json.dumps(payload), encoding='utf-8')
+            return value
+        with patch.object(m, 'context', return_value=dict(sources={}, sha=self.manifest['head'])), patch.object(m, 'infer', side_effect=infer):
+            receipt = a.generate_one(a.d, self.child, self.manifest, self.registry, self.sched, self.child.parents[1])
+        self.assertEqual(len(receipt['requirements']), 1)
+        self.assertEqual(receipt['response']['cases'], original['cases'])
+        self.assertEqual(receipt['response']['requirements'], original['requirements'])
+        self.assertEqual(receipt['response']['files'], patch_response['files'])
+        (self.child / 'preparation/authored.json').unlink()
+        with patch.object(m, 'infer') as infer_again:
+            recovered = a.recover_authored(self.child, self.manifest, self.registry, self.sched)
+        infer_again.assert_not_called()
+        self.assertEqual(len(recovered['requirements']), 1)
+
+    def test_work_item_parser_excludes_review_threads_but_keeps_real_references(self):
+        text = '相关工作项: #3730; AB#3698; thread #32142; thread #32191; PR #5048; discussion #12345'
+        self.assertEqual(a.d.work_items(text), [3698, 3730])
 
     def test_readiness_block_on_first_profile_skips_the_other_profiles(self):
         slots = [
@@ -221,7 +256,7 @@ class ControllerTests(unittest.TestCase):
 
     def test_resume_pointer_is_written_before_collection_can_advance_cursor(self):
         root = self.root / 'daily/runs/new-batch'
-        manifest = dict(batchId='new-batch')
+        manifest = dict(batchId='new-batch', commits=[], head='a' * 40)
         a.collected(root, manifest)
         self.assertEqual(a.d.load(a.ACTIVE)['batch'], str(root))
         self.assertEqual(a.d.load(root / 'manifest.json')['strategy'], 'individual')

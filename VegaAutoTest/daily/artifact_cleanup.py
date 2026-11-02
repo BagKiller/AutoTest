@@ -42,6 +42,8 @@ def reclaim_workspace(d, child, compress_below_gib=30):
     Low-space NTFS compression changes storage metadata, not any file bytes.
     """
     manifest = d.load(child / 'manifest.json', {})
+    if manifest.get('testingPolicy') == 'latest-head':
+        return dict(state='RETAINED_LATEST', reason='Keep current deployment until the next completed-batch recycle')
     target = d.load(child / 'execution-target.json', {})
     if not d.load(child / 'completion.json') or not target.get('repo'):
         return dict(state='SKIPPED', reason='Not a completed owned worktree')

@@ -112,14 +112,29 @@ def attempt(child, path, action, outcome):
                 action=action, outcome=outcome)
 
 
-def gap_requirements(manifest, reason):
+def gap_requirements(manifest, reason, candidate=None):
+    if candidate and candidate.get('requirements'):
+        requirements = []
+        for item in candidate['requirements']:
+            req = {k: v for k, v in item.items() if k not in ('caseKeys', 'existingCaseIds')}
+            req.update(caseIds=[], gap=(item.get('gap', '') + '; preparation failed: ' + reason).strip('; '))
+            requirements.append(req)
+        return requirements
     return [dict(id='preparation-unavailable', workItems=manifest['commits'][0].get('workItems', []),
         steps=['Generate behavior tests from this exact commit and requirement snapshot'],
         expected='Requirements could not be fully evaluated; no product acceptance claimed',
-        uiRequired=True, profiles=[], caseIds=[], gap=reason)]
+        uiRequired=False, uiAssessment='UNKNOWN', profiles=[], caseIds=[], gap=reason)]
 
 
 def generate(d, child, manifest, registry, sched, root, repair=None):
+    if manifest.get('testingPolicy') == 'latest-head':
+        import requirement_scopes
+        return requirement_scopes.generate(d, child, manifest, registry, sched, root,
+                                           generate_one, repair, gap_requirements)
+    return generate_one(d, child, manifest, registry, sched, root, repair)
+
+
+def generate_one(d, child, manifest, registry, sched, root, repair=None):
     payload = model_author.context(d, child, manifest, registry, sched)
     context_path = child / 'preparation' / 'source-context.json'
     saved = d.load(context_path, {})
@@ -138,6 +153,7 @@ def generate(d, child, manifest, registry, sched, root, repair=None):
     if budget.get('activeStarted'):
         budget['usedSeconds'] += time.time() - budget.pop('activeStarted')
     validation_retry = False
+    validation_base = None
     for index in range(5):
         remaining = 1200 - budget['usedSeconds']
         if remaining <= 0:
@@ -162,10 +178,15 @@ def generate(d, child, manifest, registry, sched, root, repair=None):
                 continue
             payload['validationError'] = 'Source request rounds exhausted. Emit tests and concrete external gaps now.'
             continue
-        if repair:
+        if validation_base is not None:
+            merge = model_author.compiler_repair if repair else model_author.validation_repair
+            response = merge(validation_base, response)
+            d.save(folder / 'effective-response.json', response)
+        elif repair:
             response = model_author.compiler_repair(repair['response'], response)
             d.save(folder / 'effective-response.json', response)
         version = 'v' + token
+        d.save(child / 'preparation' / 'candidate-response.json', response)
         try:
             requirements = model_author.install(d, child, manifest, response, registry, sched, version)
         except (ValueError, KeyError, TypeError) as error:
@@ -174,12 +195,15 @@ def generate(d, child, manifest, registry, sched, root, repair=None):
             validation_retry = True
             payload['validationError'] = str(error)
             payload['previousInvalidResponse'] = response
+            payload['previousGeneration'] = response
+            payload['validationRepair'] = True
+            validation_base = response
             # Every retry has its own immutable path, including a partially
             # installed rejected response; no frozen source is ever rewritten.
             token = uuid.uuid4().hex[:10]
             continue
         receipt = dict(requirements=requirements, response=response,
-                       responsePath=str(folder / ('effective-response.json' if repair else 'response.json')),
+                       responsePath=str(folder / ('effective-response.json' if repair or validation_base is not None else 'response.json')),
                        generatedAt=d.now_cn().isoformat(), version=version)
         d.save(child / 'preparation' / 'authored.json', receipt)
         return receipt
@@ -207,8 +231,9 @@ def recover_authored(child, manifest, registry, sched):
                     continue
                 if event.get('item', {}).get('type') in ('command_execution', 'file_change', 'mcp_tool_call', 'web_search'):
                     raise ValueError('Recovered inference attempted forbidden tools')
-            if payload.get('compilerRepair'):
-                response = model_author.compiler_repair(payload['previousGeneration'], response)
+            if payload.get('compilerRepair') or payload.get('validationRepair'):
+                merge = model_author.compiler_repair if payload.get('compilerRepair') else model_author.validation_repair
+                response = merge(payload['previousGeneration'], response)
                 response_path = folder / 'recovered-effective-response.json'
                 d.save(response_path, response)
             if not response.get('requirements') and not manifest['commits'][0].get('noProductChange'):
@@ -241,7 +266,8 @@ def prepare_commit(root, slot, plan, registry, sched):
         raise
     except Exception as error:
         d.save(journal, dict(sha=slot['sha'], stage='model-generation', reason=str(error)))
-        requirements = gap_requirements(manifest, str(error))
+        requirements = gap_requirements(manifest, str(error),
+            d.load(child / 'preparation' / 'candidate-response.json'))
         author_evidence = journal
     progress(root, 'BUILD_DISCOVERY', sha=slot['sha'])
     repo = None
@@ -317,9 +343,22 @@ def prepare_commit(root, slot, plan, registry, sched):
         # rejection and execute this item's available baselines.
         rejected = child / 'preparation' / 'review-rejected.json'
         d.save(rejected, dict(reason=str(error), review=d.load(review_path)))
-        requirements = gap_requirements(manifest, 'Generated coverage review rejected: ' + str(error))
-        requirements[0]['attemptEvidence'] = [attempt(child, rejected,
-            'Validate generated test coverage and exact-SHA discovery', str(error))]
+        # Preserve every analyzed scenario. Downgrade only invalid discovery
+        # evidence, rather than replacing the batch with one invented UI gap.
+        for requirement in requirements:
+            try:
+                d.coverage_contract.validate_preparation(d, child, manifest, registry, [requirement])
+            except Exception as item_error:
+                requirement['caseIds'] = []
+                requirement['gap'] = (requirement.get('gap', '') + '; preparation rejected: ' + str(item_error)).strip('; ')
+                requirement['attemptEvidence'] = [attempt(child, rejected,
+                    'Validate this acceptance scenario', str(item_error))]
+        reviewed = {wi for req in requirements for wi in req.get('workItems', [])}
+        for wi in set(manifest['commits'][0].get('workItems', [])) - reviewed:
+            missing = gap_requirements(dict(commits=[dict(workItems=[wi])]), 'Work item was not analyzed')[0]
+            missing['id'] = 'unanalyzed-workitem-' + str(wi)
+            missing['attemptEvidence'] = [attempt(child, rejected, 'Check work-item coverage', str(error))]
+            requirements.append(missing)
         review = d.load(review_path)
         review['requirements'] = requirements
         d.save(child / 'preparation' / 'controller-review-fallback.json', review)
@@ -614,7 +653,8 @@ def resolve_resume(path):
 
 
 def collected(root, manifest):
-    manifest['strategy'] = 'individual'
+    import latest_head
+    latest_head.configure(d, root, manifest)
     d.save(root / 'manifest.json', manifest)
     progress(root, 'COLLECTED')
 
@@ -642,7 +682,7 @@ def main():
                 active = d.load(ACTIVE, {})
                 if args.resume:
                     root = resolve_resume(args.resume)
-                elif active.get('batch') and active.get('phase') != 'FINISHED':
+                elif active.get('batch') and active.get('phase') not in ('FINISHED', 'SUPERSEDED'):
                     root = resolve_resume(Path(active['batch']))
                 else:
                     out, manifest = d.collect(0, False, on_collected=collected)
@@ -652,7 +692,7 @@ def main():
                 progress(root, 'STARTING')
                 run(root)
                 previous = d.load(root / 'manifest.json', {})
-                if (args.daily and active.get('phase') != 'FINISHED' and active.get('batch') and
+                if (args.daily and active.get('phase') not in ('FINISHED', 'SUPERSEDED') and active.get('batch') and
                         previous.get('windowStart') and previous['windowStart'][:10] < d.now_cn().date().isoformat()):
                     # Finishing yesterday's interrupted active batch must not
                     # consume tonight's trigger and silently omit today's commits.

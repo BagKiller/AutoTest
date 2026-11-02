@@ -133,6 +133,8 @@ def classify(files):
 
 def work_items(text):
     text = PR_REF.sub(" ", text or "")
+    # Review-thread/issue/commit references are not ADO work-item references.
+    text = re.sub(r'(?i)\b(?:thread|discussion|comment|issue|commit)\s*#\s*\d+', ' ', text)
     found = []
     for pattern in WI_REFS:
         found += [int(m) for m in pattern.findall(text)]
@@ -387,7 +389,11 @@ def prepare_target(out, manifest):
     evidence = out / "attempts" / attempt
     evidence.mkdir(parents=True)
     save(out / "execution.json", dict(state="PREPARING", attempt=attempt, evidence=str(evidence)))
-    repo = WORKSPACES / (manifest["batchId"] + "_" + attempt)
+    if manifest.get("testingPolicy") == "latest-head":
+        import latest_head
+        repo = latest_head.workspace(sys.modules[__name__], out, manifest)
+    else:
+        repo = WORKSPACES / (manifest["batchId"] + "_" + attempt)
     # Unattended recovery: owned Simulator processes may be stopped; never reuse
     # an output directory with a live session or reset the user's checkout.
     with (evidence / "cleanup.log").open("w", encoding="utf-8") as log:
@@ -936,6 +942,9 @@ def main():
         strategy = resolve_strategy(args.strategy, None)
         out, manifest = collect(args.last, args.offline)
         manifest["strategy"] = strategy
+        if args.strategy is None and not args.last:
+            import latest_head
+            latest_head.configure(sys.modules[__name__], out, manifest)
         save(out / "manifest.json", manifest)
     if (queue_action or args.check_complete) and strategy != 'individual':
         raise ValueError('Queue preparation/drain/completion checks require an individual root batch')
