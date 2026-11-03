@@ -31,13 +31,15 @@ if(-not $LaunchDirectory){
 $arguments=@('-B',$controller)
 if($Batch){$arguments+=@('--resume',$Batch)}else{$arguments+='--daily'}
 $capacityDeadline=[datetime]::UtcNow.AddHours(6)
+$launch=0 # Unique per controller invocation; capacity waits must not overwrite earlier logs.
 for($attempt=1;$attempt -le 3;$attempt++){
-    $stdout=Join-Path $LaunchDirectory ("controller-$attempt.stdout.log")
-    $stderr=Join-Path $LaunchDirectory ("controller-$attempt.stderr.log")
+    $launch++
+    $stdout=Join-Path $LaunchDirectory ("controller-$launch.stdout.log")
+    $stderr=Join-Path $LaunchDirectory ("controller-$launch.stderr.log")
     & $python @arguments 1> $stdout 2> $stderr
     $code=$LASTEXITCODE
     $state=& $python -B $controller --status | ConvertFrom-Json
-    @{attempt=$attempt;exitCode=$code;controller=$state;checkedAt=(Get-Date).ToString('o')} |
+    @{attempt=$attempt;launch=$launch;exitCode=$code;controller=$state;checkedAt=(Get-Date).ToString('o')} |
         ConvertTo-Json -Depth 30 | Set-Content -LiteralPath (Join-Path $LaunchDirectory 'result.json') -Encoding utf8
     if($code -eq 0){exit 0}
     if($state.processAlive){exit 0} # A second launch attaches to the existing owner.

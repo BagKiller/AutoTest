@@ -8,7 +8,7 @@ VegaAutomation/
   VegaAutoTest/       L1  确定性验证（harness、用例、Runner）
 ```
 
-本机每日验证入口是 `VegaAutoTest/daily/daily.py`，完整调用顺序见 `VegaAutoTest/daily/AGENTS.md` 和 `daily/README.md`。使用独立 SHA worktree，不把共享输出目录当作目标构建。单项手跑可设置被测工程：
+每日验证由验证机的计划任务 `VegaAutoTest-DailyValidation` 每晚 23:30 运行 `VegaAutoTest/daily/Start-DailyValidation.ps1`（控制器 `autopilot.py`，CLI `daily.py`）。读取当天全部提交，逐提交分析需求和生成用例，全部用例在最新 HEAD 上只构建一次后执行，工作区固定为 `C:\AutoTest\workspaces\daily-latest`。规则见 `VegaAutoTest/daily/AGENTS.md`，用法见 `daily/README.md`。单项手跑可设置被测工程：
 
 ```powershell
 $env:VEGA_SW_ROOT = "C:\AutoTest\workspaces\Vega_SW"

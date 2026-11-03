@@ -220,12 +220,17 @@ def aggregate(d, out, manifest, plan, registry):
              '此根目录是串行队列，不是完成测试的证明。总体编排保留为 --strategy merged。', '',
              '| 顺序 | 提交 | 标题 | 状态 | 原因 | 独立报告 |', '| --- | --- | --- | --- | --- | --- |']
     if manifest.get('testingPolicy') == 'latest-head':
-        lines[0] = '# Vega 最新 HEAD 整合回归报告'
-        lines[2] = '本批只构建并测试固定 HEAD：' + manifest['head'] + '。结果不代表逐提交独立验收。'
+        lines[0] = '# Vega 每日校验报告（最新 HEAD 一次构建，逐提交测试）'
+        lines[2] = ('本批只构建一次固定 HEAD：' + manifest['head'] + '。每个提交单独分析需求、单独生成用例，'
+                    '全部在该构建上执行；逐提交结果见下方“逐提交测试结果”，不代表各提交在自己 SHA 上的独立验收。')
         lines[3] = '本批收集提交数：' + str(manifest.get('collectedCommitCount', 0)) + '；原始提交和 diff 见 collected-commits.json、collected-diffs/。'
+    commit_results = []
     for slot in plan['commitSlots']:
         child = Path(slot['batch'])
         child_rows, summary = refresh_child(d, child, registry)
+        if manifest.get('testingPolicy') == 'latest-head':
+            import latest_head
+            commit_results += latest_head.commit_results(d, out, child, summary['runs'])
         row = child_rows[0]
         rows.append(row)
         completion = d.load(child / 'completion.json')
@@ -260,6 +265,9 @@ def aggregate(d, out, manifest, plan, registry):
         lines.append(f"| {slot['order']} | `{slot['sha'][:8]}` | {d.md(slot['title'])} | {row['status']} | {d.md(row['reason'])} | [report](commits/{slot['sha']}/report.md) |")
         if completion:
             lines += ['', f"`{slot['sha'][:8]}` 执行收尾记录：{d.md(completion['reason'])}", '']
+    if manifest.get('testingPolicy') == 'latest-head':
+        import latest_head
+        lines += latest_head.commit_lines(d, commit_results, manifest['head'])
     lines += d.baseline_lines(rows)
     counts = {}
     for row in rows:
@@ -280,7 +288,7 @@ def aggregate(d, out, manifest, plan, registry):
     if manifest.get('testingPolicy') == 'latest-head':
         data.update(testingPolicy='latest-head', testedHead=manifest['head'],
                     collectedCommitCount=manifest.get('collectedCommitCount', 0),
-                    perCommitAcceptance=False)
+                    perCommitAcceptance=False, commitResults=commit_results)
     d.save(out / 'summary.json', data)
     lines += ['', f'验收完整性：{state}；尚未收尾的提交数：{len(pending)}。', '',
               '缺用例/必需 UI 未完成不能以探针 PASS 替代。单项失败记录后继续下一项，历史积压不重放。',

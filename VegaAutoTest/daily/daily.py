@@ -29,7 +29,10 @@ STATE = ROOT / "daily" / "state.json"
 SCHEDULING = ROOT / "daily" / "scheduling.json"
 REGISTRY = ROOT / "cases" / "registry.json"
 CN = timezone(timedelta(hours=8))
-REMOTE = "http://win-devops:8080/DefaultCollection/Vega_SW/_git/Vega_SW"
+# The server currently serves only plain HTTP (TLS handshake fails on 443/8080,
+# checked 2026-11-03). Once TLS is enabled on the server, set VEGA_DAILY_REMOTE to
+# the https:// URL; the auth header is scoped to whatever origin is configured.
+REMOTE = os.environ.get("VEGA_DAILY_REMOTE", "http://win-devops:8080/DefaultCollection/Vega_SW/_git/Vega_SW")
 SHELL = r"C:\Users\Administrator\.cache\codex-runtimes\codex-primary-runtime\dependencies\native\powershell\pwsh.exe"
 DOTNET = Path(r"C:\AutoTest\runtime\dotnet\dotnet.exe")
 WORKSPACES = Path(r"C:\AutoTest\workspaces")
@@ -90,14 +93,18 @@ def sync():
     if not MIRROR.exists():
         MIRROR.parent.mkdir(parents=True, exist_ok=True)
         git("clone", "--bare", "--shared", str(REPO), str(MIRROR))
-        git("remote", "set-url", "origin", REMOTE, repo=MIRROR)
+    # Keep the mirror on the configured remote (e.g. after switching to HTTPS).
+    git("remote", "set-url", "origin", REMOTE, repo=MIRROR)
+    from urllib.parse import urlsplit
+    remote = urlsplit(REMOTE)
+    origin = f"{remote.scheme}://{remote.netloc}/"
     env = os.environ.copy()
     pat = env.get("AZURE_DEVOPS_PAT", "")
     if not pat:
         config = ROOT.parent / "code_indicator" / "vega-agent" / "config.json"
         pat = json.loads(config.read_text(encoding="utf-8-sig"))["azure_devops"]["pat"]
     env.update(GIT_TERMINAL_PROMPT="0", GCM_INTERACTIVE="Never", GIT_CONFIG_COUNT="3",
-               GIT_CONFIG_KEY_0="http.http://win-devops:8080/.extraHeader",
+               GIT_CONFIG_KEY_0="http." + origin + ".extraHeader",
                GIT_CONFIG_VALUE_0="Authorization: Basic " + base64.b64encode((":" + pat).encode()).decode(),
                GIT_CONFIG_KEY_1="credential.helper", GIT_CONFIG_VALUE_1="",
                GIT_CONFIG_KEY_2="http.followRedirects", GIT_CONFIG_VALUE_2="false")
@@ -199,6 +206,7 @@ def collect(last, offline, on_collected=None):
     out.mkdir(parents=True)
     manifest = dict(schemaVersion=2, batchId=batch_id, collectedAt=now.isoformat(), timezone="Asia/Shanghai",
                     mode="recent-example" if last else "daily", source=str(source), remoteFresh=not offline,
+                    remoteTransport=None if offline else REMOTE.split(":", 1)[0].lower(),
                     selection="all reachable DAG commits; committer date today plus newly reachable carryover; no historical pending replay",
                     windowStart=start.isoformat(), windowEnd=now.isoformat(), head=head,
                     previousCollectedHead=previous_head, historyRewritten=history_changed,
@@ -389,18 +397,20 @@ def prepare_target(out, manifest):
     evidence = out / "attempts" / attempt
     evidence.mkdir(parents=True)
     save(out / "execution.json", dict(state="PREPARING", attempt=attempt, evidence=str(evidence)))
-    if manifest.get("testingPolicy") == "latest-head":
-        import latest_head
-        repo = latest_head.workspace(sys.modules[__name__], out, manifest)
-    else:
-        repo = WORKSPACES / (manifest["batchId"] + "_" + attempt)
     # Unattended recovery: owned Simulator processes may be stopped; never reuse
     # an output directory with a live session or reset the user's checkout.
+    # Runs BEFORE the shared latest-head workspace is recycled, so a Vega started
+    # from it no longer locks files and prepared sessions are restored first.
     with (evidence / "cleanup.log").open("w", encoding="utf-8") as log:
         cleanup = run_bounded([SHELL, "-NoProfile", "-File", str(ROOT / "daily" / "Stop-ManagedVega.ps1"),
                                "-AuditPath", str(evidence / "cleanup.json")], stdout=log, stderr=subprocess.STDOUT, timeout=45)
     save(evidence / "cleanup-status.json", dict(exitCode=cleanup.returncode,
          fallback="Fresh worktree isolates build even if an unrelated session cannot be stopped"))
+    if manifest.get("testingPolicy") == "latest-head":
+        import latest_head
+        repo = latest_head.workspace(sys.modules[__name__], out, manifest)
+    else:
+        repo = WORKSPACES / (manifest["batchId"] + "_" + attempt)
     git("worktree", "add", "--detach", str(repo), manifest["head"], repo=Path(manifest["source"]))
     current_head = git("rev-parse", "HEAD", repo=repo)
     if current_head != manifest["head"] or git("status", "--porcelain", repo=repo):
@@ -907,6 +917,13 @@ def main():
         save(out / 'manifest.json', manifest)
         for commit in original['commits']:
             shutil.copy2(source / (commit['sha'][:8] + '.diff'), out / (commit['sha'][:8] + '.diff'))
+        if original.get('testingPolicy') == 'latest-head':
+            # Per-commit requirement analysis needs the original scopes and diffs.
+            for name in ('requirement-scopes.json', 'collected-commits.json'):
+                if (source / name).is_file():
+                    shutil.copy2(source / name, out / name)
+            if (source / 'collected-diffs').is_dir():
+                shutil.copytree(source / 'collected-diffs', out / 'collected-diffs')
         registry, sched = load(REGISTRY), load(SCHEDULING)
         queue = individual.prepare(__import__(__name__), out, manifest, registry, sched)
         print(json.dumps(individual.aggregate(__import__(__name__), out, manifest, queue, registry), ensure_ascii=False))
@@ -946,10 +963,12 @@ def main():
         out, manifest = collect(args.last, args.offline)
         manifest["strategy"] = strategy
         # The nightly default (and any explicit latest-head request) configures
-        # the integrated HEAD batch. configure() rewrites the manifest to one
+        # the single-build HEAD batch. configure() rewrites the manifest to one
         # HEAD target and keeps strategy='individual', so the queue machinery
         # below is shared; only --strategy individual keeps every commit slot.
-        if strategy == "latest-head" and not args.last:
+        # --last samples use the same policy (previously they silently fell
+        # back to the legacy merged planner while labelled latest-head).
+        if strategy == "latest-head":
             import latest_head
             latest_head.configure(sys.modules[__name__], out, manifest)
             strategy = "individual"

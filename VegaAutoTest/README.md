@@ -457,4 +457,4 @@ print(verdict["verdict"], verdict["verdictCode"], verdict["verdictReason"])
   - C.2 ✅（2026-09-21）：#3547/#3549 两条 L2 用例落地并登记 registry。**#3547**（操作菜单强制中断替换四项，5 断言，纯结构零交互）：Runner 端到端 FAIL（ASSERTION_FAILED）= 本机二进制 8f4e2898 不含 PR 4803 的真实红基线；**#3549**（BSS default 保存加载往返，5 断言，硬判定锚在 BSSConfig.json 空串持久化）：Runner 端到端 PASS 5/5 = 本机二进制已含 PR 4805 修复。过程修三处通用问题：① L2TestBase 静态声明 PerMonitorV2 DPI 感知（150% 缩放下 UIA 物理坐标被虚拟化放大，双击落错节点）；② VerdictResolver 归因修正（堆栈含 `.L2.` 帧 = 用例自身断言 FAIL，不再误报 HARNESS_EXCEPTION）；③ WPF DisplayMemberPath 下拉读法（ListItem UIA Name 是 CLR 类型名，展开后读选中项子 TextBlock）。wi3478 回归 PASS（交叉验证 SKIP 系 L1 未在线，与判定口径一致）。
   - C.3：L1 API 主通道正式用例（Sim 建开 Recipe→扫描→取结果）；
   - P7：Runner 封装 MCP server；
-  - PAT 轮换：已泄露 PAT 需本人到 ADO 网页作废（代码已不读明文）。
+  - PAT 轮换：已泄露 PAT 需本人到 ADO 网页作废。代码优先读 `AZURE_DEVOPS_PAT`，仍会回退读本地已 gitignore 的 `code_indicator/vega-agent/config.json`（2026-11-03 更正此前"代码已不读明文"的说法）。daily 访问 ADO 目前走 HTTP，见 `daily/AGENTS.md` 安全一节。
