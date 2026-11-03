@@ -5,7 +5,7 @@
 ## 1. 用户需求与默认策略
 
 - 每晚北京时间 23:30 自动执行校验，不经过 AI 聊天决定是否启动。
-- 读取当天全部提交：北京时间当天 00:00 至执行时刻 master 上全部可达提交（按 committer time），加上次游标 `collectedHead` 之后新出现的提交；按 SHA 去重，不重放历史待验提交。
+- 读取当天全部提交：仅北京时间当天 00:00 至执行时刻 master 上全部可达提交（按 committer time）；不补收游标之后的跨日提交，不重放历史待验或补验批次。（2026-11-03 用户明确要求今晚只校验当天提交。）
 - **逐项测试**：每个提交单独读取完整 diff（不截断）和对应工单，单独生成/审核测试和需求场景，报告中逐提交列出用例、runId 和状态。
 - **一次构建**：全部测试在收集时固定的最新 HEAD 上构建一次、执行一次。最新 HEAD 包含本批全部提交。不做逐提交构建，不做失败二分定位。
 - 报告标注 `testingPolicy=latest-head`、`perCommitAcceptance=false`。逐提交状态 `PASSED_AT_HEAD` 表示该提交的需求在最新 HEAD 构建上通过，不宣称各提交在自己 SHA 上独立验收。
@@ -28,7 +28,7 @@
 
 - Windows 计划任务 `VegaAutoTest-DailyValidation`（`Install-DailyValidationTask.ps1` 安装）在 23:30 以当前用户交互会话执行 `Start-DailyValidation.ps1 -Watch`，以支持真实 UI。用户需保持登录；未登录时任务在下次登录后补跑（StartWhenAvailable）。
 - 手动运行启动器会创建隐藏的独立监督进程。两者都执行 `autopilot.py --daily`，聊天结束不影响后台。监督进程失败后最多重启同一活动批次两次，不重复收集；模型额度不足（退出码 75）时最长等待 6 小时后继续同一批次。
-- 若昨日的活动批次未收尾，先恢复它；若它是昨天窗口的批次，收尾后当晚仍会再收集今天的提交，不吞掉当晚触发。新批次收集成功而旧活动批次尚未收尾时，旧批次 `controller/state.json` 和 ACTIVE 指针记 `phase=SUPERSEDED` 及 `supersededBy`；这只表示被取代，不表示完成或通过。
+- `--daily` 只自动恢复当天窗口且 mode=daily 的未收尾批次；旧窗口、样例和补验不在夜间自动恢复。历史批次仅在用户单独要求时显式 `--resume`。新批次收集成功会把旧活动指针标为 `SUPERSEDED`，保留原报告与结果；这不表示完成或通过。
 - `autopilot.py --status` 是只读入口。`controller-active.json`、批次 `controller/state.json` 和进程创建时间是实际进度依据。只有 `FINISHED` 且 `controller/completion-check.json` 的 `exitCode=0` 表示流程收尾；ERROR/运行中绝不宣称完成。
 - 控制器运行期间持有 `.operation.lock`，其他 `daily.py` 命令会被拒绝（already running）。先查 `--status`，不重复启动。
 

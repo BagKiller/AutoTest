@@ -683,7 +683,7 @@ def collected(root, manifest):
 def main():
     parser = argparse.ArgumentParser()
     group = parser.add_mutually_exclusive_group(required=True)
-    group.add_argument('--daily', action='store_true', help='Resume the active controller batch, otherwise collect new commits')
+    group.add_argument('--daily', action='store_true', help="Resume today's daily batch, otherwise collect today's commits only")
     group.add_argument('--resume', type=Path)
     group.add_argument('--status', action='store_true')
     group.add_argument('--runtime-check', action='store_true', help='Validate the real scheduler environment without model calls or collection')
@@ -701,9 +701,12 @@ def main():
         with d.operation_lock.acquire(d.ROOT / 'daily' / '.operation.lock'):
             try:
                 active = d.load(ACTIVE, {})
+                active_manifest = d.load(Path(active['batch']) / 'manifest.json', {}) if active.get('batch') else {}
+                same_day_daily = (active_manifest.get('mode') == 'daily' and
+                    active_manifest.get('windowStart', '')[:10] == d.now_cn().date().isoformat())
                 if args.resume:
                     root = resolve_resume(args.resume)
-                elif active.get('batch') and active.get('phase') not in ('FINISHED', 'SUPERSEDED'):
+                elif same_day_daily and active.get('phase') not in ('FINISHED', 'SUPERSEDED'):
                     root = resolve_resume(Path(active['batch']))
                 else:
                     out, manifest = d.collect(0, False, on_collected=collected)
@@ -712,16 +715,6 @@ def main():
                     root = out
                 progress(root, 'STARTING')
                 run(root)
-                previous = d.load(root / 'manifest.json', {})
-                if (args.daily and active.get('phase') not in ('FINISHED', 'SUPERSEDED') and active.get('batch') and
-                        previous.get('windowStart') and previous['windowStart'][:10] < d.now_cn().date().isoformat()):
-                    # Finishing yesterday's interrupted active batch must not
-                    # consume tonight's trigger and silently omit today's commits.
-                    root, current = d.collect(0, False, on_collected=collected)
-                    current['strategy'] = 'individual'
-                    d.save(root / 'manifest.json', current)
-                    progress(root, 'STARTING')
-                    run(root)
             except model_author.ModelCapacityUnavailable as exc:
                 if root:
                     progress(root, 'WAITING_MODEL', reason=str(exc), report=str(root / 'report.md'))

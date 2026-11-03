@@ -174,6 +174,7 @@ class ControllerTests(unittest.TestCase):
     def test_pending_active_batch_is_resumed_without_collecting(self):
         batch = self.root / 'daily/runs/pending'
         a.d.save(a.ACTIVE, dict(batch=str(batch), phase='ERROR'))
+        a.d.save(batch / 'manifest.json', dict(mode='daily', windowStart=a.d.now_cn().date().isoformat()))
         with patch.object(sys, 'argv', ['autopilot.py', '--daily']), patch.object(a, 'run') as run, patch.object(a.d, 'collect') as collect:
             a.main()
         run.assert_called_once_with(batch)
@@ -213,6 +214,7 @@ class ControllerTests(unittest.TestCase):
     def test_capacity_exit_preserves_same_batch_with_waiting_state(self):
         root = self.root / 'daily/runs/waiting'
         a.d.save(a.ACTIVE, dict(batch=str(root), phase='AUTHORING'))
+        a.d.save(root / 'manifest.json', dict(mode='daily', windowStart=a.d.now_cn().date().isoformat()))
         with patch.object(sys, 'argv', ['autopilot.py', '--daily']), \
              patch.object(a, 'run', side_effect=m.ModelCapacityUnavailable('usage limit')), \
              patch.object(a.d, 'collect') as collect:
@@ -358,7 +360,7 @@ class ControllerTests(unittest.TestCase):
              patch.object(m.shutil, 'which', return_value=None):
             self.assertEqual(Path(m.find_transport()), executable)
 
-    def test_finishing_yesterdays_active_batch_still_collects_todays_commits(self):
+    def test_yesterdays_active_batch_is_not_resumed_by_tonights_task(self):
         old = self.root / 'daily/runs/old'
         new = self.root / 'daily/runs/new'
         a.d.save(a.ACTIVE, dict(batch=str(old), phase='ERROR'))
@@ -368,8 +370,38 @@ class ControllerTests(unittest.TestCase):
              patch.object(a.d, 'now_cn', return_value=datetime(2026, 10, 29, tzinfo=a.d.CN)), \
              patch.object(a.d, 'collect', return_value=(new, {})) as collect:
             a.main()
-        self.assertEqual([call.args[0] for call in run.call_args_list], [old, new])
+        self.assertEqual([call.args[0] for call in run.call_args_list], [new])
         collect.assert_called_once_with(0, False, on_collected=a.collected)
+
+    def test_daily_collection_excludes_older_newly_reachable_commits(self):
+        from datetime import datetime
+        old_sha, today_sha = 'b' * 40, 'c' * 40
+        def git(*args, **kwargs):
+            if args[0] == 'log':
+                return old_sha + '\x1f2026-11-02T23:59:59+08:00\x1fold\x1e' + today_sha + '\x1f2026-11-03T10:00:00+08:00\x1ftoday\x1e'
+            if args[0] == 'rev-list':
+                return old_sha + '\n' + today_sha
+            if args[0] == 'rev-parse':
+                return today_sha
+            return ''
+        def describe(row, *args):
+            return dict(sha=row.split('\x1f')[0])
+        state = self.root / 'state.json'
+        a.d.save(state, dict(collectedHead='a' * 40))
+        with patch.object(a.d, 'STATE', state), patch.object(a.d, 'git', side_effect=git), \
+             patch.object(a.d, 'sync', return_value=self.root), patch.object(a.d, 'describe', side_effect=describe), \
+             patch.object(a.d, 'now_cn', return_value=datetime(2026, 11, 3, 23, 30, tzinfo=a.d.CN)):
+            _, manifest = a.d.collect(0, False)
+        self.assertEqual([c['sha'] for c in manifest['commits']], [today_sha])
+
+    def test_explicit_resume_remains_available_for_authorized_supplement(self):
+        batch = self.root / 'daily/runs/supplement'
+        a.d.save(a.ACTIVE, dict(batch=str(batch), phase='SUPERSEDED'))
+        with patch.object(sys, 'argv', ['autopilot.py', '--resume', str(batch)]), \
+             patch.object(a, 'run') as run, patch.object(a.d, 'collect') as collect:
+            a.main()
+        run.assert_called_once_with(batch)
+        collect.assert_not_called()
 
     def test_long_generated_case_id_can_actually_open_runner_log_on_windows(self):
         cid = 'authored-' + 'very-long-business-scenario-' * 8

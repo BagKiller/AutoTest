@@ -5,7 +5,7 @@
 ## 现行策略：最新 HEAD 构建一次，逐提交测试
 
 - 每晚北京时间 23:30，本机 Windows 计划任务 `VegaAutoTest-DailyValidation` 直接运行项目程序（不经过 AI 聊天）。
-- 收集当天 00:00 起 master 上全部可达提交，加上次游标之后新出现的提交。
+- 仅收集北京时间当天 00:00 至触发时刻 master 上全部可达提交（按 committer time），不补收跨日提交。夜间只续跑当天 daily 批次，不自动恢复历史待验或补验；历史专项需另行显式 `--resume`。
 - 每个提交单独读取完整 diff 和工单，单独生成测试和需求场景（`requirement-scopes.json`、`preparation/scopes/<sha>/`）。
 - 全部测试在收集时固定的最新 HEAD 上**只构建一次**并执行。根报告"逐提交测试结果"表逐提交列出用例、runId 和状态，`summary.json` 的 `commitResults` 是同一内容的机读版本。
 - 报告标注 `testingPolicy=latest-head`、`perCommitAcceptance=false`：结果说明各提交的需求在最新 HEAD 上是否通过，不代表各提交在自己 SHA 上独立验收，也不做失败二分。

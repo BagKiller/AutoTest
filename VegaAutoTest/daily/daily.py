@@ -188,14 +188,13 @@ def collect(last, offline, on_collected=None):
             history_changed = True
     log = git("log", "master", f"--format={LOG_FORMAT}", *([f"-{last}"] if last else []), repo=source)
     rows = [r.strip("\n") for r in log.split("\x1e") if r.strip()]
-    unseen = set(git("rev-list", head, "^" + previous_head, repo=source).splitlines()) if previous_head and not history_changed else set()
     commits = []
     for row in rows:
         sha, committed = row.split("\x1f", 2)[:2]
         is_today = start <= datetime.fromisoformat(committed) <= now
-        # Select today's commits plus every newly reachable commit since last collection,
-        # including backdated commits and submissions after yesterday's cutoff.
-        if not last and not (is_today or sha in unseen):
+        # Nightly validation is strictly scoped to today's Beijing time window.
+        # A stale cursor must never reintroduce older commits as carryover.
+        if not last and not is_today:
             continue
         commits.append(describe(row, source, start, now, "window"))
     # A daily batch validates only new commits selected for this collection. Historical
@@ -207,7 +206,7 @@ def collect(last, offline, on_collected=None):
     manifest = dict(schemaVersion=2, batchId=batch_id, collectedAt=now.isoformat(), timezone="Asia/Shanghai",
                     mode="recent-example" if last else "daily", source=str(source), remoteFresh=not offline,
                     remoteTransport=None if offline else REMOTE.split(":", 1)[0].lower(),
-                    selection="all reachable DAG commits; committer date today plus newly reachable carryover; no historical pending replay",
+                    selection="all reachable DAG commits with committer date in today's Beijing time window only; no carryover or historical replay",
                     windowStart=start.isoformat(), windowEnd=now.isoformat(), head=head,
                     previousCollectedHead=previous_head, historyRewritten=history_changed,
                     localHead=git("rev-parse", "HEAD"), localDirty=bool(git("status", "--porcelain")),
