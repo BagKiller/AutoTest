@@ -14,6 +14,8 @@ import model_author
 
 
 ACTIVE = d.ROOT / 'daily' / 'controller-active.json'
+# Terminal phases: never resumed, never superseded again.
+TERMINAL = ('FINISHED', 'FINISHED_NO_TESTS', 'SUPERSEDED')
 
 
 def identity(pid):
@@ -636,10 +638,15 @@ def run(root):
                     d.main()
         finally:
             sys.argv = argv
+        tests_executed = data.get('testsExecuted', True)
         d.save(root / 'controller' / 'completion-check.json', dict(exitCode=0, pendingCommitValidations=[],
-            workflowState=data['workflowState'], acceptanceState=data['acceptanceState'], checkedAt=d.now_cn().isoformat()))
-        progress(root, 'FINISHED', report=str(root / 'report.md'), statusCounts=data['statusCounts'],
-                 acceptanceState=data['acceptanceState'])
+            workflowState=data['workflowState'], acceptanceState=data['acceptanceState'],
+            testsExecuted=tests_executed, runnerRunCount=data.get('runnerRunCount'), checkedAt=d.now_cn().isoformat()))
+        # FINISHED_NO_TESTS is terminal like FINISHED, but tells monitors that the
+        # night produced no Runner result at all (e.g. the target build failed).
+        progress(root, 'FINISHED' if tests_executed else 'FINISHED_NO_TESTS', report=str(root / 'report.md'),
+                 statusCounts=data['statusCounts'], acceptanceState=data['acceptanceState'],
+                 testsExecuted=tests_executed, runnerRunCount=data.get('runnerRunCount'))
         return data
     finally:
         d.run_bounded = original_run
@@ -661,7 +668,7 @@ def collected(root, manifest):
     latest_head.configure(d, root, manifest)
     d.save(root / 'manifest.json', manifest)
     previous = d.load(ACTIVE, {})
-    if (previous.get('batch') and previous.get('phase') not in ('FINISHED', 'SUPERSEDED')
+    if (previous.get('batch') and previous.get('phase') not in TERMINAL
             and Path(previous['batch']).resolve() != root.resolve()):
         # The old batch is superseded by tonight's new collection; its own
         # reports keep the original verdicts. SUPERSEDED never means finished
@@ -706,7 +713,7 @@ def main():
                     active_manifest.get('windowStart', '')[:10] == d.now_cn().date().isoformat())
                 if args.resume:
                     root = resolve_resume(args.resume)
-                elif same_day_daily and active.get('phase') not in ('FINISHED', 'SUPERSEDED'):
+                elif same_day_daily and active.get('phase') not in TERMINAL:
                     root = resolve_resume(Path(active['batch']))
                 else:
                     out, manifest = d.collect(0, False, on_collected=collected)

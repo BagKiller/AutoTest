@@ -75,26 +75,114 @@ def reclaim_reason(d, out, manifest, owner):
     return None
 
 
-def workspace(d, out, manifest):
+SHARED_MODES = ('daily', 'recent-example')
+
+
+def uses_shared_workspace(d, out, manifest):
+    """Only nightly and --last sample campaigns use daily-latest.
+
+    Targeted revalidation keeps the latest-head analysis policy but builds in its
+    own worktree, so a daytime rerun can never break or evict the nightly workspace.
+    """
+    if manifest.get('testingPolicy') != 'latest-head':
+        return False
+    _, root_manifest = _campaign(d, out)
+    return root_manifest.get('mode', manifest.get('mode')) in SHARED_MODES
+
+
+def _same(a, b):
+    import os
+    return os.path.normcase(str(Path(a).resolve())) == os.path.normcase(str(Path(b).resolve()))
+
+
+def _registered(d, source, repo):
+    """Is `repo` still listed as a worktree of the mirror (admin entry present)?"""
+    listing = d.git('worktree', 'list', '--porcelain', repo=Path(source))
+    return any(line.startswith('worktree ') and _same(line[len('worktree '):], repo)
+               for line in listing.splitlines())
+
+
+def _remove_tree(path):
+    import os
+    import shutil
+    import stat
+
+    def writable(function, name, _):
+        os.chmod(name, stat.S_IWRITE)
+        function(name)
+    target = Path('\\\\?\\' + str(path.resolve())) if os.name == 'nt' else path
+    shutil.rmtree(target, onerror=writable)
+
+
+def _recover_half_removed(d, repo, manifest, owner):
+    """A failed `git worktree remove` deletes files but leaves the directory without .git.
+
+    Ownership is proven by the mirror's worktree registration or by the owner
+    record naming this exact path; a directory that is itself another repository
+    (.git directory) is never touched. Returns a reclaim reason, or None.
+    """
+    git_entry = repo / '.git'
+    source = Path(manifest['source']).resolve()
+    if git_entry.is_dir():
+        return None  # A full repository: never ours to delete.
+    if git_entry.is_file():
+        # Worktree link whose admin entry in our mirror was pruned/deleted:
+        # also unusable, and provably ours (it points into our mirror).
+        text = git_entry.read_text(encoding='utf-8', errors='replace').strip()
+        if not text.startswith('gitdir:'):
+            return None
+        admin = Path(text[len('gitdir:'):].strip())
+        if not admin.is_absolute():
+            admin = repo / admin
+        if admin.exists() or not _same(admin.parent, source / 'worktrees'):
+            return None
+    registered = _registered(d, manifest['source'], repo)
+    recorded = bool(owner.get('repo')) and _same(owner['repo'], repo)
+    if not (registered or recorded or git_entry.is_file()):
+        raise RuntimeError('Latest workspace has no .git and is neither registered in the mirror nor recorded '
+                           'as ours; preserved for manual review: ' + str(repo))
+    _remove_tree(repo)
+    d.git('worktree', 'prune', repo=Path(manifest['source']))
+    return 'half-removed-worktree-cleaned'
+
+
+def workspace(d, out, manifest, evidence=None):
     """Single shared worktree. Clean, owned, same-repository paths only; dirty/foreign paths fail closed."""
     repo = d.WORKSPACES / 'daily-latest'
     owner_file = d.ROOT / 'daily' / 'latest-workspace-owner.json'
+    if repo.is_symlink() or repo.parent.resolve() != d.WORKSPACES.resolve():
+        raise RuntimeError('Unsafe latest workspace path')
     if repo.exists():
         owner = d.load(owner_file, {}) or {}
         reason = reclaim_reason(d, out, manifest, owner)
         if reason is None:
             raise RuntimeError('Latest workspace cannot be recycled: owner unknown/missing, or an unfinished '
                                'nightly batch that was not superseded; resume it first: ' + str(owner.get('batch')))
-        common = Path(d.git('rev-parse', '--git-common-dir', repo=repo)).resolve()
-        if common != Path(manifest['source']).resolve():
-            raise RuntimeError('Latest workspace belongs to a different repository')
-        if d.git('status', '--porcelain', '--untracked-files=all', repo=repo):
-            raise RuntimeError('Latest workspace has unsaved changes; preserved')
-        if repo.is_symlink() or repo.resolve().parent != d.WORKSPACES.resolve():
-            raise RuntimeError('Unsafe latest workspace path')
-        # Normal Git removal refuses dirty/locked worktrees. No forced reset of
-        # user files. Recreating at the same path prevents stale deployment DLLs.
-        d.git('worktree', 'remove', '--', str(repo), repo=common)
+        if evidence is not None and hasattr(d, 'release_workspace'):
+            # Free file locks first; otherwise worktree removal can fail half-way.
+            d.release_workspace(repo, evidence)
+        recovered = _recover_half_removed(d, repo, manifest, owner)
+        if recovered:
+            reason = reason + '; ' + recovered
+        else:
+            common = Path(d.git('rev-parse', '--git-common-dir', repo=repo)).resolve()
+            if common != Path(manifest['source']).resolve():
+                raise RuntimeError('Latest workspace belongs to a different repository')
+            if d.git('status', '--porcelain', '--untracked-files=all', repo=repo):
+                raise RuntimeError('Latest workspace has unsaved changes; preserved')
+            # Normal Git removal refuses dirty/locked worktrees. No forced reset of
+            # user files. Recreating at the same path prevents stale deployment DLLs.
+            try:
+                d.git('worktree', 'remove', '--', str(repo), repo=common)
+            except RuntimeError as error:
+                # A lock can still abort removal half-way; finish only if Git
+                # already deleted the .git file, otherwise keep the original error.
+                if not repo.exists():
+                    raise
+                recovered = _recover_half_removed(d, repo, manifest, owner)
+                if not recovered:
+                    raise
+                reason = reason + '; remove-failed-then-' + recovered + ': ' + str(error)
         d.save(out / 'workspace-reclaim.json', dict(reason=reason, previousOwner=owner,
                                                    repo=str(repo), at=d.now_cn().isoformat()))
     d.save(owner_file, dict(batch=str(out.resolve()), head=manifest['head'], repo=str(repo)))

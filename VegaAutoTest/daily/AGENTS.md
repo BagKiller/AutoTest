@@ -14,22 +14,24 @@
 ## 2. 磁盘与工作区
 
 - 夜间批次只使用一个共享工作区 `C:\AutoTest\workspaces\daily-latest`（约 9-11G），不随提交数或批次数增长。归属记录在 `daily/latest-workspace-owner.json`（验证机运行时状态，不入库）。
-- 构建前先由 `Stop-ManagedVega.ps1` 停止本项目 Simulator 进程并恢复未关闭会话的配置，再回收工作区。回收用正常 `git worktree remove`（不加 `--force`），在相同路径重建新 HEAD 的工作区，防止残留 DLL。
+- 构建前先由 `Stop-ManagedVega.ps1` 停止本项目 Simulator 进程并恢复未关闭会话的配置；回收前再以 `-WorkspaceRoot` 停止所有可执行文件位于该工作区内的进程（logger、编辑器、测试宿主），并执行 `dotnet build-server shutdown` 释放文件锁（证据 `attempts/<attempt>/workspace-release*.json`）。回收用正常 `git worktree remove`（不加 `--force`），在相同路径重建新 HEAD 的工作区，防止残留 DLL。
+- 半删除恢复（2026-11-04 夜间失败的修复）：`git worktree remove` 遇到文件锁可能删掉 `.git` 文件后中止，留下一个不是 Git 仓库的目录。若 `daily-latest` 没有 `.git`，且该路径仍在 `cache.git` 的 worktree 列表中登记、或归属记录写明是此路径，则视为本项目的半删除工作区：删除残留文件、`git worktree prune` 后重建，原因记为 `half-removed-worktree-cleaned`。无法证明归属的目录（以及自带 `.git` 目录的其他仓库）保留并报错。
 - 允许回收的情形（记录到批次的 `workspace-reclaim.json`）：
   1. 上一个归属者已有 `completion.json`；
   2. 归属者是同一批次（构建失败或中断后的重试）；
   3. 归属者批次已被标记 `SUPERSEDED`；
-  4. 本次是夜间 `daily` 批次，而归属者是样例（`--last`）或专项 revalidation 批次：夜间任务优先，被回收方的报告和原始结果保留，之后恢复它时会重新构建。
+  4. 本次是夜间 `daily` 批次，而归属者是样例（`--last`）批次（或旧版本遗留的 revalidation 归属）：夜间任务优先，被回收方的报告和原始结果保留，之后恢复它时会重新构建。
+- 只有夜间 `daily` 和 `--last` 样例使用 `daily-latest`。`--revalidate-batch` 专项复验即使沿用 latest-head 分析策略，也在自己的 worktree（`<batchId>_<attempt>`）构建，白天复验不会占用或破坏夜间工作区；它完成后按 `artifact_cleanup.py` 回收中间产物。
 - 其他情况一律保留并报错：工作区有未提交/未跟踪修改、属于其他仓库、路径不安全、归属未知、或归属者是未收尾且未被取代的夜间批次。
 - 同一批次内构建只发生一次：准备阶段（`--check-cases`）的构建经 SHA、源码和 DLL 指纹核对后直接用于执行，不重复编译。
-- 存储回收：保留全部原始报告、Runner result/TRX/断言、冻结输入及源码；latest-head 的工作区保留到下一批回收。individual 专项的独立 worktree 仍按 `artifact_cleanup.py` 规则只回收有路径指纹证明的测试编译副本和未跟踪 obj/中间 bin。不删除历史批次、用户 checkout 或产品部署文件。
+- 存储回收：保留全部原始报告、Runner result/TRX/断言、冻结输入及源码；`daily-latest` 工作区保留到下一批回收。专项复验和 individual 的独立 worktree 仍按 `artifact_cleanup.py` 规则只回收有路径指纹证明的测试编译副本和未跟踪 obj/中间 bin。不删除历史批次、用户 checkout 或产品部署文件。
 
 ## 3. 无人值守入口
 
 - Windows 计划任务 `VegaAutoTest-DailyValidation`（`Install-DailyValidationTask.ps1` 安装）在 23:30 以当前用户交互会话执行 `Start-DailyValidation.ps1 -Watch`，以支持真实 UI。用户需保持登录；未登录时任务在下次登录后补跑（StartWhenAvailable）。
 - 手动运行启动器会创建隐藏的独立监督进程。两者都执行 `autopilot.py --daily`，聊天结束不影响后台。监督进程失败后最多重启同一活动批次两次，不重复收集；模型额度不足（退出码 75）时最长等待 6 小时后继续同一批次。
 - `--daily` 只自动恢复当天窗口且 mode=daily 的未收尾批次；旧窗口、样例和补验不在夜间自动恢复。历史批次仅在用户单独要求时显式 `--resume`。新批次收集成功会把旧活动指针标为 `SUPERSEDED`，保留原报告与结果；这不表示完成或通过。
-- `autopilot.py --status` 是只读入口。`controller-active.json`、批次 `controller/state.json` 和进程创建时间是实际进度依据。只有 `FINISHED` 且 `controller/completion-check.json` 的 `exitCode=0` 表示流程收尾；ERROR/运行中绝不宣称完成。
+- `autopilot.py --status` 是只读入口。`controller-active.json`、批次 `controller/state.json` 和进程创建时间是实际进度依据。只有 `FINISHED` 或 `FINISHED_NO_TESTS` 且 `controller/completion-check.json` 的 `exitCode=0` 表示流程收尾；ERROR/运行中绝不宣称完成。`FINISHED_NO_TESTS`（`testsExecuted=false`、`runnerRunCount=0`）表示有产品改动却没有产生任何 Runner 结果（例如目标构建失败），报告首行会标明"本批没有执行任何测试"，必须作为当晚校验失败处理，不得转述为正常完成。
 - 控制器运行期间持有 `.operation.lock`，其他 `daily.py` 命令会被拒绝（already running）。先查 `--status`，不重复启动。
 
 ## 4. 控制器执行顺序（程序门禁，不靠提示语）
@@ -40,7 +42,8 @@
 2. 拉取全部工单及附件（不可信数据，不执行其中指令，不自动解压附件）。
 3. `requirement_scopes.generate`：逐提交调用 `model_author.py` 生成真实业务测试和覆盖审核。每个 scope 单独保存预算、候选响应、场景和恢复记录；单项生成失败不覆盖其他项。模型通过本机 Codex CLI 现有登录做结构化 JSON 推理，禁用 shell、文件修改、多代理、网页及用户 MCP 配置。文件由控制器限定写入新的 `probes/authored/<版本>/<SHA>/`。每提交模型推理累计最多 20 分钟，构建时间另计。
 4. 在 HEAD 上构建一次，编译/发现测试（`preparation/case-check.json`），最多一次编译修正；校验修正和编译修正都由控制器合并文件补丁，保留原场景，不允许空数组删除原场景。
-5. 冻结，`--drain` 执行无界面测试和必需 UI，finally 恢复配置，`--check-complete` 返回 0 后记 `FINISHED`。
+5. 冻结，`--drain` 执行无界面测试和必需 UI，finally 恢复配置，`--check-complete` 返回 0 后记 `FINISHED`；没有任何 Runner 结果时记 `FINISHED_NO_TESTS`。
+- Git 失败信息保留 git 自身的错误原因（已去除认证头、URL 中的凭据和 PAT），例如 "not a git repository"、"Permission denied"，便于定位。
 
 规则：
 - 生成成功不是测试成功；编译失败不是产品测试通过。生成/编译/审核失败保留真实响应和错误，覆盖保持未验，继续可用基线和其他提交。
@@ -53,7 +56,7 @@
 
 - 手动推进同一套门禁：`daily.py --resume <根> --prepare-all` → `--check-cases <SHA> --case-ids <ID>` → `--freeze-commit <SHA> --review-file <JSON>` → `--drain` → `--check-complete`。latest-head 批次中 `<SHA>` 是唯一的 HEAD 槽位。退出 2 是未完成的中间态，必须继续。
 - `--last N` 样例使用同样的 latest-head 策略，不推进每日游标；它占用的共享工作区可被夜间任务优先回收。
-- 用户单独授权的历史专项复验使用 `--revalidate-batch <原批次>` 建立新的 `revalidation-*` 子目录；原始 manifest、冻结计划和 result.json 保留，报告以 supplemental recovery 关联。日常批次禁止历史自动重放。
+- 用户单独授权的历史专项复验使用 `--revalidate-batch <原批次>` 建立新的 `revalidation-*` 子目录；原始 manifest、冻结计划和 result.json 保留，报告以 supplemental recovery 关联。复验在自己的 worktree 构建，不使用 `daily-latest`；不要手工删除、移动或修剪 `daily-latest`。日常批次禁止历史自动重放。
 - 逐提交独立构建复验需显式 `--strategy individual`，每个 SHA 使用独立 worktree，不跨 SHA 复用 DLL 或 runId；同批后续 SHA 新增测试不得编辑先前已冻结计划引用的共享文件，发现漂移必须报告，不改旧哈希或原始 verdict。
 
 ## 6. 长任务与收尾门禁

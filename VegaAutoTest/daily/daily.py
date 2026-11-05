@@ -84,9 +84,26 @@ def git(*args, repo=REPO, env=None):
     p = subprocess.run(["git", "-c", f"safe.directory={repo.as_posix()}", "-C", str(repo), *args],
                        capture_output=True, encoding="utf-8", errors="replace", env=env, timeout=180)
     if p.returncode:
-        # Never expose authentication headers or Git's echoed command in diagnostics.
-        raise RuntimeError(f"Git operation {args[0]} failed (exit {p.returncode}); inspect connectivity/permissions")
+        # Never expose authentication headers or Git's echoed command in diagnostics,
+        # but keep Git's own reason ("not a git repository", "Permission denied", ...).
+        detail = git_error_detail(p.stderr, env)
+        raise RuntimeError(f"Git operation {args[0]} failed (exit {p.returncode}) in {repo}"
+                           + (f": {detail}" if detail else "; inspect connectivity/permissions"))
     return p.stdout if '-z' in args else p.stdout.strip()
+
+
+def git_error_detail(stderr, env=None):
+    """Last meaningful stderr lines with credentials removed; bounded for reports."""
+    text = stderr or ""
+    secrets = [v for k, v in (env or {}).items()
+               if k.startswith("GIT_CONFIG_VALUE_") and v and len(v) > 8]
+    for secret in secrets:
+        text = text.replace(secret, "<redacted>")
+    text = re.sub(r"(?i)(authorization:\s*)\S+(\s+\S+)?", r"\1<redacted>", text)
+    text = re.sub(r"(?i)\b(basic|bearer)\s+[A-Za-z0-9+/=._-]{8,}", r"\1 <redacted>", text)
+    text = re.sub(r"://[^/@\s]+@", "://<redacted>@", text)
+    lines = [line.strip() for line in text.splitlines() if line.strip()]
+    return " | ".join(lines[-3:])[:400]
 
 
 def sync():
@@ -390,6 +407,27 @@ def build_runner(out):
             for p in project.parent.glob('*') if p.suffix in ('.cs', '.csproj')}))
 
 
+def release_workspace(repo, evidence):
+    """Free file locks inside a project-owned workspace before Git removes it.
+
+    Stops processes whose executable image lives under `repo` (Vega, its logger,
+    editors and test hosts built there; Vega sessions are restored first by the
+    script) and shuts down .NET build servers that keep compiler handles open.
+    A partially failed `git worktree remove` otherwise leaves a directory without
+    its .git file and blocks every later nightly build.
+    """
+    evidence.mkdir(parents=True, exist_ok=True)
+    with (evidence / "workspace-release.log").open("w", encoding="utf-8") as log:
+        stop = run_bounded([SHELL, "-NoProfile", "-File", str(ROOT / "daily" / "Stop-ManagedVega.ps1"),
+                            "-AuditPath", str(evidence / "workspace-release.json"), "-WorkspaceRoot", str(repo)],
+                           stdout=log, stderr=subprocess.STDOUT, timeout=60)
+        servers = run_bounded([str(DOTNET), "build-server", "shutdown"], stdout=log,
+                              stderr=subprocess.STDOUT, timeout=60) if DOTNET.exists() else None
+    result = dict(stopExitCode=stop.returncode, buildServerExitCode=servers.returncode if servers else None)
+    save(evidence / "workspace-release-status.json", result)
+    return result
+
+
 def prepare_target(out, manifest):
     """Fresh worktree at the manifest HEAD + Simulator build + DLL fingerprint check."""
     attempt = now_cn().strftime("%Y%m%dT%H%M%S") + "_" + uuid.uuid4().hex[:6]
@@ -405,10 +443,12 @@ def prepare_target(out, manifest):
                                "-AuditPath", str(evidence / "cleanup.json")], stdout=log, stderr=subprocess.STDOUT, timeout=45)
     save(evidence / "cleanup-status.json", dict(exitCode=cleanup.returncode,
          fallback="Fresh worktree isolates build even if an unrelated session cannot be stopped"))
-    if manifest.get("testingPolicy") == "latest-head":
-        import latest_head
-        repo = latest_head.workspace(sys.modules[__name__], out, manifest)
+    import latest_head
+    if latest_head.uses_shared_workspace(sys.modules[__name__], out, manifest):
+        repo = latest_head.workspace(sys.modules[__name__], out, manifest, evidence)
     else:
+        # Revalidation/individual campaigns never touch the nightly daily-latest
+        # workspace; they get their own worktree (reclaimed by artifact_cleanup).
         repo = WORKSPACES / (manifest["batchId"] + "_" + attempt)
     git("worktree", "add", "--detach", str(repo), manifest["head"], repo=Path(manifest["source"]))
     current_head = git("rev-parse", "HEAD", repo=repo)

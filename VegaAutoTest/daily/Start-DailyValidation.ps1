@@ -51,7 +51,7 @@ for($attempt=1;$attempt -le 3;$attempt++){
         $attempt--
         continue
     }
-    if(-not $Batch -and $state.phase -eq 'FINISHED'){break} # Failed collection must not replay a stale completed batch.
+    if(-not $Batch -and $state.phase -in @('FINISHED','FINISHED_NO_TESTS')){break} # Failed collection must not replay a stale completed batch.
     if($state.batch){$arguments=@('-B',$controller,'--resume',[string]$state.batch)}
     elseif(-not $Batch){break} # A collection failure must not collect twice blindly.
     if($attempt -lt 3){Start-Sleep -Seconds 5}

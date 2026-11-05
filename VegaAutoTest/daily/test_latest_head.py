@@ -43,6 +43,7 @@ class LatestTests(unittest.TestCase):
     def test_recycle_requires_completion_and_clean_owned_repository(self):
         workspaces = self.root / 'workspaces'
         (workspaces / 'daily-latest').mkdir(parents=True)
+        (workspaces / 'daily-latest' / '.git').write_text('gitdir: fixture')
         api = SimpleNamespace(WORKSPACES=workspaces, ROOT=self.root, load=d.load, save=d.save, git=Mock(), now_cn=d.now_cn)
         owner = self.root / 'daily/latest-workspace-owner.json'
         manifest = dict(source=str(self.root / 'cache.git'), head='b' * 40)
@@ -74,6 +75,7 @@ class LatestTests(unittest.TestCase):
     def reclaim(self, owner_child, requester_child):
         workspaces = self.root / 'workspaces'
         (workspaces / 'daily-latest').mkdir(parents=True, exist_ok=True)
+        (workspaces / 'daily-latest' / '.git').write_text('gitdir: fixture')
         api = SimpleNamespace(WORKSPACES=workspaces, ROOT=self.root, load=d.load, save=d.save,
                               git=Mock(side_effect=[str(self.root / 'cache.git'), '', '']), now_cn=d.now_cn)
         d.save(self.root / 'daily/latest-workspace-owner.json', dict(batch=str(owner_child)))
@@ -133,3 +135,110 @@ class LatestTests(unittest.TestCase):
         runs = [dict(caseId='ca', phase='headless', runId=None, verdict=None)]
         status = {r['sha'][0]: r['status'] for r in latest.commit_results(d, root, child, runs)}
         self.assertEqual(status, dict(b='NEEDS_CASE', a='PENDING'))
+
+    # ── half-removed worktree recovery (2026-11-04 nightly failure) ──
+
+    def broken_workspace(self, registered=True, recorded=False):
+        workspaces = self.root / 'workspaces'
+        repo = workspaces / 'daily-latest'
+        (repo / 'Vega' / 'bin').mkdir(parents=True, exist_ok=True)
+        (repo / 'Vega' / 'bin' / 'leftover.dll').write_text('locked once')  # no .git: half-removed
+        source = self.root / 'cache.git'
+        listing = ('worktree ' + str(source) + '\nbare\n\n' +
+                   ('worktree ' + repo.as_posix() + '\nHEAD ' + 'a' * 40 + '\ndetached\n' if registered else ''))
+        git = Mock(side_effect=lambda *args, repo=None: listing if args[:2] == ('worktree', 'list') else '')
+        api = SimpleNamespace(WORKSPACES=workspaces, ROOT=self.root, load=d.load, save=d.save, git=git,
+                              now_cn=d.now_cn, release_workspace=Mock())
+        tonight = self.campaign('tonight', 'daily')
+        owner = dict(batch=str(self.campaign('yesterday', 'daily', phase='SUPERSEDED')))
+        if recorded:
+            owner['repo'] = str(repo)
+        d.save(self.root / 'daily/latest-workspace-owner.json', owner)
+        return api, repo, source, tonight
+
+    def test_half_removed_registered_worktree_is_cleaned_and_pruned(self):
+        api, repo, source, tonight = self.broken_workspace(registered=True)
+        result = latest.workspace(api, tonight, dict(source=str(source), head='b' * 40), self.root / 'evidence')
+        self.assertEqual(result, repo)
+        self.assertFalse(repo.exists())
+        calls = [c.args for c in api.git.call_args_list]
+        self.assertIn(('worktree', 'prune'), calls)
+        self.assertNotIn(('rev-parse', '--git-common-dir'), calls)
+        api.release_workspace.assert_called_once()
+        self.assertIn('half-removed-worktree-cleaned', d.load(tonight / 'workspace-reclaim.json')['reason'])
+
+    def test_half_removed_recorded_owner_is_cleaned_even_after_manual_prune(self):
+        api, repo, source, tonight = self.broken_workspace(registered=False, recorded=True)
+        latest.workspace(api, tonight, dict(source=str(source), head='b' * 40))
+        self.assertFalse(repo.exists())
+
+    def test_link_to_pruned_admin_entry_in_our_mirror_is_cleaned(self):
+        api, repo, source, tonight = self.broken_workspace(registered=False, recorded=False)
+        (repo / '.git').write_text('gitdir: ' + str(source / 'worktrees' / 'daily-latest'))
+        latest.workspace(api, tonight, dict(source=str(source), head='b' * 40))
+        self.assertFalse(repo.exists())
+
+    def test_full_repository_in_place_is_never_deleted(self):
+        api, repo, source, tonight = self.broken_workspace(registered=True)
+        (repo / '.git').mkdir()
+        api.git = Mock(side_effect=lambda *args, repo=None: 'C:/other/.git' if args[0] == 'rev-parse' else '')
+        with self.assertRaisesRegex(RuntimeError, 'different repository'):
+            latest.workspace(api, tonight, dict(source=str(source), head='b' * 40))
+        self.assertTrue((repo / 'Vega' / 'bin' / 'leftover.dll').exists())
+
+    def test_unproven_directory_without_git_is_preserved(self):
+        api, repo, source, tonight = self.broken_workspace(registered=False, recorded=False)
+        with self.assertRaisesRegex(RuntimeError, 'preserved for manual review'):
+            latest.workspace(api, tonight, dict(source=str(source), head='b' * 40))
+        self.assertTrue((repo / 'Vega' / 'bin' / 'leftover.dll').exists())
+
+    def test_remove_failing_half_way_is_completed(self):
+        api, repo, source, tonight = self.broken_workspace(registered=True)
+        (repo / '.git').write_text('gitdir: fixture')
+        listing = 'worktree ' + repo.as_posix() + '\n'
+
+        def git(*args, repo=None):
+            if args[:2] == ('worktree', 'remove'):
+                (self.root / 'workspaces' / 'daily-latest' / '.git').unlink()  # Git deleted .git, then hit a lock
+                raise RuntimeError('Git operation worktree failed (exit 255): Permission denied')
+            if args[:2] == ('worktree', 'list'):
+                return listing
+            return str(source) if args[0] == 'rev-parse' else ''
+        api.git = Mock(side_effect=git)
+        latest.workspace(api, tonight, dict(source=str(source), head='b' * 40))
+        self.assertFalse(repo.exists())
+        self.assertIn('remove-failed-then-half-removed', d.load(tonight / 'workspace-reclaim.json')['reason'])
+
+    def test_remove_failure_before_git_file_deleted_keeps_original_error(self):
+        api, repo, source, tonight = self.broken_workspace(registered=True)
+        (repo / '.git').write_text('gitdir: fixture')
+
+        def git(*args, repo=None):
+            if args[:2] == ('worktree', 'remove'):
+                raise RuntimeError('locked')
+            return str(source) if args[0] == 'rev-parse' else ''
+        api.git = Mock(side_effect=git)
+        with self.assertRaisesRegex(RuntimeError, 'locked'):
+            latest.workspace(api, tonight, dict(source=str(source), head='b' * 40))
+        self.assertTrue(repo.exists())
+
+    # ── revalidation never uses the nightly workspace ──
+
+    def test_only_nightly_and_sample_campaigns_share_daily_latest(self):
+        policy = dict(testingPolicy='latest-head')
+        self.assertTrue(latest.uses_shared_workspace(d, self.campaign('tonight', 'daily'), policy))
+        self.assertTrue(latest.uses_shared_workspace(d, self.campaign('sample', 'recent-example'), policy))
+        self.assertFalse(latest.uses_shared_workspace(d, self.campaign('reval', 'targeted-revalidation'), policy))
+        self.assertFalse(latest.uses_shared_workspace(d, self.campaign('legacy', 'daily'), {}))
+
+
+class GitErrorTests(unittest.TestCase):
+    def test_stderr_reason_is_kept_and_credentials_redacted(self):
+        header = 'Authorization: Basic ' + 'QUJDREVGR0hJSktMTU5PUA=='
+        stderr = ('fatal: unable to access http://user:secret@win-devops:8080/x: ' + header + '\n'
+                  'fatal: not a git repository (or any of the parent directories): .git\n')
+        detail = d.git_error_detail(stderr, dict(GIT_CONFIG_VALUE_0=header))
+        self.assertIn('not a git repository', detail)
+        self.assertNotIn('QUJDREVGR0hJSktMTU5PUA', detail)
+        self.assertNotIn('secret', detail)
+        self.assertLessEqual(len(detail), 400)

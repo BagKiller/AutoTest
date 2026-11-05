@@ -32,7 +32,9 @@ cd C:\AutoTest\AutoTest\VegaAutoTest
 
 启动器的 `STARTED` 只证明监督进程已启动。批次 `controller/state.json` 记录真实阶段，`controller/processes/` 保留子进程归属和超时，`controller-launches/<启动>/result.json` 记录监督重试，每次控制器调用的日志单独保存为 `controller-<n>.*.log`。已有活动进程时只返回当前状态，避免重复构建。
 
-控制器执行顺序：收集 → 拉取工单/附件 → 逐提交生成测试与审核 → HEAD 构建一次并编译/发现（最多一次编译修正）→ 冻结 → drain 执行无界面与必需 UI → finally 恢复 → `--check-complete`。`FINISHED` 只证明流程收尾；是否验收通过看根 report/summary 和原始 Runner 结果。
+控制器执行顺序：收集 → 拉取工单/附件 → 逐提交生成测试与审核 → HEAD 构建一次并编译/发现（最多一次编译修正）→ 冻结 → drain 执行无界面与必需 UI → finally 恢复 → `--check-complete`。`FINISHED` 只证明流程收尾；是否验收通过看根 report/summary 和原始 Runner 结果。`FINISHED_NO_TESTS`（summary `testsExecuted=false`）表示流程收尾但 0 个 Runner 结果，当晚等于没有校验。
+
+共享工作区 `daily-latest` 只给夜间批次和 `--last` 样例使用。回收前会停止工作区内的本项目进程并关闭 .NET 构建服务；若上次 `git worktree remove` 中途失败留下没有 `.git` 的目录，且能证明是本项目的工作区，会自动清理并 prune 后重建（见 `AGENTS.md` §2）。专项复验使用自己的 worktree。
 
 模型生成器 `model_author.py` 使用已登录的本机 Codex CLI（高推理），不读取或复制 API 密钥。模型只返回结构化测试源码及需求审核，没有 shell、写文件、多代理或 MCP 工具；程序校验相对路径、机型、用例 ID 和来源后写入独立版本的测试项目。`preparation/model/` 保存请求、响应和真实错误。每提交模型推理累计最多 20 分钟。
 
@@ -55,7 +57,7 @@ cd C:\AutoTest\AutoTest\VegaAutoTest
 | `--last 10 --execute` | 样例：最近十个提交，同样按 latest-head；不推进每日游标。占用的共享工作区可被夜间任务优先回收 |
 | `--offline` | 只用本地仓库分析，报告不得称为远端当天全量 |
 | `--strategy individual` | 显式逐提交独立构建（专项复验） |
-| `--revalidate-batch <原批次>` | 用户授权的历史专项复验，在原批次下新建 `revalidation-*`，不改原计划、原结果和游标 |
+| `--revalidate-batch <原批次>` | 用户授权的历史专项复验，在原批次下新建 `revalidation-*`，在独立 worktree 构建（不占用 `daily-latest`），不改原计划、原结果和游标 |
 | `--resume <根>` | 仅刷新汇总及下一步 |
 | `--resume <旧 merged 批次> --plan-only` | 仅兼容旧模式 |
 | `--ack <sha> --ack-reason <理由>` | 兼容旧批次的归档命令 |

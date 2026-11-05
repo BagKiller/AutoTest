@@ -275,10 +275,19 @@ def aggregate(d, out, manifest, plan, registry):
     state = d.acceptance_state(rows)
     if pending and state == 'COMPLETE':
         state = 'INCOMPLETE'
+    # A finished workflow can still have executed nothing (e.g. target build
+    # failed). Make that impossible to mistake for a normal finished night.
+    product = any(not c.get('noProductChange') for c in manifest['commits'])
+    runner_runs = sorted({r['runId'] for r in runs if r.get('runId')})
+    tests_executed = bool(runner_runs) or not product
+    if not pending and not tests_executed:
+        lines[1:1] = ['', '> **本批没有执行任何测试（0 个 Runner runId）**。流程已收尾，但这不是一次有效校验；'
+                      '原因见下表和各子目录 execution.json。', '']
     data = dict(batchId=manifest['batchId'], strategy='individual', acceptanceState=state,
                 statusCounts=counts, commitCount=len(rows), collectionHead=manifest['head'],
                 remoteFresh=manifest['remoteFresh'], pendingUiSlots=ui,
                 pendingCommitValidations=pending, commits=commits, runs=runs,
+                testsExecuted=tests_executed, runnerRunCount=len(runner_runs),
                 pendingPreparations=preparations,
                 unverifiedUiSlots=unverified_ui,
                 workflowState='AWAITING_PREPARATION' if preparations else 'AWAITING_EXECUTION_OR_CLEANUP' if pending else 'FINISHED',

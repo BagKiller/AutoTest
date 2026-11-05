@@ -57,4 +57,17 @@ class CleanupTests(unittest.TestCase):
             self.assertEqual(a.reclaim_workspace(d,child)['state'],'SKIPPED')
             self.assertTrue((repo/'keep.txt').exists())
 
+    def test_only_shared_nightly_workspace_is_retained_whole(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root=Path(temp);child=root/'commit';child.mkdir()
+            nightly={'manifest.json':{'batchId':'batch','head':'sha','testingPolicy':'latest-head'},
+                     'execution-target.json':{'repo':str(root/'workspaces'/'daily-latest')}}
+            d=SimpleNamespace(WORKSPACES=root/'workspaces',load=lambda path,default=None:nightly.get(path.name,default))
+            self.assertEqual(a.reclaim_workspace(d,child)['state'],'RETAINED_LATEST')
+            # A latest-head revalidation builds in its own worktree; it is no longer exempt.
+            reval={'manifest.json':{'batchId':'reval','head':'sha','testingPolicy':'latest-head'},
+                   'execution-target.json':{'repo':str(root/'workspaces'/'reval_attempt')}}
+            d=SimpleNamespace(WORKSPACES=root/'workspaces',load=lambda path,default=None:reval.get(path.name,default))
+            self.assertNotEqual(a.reclaim_workspace(d,child)['state'],'RETAINED_LATEST')
+
 if __name__=='__main__':unittest.main()

@@ -297,6 +297,26 @@ class IndividualTests(unittest.TestCase):
         self.assertEqual(result['testingPolicy'], 'latest-head')
         self.assertFalse(result['perCommitAcceptance'])
         self.assertEqual(result['collectedCommitCount'], 2)
+        self.assertFalse(result['testsExecuted'])
+        self.assertEqual(result['runnerRunCount'], 0)
+
+    def test_finished_batch_without_any_runner_result_is_flagged(self):
+        for c in self.commits:
+            (self.out / (c['sha'][:8] + '.diff')).write_text('diff ' + c['sha'])
+        with patch.object(d, 'collect', return_value=(self.out, self.manifest)), patch.object(d, 'execute'):
+            with patch.object(d, 'REGISTRY', self.root / 'registry.json'), patch.object(d, 'SCHEDULING', self.root / 'scheduling.json'):
+                d.save(d.REGISTRY, self.registry)
+                d.save(d.SCHEDULING, self.sched)
+                self.invoke_main('--execute')
+        plan = d.load(self.out / 'plan.json')
+        child = Path(plan['commitSlots'][0]['batch'])
+        # Mirrors 2026-11-04: target build failed, workflow closed, zero runIds.
+        d.save(child / 'execution.json', dict(state='ERROR', reason='Git operation rev-parse failed'))
+        d.save(child / 'completion.json', dict(at='fixture', reason='build failed'))
+        result = d.individual.aggregate(d, self.out, d.load(self.out / 'manifest.json'), plan, self.registry)
+        self.assertEqual(result['workflowState'], 'FINISHED')
+        self.assertFalse(result['testsExecuted'])
+        self.assertIn('本批没有执行任何测试', (self.out / 'report.md').read_text(encoding='utf-8'))
 
     def test_explicit_individual_strategy_keeps_every_commit_slot(self):
         for c in self.commits:
