@@ -186,6 +186,80 @@
       "Vega300-HWv1",
       "Vega300-HWv2",
       "Vega500"
+    ],
+    "authored-v463dcce191-41c701e143bb-wi3755-recommendation": [],
+    "authored-v463dcce191-41c701e143bb-wi3755-table": [],
+    "authored-v463dcce191-41c701e143bb-wi3755-runtime": [],
+    "authored-v4bc8d03c35-41c701e143bb-wi3737-signal": [],
+    "authored-v4bc8d03c35-41c701e143bb-wi3737-policy-candidates": [],
+    "authored-v4bc8d03c35-41c701e143bb-wi3737-depth-images": [],
+    "authored-v4bc8d03c35-41c701e143bb-wi3737-diagnostics-ui": [
+      "Vega100-PIC",
+      "Vega100-Coherent"
+    ],
+    "authored-v0dbb6c974b-41c701e143bb-wi3703-map-behavior": [],
+    "authored-v0dbb6c974b-41c701e143bb-wi3703-map-drawing": [],
+    "authored-v0dbb6c974b-41c701e143bb-wi3703-recipe-range": [],
+    "authored-v904f792e76-41c701e143bb-uniformity-data": [],
+    "authored-v904f792e76-41c701e143bb-uniformity-pipeline": [],
+    "authored-v904f792e76-41c701e143bb-uniformity-statistics": [],
+    "authored-v904f792e76-41c701e143bb-uniformity-ui-statistics": [
+      "Vega500"
+    ],
+    "authored-vf5c8153eb0-41c701e143bb-wi3740-normal-size-rows": [],
+    "authored-vf5c8153eb0-41c701e143bb-wi3740-cluster-size-rows": [],
+    "authored-v4210959106-58337cc216f5-wi3716-contracts": [],
+    "authored-v4210959106-58337cc216f5-wi3716-runtime-boundaries": [],
+    "authored-v4210959106-58337cc216f5-wi3716-v100-config-ui": [
+      "Vega100-PIC",
+      "Vega100-Coherent"
+    ],
+    "authored-v4210959106-58337cc216f5-wi3716-other-model-config-ui": [
+      "Vega300-HWv1",
+      "Vega300-HWv2",
+      "Vega500"
+    ],
+    "authored-vefd63ed545-58337cc216f5-wi3731-anchor-contracts": [],
+    "authored-vefd63ed545-58337cc216f5-wi3731-append-diagnostics": [],
+    "authored-vefd63ed545-58337cc216f5-wi3731-persistence-diagnostics": [],
+    "authored-vdbcce9731f-58337cc216f5-wi3608-aclut-motion": [],
+    "authored-vdbcce9731f-58337cc216f5-wi3608-aclut-contracts": [],
+    "authored-vdbcce9731f-58337cc216f5-wi3608-aclut-idle-stop-ui": [
+      "Vega300-HWv1",
+      "Vega300-HWv2",
+      "Vega500"
+    ],
+    "authored-v1887c980ec-0230b3b3628f-dependency-runtime-contracts": [],
+    "authored-v1887c980ec-0230b3b3628f-data-json-dependency-compatibility": [],
+    "authored-v22b3517d81-0230b3b3628f-wi3750-optical-rows": [],
+    "authored-v22b3517d81-0230b3b3628f-wi3750-summary-rebuild": [],
+    "authored-v22b3517d81-0230b3b3628f-wi3750-editor-summary": [
+      "Vega100-PIC",
+      "Vega100-Coherent"
+    ],
+    "authored-vee8c2cf027-0230b3b3628f-wi3757-range-contracts": [],
+    "authored-vee8c2cf027-0230b3b3628f-wi3757-header-components": [],
+    "authored-vee8c2cf027-0230b3b3628f-wi3757-legacy-bson": [],
+    "authored-vee8c2cf027-0230b3b3628f-wi3757-main-header-ui": [
+      "Vega100-PIC",
+      "Vega100-Coherent",
+      "Vega300-HWv1",
+      "Vega300-HWv2",
+      "Vega500"
+    ],
+    "authored-ved81ec4c0d-0230b3b3628f-wi3716-mode": [],
+    "authored-ved81ec4c0d-0230b3b3628f-wi3716-recipe202": [],
+    "authored-ved81ec4c0d-0230b3b3628f-wi3716-cache-reader": [],
+    "authored-ved81ec4c0d-0230b3b3628f-wi3716-missing202": [],
+    "authored-v54f9267e12-0230b3b3628f-wi3731-anchor-contract": [],
+    "authored-v54f9267e12-0230b3b3628f-wi3731-extended-monitoring": [],
+    "authored-v54f9267e12-0230b3b3628f-wi3731-short-malformed-anchor": [],
+    "authored-v8617b87748-0230b3b3628f-wi3608-aclut-motion": [],
+    "authored-v8617b87748-0230b3b3628f-wi3608-aclut-lifecycle": [],
+    "authored-v8617b87748-0230b3b3628f-wi3608-aclut-idle-stop-ui": [
+      "Vega300-HWv1",
+      "Vega300-HWv2",
+      "Vega500"
     ]
   },
   "defaultUiProfile": "Vega500",

@@ -1,0 +1,1 @@
+namespace Vega.Utility.Common.Tests { internal static class TestPaths { public static string RepoRoot => System.Environment.GetEnvironmentVariable("VEGA_SW_ROOT") ?? throw new System.InvalidOperationException("VEGA_SW_ROOT required"); } }

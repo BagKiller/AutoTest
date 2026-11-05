@@ -2377,6 +2377,1108 @@
           "requiresL1Api": false
         }
       }
+    },
+    {
+      "id": "commit-41c701e143bb-product-tests",
+      "title": "Original product regression assertions at 41c701e143bb",
+      "targetSha": "41c701e143bb2a3a03b0355502abdf41420395bf",
+      "workItems": [
+        3703,
+        3732,
+        3737,
+        3739,
+        3740,
+        3755
+      ],
+      "tags": [
+        "generated",
+        "partial-acceptance"
+      ],
+      "evidenceFiles": [],
+      "layers": {
+        "logic0": {
+          "project": "probes/generated/41c701e143bb/Generated.0.csproj",
+          "filter": "FullyQualifiedName~Vega.AutoTest.Generated.ProductRegressionAdapter",
+          "timeoutSeconds": 600,
+          "minAssertions": 1,
+          "requiresVegaExe": true,
+          "requiresL1Api": false
+        },
+        "logic1": {
+          "project": "probes/generated/41c701e143bb/Generated.1.csproj",
+          "filter": "FullyQualifiedName~Vega.AutoTest.Generated.ProductRegressionAdapter",
+          "timeoutSeconds": 600,
+          "minAssertions": 1,
+          "requiresVegaExe": true,
+          "requiresL1Api": false
+        },
+        "logic2": {
+          "project": "probes/generated/41c701e143bb/Generated.2.csproj",
+          "filter": "FullyQualifiedName~Vega.AutoTest.Generated.ProductRegressionAdapter",
+          "timeoutSeconds": 600,
+          "minAssertions": 1,
+          "requiresVegaExe": true,
+          "requiresL1Api": false
+        }
+      }
+    },
+    {
+      "id": "authored-v463dcce191-41c701e143bb-wi3755-recommendation",
+      "title": "Model-specific recommendation gate and validation",
+      "targetSha": "41c701e143bb2a3a03b0355502abdf41420395bf",
+      "workItems": [
+        3755
+      ],
+      "tags": [
+        "ai-authored"
+      ],
+      "evidenceFiles": [],
+      "layers": {
+        "logic": {
+          "project": "probes/authored/v463dcce191/41c701e143bb/Authored.logic.csproj",
+          "filter": "FullyQualifiedName~Vega.AutoTest.Authored.BpsRecommendationRegression.",
+          "timeoutSeconds": 600,
+          "minAssertions": 148,
+          "requiresVegaExe": true,
+          "requiresL1Api": false
+        }
+      }
+    },
+    {
+      "id": "authored-v463dcce191-41c701e143bb-wi3755-table",
+      "title": "Exact-target Vega100 table combinations and interval boundaries",
+      "targetSha": "41c701e143bb2a3a03b0355502abdf41420395bf",
+      "workItems": [
+        3755
+      ],
+      "tags": [
+        "ai-authored"
+      ],
+      "evidenceFiles": [],
+      "layers": {
+        "logic": {
+          "project": "probes/authored/v463dcce191/41c701e143bb/Authored.logic.csproj",
+          "filter": "FullyQualifiedName~Vega.AutoTest.Authored.BpsTableRegression.",
+          "timeoutSeconds": 600,
+          "minAssertions": 888,
+          "requiresVegaExe": true,
+          "requiresL1Api": false
+        }
+      }
+    },
+    {
+      "id": "authored-v463dcce191-41c701e143bb-wi3755-runtime",
+      "title": "Vega100 runtime motor and exposure commands with legacy gate preservation",
+      "targetSha": "41c701e143bb2a3a03b0355502abdf41420395bf",
+      "workItems": [
+        3755
+      ],
+      "tags": [
+        "ai-authored"
+      ],
+      "evidenceFiles": [],
+      "layers": {
+        "logic": {
+          "project": "probes/authored/v463dcce191/41c701e143bb/Authored.logic.csproj",
+          "filter": "FullyQualifiedName~Vega.AutoTest.Authored.BpsRuntimeRegression.",
+          "timeoutSeconds": 600,
+          "minAssertions": 60,
+          "requiresVegaExe": true,
+          "requiresL1Api": false
+        }
+      }
+    },
+    {
+      "id": "authored-v4bc8d03c35-41c701e143bb-wi3737-signal",
+      "title": "DUV median filtering, circular gap bridging, outer boundary extraction and coverage threshold",
+      "targetSha": "41c701e143bb2a3a03b0355502abdf41420395bf",
+      "workItems": [
+        3737
+      ],
+      "tags": [
+        "ai-authored"
+      ],
+      "evidenceFiles": [],
+      "layers": {
+        "logic": {
+          "project": "probes/authored/v4bc8d03c35/41c701e143bb/Authored.logic.csproj",
+          "filter": "FullyQualifiedName~Vega.AutoTest.Authored.DuvSignalRegression.",
+          "timeoutSeconds": 600,
+          "minAssertions": 102,
+          "requiresVegaExe": true,
+          "requiresL1Api": false
+        }
+      }
+    },
+    {
+      "id": "authored-v4bc8d03c35-41c701e143bb-wi3737-policy-candidates",
+      "title": "Mode-three fallback policy and ordered coarse candidate queue",
+      "targetSha": "41c701e143bb2a3a03b0355502abdf41420395bf",
+      "workItems": [
+        3737
+      ],
+      "tags": [
+        "ai-authored"
+      ],
+      "evidenceFiles": [],
+      "layers": {
+        "logic": {
+          "project": "probes/authored/v4bc8d03c35/41c701e143bb/Authored.logic.csproj",
+          "filter": "FullyQualifiedName~Vega.AutoTest.Authored.DuvPolicyAndCandidateRegression.",
+          "timeoutSeconds": 600,
+          "minAssertions": 43,
+          "requiresVegaExe": true,
+          "requiresL1Api": false
+        }
+      }
+    },
+    {
+      "id": "authored-v4bc8d03c35-41c701e143bb-wi3737-depth-images",
+      "title": "Depth validation boundaries and Unicode image export with contained write failures",
+      "targetSha": "41c701e143bb2a3a03b0355502abdf41420395bf",
+      "workItems": [
+        3737
+      ],
+      "tags": [
+        "ai-authored"
+      ],
+      "evidenceFiles": [],
+      "layers": {
+        "logic": {
+          "project": "probes/authored/v4bc8d03c35/41c701e143bb/Authored.logic.csproj",
+          "filter": "FullyQualifiedName~Vega.AutoTest.Authored.DuvDepthAndImageRegression.",
+          "timeoutSeconds": 600,
+          "minAssertions": 36,
+          "requiresVegaExe": true,
+          "requiresL1Api": false
+        }
+      }
+    },
+    {
+      "id": "authored-v4bc8d03c35-41c701e143bb-wi3737-diagnostics-ui",
+      "title": "Edge Analysis DUV-only mode choices and session retention",
+      "targetSha": "41c701e143bb2a3a03b0355502abdf41420395bf",
+      "workItems": [
+        3737
+      ],
+      "tags": [
+        "ai-authored"
+      ],
+      "evidenceFiles": [],
+      "layers": {
+        "uia": {
+          "project": "probes/authored/v4bc8d03c35/41c701e143bb/Authored.uia.csproj",
+          "filter": "FullyQualifiedName~Vega.AutoTest.Authored.DuvDiagnosticsUiRegression.",
+          "timeoutSeconds": 600,
+          "minAssertions": 6,
+          "requiresVegaExe": true,
+          "requiresL1Api": false
+        }
+      }
+    },
+    {
+      "id": "authored-v0dbb6c974b-41c701e143bb-wi3703-map-behavior",
+      "title": "Empty-bin recomputation, unbinned legends, mixed SAT scope and All-mode restoration",
+      "targetSha": "41c701e143bb2a3a03b0355502abdf41420395bf",
+      "workItems": [
+        3703
+      ],
+      "tags": [
+        "ai-authored"
+      ],
+      "evidenceFiles": [],
+      "layers": {
+        "logic": {
+          "project": "probes/authored/v0dbb6c974b/41c701e143bb/Authored.logic.csproj",
+          "filter": "FullyQualifiedName~Vega.AutoTest.Authored.WaferMapBehaviorRegression.",
+          "timeoutSeconds": 600,
+          "minAssertions": 84,
+          "requiresVegaExe": true,
+          "requiresL1Api": false
+        }
+      }
+    },
+    {
+      "id": "authored-v0dbb6c974b-41c701e143bb-wi3703-map-drawing",
+      "title": "Vector zoom clipping and horizontal/vertical color-bar drawing contracts",
+      "targetSha": "41c701e143bb2a3a03b0355502abdf41420395bf",
+      "workItems": [
+        3703
+      ],
+      "tags": [
+        "ai-authored"
+      ],
+      "evidenceFiles": [],
+      "layers": {
+        "logic": {
+          "project": "probes/authored/v0dbb6c974b/41c701e143bb/Authored.logic.csproj",
+          "filter": "FullyQualifiedName~Vega.AutoTest.Authored.WaferMapDrawingRegression.",
+          "timeoutSeconds": 600,
+          "minAssertions": 25,
+          "requiresVegaExe": true,
+          "requiresL1Api": false
+        }
+      }
+    },
+    {
+      "id": "authored-v0dbb6c974b-41c701e143bb-wi3703-recipe-range",
+      "title": "Recipe pre-injection, preview palettes and OverRange presence boundaries",
+      "targetSha": "41c701e143bb2a3a03b0355502abdf41420395bf",
+      "workItems": [
+        3703
+      ],
+      "tags": [
+        "ai-authored"
+      ],
+      "evidenceFiles": [],
+      "layers": {
+        "logic": {
+          "project": "probes/authored/v0dbb6c974b/41c701e143bb/Authored.logic.csproj",
+          "filter": "FullyQualifiedName~Vega.AutoTest.Authored.RecipeAndOverRangeRegression.",
+          "timeoutSeconds": 600,
+          "minAssertions": 57,
+          "requiresVegaExe": true,
+          "requiresL1Api": false
+        }
+      }
+    },
+    {
+      "id": "authored-v904f792e76-41c701e143bb-uniformity-data",
+      "title": "Independent measured boundaries, legacy tail recovery and live saved collection",
+      "targetSha": "41c701e143bb2a3a03b0355502abdf41420395bf",
+      "workItems": [
+        3732,
+        3739
+      ],
+      "tags": [
+        "ai-authored"
+      ],
+      "evidenceFiles": [],
+      "layers": {
+        "logic": {
+          "project": "probes/authored/v904f792e76/41c701e143bb/Authored.logic.csproj",
+          "filter": "FullyQualifiedName~Vega.AutoTest.Authored.UniformityDataRegression.",
+          "timeoutSeconds": 600,
+          "minAssertions": 52,
+          "requiresVegaExe": true,
+          "requiresL1Api": false
+        }
+      }
+    },
+    {
+      "id": "authored-v904f792e76-41c701e143bb-uniformity-pipeline",
+      "title": "Calibration query visibility, opt-in standard postprocessing and normal result parsing",
+      "targetSha": "41c701e143bb2a3a03b0355502abdf41420395bf",
+      "workItems": [
+        3732,
+        3739
+      ],
+      "tags": [
+        "ai-authored"
+      ],
+      "evidenceFiles": [],
+      "layers": {
+        "logic": {
+          "project": "probes/authored/v904f792e76/41c701e143bb/Authored.logic.csproj",
+          "filter": "FullyQualifiedName~Vega.AutoTest.Authored.UniformityPipelineRegression.",
+          "timeoutSeconds": 600,
+          "minAssertions": 29,
+          "requiresVegaExe": true,
+          "requiresL1Api": false
+        }
+      }
+    },
+    {
+      "id": "authored-v904f792e76-41c701e143bb-uniformity-statistics",
+      "title": "Sample statistics, invalid inputs and precision-preserving display",
+      "targetSha": "41c701e143bb2a3a03b0355502abdf41420395bf",
+      "workItems": [
+        3732,
+        3739
+      ],
+      "tags": [
+        "ai-authored"
+      ],
+      "evidenceFiles": [],
+      "layers": {
+        "logic": {
+          "project": "probes/authored/v904f792e76/41c701e143bb/Authored.logic.csproj",
+          "filter": "FullyQualifiedName~Vega.AutoTest.Authored.UniformityStatisticsRegression.",
+          "timeoutSeconds": 600,
+          "minAssertions": 17,
+          "requiresVegaExe": true,
+          "requiresL1Api": false
+        }
+      }
+    },
+    {
+      "id": "authored-v904f792e76-41c701e143bb-uniformity-ui-statistics",
+      "title": "Import Cal and Verify data and read both statistics rows for DN, DW1 and DW2",
+      "targetSha": "41c701e143bb2a3a03b0355502abdf41420395bf",
+      "workItems": [
+        3732,
+        3739
+      ],
+      "tags": [
+        "ai-authored"
+      ],
+      "evidenceFiles": [],
+      "layers": {
+        "uia": {
+          "project": "probes/authored/v904f792e76/41c701e143bb/Authored.uia.csproj",
+          "filter": "FullyQualifiedName~Vega.AutoTest.Authored.UniformityUiRegression.",
+          "timeoutSeconds": 600,
+          "minAssertions": 28,
+          "requiresVegaExe": true,
+          "requiresL1Api": false
+        }
+      }
+    },
+    {
+      "id": "authored-vf5c8153eb0-41c701e143bb-wi3740-normal-size-rows",
+      "title": "Saturated LPD integer size output and formatting scope",
+      "targetSha": "41c701e143bb2a3a03b0355502abdf41420395bf",
+      "workItems": [
+        3740
+      ],
+      "tags": [
+        "ai-authored"
+      ],
+      "evidenceFiles": [],
+      "layers": {
+        "logic": {
+          "project": "probes/authored/vf5c8153eb0/41c701e143bb/Authored.logic.csproj",
+          "filter": "FullyQualifiedName~Vega.AutoTest.Authored.KlarfNormalSizeRegression.",
+          "timeoutSeconds": 600,
+          "minAssertions": 102,
+          "requiresVegaExe": true,
+          "requiresL1Api": false
+        }
+      }
+    },
+    {
+      "id": "authored-vf5c8153eb0-41c701e143bb-wi3740-cluster-size-rows",
+      "title": "Shared integer sentinel preserves cluster size output",
+      "targetSha": "41c701e143bb2a3a03b0355502abdf41420395bf",
+      "workItems": [
+        3740
+      ],
+      "tags": [
+        "ai-authored"
+      ],
+      "evidenceFiles": [],
+      "layers": {
+        "logic": {
+          "project": "probes/authored/vf5c8153eb0/41c701e143bb/Authored.logic.csproj",
+          "filter": "FullyQualifiedName~Vega.AutoTest.Authored.KlarfClusterSizeRegression.",
+          "timeoutSeconds": 600,
+          "minAssertions": 6,
+          "requiresVegaExe": true,
+          "requiresL1Api": false
+        }
+      }
+    },
+    {
+      "id": "commit-58337cc216f5-product-tests",
+      "title": "Original product regression assertions at 58337cc216f5",
+      "targetSha": "58337cc216f5363cd011c706e7d201d04a9807e1",
+      "workItems": [
+        3608,
+        3716,
+        3731
+      ],
+      "tags": [
+        "generated",
+        "partial-acceptance"
+      ],
+      "evidenceFiles": [],
+      "layers": {
+        "logic0": {
+          "project": "probes/generated/58337cc216f5/Generated.0.csproj",
+          "filter": "FullyQualifiedName~Vega.AutoTest.Generated.ProductRegressionAdapter",
+          "timeoutSeconds": 600,
+          "minAssertions": 1,
+          "requiresVegaExe": true,
+          "requiresL1Api": false
+        },
+        "logic1": {
+          "project": "probes/generated/58337cc216f5/Generated.1.csproj",
+          "filter": "FullyQualifiedName~Vega.AutoTest.Generated.ProductRegressionAdapter",
+          "timeoutSeconds": 600,
+          "minAssertions": 1,
+          "requiresVegaExe": true,
+          "requiresL1Api": false
+        }
+      }
+    },
+    {
+      "id": "authored-v4210959106-58337cc216f5-wi3716-contracts",
+      "title": "Inline compatibility parsing and recipe 202 generation contracts",
+      "targetSha": "58337cc216f5363cd011c706e7d201d04a9807e1",
+      "workItems": [
+        3716
+      ],
+      "tags": [
+        "ai-authored"
+      ],
+      "evidenceFiles": [],
+      "layers": {
+        "logic": {
+          "project": "probes/authored/v4210959106/58337cc216f5/Authored.logic.csproj",
+          "filter": "FullyQualifiedName~Vega.AutoTest.Authored.DedicatedAlignmentContracts.",
+          "timeoutSeconds": 600,
+          "minAssertions": 77,
+          "requiresVegaExe": true,
+          "requiresL1Api": false
+        }
+      }
+    },
+    {
+      "id": "authored-v4210959106-58337cc216f5-wi3716-runtime-boundaries",
+      "title": "Cached mode, missing or empty 202 rejection, and isolated edge-read cache routing",
+      "targetSha": "58337cc216f5363cd011c706e7d201d04a9807e1",
+      "workItems": [
+        3716
+      ],
+      "tags": [
+        "ai-authored"
+      ],
+      "evidenceFiles": [],
+      "layers": {
+        "logic": {
+          "project": "probes/authored/v4210959106/58337cc216f5/Authored.logic.csproj",
+          "filter": "FullyQualifiedName~Vega.AutoTest.Authored.DedicatedAlignmentRuntimeBoundaries.",
+          "timeoutSeconds": 600,
+          "minAssertions": 38,
+          "requiresVegaExe": true,
+          "requiresL1Api": false
+        }
+      }
+    },
+    {
+      "id": "authored-v4210959106-58337cc216f5-wi3716-v100-config-ui",
+      "title": "Vega100 configuration editor exposes Inline and Dedicated choices",
+      "targetSha": "58337cc216f5363cd011c706e7d201d04a9807e1",
+      "workItems": [
+        3716
+      ],
+      "tags": [
+        "ai-authored"
+      ],
+      "evidenceFiles": [],
+      "layers": {
+        "uia": {
+          "project": "probes/authored/v4210959106/58337cc216f5/Authored.uia.csproj",
+          "filter": "FullyQualifiedName~Vega.AutoTest.Authored.DedicatedAlignmentV100ConfigurationUi.",
+          "timeoutSeconds": 600,
+          "minAssertions": 4,
+          "requiresVegaExe": true,
+          "requiresL1Api": false
+        }
+      }
+    },
+    {
+      "id": "authored-v4210959106-58337cc216f5-wi3716-other-model-config-ui",
+      "title": "Other supported models hide the Vega100-only scan mode setting",
+      "targetSha": "58337cc216f5363cd011c706e7d201d04a9807e1",
+      "workItems": [
+        3716
+      ],
+      "tags": [
+        "ai-authored"
+      ],
+      "evidenceFiles": [],
+      "layers": {
+        "uia": {
+          "project": "probes/authored/v4210959106/58337cc216f5/Authored.uia.csproj",
+          "filter": "FullyQualifiedName~Vega.AutoTest.Authored.DedicatedAlignmentOtherModelsConfigurationUi.",
+          "timeoutSeconds": 600,
+          "minAssertions": 2,
+          "requiresVegaExe": true,
+          "requiresL1Api": false
+        }
+      }
+    },
+    {
+      "id": "authored-vefd63ed545-58337cc216f5-wi3731-anchor-contracts",
+      "title": "Anchor classification, dedup priority, insertion positions and complete tbody inventory",
+      "targetSha": "58337cc216f5363cd011c706e7d201d04a9807e1",
+      "workItems": [
+        3731
+      ],
+      "tags": [
+        "ai-authored"
+      ],
+      "evidenceFiles": [],
+      "layers": {
+        "logic": {
+          "project": "probes/authored/vefd63ed545/58337cc216f5/Authored.logic.csproj",
+          "filter": "FullyQualifiedName~Vega.AutoTest.Authored.JobSummaryAnchorContracts.",
+          "timeoutSeconds": 600,
+          "minAssertions": 21,
+          "requiresVegaExe": true,
+          "requiresL1Api": false
+        }
+      }
+    },
+    {
+      "id": "authored-vefd63ed545-58337cc216f5-wi3731-append-diagnostics",
+      "title": "Extended append output, anomaly warnings and descriptor initialization severity",
+      "targetSha": "58337cc216f5363cd011c706e7d201d04a9807e1",
+      "workItems": [
+        3731
+      ],
+      "tags": [
+        "ai-authored"
+      ],
+      "evidenceFiles": [],
+      "layers": {
+        "logic": {
+          "project": "probes/authored/vefd63ed545/58337cc216f5/Authored.logic.csproj",
+          "filter": "FullyQualifiedName~Vega.AutoTest.Authored.JobSummaryAppendDiagnostics.",
+          "timeoutSeconds": 600,
+          "minAssertions": 26,
+          "requiresVegaExe": true,
+          "requiresL1Api": false
+        }
+      }
+    },
+    {
+      "id": "authored-vefd63ed545-58337cc216f5-wi3731-persistence-diagnostics",
+      "title": "Extended prewrite loss detection, Short malformed-body warnings and export fingerprint",
+      "targetSha": "58337cc216f5363cd011c706e7d201d04a9807e1",
+      "workItems": [
+        3731
+      ],
+      "tags": [
+        "ai-authored"
+      ],
+      "evidenceFiles": [],
+      "layers": {
+        "logic": {
+          "project": "probes/authored/vefd63ed545/58337cc216f5/Authored.logic.csproj",
+          "filter": "FullyQualifiedName~Vega.AutoTest.Authored.JobSummaryPersistenceDiagnostics.",
+          "timeoutSeconds": 600,
+          "minAssertions": 22,
+          "requiresVegaExe": true,
+          "requiresL1Api": false
+        }
+      }
+    },
+    {
+      "id": "authored-vdbcce9731f-58337cc216f5-wi3608-aclut-motion",
+      "title": "Signed AC1 adjustment, adaptive direction and unsafe-probe rejection",
+      "targetSha": "58337cc216f5363cd011c706e7d201d04a9807e1",
+      "workItems": [
+        3608
+      ],
+      "tags": [
+        "ai-authored"
+      ],
+      "evidenceFiles": [],
+      "layers": {
+        "logic": {
+          "project": "probes/authored/vdbcce9731f/58337cc216f5/Authored.logic.csproj",
+          "filter": "FullyQualifiedName~Vega.AutoTest.Authored.ACLutMotionRegression.",
+          "timeoutSeconds": 600,
+          "minAssertions": 82,
+          "requiresVegaExe": true,
+          "requiresL1Api": false
+        }
+      }
+    },
+    {
+      "id": "authored-vdbcce9731f-58337cc216f5-wi3608-aclut-contracts",
+      "title": "Step validation, cancellation lifecycle, PMT abort and localized resources",
+      "targetSha": "58337cc216f5363cd011c706e7d201d04a9807e1",
+      "workItems": [
+        3608
+      ],
+      "tags": [
+        "ai-authored"
+      ],
+      "evidenceFiles": [],
+      "layers": {
+        "logic": {
+          "project": "probes/authored/vdbcce9731f/58337cc216f5/Authored.logic.csproj",
+          "filter": "FullyQualifiedName~Vega.AutoTest.Authored.ACLutLifecycleContracts.",
+          "timeoutSeconds": 600,
+          "minAssertions": 85,
+          "requiresVegaExe": true,
+          "requiresL1Api": false
+        }
+      }
+    },
+    {
+      "id": "authored-vdbcce9731f-58337cc216f5-wi3608-aclut-idle-stop-ui",
+      "title": "Cancel the actual ACLut idle-stop confirmation without changing displayed results",
+      "targetSha": "58337cc216f5363cd011c706e7d201d04a9807e1",
+      "workItems": [
+        3608
+      ],
+      "tags": [
+        "ai-authored"
+      ],
+      "evidenceFiles": [],
+      "layers": {
+        "uia": {
+          "project": "probes/authored/vdbcce9731f/58337cc216f5/Authored.uia.csproj",
+          "filter": "FullyQualifiedName~Vega.AutoTest.Authored.ACLutIdleStopUi.",
+          "timeoutSeconds": 600,
+          "minAssertions": 3,
+          "requiresVegaExe": true,
+          "requiresL1Api": false
+        }
+      }
+    },
+    {
+      "id": "commit-0230b3b3628f-product-tests",
+      "title": "Original product regression assertions at 0230b3b3628f",
+      "targetSha": "0230b3b3628f86da7c5162dd9bc46477271bac03",
+      "workItems": [
+        3608,
+        3716,
+        3731,
+        3750,
+        3757
+      ],
+      "tags": [
+        "generated",
+        "partial-acceptance"
+      ],
+      "evidenceFiles": [],
+      "layers": {
+        "logic0": {
+          "project": "probes/generated/0230b3b3628f/Generated.0.csproj",
+          "filter": "FullyQualifiedName~Vega.AutoTest.Generated.ProductRegressionAdapter",
+          "timeoutSeconds": 600,
+          "minAssertions": 1,
+          "requiresVegaExe": true,
+          "requiresL1Api": false
+        },
+        "logic1": {
+          "project": "probes/generated/0230b3b3628f/Generated.1.csproj",
+          "filter": "FullyQualifiedName~Vega.AutoTest.Generated.ProductRegressionAdapter",
+          "timeoutSeconds": 600,
+          "minAssertions": 1,
+          "requiresVegaExe": true,
+          "requiresL1Api": false
+        }
+      }
+    },
+    {
+      "id": "authored-v1887c980ec-0230b3b3628f-dependency-runtime-contracts",
+      "title": "Drawing codecs, native OpenCV, and WPF command triggers remain functional",
+      "targetSha": "0230b3b3628f86da7c5162dd9bc46477271bac03",
+      "workItems": [],
+      "tags": [
+        "ai-authored"
+      ],
+      "evidenceFiles": [],
+      "layers": {
+        "logic": {
+          "project": "probes/authored/v1887c980ec/0230b3b3628f/Authored.logic.csproj",
+          "filter": "FullyQualifiedName~Vega.AutoTest.Authored.DependencyRuntimeRegressionTests.",
+          "timeoutSeconds": 600,
+          "minAssertions": 28,
+          "requiresVegaExe": true,
+          "requiresL1Api": false
+        }
+      }
+    },
+    {
+      "id": "authored-v1887c980ec-0230b3b3628f-data-json-dependency-compatibility",
+      "title": "Product JSON file APIs retain polymorphism, replacement, and rejection behavior",
+      "targetSha": "0230b3b3628f86da7c5162dd9bc46477271bac03",
+      "workItems": [],
+      "tags": [
+        "ai-authored"
+      ],
+      "evidenceFiles": [],
+      "layers": {
+        "logic": {
+          "project": "probes/authored/v1887c980ec/0230b3b3628f/Authored.logic.csproj",
+          "filter": "FullyQualifiedName~Vega.AutoTest.Authored.DataDependencyCompatibilityTests.",
+          "timeoutSeconds": 600,
+          "minAssertions": 16,
+          "requiresVegaExe": true,
+          "requiresL1Api": false
+        }
+      }
+    },
+    {
+      "id": "authored-v22b3517d81-0230b3b3628f-wi3750-optical-rows",
+      "title": "Compact optical rows, channel field selection, units, and display token contracts",
+      "targetSha": "0230b3b3628f86da7c5162dd9bc46477271bac03",
+      "workItems": [
+        3750
+      ],
+      "tags": [
+        "ai-authored"
+      ],
+      "evidenceFiles": [],
+      "layers": {
+        "logic": {
+          "project": "probes/authored/v22b3517d81/0230b3b3628f/Authored.logic.csproj",
+          "filter": "FullyQualifiedName~Vega.AutoTest.Authored.OpticalRowsRegressionTests.",
+          "timeoutSeconds": 600,
+          "minAssertions": 47,
+          "requiresVegaExe": true,
+          "requiresL1Api": false
+        }
+      }
+    },
+    {
+      "id": "authored-v22b3517d81-0230b3b3628f-wi3750-summary-rebuild",
+      "title": "Rebuild legacy collection summaries and preserve other rows",
+      "targetSha": "0230b3b3628f86da7c5162dd9bc46477271bac03",
+      "workItems": [
+        3750
+      ],
+      "tags": [
+        "ai-authored"
+      ],
+      "evidenceFiles": [],
+      "layers": {
+        "logic": {
+          "project": "probes/authored/v22b3517d81/0230b3b3628f/Authored.logic.csproj",
+          "filter": "FullyQualifiedName~Vega.AutoTest.Authored.SummaryRebuildRegressionTests.",
+          "timeoutSeconds": 600,
+          "minAssertions": 9,
+          "requiresVegaExe": true,
+          "requiresL1Api": false
+        }
+      }
+    },
+    {
+      "id": "authored-v22b3517d81-0230b3b3628f-wi3750-editor-summary",
+      "title": "Edit optical settings and inspect compact, scrollable single-wide summary",
+      "targetSha": "0230b3b3628f86da7c5162dd9bc46477271bac03",
+      "workItems": [
+        3750
+      ],
+      "tags": [
+        "ai-authored"
+      ],
+      "evidenceFiles": [],
+      "layers": {
+        "uia": {
+          "project": "probes/authored/v22b3517d81/0230b3b3628f/Authored.uia.csproj",
+          "filter": "FullyQualifiedName~Vega.AutoTest.Authored.SummaryEditorUiTests.",
+          "timeoutSeconds": 600,
+          "minAssertions": 9,
+          "requiresVegaExe": true,
+          "requiresL1Api": false
+        }
+      }
+    },
+    {
+      "id": "authored-vee8c2cf027-0230b3b3628f-wi3757-range-contracts",
+      "title": "LPD attribute units, collector participation, extended thresholds and fallback intervals",
+      "targetSha": "0230b3b3628f86da7c5162dd9bc46477271bac03",
+      "workItems": [
+        3757
+      ],
+      "tags": [
+        "ai-authored"
+      ],
+      "evidenceFiles": [],
+      "layers": {
+        "logic": {
+          "project": "probes/authored/vee8c2cf027/0230b3b3628f/Authored.logic.csproj",
+          "filter": "FullyQualifiedName~Vega.AutoTest.Authored.LpdRangeRegressionTests.",
+          "timeoutSeconds": 600,
+          "minAssertions": 216,
+          "requiresVegaExe": true,
+          "requiresL1Api": false
+        }
+      }
+    },
+    {
+      "id": "authored-vee8c2cf027-0230b3b3628f-wi3757-header-components",
+      "title": "Localized main-editor message handling and batch-editor unit selection",
+      "targetSha": "0230b3b3628f86da7c5162dd9bc46477271bac03",
+      "workItems": [
+        3757
+      ],
+      "tags": [
+        "ai-authored"
+      ],
+      "evidenceFiles": [],
+      "layers": {
+        "logic": {
+          "project": "probes/authored/vee8c2cf027/0230b3b3628f/Authored.logic.csproj",
+          "filter": "FullyQualifiedName~Vega.AutoTest.Authored.LpdHeaderRegressionTests.",
+          "timeoutSeconds": 600,
+          "minAssertions": 41,
+          "requiresVegaExe": true,
+          "requiresL1Api": false
+        }
+      }
+    },
+    {
+      "id": "authored-vee8c2cf027-0230b3b3628f-wi3757-legacy-bson",
+      "title": "Legacy wafer documents tolerate retired calibration snapshot payloads",
+      "targetSha": "0230b3b3628f86da7c5162dd9bc46477271bac03",
+      "workItems": [
+        3757
+      ],
+      "tags": [
+        "ai-authored"
+      ],
+      "evidenceFiles": [],
+      "layers": {
+        "logic": {
+          "project": "probes/authored/vee8c2cf027/0230b3b3628f/Authored.logic.csproj",
+          "filter": "FullyQualifiedName~Vega.AutoTest.Authored.LpdLegacyDocumentRegressionTests.",
+          "timeoutSeconds": 600,
+          "minAssertions": 12,
+          "requiresVegaExe": true,
+          "requiresL1Api": false
+        }
+      }
+    },
+    {
+      "id": "authored-vee8c2cf027-0230b3b3628f-wi3757-main-header-ui",
+      "title": "Switch LPD units in the collection editor and verify the rendered threshold header",
+      "targetSha": "0230b3b3628f86da7c5162dd9bc46477271bac03",
+      "workItems": [
+        3757
+      ],
+      "tags": [
+        "ai-authored"
+      ],
+      "evidenceFiles": [],
+      "layers": {
+        "uia": {
+          "project": "probes/authored/vee8c2cf027/0230b3b3628f/Authored.uia.csproj",
+          "filter": "FullyQualifiedName~Vega.AutoTest.Authored.LpdHeaderUiTests.",
+          "timeoutSeconds": 600,
+          "minAssertions": 3,
+          "requiresVegaExe": true,
+          "requiresL1Api": false
+        }
+      }
+    },
+    {
+      "id": "authored-ved81ec4c0d-0230b3b3628f-wi3716-mode",
+      "title": "Default Inline, tolerant parsing, and sequence-instance mode caching",
+      "targetSha": "0230b3b3628f86da7c5162dd9bc46477271bac03",
+      "workItems": [
+        3716
+      ],
+      "tags": [
+        "ai-authored"
+      ],
+      "evidenceFiles": [],
+      "layers": {
+        "logic": {
+          "project": "probes/authored/ved81ec4c0d/0230b3b3628f/Authored.logic.csproj",
+          "filter": "FullyQualifiedName~Vega.AutoTest.Authored.DedicatedModeRegressionTests.",
+          "timeoutSeconds": 600,
+          "minAssertions": 22,
+          "requiresVegaExe": true,
+          "requiresL1Api": false
+        }
+      }
+    },
+    {
+      "id": "authored-ved81ec4c0d-0230b3b3628f-wi3716-recipe202",
+      "title": "Generate bilingual recipe 202 with usable DN/DW2 optics and separate diagnostic identity",
+      "targetSha": "0230b3b3628f86da7c5162dd9bc46477271bac03",
+      "workItems": [
+        3716
+      ],
+      "tags": [
+        "ai-authored"
+      ],
+      "evidenceFiles": [],
+      "layers": {
+        "logic": {
+          "project": "probes/authored/ved81ec4c0d/0230b3b3628f/Authored.logic.csproj",
+          "filter": "FullyQualifiedName~Vega.AutoTest.Authored.DedicatedRecipeRegressionTests.",
+          "timeoutSeconds": 600,
+          "minAssertions": 60,
+          "requiresVegaExe": true,
+          "requiresL1Api": false
+        }
+      }
+    },
+    {
+      "id": "authored-ved81ec4c0d-0230b3b3628f-wi3716-cache-reader",
+      "title": "Prescan edge reads preserve the main cache and forward acquisition parameters",
+      "targetSha": "0230b3b3628f86da7c5162dd9bc46477271bac03",
+      "workItems": [
+        3716
+      ],
+      "tags": [
+        "ai-authored"
+      ],
+      "evidenceFiles": [],
+      "layers": {
+        "logic": {
+          "project": "probes/authored/ved81ec4c0d/0230b3b3628f/Authored.logic.csproj",
+          "filter": "FullyQualifiedName~Vega.AutoTest.Authored.DedicatedCacheReadRegressionTests.",
+          "timeoutSeconds": 600,
+          "minAssertions": 72,
+          "requiresVegaExe": true,
+          "requiresL1Api": false
+        }
+      }
+    },
+    {
+      "id": "authored-ved81ec4c0d-0230b3b3628f-wi3716-missing202",
+      "title": "Missing or empty fixed-optics recipe fails without acquisition fallback",
+      "targetSha": "0230b3b3628f86da7c5162dd9bc46477271bac03",
+      "workItems": [
+        3716
+      ],
+      "tags": [
+        "ai-authored"
+      ],
+      "evidenceFiles": [],
+      "layers": {
+        "logic": {
+          "project": "probes/authored/ved81ec4c0d/0230b3b3628f/Authored.logic.csproj",
+          "filter": "FullyQualifiedName~Vega.AutoTest.Authored.DedicatedMissingRecipeRegressionTests.",
+          "timeoutSeconds": 600,
+          "minAssertions": 14,
+          "requiresVegaExe": true,
+          "requiresL1Api": false
+        }
+      }
+    },
+    {
+      "id": "authored-v54f9267e12-0230b3b3628f-wi3731-anchor-contract",
+      "title": "Extended summary anchor classification and diagnostic tbody inventory",
+      "targetSha": "0230b3b3628f86da7c5162dd9bc46477271bac03",
+      "workItems": [
+        3731
+      ],
+      "tags": [
+        "ai-authored"
+      ],
+      "evidenceFiles": [],
+      "layers": {
+        "logic": {
+          "project": "probes/authored/v54f9267e12/0230b3b3628f/Authored.logic.csproj",
+          "filter": "FullyQualifiedName~Vega.AutoTest.Authored.JobSummaryAnchorContractTests.",
+          "timeoutSeconds": 600,
+          "minAssertions": 21,
+          "requiresVegaExe": true,
+          "requiresL1Api": false
+        }
+      }
+    },
+    {
+      "id": "authored-v54f9267e12-0230b3b3628f-wi3731-extended-monitoring",
+      "title": "Extended append warnings, healthy silence, deduplication and lot-state initialization",
+      "targetSha": "0230b3b3628f86da7c5162dd9bc46477271bac03",
+      "workItems": [
+        3731
+      ],
+      "tags": [
+        "ai-authored"
+      ],
+      "evidenceFiles": [],
+      "layers": {
+        "logic": {
+          "project": "probes/authored/v54f9267e12/0230b3b3628f/Authored.logic.csproj",
+          "filter": "FullyQualifiedName~Vega.AutoTest.Authored.ExtendedSummaryMonitoringTests.",
+          "timeoutSeconds": 600,
+          "minAssertions": 58,
+          "requiresVegaExe": true,
+          "requiresL1Api": false
+        }
+      }
+    },
+    {
+      "id": "authored-v54f9267e12-0230b3b3628f-wi3731-short-malformed-anchor",
+      "title": "Short summary malformed tbody diagnostics preserve rebuild fallback",
+      "targetSha": "0230b3b3628f86da7c5162dd9bc46477271bac03",
+      "workItems": [
+        3731
+      ],
+      "tags": [
+        "ai-authored"
+      ],
+      "evidenceFiles": [],
+      "layers": {
+        "logic": {
+          "project": "probes/authored/v54f9267e12/0230b3b3628f/Authored.logic.csproj",
+          "filter": "FullyQualifiedName~Vega.AutoTest.Authored.ShortSummaryMalformedAnchorTests.",
+          "timeoutSeconds": 600,
+          "minAssertions": 8,
+          "requiresVegaExe": true,
+          "requiresL1Api": false
+        }
+      }
+    },
+    {
+      "id": "authored-v8617b87748-0230b3b3628f-wi3608-aclut-motion",
+      "title": "Signed AC1 corrections, adaptive direction memory, and motion failure guards",
+      "targetSha": "0230b3b3628f86da7c5162dd9bc46477271bac03",
+      "workItems": [
+        3608
+      ],
+      "tags": [
+        "ai-authored"
+      ],
+      "evidenceFiles": [],
+      "layers": {
+        "logic": {
+          "project": "probes/authored/v8617b87748/0230b3b3628f/Authored.logic.csproj",
+          "filter": "FullyQualifiedName~Vega.AutoTest.Authored.AclutMotionRegressionTests.",
+          "timeoutSeconds": 600,
+          "minAssertions": 86,
+          "requiresVegaExe": true,
+          "requiresL1Api": false
+        }
+      }
+    },
+    {
+      "id": "authored-v8617b87748-0230b3b3628f-wi3608-aclut-lifecycle",
+      "title": "Scan result retention, cancellation lifecycle, dispatcher availability, and localized resources",
+      "targetSha": "0230b3b3628f86da7c5162dd9bc46477271bac03",
+      "workItems": [
+        3608
+      ],
+      "tags": [
+        "ai-authored"
+      ],
+      "evidenceFiles": [],
+      "layers": {
+        "logic": {
+          "project": "probes/authored/v8617b87748/0230b3b3628f/Authored.logic.csproj",
+          "filter": "FullyQualifiedName~Vega.AutoTest.Authored.AclutLifecycleRegressionTests.",
+          "timeoutSeconds": 600,
+          "minAssertions": 112,
+          "requiresVegaExe": true,
+          "requiresL1Api": false
+        }
+      }
+    },
+    {
+      "id": "authored-v8617b87748-0230b3b3628f-wi3608-aclut-idle-stop-ui",
+      "title": "ACLut operator stop confirmation executes only after confirmation",
+      "targetSha": "0230b3b3628f86da7c5162dd9bc46477271bac03",
+      "workItems": [
+        3608
+      ],
+      "tags": [
+        "ai-authored"
+      ],
+      "evidenceFiles": [],
+      "layers": {
+        "uia": {
+          "project": "probes/authored/v8617b87748/0230b3b3628f/Authored.uia.csproj",
+          "filter": "FullyQualifiedName~Vega.AutoTest.Authored.AclutStopUiTests.",
+          "timeoutSeconds": 600,
+          "minAssertions": 5,
+          "requiresVegaExe": true,
+          "requiresL1Api": false
+        }
+      }
     }
   ]
 }
