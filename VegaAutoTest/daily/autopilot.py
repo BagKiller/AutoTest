@@ -476,6 +476,8 @@ def ui(root, child):
     repo = Path(d.load(child / 'execution-target.json')['repo'])
     _, summary = d.individual.refresh_child(d, child, d.load(d.REGISTRY))
     smoke_block = None
+    readiness_failures = []
+    environment_proven = False
     for slot in cp['uiSlots']:
         if slot['id'] not in summary['pendingUiSlots']:
             continue
@@ -526,8 +528,23 @@ def ui(root, child):
                 attemptEvidence=[attempt(child, evidence / 'attempt.json', 'Prepare/run actual UI and restore', error or 'UI incomplete')]))
         block = shared_readiness_block(result.get('runs', []), slot)
         if block and error is None:
-            smoke_block = dict(slot=slot['id'], code=block.get('verdictCode'),
-                reason=block.get('verdictReason') or block.get('verdictCode'), runId=block.get('runId'))
+            readiness_failures.append(dict(slot=slot['id'], code=block.get('verdictCode'),
+                reason=block.get('verdictReason') or block.get('verdictCode'), runId=block.get('runId')))
+        elif error is None:
+            # Any other outcome (PASS/FAIL, or a Runner/controller error after
+            # startup) means this machine can start Vega: later readiness
+            # failures are profile-specific (e.g. a missing startup key).
+            environment_proven = True
+            readiness_failures.clear()
+        # Skip the remaining profiles only for an environment-wide failure:
+        # nothing has started tonight and two profiles in a row failed readiness.
+        # A single profile's startup problem must not cancel every other model.
+        if not environment_proven and len(readiness_failures) >= 2:
+            first = readiness_failures[0]
+            smoke_block = dict(readiness_failures[-1],
+                slot=' and '.join(f['slot'] for f in readiness_failures),
+                reason=readiness_failures[-1]['reason'],
+                firstSlot=first['slot'])
 
 
 def preflight(root):

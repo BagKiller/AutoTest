@@ -29,18 +29,94 @@ public static class AuthenticatorPassword
 
     public static string Read(EvidenceLog log)
     {
-        var target = LoadTarget(VegaEnv.VegaExe);
-        log.Step($"认证器对齐 {target.RootCondition}，机器ID={target.MachineId}");
+        var configPath = ResolveComponentConfig(VegaEnv.VegaExe, out var note);
+        var target = LoadTarget(VegaEnv.VegaExe, configPath);
+        log.Step($"机型来源 {configPath}：SelectedToolType={target.Model}");
+        if (note is not null) log.Step(note);
+        log.Step($"认证器对齐 {target.Model}（{target.RootCondition}），机器ID={target.MachineId}");
         return ReadFromAuthenticator(VegaEnv.AuthenticatorExe, target, log);
     }
 
+    /// <summary>
+    /// ComponentConfig.json 的查找顺序（2026-11-06 按实际运行确认）：
+    /// 1. 环境变量 VEGA_AUTOTEST_COMPONENT_CONFIG；
+    /// 2. Vega 工程的 Resources\ComponentConfig.json，即 Vega.exe 所在 bin 目录的上级工程目录
+    ///    （例如 C:\AutoTest\workspaces\Vega_SW\Vega\Resources\ComponentConfig.json）；
+    /// 3. Vega.exe 同级的 Resources\ComponentConfig.json（构建输出副本）。
+    /// 其中 SelectedToolType 决定认证器要选的机型版本。
+    /// </summary>
+    public static IEnumerable<string> ComponentConfigCandidates(string vegaExe)
+    {
+        var overridePath = Environment.GetEnvironmentVariable("VEGA_AUTOTEST_COMPONENT_CONFIG");
+        if (!string.IsNullOrWhiteSpace(overridePath))
+            yield return Path.GetFullPath(overridePath);
+
+        var exeDirectory = Path.GetDirectoryName(Path.GetFullPath(vegaExe));
+        var project = ProjectDirectory(exeDirectory);
+        if (project is not null)
+            yield return Path.Combine(project, "Resources", "ComponentConfig.json");
+        if (exeDirectory is not null)
+            yield return Path.Combine(exeDirectory, "Resources", "ComponentConfig.json");
+    }
+
+    /// <summary>Vega.exe 位于 &lt;工程&gt;\bin\...\Vega.exe 时返回 &lt;工程&gt;；否则 null。</summary>
+    public static string? ProjectDirectory(string? exeDirectory)
+    {
+        for (var current = exeDirectory is null ? null : new DirectoryInfo(exeDirectory);
+             current is not null; current = current.Parent)
+        {
+            if (string.Equals(current.Name, "bin", StringComparison.OrdinalIgnoreCase) && current.Parent is not null)
+                return current.Parent.FullName;
+        }
+
+        return null;
+    }
+
+    /// <summary>选出第一个存在的 ComponentConfig；与其他副本的 SelectedToolType 不一致时给出提示。</summary>
+    public static string ResolveComponentConfig(string vegaExe, out string? note)
+    {
+        note = null;
+        var existing = ComponentConfigCandidates(vegaExe).Distinct(StringComparer.OrdinalIgnoreCase)
+            .Where(File.Exists).ToList();
+        if (existing.Count == 0)
+            throw new UiPrerequisiteException("LOGIN_NOT_READY",
+                "找不到 ComponentConfig.json：" + string.Join("；", ComponentConfigCandidates(vegaExe)));
+
+        var chosen = existing[0];
+        var chosenType = TryReadSelectedToolType(chosen);
+        var differing = existing.Skip(1)
+            .Select(path => (path, type: TryReadSelectedToolType(path)))
+            .Where(item => item.type is not null && !string.Equals(item.type, chosenType, StringComparison.OrdinalIgnoreCase))
+            .ToList();
+        if (differing.Count > 0)
+            note = "注意：其他 ComponentConfig 的 SelectedToolType 不同（"
+                   + string.Join("；", differing.Select(item => $"{item.path}={item.type}"))
+                   + $"），按 {chosen}={chosenType} 选择认证器机型。";
+        return chosen;
+    }
+
+    public static string? TryReadSelectedToolType(string path)
+    {
+        try
+        {
+            using var document = System.Text.Json.JsonDocument.Parse(File.ReadAllText(path), JsonOptions);
+            return document.RootElement.GetProperty("ToolConfigCollection").GetProperty("SelectedToolType").GetString();
+        }
+        catch
+        {
+            return null;
+        }
+    }
+
     public static AuthenticatorLoginTarget LoadTarget(string vegaExe)
+        => LoadTarget(vegaExe, ResolveComponentConfig(vegaExe, out _));
+
+    public static AuthenticatorLoginTarget LoadTarget(string vegaExe, string configPath)
     {
         var directory = Path.GetDirectoryName(vegaExe)
             ?? throw new UiPrerequisiteException("LOGIN_NOT_READY", "无法定位被测 Vega 目录。");
-        var configPath = Path.Combine(directory, "Resources", "ComponentConfig.json");
         if (!File.Exists(configPath))
-            throw new UiPrerequisiteException("LOGIN_NOT_READY", "被测程序缺少 Resources\\ComponentConfig.json。");
+            throw new UiPrerequisiteException("LOGIN_NOT_READY", "被测程序缺少 " + configPath + "。");
 
         var json = File.ReadAllText(configPath);
         string? userDataFolder;
@@ -88,8 +164,10 @@ public static class AuthenticatorPassword
             throw new InvalidOperationException("RootCondition 为空。");
 
         var generation = parts.FirstOrDefault(part => part.StartsWith("Gen", StringComparison.Ordinal)) ?? "Gen2";
+        // 机型版本以 SelectedToolType 为准（认证器下拉选项就是这个值）；
+        // RootCondition 只提供 Simulator/Gem/Gen 条件。
         return new AuthenticatorLoginTarget(
-            parts[0],
+            string.IsNullOrWhiteSpace(selected) ? parts[0] : selected,
             parts.Any(part => part == "Simulator"),
             parts.Any(part => part == "Gem"),
             generation,
@@ -117,6 +195,9 @@ public static class AuthenticatorPassword
         if (!string.IsNullOrWhiteSpace(userDataFolder))
             yield return Path.Combine(local, "Vega", userDataFolder, "MachineConfiguration.json");
         yield return Path.Combine(local, "Vega", "Resources", "MachineConfiguration.json");
+        var project = ProjectDirectory(vegaDirectory);
+        if (project is not null)
+            yield return Path.Combine(project, "Resources", "MachineConfiguration", "General.json");
         yield return Path.Combine(vegaDirectory, "Resources", "MachineConfiguration", "General.json");
     }
 
@@ -191,7 +272,44 @@ public static class AuthenticatorPassword
             throw new UiPrerequisiteException("LOGIN_NOT_READY", "认证器不存在：" + exe);
 
         using var automation = new UIA3Automation();
-        var app = EnsureRunning(exe, log);
+        var (app, launched) = EnsureRunning(exe, log);
+        try
+        {
+            return ReadPassword(app, automation, target, log);
+        }
+        finally
+        {
+            // An Authenticator started by this test is a child of the test host
+            // and inherits its redirected output. Left running, it keeps the
+            // Runner's pipe open after the test ends and outlives the session.
+            // Close only the instance we started; an attached one is left alone.
+            if (launched)
+                CloseLaunched(app, log);
+        }
+    }
+
+    private static void CloseLaunched(Application app, EvidenceLog log)
+    {
+        try
+        {
+            if (app.HasExited) return;
+            using var process = Process.GetProcessById(app.ProcessId);
+            process.CloseMainWindow();
+            if (!process.WaitForExit(3000))
+            {
+                process.Kill();
+                process.WaitForExit(5000);
+            }
+            log.Step("已关闭本次启动的认证器");
+        }
+        catch (Exception error)
+        {
+            log.Step("关闭认证器失败：" + error.GetType().Name);
+        }
+    }
+
+    private static string ReadPassword(Application app, UIA3Automation automation, AuthenticatorLoginTarget target, EvidenceLog log)
+    {
         var window = WaitForWindow(app, automation);
         if (window is null)
             throw new UiPrerequisiteException("LOGIN_NOT_READY", "认证器窗口没有出现。");
@@ -226,7 +344,7 @@ public static class AuthenticatorPassword
         throw new UiPrerequisiteException("LOGIN_NOT_READY", "认证器没有给出超级用户密码。");
     }
 
-    private static Application EnsureRunning(string exe, EvidenceLog log)
+    private static (Application App, bool Launched) EnsureRunning(string exe, EvidenceLog log)
     {
         var full = Path.GetFullPath(exe);
         foreach (var process in Process.GetProcessesByName(Path.GetFileNameWithoutExtension(full)))
@@ -234,7 +352,7 @@ public static class AuthenticatorPassword
             try
             {
                 if (string.Equals(process.MainModule?.FileName, full, StringComparison.OrdinalIgnoreCase))
-                    return Application.Attach(process);
+                    return (Application.Attach(process), false);
             }
             catch
             {
@@ -251,7 +369,7 @@ public static class AuthenticatorPassword
         };
         var dotnet = @"C:\AutoTest\runtime\dotnet";
         if (Directory.Exists(dotnet)) start.Environment["DOTNET_ROOT"] = dotnet;
-        return Application.Launch(start);
+        return (Application.Launch(start), true);
     }
 
     private static Window? WaitForWindow(Application app, UIA3Automation automation)

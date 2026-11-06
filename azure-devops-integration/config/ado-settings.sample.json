@@ -1,0 +1,12 @@
+{
+  "schemaVersion": "1.0",
+  "collectionBaseUrl": null,
+  "project": "Vega_SW",
+  "apiVersion": null,
+  "readOnly": true,
+  "writeTestResultsEnabled": false,
+  "createTestPlansEnabled": false,
+  "modifyWorkItemsEnabled": false,
+  "createBugsEnabled": false,
+  "publishArtifactsEnabled": false
+}

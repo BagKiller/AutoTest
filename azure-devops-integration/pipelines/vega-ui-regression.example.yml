@@ -1,0 +1,56 @@
+# 未验证现场 Server/Task/Agent 兼容性；确认专用交互式工位后才能使用。
+# 固定预部署产品 checkout 的运行不能视为不可变发布包验收。
+trigger: none
+pr: none
+
+parameters:
+- name: productCheckout
+  type: string
+  default: 'REQUIRES_ISOLATED_CHECKOUT'
+- name: workItemId
+  type: number
+  default: 3478
+- name: runnerCase
+  type: string
+  default: wi3478
+- name: layers
+  type: string
+  default: logic,uia
+
+pool:
+  name: Vega-UIA-Test-Agents
+
+steps:
+- checkout: self
+- task: PowerShell@2
+  displayName: 'Build test runner and check station'
+  env:
+    VEGA_SW_ROOT: ${{ parameters.productCheckout }}
+  inputs:
+    targetType: inline
+    script: |
+      if ($env:VEGA_SW_ROOT -eq 'REQUIRES_ISOLATED_CHECKOUT') { throw 'Configure isolated product checkout first' }
+      dotnet build VegaAutoTest/Vega.AutoTest.sln
+      if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+      dotnet run --project VegaAutoTest/runner/Vega.AutoTest.Runner --no-build -- doctor --repo-root $env:VEGA_SW_ROOT
+      exit $LASTEXITCODE
+- task: PowerShell@2
+  displayName: 'Runner and offline publication manifest'
+  env:
+    PRODUCT_CHECKOUT: ${{ parameters.productCheckout }}
+    TEST_WI: ${{ parameters.workItemId }}
+    TEST_CASE: ${{ parameters.runnerCase }}
+    TEST_LAYERS: ${{ parameters.layers }}
+  inputs:
+    targetType: inline
+    script: |
+      python azure-devops-integration/adapter.py verify --work-item $env:TEST_WI --case $env:TEST_CASE --layers $env:TEST_LAYERS --repo-root $env:PRODUCT_CHECKOUT --out "$(Build.ArtifactStagingDirectory)/vega"
+      exit $LASTEXITCODE
+- task: PublishBuildArtifacts@1
+  displayName: 'Archive adapter output even when blocked'
+  condition: always()
+  inputs:
+    PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+    ArtifactName: 'vega-integration'
+# Runner runs/ 原始证据保留在工位；超时/契约失败时须由负责人归档诊断目录。
+# 未启用 PublishTestResults，以免辅助 TRX 的绿灯误表述为 Runner PASS。

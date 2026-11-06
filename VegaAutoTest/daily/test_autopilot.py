@@ -77,25 +77,22 @@ class ControllerTests(unittest.TestCase):
         text = '相关工作项: #3730; AB#3698; thread #32142; thread #32191; PR #5048; discussion #12345'
         self.assertEqual(a.d.work_items(text), [3698, 3730])
 
-    def test_readiness_block_on_first_profile_skips_the_other_profiles(self):
-        slots = [
-            dict(id='ui-a', profile='Vega100-PIC', model='Vega100', profileArg='PIC', cases=[dict(caseId='ui-case')]),
-            dict(id='ui-b', profile='Vega500', model='Vega500', profileArg='Default', cases=[dict(caseId='ui-case')]),
-        ]
+    def run_ui(self, outcomes):
+        """outcomes: slot id -> (verdict, verdictCode) produced when that slot runs."""
+        ids = list(outcomes)
+        slots = [dict(id=i, profile=i, model='Vega100', profileArg='PIC', cases=[dict(caseId='ui-case')]) for i in ids]
         a.d.save(self.child / 'plan.json', dict(uiSlots=slots))
         a.d.save(self.child / 'manifest.json', dict(head='a' * 40))
         a.d.save(self.child / 'execution-target.json', dict(repo=str(self.root / 'wt')))
         calls = []
 
-        def run_slot(child, manifest, plan, slot_id, session, outcomes):
+        def run_slot(child, manifest, plan, slot_id, session, outcomes_):
             calls.append(slot_id)
 
         def refresh(daily, child, registry):
-            runs = []
-            if calls:
-                runs = [dict(caseId='ui-case', phase=calls[-1], verdict='BLOCKED', verdictCode='DEVICE_NEVER_IDLE',
-                             verdictReason='设备状态始终非空闲', runId='readiness')]
-            return [dict(status='BLOCKED')], dict(pendingUiSlots=['ui-a', 'ui-b'], runs=runs)
+            runs = [dict(caseId='ui-case', phase=c, verdict=outcomes[c][0], verdictCode=outcomes[c][1],
+                         verdictReason=outcomes[c][1], runId='run-' + c) for c in calls]
+            return [dict(status='BLOCKED')], dict(pendingUiSlots=ids, runs=runs)
 
         with patch.object(a, 'ps', return_value='SessionPath=' + str(self.root / 'daily' / 'sessions' / 's')), \
              patch.object(a.d, 'run_slot', side_effect=run_slot), \
@@ -103,10 +100,28 @@ class ControllerTests(unittest.TestCase):
              patch.object(a.d.individual, 'refresh_child', side_effect=refresh), \
              patch.object(a, 'progress'):
             a.ui(self.child.parents[1], self.child)
-        self.assertEqual(calls, ['ui-a'])
-        blocker = a.d.load(self.child / 'ui' / 'ui-b' / 'blocker.json')
+        return calls
+
+    def test_two_consecutive_readiness_failures_skip_the_remaining_profiles(self):
+        blocked = ('BLOCKED', 'DEVICE_NEVER_IDLE')
+        calls = self.run_ui({'ui-a': blocked, 'ui-b': blocked, 'ui-c': blocked})
+        self.assertEqual(calls, ['ui-a', 'ui-b'])
+        blocker = a.d.load(self.child / 'ui' / 'ui-c' / 'blocker.json')
         self.assertIn('DEVICE_NEVER_IDLE', blocker['reason'])
         self.assertTrue(blocker['attemptEvidence'])
+
+    def test_one_profile_startup_failure_does_not_cancel_other_models(self):
+        # 2026-11-05: PIC started (then the Runner hung), Coherent hit
+        # MAIN_WINDOW_TIMEOUT, and HWv1/HWv2/Vega500 were skipped untried.
+        calls = self.run_ui({'ui-pic': ('ERROR', 'DAILY_RUNNER_INVOCATION'),
+                             'ui-coherent': ('BLOCKED', 'MAIN_WINDOW_TIMEOUT'),
+                             'ui-hwv1': ('BLOCKED', 'MAIN_WINDOW_TIMEOUT'),
+                             'ui-500': ('FAIL', 'ASSERTION_FAILED')})
+        self.assertEqual(calls, ['ui-pic', 'ui-coherent', 'ui-hwv1', 'ui-500'])
+
+    def test_single_readiness_failure_on_first_profile_still_tries_the_next(self):
+        calls = self.run_ui({'ui-a': ('BLOCKED', 'MAIN_WINDOW_TIMEOUT'), 'ui-b': ('FAIL', 'ASSERTION_FAILED')})
+        self.assertEqual(calls, ['ui-a', 'ui-b'])
 
     def test_business_ui_failure_still_runs_remaining_profiles(self):
         self.assertIsNone(a.shared_readiness_block(

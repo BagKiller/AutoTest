@@ -1,0 +1,14 @@
+{
+  "schemaVersion": "1.0",
+  "product": null,
+  "serverVersion": null,
+  "apiVersion": null,
+  "verified": false,
+  "mode": "artifact-only",
+  "permissionsVerified": false,
+  "credentialRotationConfirmed": false,
+  "credentialStatus": "USER_CONFIRMED_NOT_ROTATED",
+  "endpointConfiguredLocally": true,
+  "writeTestResultsEnabled": false,
+  "blockers": ["SERVER_VERSION_UNCONFIRMED", "API_UNVERIFIED", "PERMISSIONS_UNVERIFIED", "CREDENTIAL_NOT_ROTATED", "HTTP_EXCEPTION_NOT_APPROVED"]
+}

@@ -1,0 +1,46 @@
+{
+  "schemaVersion": "1.0",
+  "project": "Vega_SW",
+  "mappings": [
+    {
+      "workItemId": 3478,
+      "runnerCaseId": "wi3478",
+      "adoTestCaseId": null,
+      "planId": null,
+      "suiteId": null,
+      "configurationId": null,
+      "testPointId": null,
+      "layers": [
+        "logic",
+        "uia"
+      ],
+      "requiredForRelease": true
+    },
+    {
+      "workItemId": 3547,
+      "runnerCaseId": "wi3547",
+      "adoTestCaseId": null,
+      "planId": null,
+      "suiteId": null,
+      "configurationId": null,
+      "testPointId": null,
+      "layers": [
+        "uia"
+      ],
+      "requiredForRelease": true
+    },
+    {
+      "workItemId": 3549,
+      "runnerCaseId": "wi3549",
+      "adoTestCaseId": null,
+      "planId": null,
+      "suiteId": null,
+      "configurationId": null,
+      "testPointId": null,
+      "layers": [
+        "uia"
+      ],
+      "requiredForRelease": true
+    }
+  ]
+}

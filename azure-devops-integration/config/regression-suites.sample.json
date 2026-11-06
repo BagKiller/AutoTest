@@ -1,0 +1,54 @@
+{
+  "releaseId": "FILL_RELEASE",
+  "suiteName": "CoreRegression",
+  "baseline": {
+    "gitCommit": null,
+    "exeSha256": null,
+    "environmentId": null,
+    "automationCommit": null,
+    "buildId": null
+  },
+  "approvals": {},
+  "items": [
+    {
+      "workItemId": 3478,
+      "caseId": "wi3478",
+      "required": true,
+      "requiresL1Oracle": false,
+      "releaseId": "FILL_RELEASE",
+      "resultPath": null,
+      "processExitCode": null,
+      "executionReceipt": null,
+      "layers": [
+        "logic",
+        "uia"
+      ]
+    },
+    {
+      "workItemId": 3547,
+      "caseId": "wi3547",
+      "required": true,
+      "requiresL1Oracle": false,
+      "releaseId": "FILL_RELEASE",
+      "resultPath": null,
+      "processExitCode": null,
+      "executionReceipt": null,
+      "layers": [
+        "uia"
+      ]
+    },
+    {
+      "workItemId": 3549,
+      "caseId": "wi3549",
+      "required": true,
+      "requiresL1Oracle": false,
+      "releaseId": "FILL_RELEASE",
+      "resultPath": null,
+      "processExitCode": null,
+      "executionReceipt": null,
+      "layers": [
+        "uia"
+      ]
+    }
+  ]
+}

@@ -157,7 +157,7 @@ HEAD 槽位整体状态（原有表格）：`ACCEPTED`、`PARTIAL`、`FAIL`、`E
 UI 验证必须实际启动目标版本的 Vega.exe，在合法授权的 Simulator 会话中完成登录和目标界面操作，并核对实际输出。logic/单元测试、DLL 反射、构建成功、模拟服务或仅实例化 WPF 控件均不能替代。是否需要 UI 由用户要求和工作项场景决定，不能只看 registry 或 uiSlots。详细规则见 `AGENTS.md` 和 `AI操作手册.md` §0.1。
 
 1. 配置修改前保存内容与 SHA256，Vega 停止后才改 `SelectedToolType`、`RootCondition`、`Features`、`SelectedProfiles` 和独立 `UserDataFolder`（`Start-ModelValidation.ps1 -Action Prepare`）。RootCondition 为 `<机型>,Simulator,GemSim,Gen2`；官方认证器里 Simulator 勾选、Gem 不勾选、Gen2。不得只改机型名称而漏掉 OuterToInner、硬件能力或用户数据目录，不得修改正式授权绕过机型检查。
-2. 登录由测试宿主打开 `C:\AutoTest\runtime\AuthenticatorApp\Authenticator.exe`，按当前 Vega 的 RootCondition 和机器 ID，在「超级用户密码」页生成并读取密码，账号使用 `su`。密码只留在内存，不写入报告、剪贴板或仓库。`VEGA_AUTOTEST_USER` / `VEGA_AUTOTEST_PASSWORD` 仍可覆盖。认证器缺失或读不到密码时该会话记 BLOCKED。启动验证密钥按 `authenticator-flow.json` 处理。
+2. 登录由测试宿主打开 `C:\AutoTest\runtime\AuthenticatorApp\Authenticator.exe`，在「超级用户密码」页生成并读取密码，账号使用 `su`。机型版本取自 `ComponentConfig.json` 的 `SelectedToolType`，查找顺序：环境变量 `VEGA_AUTOTEST_COMPONENT_CONFIG` → Vega 工程目录的 `Resources\ComponentConfig.json`（Vega.exe 所在 `bin` 的上级，例如 `C:\AutoTest\workspaces\Vega_SW\Vega\Resources\ComponentConfig.json`）→ Vega.exe 同级的 `Resources\ComponentConfig.json`。Simulator/Gem/Gen 取同一 ToolConfig 的 RootCondition，机器 ID 取该机型的 MachineConfiguration。取证日志会记录所用文件和 SelectedToolType；两份配置不一致时会写出提示。密码只留在内存，不写入报告、剪贴板或仓库。`VEGA_AUTOTEST_USER` / `VEGA_AUTOTEST_PASSWORD` 仍可覆盖。认证器缺失或读不到密码时该会话记 BLOCKED。启动验证密钥按 `authenticator-flow.json` 处理。
 3. 实际界面执行必须传入 `--session`，程序核对准备会话的提交目录、机型、profile 和配置文件校验值。每个会话有界执行，失败最多恢复重试一次，继续其他会话；finally 停止本轮进程、恢复配置并核对 SHA256。禁止触发真实硬件，GemSim 结果不能当作 SEPLAT/E87 Host 验收。
 4. 不 push、不创建 PR、不写工作项状态。原始 Runner 报告不手改，历史批次不删除。
 

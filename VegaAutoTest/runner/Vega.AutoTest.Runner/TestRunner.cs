@@ -24,6 +24,27 @@ public static class TestRunner
         public string? Error { get; set; }
     }
 
+    /// <summary>How long to keep draining output after `dotnet test` itself exited.</summary>
+    public static TimeSpan PipeDrainTimeout { get; set; } = TimeSpan.FromSeconds(30);
+
+    /// <summary>Bounded read of redirected output; never waits on a pipe a leftover descendant holds.</summary>
+    public static string StreamText(Task<string> stdout, Task<string> stderr, TimeSpan timeout)
+    {
+        try
+        {
+            Task.WaitAll(new Task[] { stdout, stderr }, timeout);
+        }
+        catch (AggregateException)
+        {
+            // Read faults are reported per stream below.
+        }
+
+        static string Read(Task<string> stream, string name) => stream.IsCompletedSuccessfully
+            ? stream.Result
+            : $"[{name} incomplete: dotnet test exited but a descendant process still holds the pipe]";
+        return Read(stdout, "stdout") + Environment.NewLine + Read(stderr, "stderr");
+    }
+
     public static LayerRun RunLayer(string autoTestRoot, string layerName, LayerConfig layer,
         string layerDir, string trxDir, string? vegaExe = null)
     {
@@ -73,6 +94,9 @@ public static class TestRunner
             psi.Environment["VEGA_AUTOTEST_OUTDIR"] = layerDir;
         }
         psi.Environment["DOTNET_CLI_UI_LANGUAGE"] = "en";
+        // MSBuild worker nodes outlive `dotnet test` and inherit its redirected
+        // stdout. A reused node then keeps the pipe open after the test exited.
+        psi.Environment["MSBUILDDISABLENODEREUSE"] = "1";
 
         using var process = Process.Start(psi);
         if (process is null)
@@ -115,7 +139,11 @@ public static class TestRunner
             return outcome;
         }
 
-        var logText = stdout.Result + Environment.NewLine + stderr.Result;
+        // `dotnet test` has exited, but a descendant it started (MSBuild node,
+        // a tool launched by the test such as the Authenticator) may still hold
+        // the redirected pipe. Reading to EOF would then block forever and the
+        // Runner would never write result.json (2026-11-03/05 Vega100-PIC hang).
+        var logText = StreamText(stdout, stderr, PipeDrainTimeout);
         File.WriteAllText(Path.Combine(trxDir, $"{layerName}.testhost.log"), logText);
 
         var trxPath = Path.Combine(trxDir, trxName);

@@ -47,8 +47,11 @@ public abstract class L2TestBase : IDisposable
         VegaApp.KillLeftover(Log);
         Vega = VegaApp.Launch(Log);
         MainWindow = Vega.WaitForMainWindow();
+        if (MainWindow is null && Vega.HasExited)
+            throw new UiPrerequisiteException("VEGA_PROCESS_EXITED",
+                $"目标 Vega 在主窗口出现前退出（exitCode={Vega.ExitCode?.ToString() ?? "未知"}）；见 vega-launch.json。");
         if (MainWindow is null)
-            throw new UiPrerequisiteException("MAIN_WINDOW_TIMEOUT", "目标 Vega 主窗口未就绪；见启动日志。");
+            throw new UiPrerequisiteException("MAIN_WINDOW_TIMEOUT", "目标 Vega 主窗口未就绪；见 vega-launch.json 的顶层窗口记录。");
     }
 
     public void Dispose()

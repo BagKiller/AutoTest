@@ -88,10 +88,13 @@
 4. 每项 UI 结果须包含目标提交与 EXE/DLL 指纹、实际进程 PID/启动时间、机型与 Simulator 配置、输入数据及关键操作、截图或 UI 快照、实际输出与预期的对比，以及 Runner `result.json` / `runId`。正式 verdict 仍只来自 Runner；现场观察单独作为证据，不伪造或修改原始 verdict。
 5. 未完成必需的 UI 流程时，报告必须明确"UI 未完成"及真实原因，该工作项/提交不得完整验收；缺用例标记 NEEDS_CASE，尚待执行标记 PENDING，实际环境阻塞记录原因并原样转述 Runner BLOCKED/ERROR。禁止仅凭无界面 PASS 宣布整个验证任务完成。认证/桌面/启动异常有界恢复重试一次，保留证据并继续其他项，不等待人工点击。
 6. 配置、认证、清理和恢复沿用本文件授权与约束：仅 Simulator、官方认证、不触发真机；每个会话 finally 停止本轮进程、恢复配置并核对 SHA256，包括 Prepare 后认证或启动失败的情况。
+7. 读取超级用户密码时，认证器要选的机型版本以 `ComponentConfig.json` 的 `SelectedToolType` 为准（2026-11-06 用户确认）。先读 Vega 工程目录的 `Resources\ComponentConfig.json`（Vega.exe 所在 `bin` 的上级目录，例如 `C:\AutoTest\workspaces\Vega_SW\Vega\Resources\ComponentConfig.json`），不存在时再读 Vega.exe 同级的 `Resources\ComponentConfig.json`；`VEGA_AUTOTEST_COMPONENT_CONFIG` 可显式覆盖。Simulator/Gem/Gen 取同一 ToolConfig 的 RootCondition。测试宿主若自己启动了认证器，读完即关闭它（已在运行的认证器只附加、不关闭），避免它继承测试宿主的输出管道、让 Runner 读不到 EOF。Runner 在 `dotnet test` 退出后最多再等 30 秒读取输出，不再无限等待；并关闭 MSBuild 节点复用。
+8. 主窗口未出现时，测试会写 `vega-launch.json`（进程是否退出、退出码、该进程的全部顶层窗口标题/类名）；进程提前退出记 `VEGA_PROCESS_EXITED`，否则 `MAIN_WINDOW_TIMEOUT`。
+9. 一个机型启动失败不再跳过其他机型。只有当晚还没有任何机型成功启动、且连续两个机型都卡在就绪阶段时，才把剩余机型记为同一环境阻塞。
 
 #3677 的必需 UI 场景：启动已核对版本的 Vega，以合法授权的目标账号登录，导入工单原始 dual.recipe，创建并选择 Job，进入离线 postprocess，添加工单原始 Normal/Oblique JSON，执行并检查 waferRun 的 pitch 等目标参数及 DC 合并结果。pitch 方法级测试通过不等于该完整场景通过；最终结果须按工单预期或可核对的基准判定，不临时编造期望数量。
 
-认证器资源目录必须与 Start-ModelValidation.ps1 的 userDataFolder 一致：ResourcesDaily_Vega100-PIC、ResourcesDaily_Vega300-HWv1、ResourcesDaily_Vega300-HWv2、ResourcesDaily_Vega500。所有组均为 Simulator=true、Gem=false、Gen2；生成日期/有效期以官方工具合法设置为准。密钥文件存在不等于启动已经通过，必须观察 Vega 的实际启动结果。
+认证器资源目录必须与 Start-ModelValidation.ps1 的 userDataFolder 一致：ResourcesDaily_Vega100-PIC、ResourcesDaily_Vega100-Coherent、ResourcesDaily_Vega300-HWv1、ResourcesDaily_Vega300-HWv2、ResourcesDaily_Vega500（2026-11-06 补上此前遗漏的 Vega100-Coherent；每个目录都要有官方认证器保存的启动验证密钥）。所有组均为 Simulator=true、Gem=false、Gen2；生成日期/有效期以官方工具合法设置为准。密钥文件存在不等于启动已经通过，必须观察 Vega 的实际启动结果。
 
 ## 安全
 
