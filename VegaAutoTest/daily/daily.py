@@ -487,6 +487,7 @@ def run_case(out, repo, log_dir, case_id, layers, phase, timeout, outcomes):
     try:
         env = runner_env(repo)
         if phase != 'headless':
+            env['VEGA_AUTOTEST_REQUIRE_LOGIN'] = '1'
             env['VEGA_DAILY_UI_EVIDENCE'] = str(out / 'ui' / phase / 'evidence.json')
         with log_path.open("w", encoding="utf-8") as log:
             p = run_bounded([str(DOTNET), str(runner_binary()), "verify", "--case", case_id, "--layers", ",".join(layers),

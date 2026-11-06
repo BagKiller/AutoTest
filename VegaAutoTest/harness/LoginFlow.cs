@@ -13,6 +13,9 @@ namespace Vega.AutoTest.Harness;
 /// </summary>
 public sealed class LoginFlow
 {
+    public static bool IsAuthenticatedReady(string title, string userName, bool menuEnabled, string state)
+        => title.EndsWith(" - " + userName, StringComparison.Ordinal) && menuEnabled && state == "空闲";
+
     private readonly DialogHandler _dialogs;
     private readonly DeviceStateReader _states;
     private readonly EvidenceLog _log;
@@ -50,6 +53,8 @@ public sealed class LoginFlow
             File.WriteAllText(Path.Combine(RunContext.Dir, "ui-readiness.json"), JsonSerializer.Serialize(new
             {
                 phase, elapsedSeconds = sw.Elapsed.TotalSeconds,
+                authenticatedTitle = main.Title,
+                expectedAccount = VegaEnv.UserName,
                 loginSubmitted = _dialogs.LoggedInSeen, menuPresent, menuEnabled,
                 state = lastState, stateChannel = _states.Channel,
                 observationError, dialogError = _dialogs.LastHandlingError,
@@ -109,7 +114,7 @@ public sealed class LoginFlow
             }
             MongoProbe();
             SaveReadiness("WAITING");
-            if (_dialogs.LoggedInSeen && menuEnabled && state == "空闲")
+            if (_dialogs.LoggedInSeen && IsAuthenticatedReady(main.Title, VegaEnv.UserName, menuEnabled, state))
             {
                 _log.Step($"[{sw.Elapsed.TotalSeconds:F0}s] 就绪：状态空闲 + 菜单可用 ✔");
                 SaveReadiness("READY");

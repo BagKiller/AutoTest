@@ -47,11 +47,18 @@ public abstract class L2TestBase : IDisposable
         VegaApp.KillLeftover(Log);
         Vega = VegaApp.Launch(Log);
         MainWindow = Vega.WaitForMainWindow();
-        if (MainWindow is null && Vega.HasExited)
-            throw new UiPrerequisiteException("VEGA_PROCESS_EXITED",
-                $"目标 Vega 在主窗口出现前退出（exitCode={Vega.ExitCode?.ToString() ?? "未知"}）；见 vega-launch.json。");
         if (MainWindow is null)
-            throw new UiPrerequisiteException("MAIN_WINDOW_TIMEOUT", "目标 Vega 主窗口未就绪；见 vega-launch.json 的顶层窗口记录。");
+            throw new UiPrerequisiteException("MAIN_WINDOW_TIMEOUT", "目标 Vega 主窗口未就绪；见启动日志。");
+        // Every nightly UI case must log in before it reaches business actions,
+        // even when generated code forgets its optional explicit WaitReady call.
+        if (Environment.GetEnvironmentVariable("VEGA_AUTOTEST_REQUIRE_LOGIN") == "1")
+        {
+            var target = AuthenticatorPassword.LoadTarget(VegaEnv.VegaExe);
+            if (!target.Simulator)
+                throw new UiPrerequisiteException("LOGIN_NOT_READY", "每日登录仅允许 Simulator 配置。");
+            Log.Step($"每日登录前置：读取目标配置并对齐官方认证器 {target.RootCondition}");
+            new LoginFlow(Dialogs, States, Log).Watch(Vega).WaitReady(MainWindow, TimeSpan.FromMinutes(3));
+        }
     }
 
     public void Dispose()

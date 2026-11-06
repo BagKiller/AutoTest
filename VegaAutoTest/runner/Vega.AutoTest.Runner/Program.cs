@@ -29,6 +29,7 @@ public static class Program
             return args[0] switch
             {
                 "verify" => RunVerify(args[1..]),
+                "login" => ManualLogin.Run(args[1..]),
                 "doctor" => RunDoctor(args[1..]),
                 "list-cases" => RunListCases(args[1..]),
                 "prune" => RunPrune(args[1..]),
@@ -59,6 +60,7 @@ public static class Program
               verify --work-item <id> [--layers logic,uia] [--rebuild] [--configuration Debug]
                      [--repo-root <path>] [--runs-dir <path>] [--case <id>]
               doctor
+              login --repo-root <path> --pid <existing Vega pid>
               list-cases [--json]
               prune [--runs-dir <path>] [--keep 50] [--dry-run]
 
