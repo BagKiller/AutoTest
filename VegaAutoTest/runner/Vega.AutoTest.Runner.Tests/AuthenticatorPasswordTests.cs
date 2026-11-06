@@ -43,7 +43,7 @@ public class AuthenticatorPasswordTests
     }
 
     [Fact]
-    public void ProjectResourcesConfigIsPreferredOverTheBuildOutputCopy()
+    public void BuildOutputConfigBesideVegaExeIsPreferredOverTheProjectCopy()
     {
         var root = Path.Combine(Path.GetTempPath(), "vega-component-" + Guid.NewGuid().ToString("N"));
         var project = Path.Combine(root, "Vega_SW", "Vega");
@@ -56,19 +56,21 @@ public class AuthenticatorPasswordTests
             Directory.CreateDirectory(Path.Combine(bin, "Resources"));
             static string Config(string type) => "{\"ToolConfigCollection\":{\"SelectedToolType\":\"" + type
                 + "\",\"ToolConfigs\":[{\"ToolType\":\"" + type + "\",\"RootCondition\":\"" + type + ",Simulator,GemSim,Gen2\"}]}}";
-            File.WriteAllText(Path.Combine(project, "Resources", "ComponentConfig.json"), Config("Vega300"));
+            // Project default (Vega500) vs. the copy Prepare switched to Vega100 —
+            // the 2026-11-05 situation. Vega runs with the bin copy.
+            File.WriteAllText(Path.Combine(project, "Resources", "ComponentConfig.json"), Config("Vega500"));
             File.WriteAllText(Path.Combine(bin, "Resources", "ComponentConfig.json"), Config("Vega100"));
             var exe = Path.Combine(bin, "Vega.exe");
 
             Assert.Equal(project, AuthenticatorPassword.ProjectDirectory(bin));
             var chosen = AuthenticatorPassword.ResolveComponentConfig(exe, out var note);
-            Assert.Equal(Path.Combine(project, "Resources", "ComponentConfig.json"), chosen);
-            Assert.Contains("Vega100", note);
-            Assert.Equal("Vega300", AuthenticatorPassword.LoadTarget(exe, chosen).Model);
+            Assert.Equal(Path.Combine(bin, "Resources", "ComponentConfig.json"), chosen);
+            Assert.Contains("Vega500", note);
+            Assert.Equal("Vega100", AuthenticatorPassword.LoadTarget(exe, chosen).Model);
 
-            // Without the project copy the build output copy is used.
+            // Without the build output copy the project copy is the fallback.
             File.Delete(chosen);
-            Assert.Equal(Path.Combine(bin, "Resources", "ComponentConfig.json"),
+            Assert.Equal(Path.Combine(project, "Resources", "ComponentConfig.json"),
                 AuthenticatorPassword.ResolveComponentConfig(exe, out note));
             Assert.Null(note);
 

@@ -330,6 +330,26 @@ class ControllerTests(unittest.TestCase):
         self.assertEqual(repaired['files'][0]['content'], '// corrected API usage')
         self.assertEqual(original['files'][0]['content'], '// generated test')
 
+    def test_multi_profile_ui_case_requires_profile_basis(self):
+        # AGENTS.md 1.1: 2026-11-05 scheduled one common-module UI case on all five profiles.
+        self.sched['profileOrder'] = ['Vega100-PIC', 'Vega500']
+        response = self.response()
+        response['cases'][0].update(layer='uia', profiles=['Vega100-PIC', 'Vega500'])
+        response['files'][0]['content'] = 'void T(){ Launch(); }'
+        response['requirements'][0].update(uiRequired=True, profiles=['Vega100-PIC', 'Vega500'])
+        with self.assertRaisesRegex(ValueError, 'profileBasis'):
+            m.install(a.d, self.child, self.manifest, response, self.registry, self.sched, 'v1')
+        response['requirements'][0]['profileBasis'] = 'Work item names Vega100 PIC and Vega500 separately'
+        m.install(a.d, self.child, self.manifest, response, self.registry, self.sched, 'v2')
+
+    def test_single_representative_ui_profile_needs_no_basis(self):
+        self.sched['profileOrder'] = ['Vega100-PIC', 'Vega500']
+        response = self.response()
+        response['cases'][0].update(layer='uia', profiles=['Vega500'])
+        response['files'][0]['content'] = 'void T(){ Launch(); }'
+        response['requirements'][0].update(uiRequired=True, profiles=['Vega500'])
+        m.install(a.d, self.child, self.manifest, response, self.registry, self.sched, 'v1')
+
     def test_required_ui_without_executable_case_cannot_be_claimed_covered(self):
         response = self.response()
         response['requirements'][0].update(uiRequired=True, profiles=['Vega100-PIC'])

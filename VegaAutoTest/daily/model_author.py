@@ -31,7 +31,7 @@ SCHEMA = obj(dict(
         minAssertions=dict(type='integer', minimum=1)))),
     requirements=dict(type='array', items=obj(dict(id=STRING,
         workItems=dict(type='array', items=dict(type='integer')), steps=STRINGS, expected=STRING,
-        oracle=STRING, uiRequired=dict(type='boolean'), profiles=STRINGS,
+        oracle=STRING, uiRequired=dict(type='boolean'), profiles=STRINGS, profileBasis=STRING,
         caseKeys=STRINGS, existingCaseIds=STRINGS, gap=STRING)))))
 
 POLICY = '''Generate executable regression tests for ONE Vega commit, using the supplied data only.
@@ -100,6 +100,15 @@ write the real UI workflow and let execution establish actual authorization/star
 Use profilePreparationContract to determine actual configured features. Do not schedule a DIC-only
 workflow on a profile without DIC. Feature absence can have its own explicit UI gating test, but
 cannot be interpreted as a failed DIC measurement or used as a passing substitute for that workflow.
+Model profile selection (daily/AGENTS.md section 1.1): the supported profile list is a candidate
+list, NOT a matrix to run. If the commit message, work item or acceptance criteria name specific
+models/configurations (Vega100/300/500, PIC/Coherent, HWv1/HWv2), select exactly those. If none are
+named and the diff is a common module, select ONE representative profile, Vega500 when nothing
+else applies. Add a profile only for an actual model-conditional branch, hardware capability
+difference or configuration-specific behavior visible in the diff or requirement. Every UI
+requirement must state in profileBasis why each selected profile is needed (quote the requirement
+text or the code condition); a UI case with more than one profile is rejected without that basis.
+Unselected profiles of a common module are not missing coverage.
 '''
 
 
@@ -339,6 +348,18 @@ def install(d, child, manifest, response, registry, sched, version):
                     for cid in req['caseIds']) for profile in req['profiles']):
                 raise ValueError('Author a real executable UI case for every required profile, or explain a concrete external gap')
         requirements.append(req)
+    # AGENTS.md section 1.1: one representative profile unless the requirement or
+    # a model-specific code path justifies more. A UI case's profile list decides
+    # how many Vega sessions are started, so an unjustified matrix is rejected.
+    for case in response.get('cases', []):
+        if case['layer'] != 'uia' or len(case['profiles']) <= 1:
+            continue
+        basis = [r.get('profileBasis', '').strip() for r in response.get('requirements', [])
+                 if case['key'] in r.get('caseKeys', [])]
+        if not any(basis):
+            raise ValueError(f"UI case '{case['key']}' selects {len(case['profiles'])} profiles without profileBasis; "
+                             'select one representative profile (Vega500 when nothing else applies) or state the '
+                             'requirement/code condition that needs each additional profile')
     if not requirements and not manifest['commits'][0].get('noProductChange'):
         raise ValueError('Product change has no generated acceptance scenarios')
     if cases and not any(p.suffix == '.cs' for p, _ in normalized.values()):

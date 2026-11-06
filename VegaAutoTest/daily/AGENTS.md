@@ -21,7 +21,7 @@
 - 覆盖审核记录代表配置、选择依据和额外配置的必要性。通用模块在代表配置通过不表示其他机型已实际运行；未选的无差异机型不作为缺少必需覆盖。真机/外部数据的实际缺口仍需保留。
 - 会话复用的目标顺序为：收集并固定 HEAD → 需求/用例准备 → 构建与发现一次 → 冻结 → 准备必要配置并启动/登录 → 逐项业务校验 → finally 调用经核对的 VegaKiller/本项目受管清理入口关闭本轮进程 → 恢复配置并核对哈希 → 完成检查。运行目标 Vega 期间不能在同一目录更新 Git 或重新构建。
 - 同一机型配置内复用已登录进程，每项开始前恢复并核对约定的页面、数据与空闲状态。切换机型配置、测试启动/重启后持久化/登录行为、进程异常或无法恢复干净状态时允许有界重启，并记录原因、PID 与登录证据。不能用“始终开启”跳过本来必须重启的验收场景。
-- **落地状态**：官方认证器登录前置已接入每日 UI 宿主；跨用例共享进程及上述会话级清理仍待控制器/宿主实现和回归。当前 `L2TestBase` 仍按用例启动与 Dispose，不能仅凭本条文档宣称会话复用已生效，也不能假设名为 VegaKiller 的入口已完成接线。§4 记录当前实际程序顺序。
+- **落地状态**（2026-11-06）：机型选择规则已写入用例生成器 `model_author.py` 的提示词；生成结果中一个 UI 用例选了多个机型时，对应需求必须填写 `profileBasis`（每个额外机型的需求原文或代码条件），否则安装被拒并进入一次校验修正。是否真的只需一个代表配置仍由模型判断，程序只拦截"多机型且无依据"。官方认证器登录前置已接入每日 UI 宿主；跨用例共享进程及上述会话级清理仍待控制器/宿主实现和回归。当前 `L2TestBase` 仍按用例启动与 Dispose，不能仅凭本条文档宣称会话复用已生效，也不能假设名为 VegaKiller 的入口已完成接线。§4 记录当前实际程序顺序。
 
 ## 2. 磁盘与工作区
 
@@ -100,7 +100,7 @@
 4. 每项 UI 结果须包含目标提交与 EXE/DLL 指纹、实际进程 PID/启动时间、机型与 Simulator 配置、输入数据及关键操作、截图或 UI 快照、实际输出与预期的对比，以及 Runner `result.json` / `runId`。正式 verdict 仍只来自 Runner；现场观察单独作为证据，不伪造或修改原始 verdict。
 5. 未完成必需的 UI 流程时，报告必须明确"UI 未完成"及真实原因，该工作项/提交不得完整验收；缺用例标记 NEEDS_CASE，尚待执行标记 PENDING，实际环境阻塞记录原因并原样转述 Runner BLOCKED/ERROR。禁止仅凭无界面 PASS 宣布整个验证任务完成。认证/桌面/启动异常有界恢复重试一次，保留证据并继续其他项，不等待人工点击。
 6. 配置、认证、清理和恢复沿用本文件授权与约束：仅 Simulator、官方认证、不触发真机；每个会话 finally 停止本轮进程、恢复配置并核对 SHA256，包括 Prepare 后认证或启动失败的情况。
-7. 读取超级用户密码时，认证器要选的机型版本以 `ComponentConfig.json` 的 `SelectedToolType` 为准（2026-11-06 用户确认）。先读 Vega 工程目录的 `Resources\ComponentConfig.json`（Vega.exe 所在 `bin` 的上级目录，例如 `C:\AutoTest\workspaces\Vega_SW\Vega\Resources\ComponentConfig.json`），不存在时再读 Vega.exe 同级的 `Resources\ComponentConfig.json`；`VEGA_AUTOTEST_COMPONENT_CONFIG` 可显式覆盖。Simulator/Gem/Gen 取同一 ToolConfig 的 RootCondition。测试宿主若自己启动了认证器，读完即关闭它（已在运行的认证器只附加、不关闭），避免它继承测试宿主的输出管道、让 Runner 读不到 EOF。Runner 在 `dotnet test` 退出后最多再等 30 秒读取输出，不再无限等待；并关闭 MSBuild 节点复用。
+7. 读取超级用户密码时，认证器要选的机型版本以 `ComponentConfig.json` 的 `SelectedToolType` 为准（2026-11-06 用户确认）。先读 Vega.exe 同级的 `Resources\ComponentConfig.json`：这是 Vega 运行时实际读取、`Prepare` 唯一修改的一份（2026-11-05 证据：`Prepare` 把它改为 Vega100 后窗口标题为 Vega100，按它算出的密码登录成功）。只有构建输出缺少这份时，才退回 Vega 工程目录的 `Resources\ComponentConfig.json`（`bin` 的上级，例如 `C:\AutoTest\workspaces\Vega_SW\Vega\Resources\ComponentConfig.json`）；两份 `SelectedToolType` 不一致时取证日志写提示。`VEGA_AUTOTEST_COMPONENT_CONFIG` 可显式覆盖。Simulator/Gem/Gen 取同一 ToolConfig 的 RootCondition。测试宿主若自己启动了认证器，读完即关闭它（已在运行的认证器只附加、不关闭），避免它继承测试宿主的输出管道、让 Runner 读不到 EOF。Runner 在 `dotnet test` 退出后最多再等 30 秒读取输出，不再无限等待；并关闭 MSBuild 节点复用。
 8. 主窗口未出现时，测试会写 `vega-launch.json`（进程是否退出、退出码、该进程的全部顶层窗口标题/类名）；进程提前退出记 `VEGA_PROCESS_EXITED`，否则 `MAIN_WINDOW_TIMEOUT`。
 9. 一个机型启动失败不再跳过其他机型。只有当晚还没有任何机型成功启动、且连续两个机型都卡在就绪阶段时，才把剩余机型记为同一环境阻塞。
 

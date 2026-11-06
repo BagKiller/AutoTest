@@ -38,12 +38,14 @@ public static class AuthenticatorPassword
     }
 
     /// <summary>
-    /// ComponentConfig.json 的查找顺序（2026-11-06 按实际运行确认）：
-    /// 1. 环境变量 VEGA_AUTOTEST_COMPONENT_CONFIG；
-    /// 2. Vega 工程的 Resources\ComponentConfig.json，即 Vega.exe 所在 bin 目录的上级工程目录
-    ///    （例如 C:\AutoTest\workspaces\Vega_SW\Vega\Resources\ComponentConfig.json）；
-    /// 3. Vega.exe 同级的 Resources\ComponentConfig.json（构建输出副本）。
-    /// 其中 SelectedToolType 决定认证器要选的机型版本。
+    /// ComponentConfig.json 的查找顺序。SelectedToolType 决定认证器要选的机型版本。
+    /// 1. 环境变量 VEGA_AUTOTEST_COMPONENT_CONFIG（显式覆盖）；
+    /// 2. Vega.exe 同级的 Resources\ComponentConfig.json：Vega 运行时实际读取这一份，
+    ///    Start-ModelValidation Prepare 也只改这一份（2026-11-05 证据：Prepare 把它改成
+    ///    Vega100 后，窗口标题为 Vega100，按它算出的密码登录成功）；
+    /// 3. Vega 工程目录的 Resources\ComponentConfig.json（bin 的上级，例如
+    ///    C:\AutoTest\workspaces\Vega_SW\Vega\Resources\ComponentConfig.json），仅在构建
+    ///    输出缺少配置时作后备。两份 SelectedToolType 不一致时写出提示，便于发现未重新构建。
     /// </summary>
     public static IEnumerable<string> ComponentConfigCandidates(string vegaExe)
     {
@@ -52,11 +54,11 @@ public static class AuthenticatorPassword
             yield return Path.GetFullPath(overridePath);
 
         var exeDirectory = Path.GetDirectoryName(Path.GetFullPath(vegaExe));
+        if (exeDirectory is not null)
+            yield return Path.Combine(exeDirectory, "Resources", "ComponentConfig.json");
         var project = ProjectDirectory(exeDirectory);
         if (project is not null)
             yield return Path.Combine(project, "Resources", "ComponentConfig.json");
-        if (exeDirectory is not null)
-            yield return Path.Combine(exeDirectory, "Resources", "ComponentConfig.json");
     }
 
     /// <summary>Vega.exe 位于 &lt;工程&gt;\bin\...\Vega.exe 时返回 &lt;工程&gt;；否则 null。</summary>
@@ -195,10 +197,10 @@ public static class AuthenticatorPassword
         if (!string.IsNullOrWhiteSpace(userDataFolder))
             yield return Path.Combine(local, "Vega", userDataFolder, "MachineConfiguration.json");
         yield return Path.Combine(local, "Vega", "Resources", "MachineConfiguration.json");
+        yield return Path.Combine(vegaDirectory, "Resources", "MachineConfiguration", "General.json");
         var project = ProjectDirectory(vegaDirectory);
         if (project is not null)
             yield return Path.Combine(project, "Resources", "MachineConfiguration", "General.json");
-        yield return Path.Combine(vegaDirectory, "Resources", "MachineConfiguration", "General.json");
     }
 
     public static int FirstMachineId(IEnumerable<string> jsonDocuments)
