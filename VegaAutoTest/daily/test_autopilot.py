@@ -403,6 +403,24 @@ class ControllerTests(unittest.TestCase):
         run.assert_called_once_with(batch)
         collect.assert_not_called()
 
+    def test_nightly_ui_runner_requires_authenticated_login(self):
+        cid = 'login-gate-fixture'
+        result_path = self.child / 'runner/login-gate/result.json'
+        a.d.save(result_path, dict(caseId=cid, target=dict(gitCommit='a' * 40),
+            runId='login-gate', verdict='PASS', verdictCode='OK'))
+        def runner(command, **kwargs):
+            self.assertEqual(kwargs['env']['VEGA_AUTOTEST_REQUIRE_LOGIN'], '1')
+            self.assertEqual(kwargs['env']['VEGA_SW_ROOT'], str(self.root))
+            self.assertIn('VEGA_DAILY_UI_EVIDENCE', kwargs['env'])
+            kwargs['stdout'].write(str(result_path) + '\n')
+            return subprocess.CompletedProcess(command, 0)
+        with patch.object(a.d, 'run_bounded', side_effect=runner), \
+             patch.object(a.d, 'runner_binary', return_value=self.root / 'runner.dll'), \
+             patch.object(a.d, 'git', return_value='a' * 40):
+            result = a.d.run_case(self.child, self.root, self.child / 'logs', cid,
+                ['uia'], 'ui-Vega500', 240, dict(runs=[]))
+        self.assertEqual(result['runId'], 'login-gate')
+
     def test_long_generated_case_id_can_actually_open_runner_log_on_windows(self):
         cid = 'authored-' + 'very-long-business-scenario-' * 8
         log_dir = self.child / 'attempts' / ('a' * 30)

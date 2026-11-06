@@ -114,6 +114,8 @@ cd C:\AutoTest\AutoTest\VegaAutoTest
 
 ## 用例匹配
 
+机型选择遵循 `AGENTS.md` §1.1（2026-11-06）：提交/工作项明确机型时验证指定配置；未指定且 diff 为通用模块时只用一个适用的代表配置验证一次（优先复用当批配置，无其他依据时 Vega500 Simulator）。只有需求或实际机型分支/硬件差异才增加配置，并在覆盖审核中写明依据。`caseProfiles`、`profileOrder` 表示候选与执行顺序，不表示所有候选机型都必须实测；通用模块不得默认扩展到全机型。
+
 每个提交在需求分析时按以下线索选择用例：
 
 1. **工作项** `wi:<id>`：从标题和正文提取工作项号（`#3661`、`AB#3661`、`Bug 3661`、`工作项 3661`、`Related work items: #3661`、`【3661】`；`Merged PR 4803` 里的 PR 号会排除），映射 registry 中 `workItems` 含该号的用例。
@@ -154,7 +156,15 @@ HEAD 槽位整体状态（原有表格）：`ACCEPTED`、`PARTIAL`、`FAIL`、`E
 
 ## 界面会话纪律
 
+会话复用目标见 `AGENTS.md` §1.1：固定 HEAD 并构建完成后先启动、登录，同一配置内保持进程运行并逐项清理状态；结束后由会话级 finally 调用经核对的 VegaKiller/受管清理入口关闭本轮进程并恢复配置。切换配置或验证启动/重启行为时允许有依据的重启。**当前实现尚未完成跨用例复用**：每日登录前置已生效，L2 用例仍独立启动/退出；不能把本段目标流程当作已经部署的运行行为。
+
+每日任务的每个 UI Runner 调用都会设置 `VEGA_AUTOTEST_REQUIRE_LOGIN=1`。`L2TestBase.LaunchAndPrepare` 在返回业务用例前强制执行官方认证器登录：读取目标构建目录内 ComponentConfig 的选中机型、RootCondition 和相应资源目录的机器 ID，配置认证器并刷新密码，用登录子窗口控件填写/提交。只有窗口标题确认目标账号、配方菜单可用、设备空闲才继续；失败按前置 BLOCKED 记录并走原有 finally 恢复。显式调用 LoginFlow 的已有用例保持兼容，不会重复提交密码。
+
+手动启动后可用 Runner 的 `login --repo-root C:\AutoTest\workspaces\daily-latest --pid <Vega进程号>` 登录入口。它只附加到路径匹配的 Simulator，复用宿主现有官方认证器流程，按运行目录 ComponentConfig 的机型与机器 ID 刷新密码并填入登录控件；密码不落盘。返回 `LOGGED_IN` 需要窗口账号为 `su`、配方菜单可用且设备空闲。该入口保留已登录程序供手动使用，不产生测试 verdict；夜间仍按受控会话执行并 finally 恢复。2026-11-06 实测默认 Resources 的 Vega500 登录成功。桌面键盘输入若焦点落到主窗口工具栏，不应提交空密码或误报授权失败。
+
 UI 验证必须实际启动目标版本的 Vega.exe，在合法授权的 Simulator 会话中完成登录和目标界面操作，并核对实际输出。logic/单元测试、DLL 反射、构建成功、模拟服务或仅实例化 WPF 控件均不能替代。是否需要 UI 由用户要求和工作项场景决定，不能只看 registry 或 uiSlots。详细规则见 `AGENTS.md` 和 `AI操作手册.md` §0.1。
+
+手动启动现有 `daily-latest` 构建时，先读取其 `Vega/bin/.../win-x64/Resources/ComponentConfig.json` 的 `SelectedToolType` 与对应 `RootCondition`。开始菜单 `Authenticator.lnk` 指向 `C:\AutoTest\runtime\AuthenticatorApp\Authenticator.exe`。若选中机型没有设置 `UserDataFolder`（例如当前 Vega500），认证器的「资源文件夹」保持默认 `Resources`：选对机型、Simulator/Gem/Gen 后使用「从本地加载」，有可保存的新内容时才使用「保存到本地」，再启动 Vega 并在真实登录窗口验证。不要将手动默认 `Resources` 换成夜间会话的 `ResourcesDaily_*`。夜间受控会话则必须使用 `Prepare` 写入的独立 `UserDataFolder`，认证器资源文件夹与之逐字一致，并在 finally 中恢复原配置。两种目录下的本地启动密钥不能互作已授权证明；登录成功以 Vega 主窗口账号和就绪状态为准。
 
 1. 配置修改前保存内容与 SHA256，Vega 停止后才改 `SelectedToolType`、`RootCondition`、`Features`、`SelectedProfiles` 和独立 `UserDataFolder`（`Start-ModelValidation.ps1 -Action Prepare`）。RootCondition 为 `<机型>,Simulator,GemSim,Gen2`；官方认证器里 Simulator 勾选、Gem 不勾选、Gen2。不得只改机型名称而漏掉 OuterToInner、硬件能力或用户数据目录，不得修改正式授权绕过机型检查。
 2. 登录由测试宿主打开 `C:\AutoTest\runtime\AuthenticatorApp\Authenticator.exe`，按当前 Vega 的 RootCondition 和机器 ID，在「超级用户密码」页生成并读取密码，账号使用 `su`。密码只留在内存，不写入报告、剪贴板或仓库。`VEGA_AUTOTEST_USER` / `VEGA_AUTOTEST_PASSWORD` 仍可覆盖。认证器缺失或读不到密码时该会话记 BLOCKED。启动验证密钥按 `authenticator-flow.json` 处理。
