@@ -15,6 +15,10 @@
     <!-- 试验工程自带版本，避免为了 FlaUI 去改仓库共享的 Directory.Packages.props -->
     <ManagePackageVersionsCentrally>false</ManagePackageVersionsCentrally>
   </PropertyGroup>
+  <ItemGroup>
+    <!-- Wpf/ is linked into WPF-enabled authored test projects only; the harness itself stays WPF-free. -->
+    <Compile Remove="Wpf/**" />
+  </ItemGroup>
 
   <ItemGroup>
     <!-- UIA 通道 -->

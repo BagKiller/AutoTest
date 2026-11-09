@@ -34,6 +34,60 @@ public class FailureClassificationTests
         Assert.Empty(ResultContractCheck.Validate(result));
     }
 
+    [Fact]
+    public void RecordedBusinessMismatchRethrownAsCustomExceptionIsFail()
+    {
+        // 2026-11-06 duv-fit-gate preflight: recorder.Fail then custom rethrow.
+        var run = new TestRunner.LayerRun();
+        run.Tests.Add(new TestEntry { Name = "Vega.AutoTest.Authored.DuvFitGateRegressionTests.Reject", Outcome = "Failed",
+            Message = "IQR leaves five rejection reason: expected TooFewKept; actual OneSided\nat Vega.AutoTest.Authored.DuvProbe.Check(...)" });
+        var records = new[]
+        {
+            new AssertionRecord("duv-21", "behavior", "IQR leaves five rejected", "False", "False", null, null, "PASS"),
+            new AssertionRecord("duv-22", "behavior", "IQR leaves five rejection reason", "TooFewKept", "OneSided", null, null, "FAIL"),
+        };
+        var verdict = VerdictResolver.ResolveLayer(new LayerConfig(), run, records, true, "logic");
+        Assert.Equal("FAIL", verdict.Verdict);
+        Assert.Equal("ASSERTION_FAILED", verdict.Code);
+    }
+
+    [Theory]
+    // Description matches but the values do not appear in the failure: not that comparison.
+    [InlineData("IQR leaves five rejection reason: unexpected crash")]
+    // Description is only quoted later in an infrastructure error.
+    [InlineData("System.IO.FileNotFoundException : IQR leaves five rejection reason TooFewKept OneSided")]
+    public void UnrelatedFailureIsNotRelabelledAsBusinessFail(string message)
+    {
+        var run = new TestRunner.LayerRun();
+        run.Tests.Add(new TestEntry { Name = "T", Outcome = "Failed", Message = message });
+        var record = new AssertionRecord("duv-22", "behavior", "IQR leaves five rejection reason", "TooFewKept", "OneSided", null, null, "FAIL");
+        Assert.Equal("ERROR", VerdictResolver.ResolveLayer(new LayerConfig(), run, [record], true, "logic").Verdict);
+    }
+
+    [Fact]
+    public void RecordedExceptionDumpCannotTurnAnErrorIntoFail()
+    {
+        var run = new TestRunner.LayerRun();
+        run.Tests.Add(new TestEntry { Name = "T", Outcome = "Failed", Message = "Galaxy init: expected loaded; actual System.InvalidOperationException: x" });
+        var record = new AssertionRecord("x", "logic", "Galaxy init", "loaded", "System.InvalidOperationException: x\n   at A.B()", null, null, "FAIL");
+        Assert.Equal("ERROR", VerdictResolver.ResolveLayer(new LayerConfig(), run, [record], true, "logic").Verdict);
+    }
+
+    [Theory]
+    // 2026-11-06 section-pane-reset: a logic test constructing Vega.MainWindow without
+    // theme resources was reported as MAIN_WINDOW_TIMEOUT because of the word "MainWindow".
+    [InlineData("System.TypeInitializationException : The type initializer for 'Vega.MainWindow' threw an exception.")]
+    [InlineData("System.InvalidOperationException : 主窗口 ViewModel 未初始化")]
+    [InlineData("System.TimeoutException : waiting for device idle")]
+    public void KeywordsWithoutTypedPrerequisiteAreNotEnvironmentBlocks(string message)
+    {
+        var run = new TestRunner.LayerRun();
+        run.Tests.Add(new TestEntry { Outcome = "Failed", Message = message });
+        var verdict = VerdictResolver.ResolveLayer(new LayerConfig(), run, [], true, "logic");
+        Assert.Equal("ERROR", verdict.Verdict);
+        Assert.Equal("HARNESS_EXCEPTION", verdict.Code);
+    }
+
     [Theory]
     [InlineData("Xunit.Sdk.TrueException: Missing dependency node\n at Fixture.Test()", "FAIL")]
     [InlineData("System.Collections.Generic.KeyNotFoundException: Missing dependency node\n at Fixture.Test()", "ERROR")]

@@ -84,6 +84,22 @@ use LoginFlow(Dialogs, States, Log).Watch(Vega).WaitReady(MainWindow!, TimeSpan.
 perform the
 actual requested screen actions and compare business output, not just startup or page presence.
 L2TestBase exposes protected Log, Assertions, Vega, MainWindow, Dialogs, States; Dispose flushes.
+Locate controls ONLY through Vega.AutoTest.Harness.UiFind: Require/Wait(root, description,
+automationId:, name:, controlType:, nameContains:) for controls the scenario needs, Optional/All
+when absence is a legitimate observed state. Prefer automationId. Never read element.Name,
+AutomationId or Properties.* directly (they can be null), and never catch UiElementNotFoundException.
+If the requirement is that a control exists or is visible, record that comparison explicitly.
+Logic tests that create WPF controls, windows, styles or view models touching Application
+resources must run that code inside Vega.AutoTest.Harness.WpfTestHost.Run(() => ...). It provides
+the STA thread and the product's real theme dictionaries; never create Application yourself and
+never define placeholder resources/brushes. WPF projects have no implicit System.IO using: add
+'using System.IO;' when using File/Path/Directory.
+Product runtime configuration (Galaxy_ComponentConfig.json, Resources/**/*.json) is copied from
+the target build into AppContext.BaseDirectory by the fixed project; do not author copies of it.
+Report every business comparison through AssertionRecorder (Pass/Fail with description, expected
+and actual). If you then throw, the exception message must start with
+'<description>: expected <expected>; actual <actual>' so the Runner classifies it as an assertion
+failure; or use xUnit Assert. Never convert a business mismatch into a generic exception.
 UIA uses FlaUI3 through harness. Do not invoke arbitrary native APIs, processes, network, reflection
 to evade licensing, or edit configuration. The controller prepares/restores official Simulator.
 Never manufacture screenshots or claim to have executed tests; generation is not execution.
@@ -390,10 +406,23 @@ def install(d, child, manifest, response, registry, sched, version):
     return requirements
 
 
+# Product WPF resource dictionaries merged by Vega/App.xaml (checked 2026-11-07).
+# WpfTestHost loads exactly these into the test Application; no placeholder brushes.
+PRODUCT_WPF_DICTIONARIES = ('/Vega.UI.Common;component/Themes/General.xaml',
+                            '/Vega.UI.Inspection;component/Recipe/Themes/EditableTabControlStyle.xaml')
+
+
 def project_text(d):
     # Authored projects always live in probes/authored/<version>/<sha>/.
     # Relative references allow the same revision to run on the validation host.
     harness = '../../../../harness/Vega.AutoTest.Harness.csproj'
+    wpf_host = '../../../../harness/Wpf/WpfTestHost.cs'
+    dictionaries = '|'.join(PRODUCT_WPF_DICTIONARIES)
+    # Runtime configuration comes from the SAME build output as the referenced
+    # product DLLs ($(ProductBin) of this SHA), keeping relative paths
+    # (Resources\...). Only configuration-type files are copied: Resources also
+    # holds tens of MB of images/data that every test layer would duplicate.
+    # deps/runtimeconfig files belong to Vega.exe and must not shadow the test host.
     return f'''<Project Sdk="Microsoft.NET.Sdk">
  <PropertyGroup><TargetFramework>net8.0-windows10.0.19041.0</TargetFramework><UseWPF>true</UseWPF>
  <ImplicitUsings>enable</ImplicitUsings><Nullable>enable</Nullable><IsTestProject>true</IsTestProject>
@@ -405,7 +434,15 @@ def project_text(d):
  <PackageReference Include="xunit.runner.visualstudio" Version="2.5.3"/>
  <PackageReference Include="Moq" Version="4.20.70"/>
  <ProjectReference Include="{harness}"/>
+ <Compile Include="{wpf_host}" Link="Harness/Wpf/WpfTestHost.cs"/>
+ <AssemblyAttribute Include="System.Reflection.AssemblyMetadataAttribute"><_Parameter1>VegaWpfResourceDictionaries</_Parameter1><_Parameter2>{dictionaries}</_Parameter2></AssemblyAttribute>
  <Reference Include="$(ProductBin)/*.dll"/>
  <Content Include="$(ProductBin)/*.dll" Link="%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest"/>
+ <Content Include="$(ProductBin)/*.json" Exclude="$(ProductBin)/*.deps.json;$(ProductBin)/*.runtimeconfig.json;$(ProductBin)/*.runtimeconfig.dev.json" Link="%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest"/>
+ <Content Include="$(ProductBin)/Resources/**/*.json;$(ProductBin)/Resources/**/*.xml;$(ProductBin)/Resources/**/*.ini;$(ProductBin)/Resources/**/*.config" Link="Resources/%(RecursiveDir)%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest"/>
  <Content Include="**/*.json;**/*.txt;**/*.recipe;**/*.csv;**/*.tsv;**/*.xml" Exclude="bin/**;obj/**" CopyToOutputDirectory="PreserveNewest"/>
- </ItemGroup></Project>'''
+ </ItemGroup>
+ <Target Name="VegaProductOutputCheck" BeforeTargets="BeforeBuild">
+  <Error Condition="!Exists('$(ProductBin)/Vega.dll')" Text="Product build output not found: $(ProductBin)/Vega.dll. Build this SHA first; tests never use another version's binaries."/>
+  <Error Condition="!Exists('$(ProductBin)/Galaxy_ComponentConfig.json')" Text="Product runtime configuration missing: $(ProductBin)/Galaxy_ComponentConfig.json. The product container cannot initialize without it."/>
+ </Target></Project>'''

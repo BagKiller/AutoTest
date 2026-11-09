@@ -165,7 +165,8 @@ P4/P5 已完成的整改（AI 不要回退）：
 | `VEGA_EXE_NOT_FOUND` / doctor 里 exe [MISS] | `VEGA_SW_ROOT` 未设/指错，或主程序没编过 | 设好变量重试；仍缺则跑 `verify --rebuild`（数分钟） |
 | `NO_CASE_REGISTERED` | 尚需准备用例 | AI 自行补写/复用、构建发现及登记后执行；无法覆盖则保留实际尝试证据（见 daily/AGENTS.md） |
 | `DEVICE_NEVER_IDLE` | MongoDB(127.0.0.1:27017) 未启动 | 检查/启动 MongoDB 后重试 |
-| `MAIN_WINDOW_TIMEOUT` | 主窗口 180s 未就绪 | 查 Vega 日志；偶发重试一次 |
+| `MAIN_WINDOW_TIMEOUT` | 主窗口 180s 未就绪（只由 harness 带类型前缀的前置异常产生，2026-11-07 起不按关键词归因） | 先读同目录 `vega-launch.json`（进程是否退出、退出码、顶层窗口）；查 Vega 日志；偶发重试一次。同一机型前一晚能启动、这次进程以非零码退出时，报告"疑似产品回归，需人工复核"，但 verdict 原样保留 BLOCKED |
+| `HARNESS_EXCEPTION` | 测试基础设施问题：产品配置缺失、WPF 资源缺失、找不到控件、测试代码自身异常 | 不是产品缺陷也不是通过；按 reason 修测试工程或用例，在新版本中重新生成，不改冻结结果 |
 | `NO_TEST_MATCHED`（logic 层） | spike 未以 `VEGA_SW_ROOT` 重编 | `dotnet build spike\Vega.AutoTest.Spike\Vega.AutoTest.Spike.csproj` 后重试 |
 | `ZERO_ASSERTIONS_MATCHED` | 用例绿但没到目标界面 | 不要报 PASS。读 `_wi{id}_l2.txt` dump 段分析 |
 | `OK_STALE_BUILD` | 重编失败但旧 exe 兜底 | 如实转述"旧二进制"；修构建看 `runs\<runId>\build.log` |
@@ -206,7 +207,7 @@ P4/P5 已完成的整改（AI 不要回退）：
 
 1. 对被测主仓库**零写入**：取证/产物只落 `VegaAutoTest\runs\`。
    任何往 `Vega_SW*` 写文件的冲动都是错的。
-2. 不改 `VerdictResolver.cs` 的判定语义；更不得在提示词/编排层另写一套判定。
+2. 不改 `VerdictResolver.cs` 的判定语义；更不得在提示词/编排层另写一套判定。判定语义只有经用户明确批准才能修改，且只改 `VerdictResolver.cs`，同时更新 `README.md` §4.4、本手册和 Runner 回归测试（2026-11-07 修订即按此执行）。任何修改都不得降低严格度：不减少断言、不放宽 `minAssertions`、不把 FAIL 改为 SKIP/BLOCKED/ERROR、不靠跳过异常用例换取绿色结果。
 3. 不把 `POST /cmd/*`、硬件动作、`--allow-hardware` 之类暴露给 LLM（根本不实现）。
 4. PAT 优先用 `AZURE_DEVOPS_PAT` 环境变量；代码会回退读取本地已 gitignore 的 `code_indicator/vega-agent/config.json`，该文件不得入库。PAT 不得写进仓库内其他文件、命令参数、URL、报告或回复；在这些位置发现明文 PAT → 提醒本人轮换。
 5. `runs\`、`assert-*.json`、`_wi*_l2.txt` 都 gitignore 但**不要删**——回归基线靠它们比对。

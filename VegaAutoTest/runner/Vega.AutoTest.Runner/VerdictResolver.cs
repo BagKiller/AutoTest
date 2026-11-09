@@ -59,24 +59,15 @@ public static class VerdictResolver
             }
         }
 
-        // trx failure message 关键字归因：主窗口超时 / 设备永不空闲属环境问题，不算 FAIL
-        var (mainWindowTimeout, deviceNeverIdle, harnessFailures) = ClassifyFailures(run.Tests, assertions);
+        // 环境前置（主窗口超时、设备不空闲、登录未就绪等）只认 harness 抛出的带类型前缀
+        // [VEGA_UI_PRECONDITION:CODE] 的异常，在下方 prerequisiteTests 中判定。
+        // 2026-11-07 起不再按"主窗口/MainWindow/空闲/idle"等关键词归因：
+        // 'Vega.MainWindow' 类型初始化失败曾被误判为 MAIN_WINDOW_TIMEOUT。
+        var harnessFailures = ClassifyFailures(run.Tests, assertions);
         if (harnessFailures > 0)
         {
             return new LayerVerdict { Verdict = "ERROR", Code = "HARNESS_EXCEPTION",
                 Reason = $"{harnessFailures} 个用例异常（非断言失败）" };
-        }
-
-        if (mainWindowTimeout)
-        {
-            return new LayerVerdict { Verdict = "BLOCKED", Code = "MAIN_WINDOW_TIMEOUT",
-                Reason = "主窗口未就绪" };
-        }
-
-        if (deviceNeverIdle)
-        {
-            return new LayerVerdict { Verdict = "BLOCKED", Code = "DEVICE_NEVER_IDLE",
-                Reason = "设备状态始终非空闲" };
         }
 
         var prerequisiteTests = run.Tests.Where(t => t.Outcome == "Failed"
@@ -168,11 +159,8 @@ public static class VerdictResolver
     /// 用例自身硬断言（Assert.True/Fail）的堆栈首帧指向 L2 用例文件——有帧即断言失败，
     /// 不是 harness 异常；真正的 harness 异常（VegaApp 启动崩溃等）堆栈指向 harness 程序集。
     /// </summary>
-    private static (bool MainWindowTimeout, bool DeviceNeverIdle, int HarnessFailures) ClassifyFailures(
-        IReadOnlyList<TestEntry> tests, IReadOnlyList<AssertionRecord> assertions)
+    private static int ClassifyFailures(IReadOnlyList<TestEntry> tests, IReadOnlyList<AssertionRecord> assertions)
     {
-        var mainWindowTimeout = false;
-        var deviceNeverIdle = false;
         var harnessFailures = 0;
 
         foreach (var test in tests.Where(t => t.Outcome == "Failed"))
@@ -202,24 +190,48 @@ public static class VerdictResolver
             {
                 continue;
             }
-            if (message.Contains("主窗口") || message.Contains("MainWindow", StringComparison.OrdinalIgnoreCase))
-            {
-                mainWindowTimeout = true;
-            }
-            else if (message.Contains("空闲") || message.Contains("idle", StringComparison.OrdinalIgnoreCase))
-            {
-                deviceNeverIdle = true;
-            }
-            else if (message.Contains(".L2.", StringComparison.OrdinalIgnoreCase))
+            // A business comparison recorded with AssertionRecorder.Fail and then
+            // rethrown as a custom exception is still an assertion failure
+            // (2026-11-06 duv-fit-gate: expected TooFewKept, actual OneSided was
+            // reported HARNESS_EXCEPTION and then dropped by preflight).
+            if (MatchesRecordedBusinessFailure(firstLine, assertions))
+                continue;
+            if (message.Contains(".L2.", StringComparison.OrdinalIgnoreCase))
             {
                 // 堆栈/消息含 L2 用例命名空间帧 = 用例自身断言，普通 FAIL
+                continue;
             }
-            else
-            {
-                harnessFailures++;
-            }
+
+            harnessFailures++;
         }
 
-        return (mainWindowTimeout, deviceNeverIdle, harnessFailures);
+        return harnessFailures;
+    }
+
+    /// <summary>
+    /// The failure's first line is the recorder's own comparison: it starts with a
+    /// FAIL record's description and names both its expected and actual values.
+    /// Recorded exception dumps and prerequisite markers never qualify, so an
+    /// infrastructure error cannot be relabelled as a business failure.
+    /// </summary>
+    public static bool MatchesRecordedBusinessFailure(string firstLine, IReadOnlyList<AssertionRecord> assertions)
+    {
+        if (string.IsNullOrWhiteSpace(firstLine))
+            return false;
+        return assertions.Any(a =>
+            a.Result == "FAIL"
+            && a.Description is { Length: >= 3 } description
+            && firstLine.StartsWith(description, StringComparison.Ordinal)
+            && !string.IsNullOrWhiteSpace(a.Expected) && !string.IsNullOrWhiteSpace(a.Actual)
+            && firstLine.Contains(a.Expected, StringComparison.Ordinal)
+            && firstLine.Contains(a.Actual, StringComparison.Ordinal)
+            && !LooksLikeException(a.Actual)
+            && PrerequisiteCode(a.Actual) is null);
+    }
+
+    private static bool LooksLikeException(string text)
+    {
+        var first = text.Split('\n', 2)[0];
+        return first.Contains("Exception", StringComparison.Ordinal) || text.Contains("\n   at ", StringComparison.Ordinal);
     }
 }

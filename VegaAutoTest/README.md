@@ -210,18 +210,22 @@ D:\Code\Vega\VegaAutomation\VegaAutoTest\runs\20260917T055731Z_wi3478_08a70f4\re
 | --- | --- | --- |
 | `OK` | PASS | 各层全部通过 |
 | `OK_STALE_BUILD` | PASS | 通过但构建失败沿用了旧 exe（结论降级） |
-| `ASSERTION_FAILED` | FAIL | 有断言 FAIL，或有用例失败 |
+| `ASSERTION_FAILED` | FAIL | 有断言 FAIL，或有用例失败。用例失败的首行若以本用例记录的 FAIL 断言描述开头、且包含其 expected 与 actual（`<描述>: expected <期望>; actual <实际>`），即使抛的是自定义异常也按断言失败处理（2026-11-07） |
 | `NO_CASE_REGISTERED` | BLOCKED | 工作项未在 registry.json 登记 |
 | `NO_TEST_MATCHED` | BLOCKED | 层过滤器零匹配（用例未写，或探针被条件编译剔除——见 §8.2） |
 | `VEGA_EXE_NOT_FOUND` | BLOCKED | 层需要被测 exe（`requiresVegaExe`）但不存在 |
-| `MAIN_WINDOW_TIMEOUT` | BLOCKED | trx 失败消息含"主窗口/MainWindow" |
-| `DEVICE_NEVER_IDLE` | BLOCKED | trx 失败消息含"空闲/idle"（典型：MongoDB 缺失） |
+| `MAIN_WINDOW_TIMEOUT` | BLOCKED | harness 抛出带类型前缀 `[VEGA_UI_PRECONDITION:MAIN_WINDOW_TIMEOUT]` 的前置异常（`VegaApp.WaitForMainWindow` 在 180s 内未取得主窗口；证据 `vega-launch.json`）。2026-11-07 起**不再**按失败消息里的"主窗口/MainWindow"关键词归因 |
+| `VEGA_PROCESS_EXITED` | BLOCKED | 带类型前缀的前置异常：Vega 在主窗口出现前或就绪等待中退出（退出码见 `vega-launch.json`） |
+| `LOGIN_NOT_READY` / `UI_NOT_READY` | BLOCKED | 带类型前缀的前置异常：登录未完成 / 已登录但界面未就绪 |
+| `DEVICE_NEVER_IDLE` | BLOCKED | 带类型前缀的前置异常：登录后设备状态始终非空闲（典型：MongoDB 缺失）。不再按"空闲/idle"关键词归因 |
 | `L1_UNAVAILABLE_REQUIRED` | BLOCKED | 层声明 `requiresL1Api` 但 API 未就绪 |
 | `ZERO_ASSERTIONS_MATCHED` | BLOCKED | 用例绿但命中断言数 < 该层 `minAssertions`（假阳性防线） |
 | `TIMEOUT` | BLOCKED | 层执行超过 `timeoutSeconds` |
-| `HARNESS_EXCEPTION` | ERROR | 用例失败且消息无法归因为上述环境问题，也**不含 `.L2.` 帧**（堆栈含 `.L2.` = 用例自身断言，归 ASSERTION_FAILED；反例 runId `20260921T053324Z_wi3547` 曾把 5 条断言失败误判成此码） |
+| `HARNESS_EXCEPTION` | ERROR | 用例失败，既不是带类型前缀的前置异常，也不是 xUnit 断言、不是本用例记录的业务比较，也**不含 `.L2.` 帧**（堆栈含 `.L2.` = 用例自身断言，归 ASSERTION_FAILED；反例 runId `20260921T053324Z_wi3547` 曾把 5 条断言失败误判成此码）。产品配置缺失、WPF 资源缺失、找不到控件（`UiElementNotFoundException`）等测试基础设施问题归此码，原因写在 reason 中 |
 | `BUILD_FAILED_NO_FALLBACK` | ERROR | 重编失败且无旧二进制 |
 | `CONTRACT_VIOLATION` | ERROR | `result.json` 契约自检违例（`ResultContractCheck`）——这份结论的元数据自己就不可信，原判定保留在 `verdictReason` 里。**违例也会落盘**，便于诊断 |
+
+**2026-11-07 判定契约修订（用户批准）**：环境前置只认 harness 抛出的带类型前缀异常，不再按消息关键词归因（`'Vega.MainWindow'` 类型初始化失败曾被误判为 `MAIN_WINDOW_TIMEOUT`）；用 `AssertionRecorder` 记录后再以自定义异常抛出的业务比较，按断言失败判定（`duv-fit-gate` 的 `expected TooFewKept; actual OneSided` 曾被判 `HARNESS_EXCEPTION` 并在预检中被剔除）。修订不降低严格度：不减少断言、不放宽 `minAssertions`、不把 FAIL 改为 SKIP/BLOCKED/ERROR。已冻结批次的历史结论不重新判定。
 
 **两层防线的设计意图**：
 - `ZERO_ASSERTIONS_MATCHED`：测试"绿"但一条断言没命中 = 根本没进到目标界面，是最危险的假阳性，必须 BLOCKED 而非 PASS。
@@ -431,7 +435,7 @@ print(verdict["verdict"], verdict["verdictCode"], verdict["verdictReason"])
 | `verify` 退 3，`BUILD_FAILED_NO_FALLBACK` | 重编失败且无旧 exe。先看 `runs\<runId>\build.log`；常见为 NuGet 源不可达或 NiDQACard C++ 工具链缺失 |
 | PASS 但 `verdictCode=OK_STALE_BUILD` | 重编失败但有旧 exe 兜底。查 build.log 修构建，重跑 `--rebuild` 才能下"当前源码已修复"结论 |
 | logic 层 `NO_TEST_MATCHED`（BLOCKED） | spike 未以 `VEGA_SW_ROOT` 重编，探针类被条件编译剔除（§8.2）。设变量重编 spike 即恢复 |
-| uia 层 `MAIN_WINDOW_TIMEOUT` | 主窗口 180s 未就绪。查 Vega 日志、MongoDB；偶发可先 `doctor` 再重跑 |
+| uia 层 `MAIN_WINDOW_TIMEOUT` | 主窗口 180s 未就绪。先看同目录 `vega-launch.json`（进程是否退出、退出码、顶层窗口），再查 Vega 日志、MongoDB；偶发可先 `doctor` 再重跑。logic 层构造 WPF 窗口失败不会再报此码，而是 `HARNESS_EXCEPTION` |
 | uia 层 `DEVICE_NEVER_IDLE` | 设备状态卡 Busy（典型：MongoDB 缺失 / 初始化未完成）。`DeviceStateReader` 证据里有状态时间线 |
 | `ZERO_ASSERTIONS_MATCHED` | 用例绿但没真正到目标界面（弹窗竞态/树结构变化）。看 `_wi{id}_l2.txt` 的 dump 段 |
 | logic 层直接绿但 0 断言 | 正常——logic 层 `minAssertions=0`，判定只看 trx 用例结果 |
