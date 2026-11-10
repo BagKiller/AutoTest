@@ -32,6 +32,11 @@ daily/controller-launches/
 __pycache__/
 *.py[cod]
 
+# 每日控制器按不可变版本/提交生成的临时探针。历史已跟踪的基线不受影响；
+# 若某个新探针经人工审核需要长期版本化，使用 git add -f 显式加入。
+/probes/authored/v*/
+/probes/generated/*/
+
 # IDE
 .vs/
 *.user
