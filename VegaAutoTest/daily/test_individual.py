@@ -89,6 +89,26 @@ class IndividualTests(unittest.TestCase):
         d.save(child / 'preparation' / 'case-check.json', dict(sha=sha, records=records,
             fingerprints=d.coverage_contract.case_fingerprints(d, self.registry, ids, transitive=True)))
 
+    def test_reviewed_case_without_work_item_is_executed_on_latest_head_target(self):
+        # 2026-11-09: the integrated HEAD target carried work items of OTHER commits,
+        # so the lock-file commit's reviewed case (no work item) never entered the plan.
+        lock_case = dict(id='lock-case', workItems=[], tags=[],
+                         layers=dict(logic=dict(project='probe/probe.csproj', filter='FullyQualifiedName~Lock')))
+        registry = dict(cases=self.registry['cases'] + [lock_case])
+        target = dict(self.commits[0], workItems=[7000])
+        manifest = dict(self.manifest, commits=[target], reviewCaseIds=['lock-case', 'wi7'],
+                        coverageSelectionExplicit=True)
+        out = self.out / 'plan-fixture'
+        out.mkdir()
+        data = d.plan(out, manifest, registry, self.sched)
+        planned = {item['caseId'] for item in data['headless']}
+        self.assertEqual(planned, {'wi7', 'lock-case'})
+        # Unreviewed cases stay out; reviewed work-item cases are not duplicated.
+        registry['cases'].append(dict(lock_case, id='unreviewed'))
+        data = d.plan(out, manifest, registry, self.sched)
+        self.assertNotIn('unreviewed', {item['caseId'] for item in data['headless']})
+        self.assertEqual(sorted(i['caseId'] for i in data['headless']), ['lock-case', 'wi7'])
+
     def test_modes_and_legacy_resume(self):
         self.assertEqual(d.resolve_strategy(None, None), 'latest-head')
         self.assertEqual(d.resolve_strategy(None, {}), 'merged')

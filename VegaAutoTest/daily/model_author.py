@@ -92,7 +92,11 @@ If the requirement is that a control exists or is visible, record that compariso
 Logic tests that create WPF controls, windows, styles or view models touching Application
 resources must run that code inside Vega.AutoTest.Harness.WpfTestHost.Run(() => ...). It provides
 the STA thread and the product's real theme dictionaries; never create Application yourself and
-never define placeholder resources/brushes. WPF projects have no implicit System.IO using: add
+never define placeholder resources/brushes. Keep only the WPF object creation/inspection inside
+Run, not unrelated business setup. Inside Run never block on a Task (.Result, .Wait(),
+GetAwaiter().GetResult(), Task.WaitAll): it deadlocks the WPF thread and the call fails with
+WpfHostTimeoutException. For async product APIs use
+WpfTestHost.RunAsync(async () => { var x = await api(); ... return value; }) instead. WPF projects have no implicit System.IO using: add
 'using System.IO;' when using File/Path/Directory.
 Product runtime configuration (Galaxy_ComponentConfig.json, Resources/**/*.json) is copied from
 the target build into AppContext.BaseDirectory by the fixed project; do not author copies of it.
@@ -442,7 +446,13 @@ def project_text(d):
  <Content Include="$(ProductBin)/Resources/**/*.json;$(ProductBin)/Resources/**/*.xml;$(ProductBin)/Resources/**/*.ini;$(ProductBin)/Resources/**/*.config" Link="Resources/%(RecursiveDir)%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest"/>
  <Content Include="**/*.json;**/*.txt;**/*.recipe;**/*.csv;**/*.tsv;**/*.xml" Exclude="bin/**;obj/**" CopyToOutputDirectory="PreserveNewest"/>
  </ItemGroup>
+ <!-- Match the product's shared frameworks (Vega.runtimeconfig.json): e.g. Microsoft.Extensions.Http
+      comes from Microsoft.AspNetCore.App, not from Vega/bin. Added only when this SDK ships it. -->
+ <ItemGroup Condition="Exists('$(ProductBin)/Vega.runtimeconfig.json') And $([System.IO.File]::ReadAllText('$(ProductBin)/Vega.runtimeconfig.json').Contains('Microsoft.AspNetCore.App')) And Exists('$(NetCoreRoot)shared/Microsoft.AspNetCore.App')">
+  <FrameworkReference Include="Microsoft.AspNetCore.App"/>
+ </ItemGroup>
  <Target Name="VegaProductOutputCheck" BeforeTargets="BeforeBuild">
+  <Warning Condition="Exists('$(ProductBin)/Vega.runtimeconfig.json') And $([System.IO.File]::ReadAllText('$(ProductBin)/Vega.runtimeconfig.json').Contains('Microsoft.AspNetCore.App')) And !Exists('$(NetCoreRoot)shared/Microsoft.AspNetCore.App')" Text="Product uses Microsoft.AspNetCore.App but this SDK ($(NetCoreRoot)) has no such shared runtime; tests touching it will fail to load assemblies."/>
   <Error Condition="!Exists('$(ProductBin)/Vega.dll')" Text="Product build output not found: $(ProductBin)/Vega.dll. Build this SHA first; tests never use another version's binaries."/>
   <Error Condition="!Exists('$(ProductBin)/Galaxy_ComponentConfig.json')" Text="Product runtime configuration missing: $(ProductBin)/Galaxy_ComponentConfig.json. The product container cannot initialize without it."/>
  </Target></Project>'''

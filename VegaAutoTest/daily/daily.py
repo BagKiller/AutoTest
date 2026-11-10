@@ -283,8 +283,17 @@ def plan(out, manifest, registry, sched):
         wis = c.get("workItems") or work_items(c["title"] + "\n" + c.get("message", ""))
         for wi in wis:
             add(f"wi:{wi}", "workItem", f"工作项 #{wi}", c["sha"], by_wi.get(wi, []))
-        if not wis and manifest.get('reviewCaseIds'):
-            add('review:' + c['sha'][:8], 'workItem', '经 diff 需求审核的提交用例', c['sha'], manifest['reviewCaseIds'])
+        # Every reviewed case is executed. Work-item clusters only find cases that
+        # carry a work-item number; a reviewed case from a commit without one
+        # (e.g. a lock-file refresh merged into the latest-HEAD target, whose
+        # combined work items come from OTHER commits) was otherwise silently
+        # dropped from the frozen plan (2026-11-09 lock-refresh-serialization).
+        reviewed = manifest.get('reviewCaseIds') or []
+        if reviewed:
+            covered = {cid for wi in wis for cid in by_wi.get(wi, [])}
+            leftover = [cid for cid in reviewed if cid not in covered] if wis else reviewed
+            if leftover:
+                add('review:' + c['sha'][:8], 'workItem', '经 diff 需求审核的提交用例', c['sha'], leftover)
         for tag in c.get("groups", []):
             add(f"tag:{tag}", "pathTag", f"路径候选 {tag}", c["sha"], sched["tagCases"].get(tag, []))
         if not wis:
