@@ -1,0 +1,8 @@
+{
+  "State": "Ready",
+  "Enabled": true,
+  "StartBoundary": "2026-11-11T23:30:00+08:00",
+  "NextRun": "2026-11-11T23:30:30.0000000+08:00",
+  "LastResult": 0,
+  "TemporaryProbeRemaining": false
+}

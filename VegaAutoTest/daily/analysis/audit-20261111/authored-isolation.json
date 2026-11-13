@@ -1,0 +1,22 @@
+[
+  {
+    "check": "synthetic-product-build",
+    "exitCode": 0,
+    "passed": true
+  },
+  {
+    "check": "logic-run",
+    "exitCode": 0,
+    "passed": true
+  },
+  {
+    "check": "ui-api-build",
+    "exitCode": 0,
+    "passed": true
+  },
+  {
+    "check": "invalid-ui-build",
+    "exitCode": 1,
+    "passed": true
+  }
+]

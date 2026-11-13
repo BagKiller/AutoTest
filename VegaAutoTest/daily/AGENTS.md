@@ -11,6 +11,15 @@
 - 报告标注 `testingPolicy=latest-head`、`perCommitAcceptance=false`。逐提交状态 `PASSED_AT_HEAD` 表示该提交的需求在最新 HEAD 构建上通过，不宣称各提交在自己 SHA 上独立验收。
 - `--strategy individual`（每个提交在自己的 SHA 上独立构建）只在用户单独要求逐提交专项复验时显式使用；夜间控制器从不自行创建 individual 批次。`--strategy merged` 仅兼容旧批次。
 
+### 1.2 UI 验证规则：有复现步骤必须 UI 实测（2026-11-13 用户明确修订，取代本节早前"默认不强启"条款）
+
+- **有复现步骤/验收标准 → 强制 UI 验证**：工作项带复现步骤或验收标准，且描述的是屏幕操作流程（打开/登录/点击/勾选/导航/观察结果）时，必须生成 uia 层用例**严格按复现步骤原文逐步执行**，断言验收标准原文；禁止用逻辑/组件测试替代，禁止自主分析代码另写测试场景，禁止模型发散。报告逐提交状态以该 UI 实测为准。
+- **过程截图证据**：UI 用例在每个关键步骤（登录完成、动作执行后、最终结果）调用 harness `StepEvidence.Capture(MainWindow, "step-N-说明")` 保留截图（落在 result.json 同目录，`step-NN-标签.png`），作为可证明失败与否的过程证据；截图不改变正式 verdict（仍只来自 Runner result.json）。
+- **无复现步骤且验收不可屏幕观察**：才允许逻辑/组件测试，或打 `INSUFFICIENT_INFO` 标签；两类情况都不得宣称 UI 已验。
+- **程序门禁**（不靠提示语）：`model_author.install` 拒绝"复现型需求只映射 logic 用例"的生成（进入一次校验修正）；`coverage_preparation.freeze` 对复现型需求 + 无 uia 用例的组合记硬缺口 **"Mandatory UI not executed"**，阻断完整验收；报告逐提交状态因此保持 NEEDS_CASE/FAIL，不得标注 UI 已验。识别标准：steps/expected 文本含登录/打开/点击/勾选/选择/导航/页面/界面/菜单/弹窗/下拉/对话框/窗口/检查显示/观察（中英）。
+- 早前（2026-11-13 上午）"uiRequired 默认 false、有 uiBasis 才启动"的条款被本条**取代**：有复现步骤就是依据本身，不需要额外 uiBasis 证明；`uiBasis` 字段仍保留用于引用原文。
+- 落地状态：`model_author.py`（POLICY + install 门禁 + _repro_shaped）、`coverage_preparation.py`（freeze 兜底 + 同名判定）、`harness/StepEvidence.cs`（截图 API）已实现；157 个测试全绿。已有用例（如 wi3756-klarf-throughput-ui）符合本规则。
+
 ### 1.1 机型范围与会话复用（2026-11-06 用户补充）
 
 此处“版本”指 Vega 机型/硬件配置，不改变固定 HEAD、逐提交归属结果的策略。

@@ -189,7 +189,7 @@ def workspace(d, out, manifest, evidence=None):
     return repo
 
 
-_ORDER = ['FAIL', 'ERROR', 'BLOCKED', 'NEEDS_CASE', 'PENDING', 'NOT_RUN', 'PASSED_AT_HEAD']
+_ORDER = ['FAIL', 'ERROR', 'BLOCKED', 'NEEDS_CASE', 'INSUFFICIENT_INFO', 'PENDING', 'NOT_RUN', 'PASSED_AT_HEAD']
 
 
 def commit_results(d, root, child, runs):
@@ -211,6 +211,9 @@ def commit_results(d, root, child, runs):
         cases = sorted({cid for r in own for cid in r.get('caseIds', [])})
         gaps = [g for r in own for g in r.get('gaps', [])]
         verdicts = {cid: [x.get('verdict') for x in by_case.get(cid, [])] for cid in cases}
+        # Work items tagged insufficient info (no repro steps/acceptance criteria)
+        # are reported distinctly: nothing was guessable, nothing was run for them.
+        insufficient = own and all(r.get('gapKind') == 'INSUFFICIENT_INFO' for r in own)
         if commit.get('noProductChange'):
             status, reason = 'NOT_APPLICABLE', '仅文档改动'
         elif plan is None:
@@ -225,6 +228,8 @@ def commit_results(d, root, child, runs):
                 status = 'ERROR'
             elif 'BLOCKED' in flat:
                 status = 'BLOCKED'
+            elif insufficient and not cases:
+                status = 'INSUFFICIENT_INFO'
             elif gaps or not own or not cases:
                 status = 'NEEDS_CASE'
             elif missing:

@@ -172,3 +172,15 @@ UI 验证必须实际启动目标版本的 Vega.exe，在合法授权的 Simulat
 4. 不 push、不创建 PR、不写工作项状态。原始 Runner 报告不手改，历史批次不删除。
 
 历史专项脚本归档在 `analysis/recovery-20261027/tools/`，不作为日常入口；旧版本测试工程仍被历史冻结计划引用，保留用于审计。
+
+## 2026-11-11 可靠性修正
+
+- 编译/发现错误与 Runner 预检结果分别处理；两类失败并存时仍有一次编译修正，只修正失败 scope 的源码。初次发现日志、receipt 和原始 Runner 结果保留；业务 FAIL、既有断言、期望和 `minAssertions` 不进入修正范围。
+- 新生成用例必须填写 `sourceFiles`（本类与所需 helper），各用例使用独立 `Authored.<key>.csproj`，关闭默认源码扫描。UI 源码的编译错误不会连带阻断无关 logic。新 key/className 格式由结构化 schema 约束。
+- 模型固定收到带 SHA256 的真实 `UiFind.cs`、`WpfTestHost.cs`；`Wait` 必须传第三参数 timeout，`Optional/All` 没有 description 参数。控制器额外记录 harness 源码指纹。
+- 每提交仍最多 20 分钟推理；源码补查最多八轮，并保留最后三分钟生成预算。已有摘要恢复时保留原始行号。gap 区分内部信息不足、测试准备错误、外部数据/硬件和未知验收基准。
+- WPF 启动与执行共用默认 120 秒 deadline；资源初始化超时也会使宿主立即失效，迟到的初始化线程不能恢复该宿主。
+- latest-head 的旧 `commitCount/statusCounts` 保持执行目标口径兼容；新增 `executionTargetCount`、`collectedCommitStatusCounts` 和口径标签，原始逐提交结果仍在 `commitResults`。
+- `Start-DailyValidation.ps1 -RuntimeCheck -LaunchDirectory <目录>` 可在任务计划程序中验证 Git、SDK8 三套共享运行时、registry、机型调度及现有模型登录，并保存 `runtime-check.json`，不会收集或执行产品测试。
+
+回归入口：`python.exe -B -m unittest discover -p "test_*.py"`（在 daily 下）；`tests/verify_authored_isolation.py` 验证真实 SDK 的生成工程隔离，可选 `--model-smoke` 检查真实模型生成。`tests/Vega.AutoTest.WpfHost.Contracts` 的 startup/work/shared-budget/async 模式在独立进程验证 WPF 的启动、执行和异步契约。这些合成框架测试不代表产品或 UI 验收。

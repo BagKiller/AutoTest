@@ -1,0 +1,12 @@
+[
+  {
+    "check": "synthetic-product-build",
+    "exitCode": 0,
+    "passed": true
+  },
+  {
+    "check": "model-generated-run",
+    "exitCode": 0,
+    "passed": true
+  }
+]

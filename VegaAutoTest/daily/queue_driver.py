@@ -14,6 +14,16 @@ class CaseRuntimePreflightError(RuntimeError):
     """A runnable test failed its runtime contract; compiler repair cannot fix it."""
 
 
+class CaseDiscoveryError(RuntimeError):
+    """Compilation/discovery failed, independently of retained runtime results."""
+
+    def __init__(self, records):
+        self.case_ids = sorted({r['caseId'] for r in records
+            if r['exitCode'] != 0 or not r.get('discoveredTests')})
+        super().__init__('Case build/discovery failed; valid cases retained in preparation/case-check.json: '
+                         + ', '.join(self.case_ids))
+
+
 def prepare_all(d, plan, registry, sched):
     """Keep one unsupported/deleted test from skipping preparation of later SHAs."""
     for slot in plan['commitSlots']:
@@ -53,16 +63,23 @@ def check_cases(d, child, manifest, registry, ids, repo):
             d.save(discovery_dir / 'test-artifacts.json', dict(artifacts=str(artifacts)))
             environment.update(VEGA_AUTOTEST_RUNDIR=str(discovery_dir), VEGA_AUTOTEST_OUTDIR=str(discovery_dir))
             with log_path.open('w', encoding='utf-8') as log:
-                result = d.run_bounded([str(d.DOTNET), 'test', str(project), '--list-tests',
-                    '--filter', layer['filter'], '--artifacts-path', str(artifacts),
-                    '-p:UseSharedCompilation=false'], env=environment, cwd=d.ROOT,
-                    stdout=log, stderr=subprocess.STDOUT, timeout=layer.get('timeoutSeconds', 600))
+                try:
+                    result = d.run_bounded([str(d.DOTNET), 'test', str(project), '--list-tests',
+                        '--filter', layer['filter'], '--artifacts-path', str(artifacts),
+                        '-p:UseSharedCompilation=false'], env=environment, cwd=d.ROOT,
+                        stdout=log, stderr=subprocess.STDOUT, timeout=layer.get('timeoutSeconds', 600))
+                    exit_code = result.returncode
+                except Exception as error:
+                    # run_bounded has already terminated its owned child tree.
+                    # Retain the failure and discover the remaining candidates.
+                    log.write('\nDiscovery invocation failed: ' + type(error).__name__ + ': ' + str(error) + '\n')
+                    exit_code = 1
             output = log_path.read_text(encoding='utf-8', errors='replace')
             # VSTest list-tests emits an indented name for each discovered test.
             listing = output.split('The following Tests are available:', 1)
             discovered = [s.strip() for s in listing[-1].splitlines() if len(listing) == 2
                           and s.startswith('    ') and s.strip() and not s.strip().startswith(('at ', 'Failed ', 'Error '))]
-            records.append(dict(caseId=cid, layer=name, exitCode=result.returncode,
+            records.append(dict(caseId=cid, layer=name, exitCode=exit_code,
                 discoveredTests=discovered, log=str(log_path.relative_to(child)),
                 logSha256=d.coverage_contract.digest(log_path)))
     receipt = dict(sha=manifest['head'], repo=str(repo), checkedAt=d.now_cn().isoformat(), records=records, fingerprintVersion=3,
@@ -77,6 +94,7 @@ def check_cases(d, child, manifest, registry, ids, repo):
     except Exception as error:
         d.save(child / 'preparation' / 'discovery-cleanup-error.json', dict(reason=str(error), logsPreserved=True))
     discovery_failed = any(r['exitCode'] != 0 or not r['discoveredTests'] for r in records)
+    failures = []
     if manifest.get('preflightPolicy') == 'headless-runner-v1':
         # Trial results never enter official outcomes. Actual UI requires an
         # authorized prepared session, so discovery is not UI acceptance.
@@ -105,12 +123,14 @@ def check_cases(d, child, manifest, registry, ids, repo):
             d.save(child / 'preparation' / 'case-check.json', receipt)
         d.save(child / 'preparation' / 'case-check.json', receipt)
         failures = [r for r in headless if not r.get('runtimeUsable')]
-        if failures:
-            raise CaseRuntimePreflightError('Runner preflight failed: ' + '; '.join(
-                r['caseId'] + '/' + r['layer'] + ': ' + str(r['runtime'].get('verdictCode'))
-                + ' ' + str(r['runtime'].get('verdictReason', '')) for r in failures))
+    # Retain ALL trial evidence, but never let another candidate's runtime error
+    # suppress the independent, bounded compiler-repair opportunity.
     if discovery_failed:
-        raise RuntimeError('Case build/discovery failed; valid cases retained in preparation/case-check.json')
+        raise CaseDiscoveryError(records)
+    if failures:
+        raise CaseRuntimePreflightError('Runner preflight failed: ' + '; '.join(
+            r['caseId'] + '/' + r['layer'] + ': ' + str(r['runtime'].get('verdictCode'))
+            + ' ' + str(r['runtime'].get('verdictReason', '')) for r in failures))
     return receipt
 
 

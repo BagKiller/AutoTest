@@ -1,0 +1,32 @@
+[
+  {
+    "Id": "double-row-1",
+    "Kind": "Equality",
+    "Description": "Double(0) returns twice its input",
+    "Expected": "0",
+    "Actual": "0",
+    "Delta": null,
+    "Tolerance": null,
+    "Result": "PASS"
+  },
+  {
+    "Id": "double-row-2",
+    "Kind": "Equality",
+    "Description": "Double(-3) returns twice its input",
+    "Expected": "-6",
+    "Actual": "-6",
+    "Delta": null,
+    "Tolerance": null,
+    "Result": "PASS"
+  },
+  {
+    "Id": "double-row-3",
+    "Kind": "Equality",
+    "Description": "Double(21) returns twice its input",
+    "Expected": "42",
+    "Actual": "42",
+    "Delta": null,
+    "Tolerance": null,
+    "Result": "PASS"
+  }
+]

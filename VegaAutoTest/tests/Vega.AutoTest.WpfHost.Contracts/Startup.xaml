@@ -1,0 +1,2 @@
+<local:StartupDictionary xmlns:local="clr-namespace:WpfHostContracts;assembly=Vega.AutoTest.WpfHost.Contracts"
+                        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"/>

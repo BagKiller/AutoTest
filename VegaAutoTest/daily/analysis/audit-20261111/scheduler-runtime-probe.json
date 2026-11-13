@@ -1,0 +1,8 @@
+{
+  "TaskName": "VegaAutoTest-DailyValidation-RuntimeCheck-20261111",
+  "State": "Ready",
+  "LastRunTime": "2026-11-11T16:26:26.0000000+08:00",
+  "LastTaskResult": 0,
+  "LogonType": "Interactive",
+  "RuntimeEvidence": true
+}

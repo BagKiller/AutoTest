@@ -56,6 +56,9 @@ class IndividualTests(unittest.TestCase):
         requirement = dict(id='acceptance', workItems=[7000], steps=['Run target behavior'],
                            expected='Matches work item expectation', uiRequired=ui,
                            profiles=['Vega300-HWv1'] if ui else [], caseIds=['wi7'] if case_ids is None else case_ids)
+        if ui:
+            # 2026-11-13 policy: UI verification requires a work-item basis.
+            requirement['uiBasis'] = 'Repro steps require on-screen verification'
         if gap:
             requirement['gap'] = gap
         review = dict(sha=slot['sha'], diffSha256=d.individual.coverage_contract.digest(self.out / (slot['sha'][:8] + '.diff')),
@@ -212,6 +215,49 @@ class IndividualTests(unittest.TestCase):
         self.assertEqual(rows[0]['status'], 'NEEDS_CASE')
         self.assertIn('Required UI case/profile missing', rows[0]['reason'])
 
+    def test_ui_required_without_ui_basis_downgrades_to_logic_only(self):
+        # 2026-11-13 policy: no uiBasis means no UI session; the gap is recorded.
+        p = self.prepare()
+        slot = p['commitSlots'][0]
+        child = Path(slot['batch'])
+        source = child / 'preparation' / 'workitems.json'
+        d.save(source, dict(workItems=[dict(id=7000, state='AVAILABLE')]))
+        requirement = dict(id='acceptance', workItems=[7000], steps=['Run target behavior'],
+                           expected='Matches work item expectation', uiRequired=True,
+                           profiles=['Vega300-HWv1'], caseIds=['wi7'], uiBasis='')
+        review = dict(sha=slot['sha'], diffSha256=d.individual.coverage_contract.digest(self.out / (slot['sha'][:8] + '.diff')),
+                      workItemsSha256=d.individual.coverage_contract.digest(source), requirements=[requirement])
+        review_path = child / 'review-input.json'
+        d.save(review_path, review)
+        self.discovery_receipt(child, slot['sha'], ['wi7'])
+        cp = d.individual.freeze_one(d, p, slot['sha'], self.registry, self.sched, review_path)
+        gaps = cp['coverageRequirements'][0]['gaps']
+        self.assertTrue(any('uiRequired without uiBasis' in gap for gap in gaps))
+        # The downgrade is one stroke: no additional per-profile UI case demands.
+        self.assertNotIn('Required UI case/profile missing', ' '.join(gaps))
+
+    def test_repro_shaped_requirement_with_logic_only_case_gets_mandatory_ui_gap(self):
+        # 2026-11-13 evening policy: repro steps describing an on-screen flow MUST map to a
+        # uia-layer case; logic-only mapping is a hard gap (acceptance never shown as UI-verified).
+        self.registry['cases'][0]['layers'].pop('uia')
+        p = self.prepare()
+        slot = p['commitSlots'][0]
+        child = Path(slot['batch'])
+        source = child / 'preparation' / 'workitems.json'
+        d.save(source, dict(workItems=[dict(id=7000, state='AVAILABLE')]))
+        requirement = dict(id='acceptance', workItems=[7000],
+                           steps=['打开Vega并登录', '打开输出页并取消勾选DW2 Default', '修改产量并检查勾选'],
+                           expected='勾选保持不变', uiRequired=False,
+                           profiles=[], caseIds=['wi7'])
+        review = dict(sha=slot['sha'], diffSha256=d.individual.coverage_contract.digest(self.out / (slot['sha'][:8] + '.diff')),
+                      workItemsSha256=d.individual.coverage_contract.digest(source), requirements=[requirement])
+        review_path = child / 'review-input.json'
+        d.save(review_path, review)
+        self.discovery_receipt(child, slot['sha'], ['wi7'])
+        cp = d.individual.freeze_one(d, p, slot['sha'], self.registry, self.sched, review_path)
+        gaps = ' '.join(cp['coverageRequirements'][0]['gaps'])
+        self.assertIn('Mandatory UI not executed', gaps)
+
     def test_real_case_reuse_and_ui_execution_are_still_required(self):
         p = self.prepare()
         cp = self.freeze(p)
@@ -317,6 +363,9 @@ class IndividualTests(unittest.TestCase):
         self.assertEqual(result['testingPolicy'], 'latest-head')
         self.assertFalse(result['perCommitAcceptance'])
         self.assertEqual(result['collectedCommitCount'], 2)
+        self.assertEqual(result['executionTargetCount'], 1)
+        self.assertEqual(result['collectedCommitStatusCounts'], {'PENDING': 2})
+        self.assertEqual(result['statusCountsScope'], 'execution-targets')
         self.assertFalse(result['testsExecuted'])
         self.assertEqual(result['runnerRunCount'], 0)
 
