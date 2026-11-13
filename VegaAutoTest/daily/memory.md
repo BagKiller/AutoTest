@@ -1,5 +1,30 @@
 # Vega daily validation memory
 
+## Targeted UI verification — 2026-11-13 18:20 +08:00 (#3756 real UI, batch 20261112 rev campaign)
+
+- 用户要求对 #3756（修改产量后 KLARF Default 页勾选被重置）启动真实软件验证。新写 L2 UI 用例 `l2/Vega.AutoTest.L2/WorkItem3756L2.cs`（新工程 l2/Vega.AutoTest.Wi3756KlarfUi），严格按 ADO 复现步骤：登录 → Inspection → 打开配方 → Results Output → KLARF 类型页 → Default 输出页 → 取消勾选 DW2 Default → 修改产量(高产率) → 复查勾选保留。登记 registry（wi3756-klarf-throughput-ui，uia，minAssertions=3，Vega500）。
+- **正式 PASS**：runId `20261113T083322Z_wi0_dd0df85`，verdict PASS/OK，3/3 断言（uncheck-applied=Off、throughput-changed=高产率、selection-preserved=Defects/SURFImage 叶属性保持未勾选）。目标 HEAD `1d5442d7`（含 PR 5122 修复）上**缺陷未复现**。会话 sessions\20261113T162108_Vega500_f9e539，官方认证自动登录，finally Stop/Restore 双会话 SHA256 核对通过，无残留进程。
+- 前 10 次迭代的导航教训（每次都留有 result.json/取证日志在 runner-manual3756\）：WPF TabControl/TreeView 的 UIA Name 全部是 DataContext.ToString（类名），模板渲染的显示文本须读元素内 Text 子元素（HeaderText/NodeText 模式）；输出区是两级页签（外层=输出类型、内层=输出文件）；KLARF 通道复选框三态（Indeterminate），取消勾选需循环 Toggle；WPF ComboBox 无 ValuePattern；会话背靠背复用会让认证器残留进程污染密码读取——重跑前 taskkill Authenticator + 重新 Prepare。
+- 第 11 次全断言 PASS 后 verdict 曾为 BLOCKED/ASSERTION_COUNT_BELOW_MINIMUM（注册 4 与实际 3 不符），修正 registry 后第 12 次正式 PASS。原始 BLOCKED 结果保留在 runner-manual3756\20261113T083039Z_wi0_5e4dc99。
+- 附带结论：klarf-ordinary-advanced-deltas 组件级 FAIL（同日早前复验）已确认为 fixture 期望缺陷（漏 DC 复合通道），产品行为正确；本次真实 UI 验证进一步佐证 PR 5122 修复有效。
+
+## Targeted revalidation — 2026-11-13 14:45 +08:00 (batch 20261112T233005+0800_747c25)
+
+- 用户授权的逐项专项复验已完成：`runs\20261112T233005+0800_747c25\rev-20261113T135712_462431`（completion-check exitCode=0，FINISHED，testsExecuted=true，runnerRunCount=11）。原夜间批次报告与结果未改动。
+- 逐项结果：PR 5130（WI3808/3810）4 个生成用例全 PASS——manual-operation-boundaries 29/29（新增覆盖手动预操作门）、plus-slow-shutter-close 13/13（新增覆盖 DUV 慢门关闭幂等）、recovery-carrier-checks 64/64、**recovery-loading-presentation 23/23（昨晚 Owner 时序 fixture 缺陷修复后首次真实执行，loading/本地化两场景补验成功）**。PR 5122（WI3756）4 个 KLARF 用例中 3 PASS（attribute-removal 16/16、enabled-channel-signature 15/15、late-baseline 3/3、unsaved-selection-deltas 22/22），**klarf-ordinary-advanced-deltas FAIL 1 断言**。基线 recent10-v3、supplement PASS。
+- FAIL 根因判定（人工读源码逐层追溯）：**测试 fixture 缺陷，非产品缺陷**。fixture 注入 `_channels=[DW2,DW2A]` 后，产品 `GetAllAttributeUniqueKeys` 第 272 行会用 `_currentRecipe.GetChannels()` 覆盖它；裸 Recipe 默认产出 [DW2_Oblique, DC_Oblique]（Incidence=Oblique、IsLPDAlgoEnabled=false），DC 复合通道按 `GetMergedMap` 合并物理 DW2 定义，故新增属性同时勾选 DC+DW2 视图是产品对 #3756 验收标准（只补勾新增、不动已勾选）的正确行为。正式 runId `20261113T063324Z_wi0_2ef5390`，断言 klarf-1 expected 缺 DC。修复方向：fixture 用真实 Recipe 配置或把期望改为包含 DC。verdict 不改，等下次批次新版本用例覆盖。
+- 环境修复两项已入库（daily.py，156 测试全绿）：(1) save()/load() 对 ≥248 字符路径加 `\\?\` 前缀 + Defender 竞态 6×0.25s 重试（WinError 5 曾毁掉两轮 scope 生成）；(2) `--revalidate-batch` 目录名 revalidation-* → rev-*（本机 LongPathsEnabled=0，嵌套战役 scope 路径 260 字符触发 WinError 206；rev- 前缀降到 251）。失败的 `revalidation-20261113T133920_85ea4c-longpath-failed` 已归档保留证据。
+- 覆盖形状（24 需求）：INTERNAL_CONTEXT 12、NONE 10、UNKNOWN_ORACLE 1、EXTERNAL_HARDWARE 1、INSUFFICIENT_INFO 0；uiRequired=3 且全部带 uiBasis（新策略生效，含 recovery-menu-workflow/manual-screen-workflow/screen-throughput-regression），unverifiedUiSlots=3、无 UI 会话执行。流程已收尾但 HAS_FAIL：PR 5122 的 ordinary-advanced-deltas 用例需修 fixture 后在后续批次重验。
+- 复验后管线改动（model_author/coverage_preparation/latest_head/daily/individual + AGENTS.md §1.2）：UI 默认不强启（uiRequired 必须带 uiBasis，否则冻结降级为 logic-only）与 INSUFFICIENT_INFO 工作项标签已落地并随本批实战验证（3 个 uiRequired 全部有依据、无凭空 UI 会话）。改动未提交 git。
+
+## Daily monitor — 2026-11-13 13:16 +08:00 (target day 2026-11-12)
+
+- 目标日 T=2026-11-12 的夜间批次已存在且收尾，无需启动/重建：批次 `C:\AutoTest\AutoTest\VegaAutoTest\daily\runs\20261112T233005+0800_747c25`，phase=FINISHED（state.json updatedAt 2026-11-13T00:08:10+08:00），`controller/completion-check.json` exitCode=0（直接读取，未运行检查命令），processAlive=false。Windows 任务 VegaAutoTest-DailyValidation State=Ready，LastRunTime 2026-11-12 23:30:30，LastTaskResult=0，无 missed runs；监督结果 controller-launches\20261112T233004_302c46\result.json exitCode=0。C: 余量 36.7GB（高于 30GB 提醒线）。
+- phase=FINISHED，acceptanceState=INCOMPLETE，testsExecuted=true，runnerRunCount=7（口径 execution-targets：执行目标 1 个 HEAD，收集提交 2 个，collectedCommitStatusCounts={NEEDS_CASE:2}）。预检 6 个 trial 中 1 个被剔除（authored-v5d94924feb-…-recovery-loading-presentation ERROR/HARNESS_EXCEPTION，`Window.set_Owner` 要求宿主窗口先显示——测试 fixture 缺陷，非产品缺陷；trial runId 20261112T160247Z_wi0_44b8ce6 与正式结果分开统计）。
+- 正式 Runner 结果（7/7 PASS，无 FAIL/BLOCKED）：5 个生成用例 abort-manual-operation-gate(c48ebee)、recovery-carrier-checks(45faf80)、klarf-attribute-removal(3115f21)、klarf-enabled-channel-signature(a5aad8b)、klarf-late-baseline(94ae675) + 基线 daily-recent10-v3(7e66f9f)、daily-supplement(342f36d) 全 PASS。提交 1d5442d7（PR 5130，WI3808/3810）与 cd9a34fd（PR 5122，WI3756）均 NEEDS_CASE：覆盖缺口（GEM Stop 顺序、Missing 提示链、Galaxy 包升级上游等 14 项 INTERNAL_CONTEXT/TEST_PREPARATION 类 gap）+ 3 个必需 UI 无可执行用例（recovery-screen-workflow、manual-first-click-ui、ui-throughput-preservation，均 Vega500），unverifiedUiSlots 3 条，本批 uiSlots=[]（无 UI 会话启动）。
+- 工作项 ADO 只读核对：3756（KLARF Default 页被重置）、3808（Galaxy Stop 批次失败隔离）、3810（卸片衔接/回收窗口/Missing 提示链/手动预操作批量修复），与提交说明一致，无需求修订冲突标记。
+- workspace-reclaim.json：reason=previous-owner-completed（上一归属 20261111 批已完成，正常回收）。当晚无 UI 会话，无恢复/哈希动作需核对。结论：流程已收尾但验收不完整；7 个 PASS 不能当作新增需求完整验收。
+
 ## Failure diagnosis — 2026-11-04 10:34 +08:00
 
 - Read-only diagnosis of batch `20261103T233003+0800_f5be73`. The Windows task is correctly configured to run fixed-runtime `pwsh.exe -NoProfile -NonInteractive -WindowStyle Hidden -File C:\AutoTest\AutoTest\VegaAutoTest\daily\Start-DailyValidation.ps1 -Watch`; it triggered at 2026-11-03 23:30:30 +08:00 and finished with `LastTaskResult=0` (next 2026-11-04 23:30:30, no missed runs). Its supervisor launch result has `exitCode=0`; controller completion check has `exitCode=0`, phase `FINISHED`, no pending commits. The task did not fail.
@@ -253,3 +278,12 @@ Last run: 2026-10-19T23:42:25+08:00
 - `--prepare-all` completed for all six. Product-test adapters were generated for 055b805a, b3791912, and 68810455; 9acb461b, e3ce821c, and 7f843d76 have no changed xUnit sources and require behavioral fixture/UI/remote review.
 - SHA `055b805acc67c26aa4f534e04e0a7238e33fac85` has completed one independent SHA build/discovery: generated original DIC/RollingWindow adapter was found successfully (`preparation/case-check.json`, one logic test, SHA-bound build evidence in attempts/20261028T233733_f407a3). Its review is frozen. It remains NEEDS_CASE because WI3704's Vega100-PIC BF-calibration seconds-average UI has no executable UI slot, authorized input fixture, or output baseline; this gap is hash-backed by the discovery log and is explicitly preserved in review.json.
 - No `--drain`, UI session, or final `--check-complete` completion has occurred. The batch is incomplete with five remaining pending preparations plus the frozen first SHA awaiting execution; resume every remaining SHA through case review/discovery/freeze, then run drain, resolve actual UI requests/blockers, and require check-complete exit 0. No product source, remote state, work item, PR, or credentials were changed. Checkpoint time: 2026-10-28T23:42+08:00.
+
+## Schedule correction — 2026-11-11
+
+- User clarified that ONLY the Windows nightly task VegaAutoTest-DailyValidation should automatically validate the current Beijing date's commits. Removed Codex chat automations vega (08:00 monitor) and vega-23-45 (startup monitor) through the automation tool; no Vega chat automation remains. The Windows task remains enabled at 23:30 Asia/Shanghai and runs Start-DailyValidation.ps1 -Watch / autopilot.py --daily. This supersedes the earlier morning/night-monitor setup; do not recreate those monitors from historical memory. No task was started, batch replayed, or product/results/frozen inputs modified.
+
+
+## Explicit user correction — 2026-11-11T17:58:24+08:00
+
+- Restored the visible Codex automation named Vega 每日提交验证 (id=vega), ACTIVE at 23:30 Asia/Shanghai, on the AutoTest project. User explicitly requires this named nightly task to remain. Its prompt follows daily/AGENTS.md: Windows VegaAutoTest-DailyValidation remains the sole actual collector/controller/executor; the Codex task coordinates startup without racing the Windows trigger and follows the same-date batch to results. No 08:00 or separate 23:45 automation. This supersedes the earlier mistaken deletion / Windows-only visible-task note. Preserve the named nightly Codex task and Windows executor; do not delete either without explicit instruction.

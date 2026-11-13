@@ -253,7 +253,9 @@ def aggregate(d, out, manifest, plan, registry):
                 ui += missing_ui
             cp = d.load(child / 'plan.json')
             for requirement in cp.get('coverageRequirements', []):
-                if requirement.get('uiAssessment') == 'UNKNOWN':
+                # 2026-11-13 policy: an UNKNOWN assessment with uiRequired=false
+                # is a deliberate logic-only decision, not missing UI coverage.
+                if requirement.get('uiAssessment') == 'UNKNOWN' and requirement.get('uiRequired'):
                     unverified_ui.append(dict(commit=slot['sha'], batch=slot['batch'],
                         requirementId=requirement['id'], profiles=[], kind='ui-assessment-incomplete',
                         reason='UI requirements have not been determined; acceptance remains incomplete',
@@ -297,7 +299,11 @@ def aggregate(d, out, manifest, plan, registry):
     if manifest.get('testingPolicy') == 'latest-head':
         data.update(testingPolicy='latest-head', testedHead=manifest['head'],
                     collectedCommitCount=manifest.get('collectedCommitCount', 0),
-                    perCommitAcceptance=False, commitResults=commit_results)
+                    perCommitAcceptance=False, commitResults=commit_results,
+                    executionTargetCount=len(rows), executionTargetStatusCounts=counts,
+                    collectedCommitStatusCounts={status: sum(r['status'] == status for r in commit_results)
+                        for status in sorted({r['status'] for r in commit_results})},
+                    statusCountsScope='execution-targets', commitCountScope='execution-targets')
     d.save(out / 'summary.json', data)
     lines += ['', f'验收完整性：{state}；尚未收尾的提交数：{len(pending)}。', '',
               '缺用例/必需 UI 未完成不能以探针 PASS 替代。单项失败记录后继续下一项，历史积压不重放。',

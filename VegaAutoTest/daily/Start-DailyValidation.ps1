@@ -6,7 +6,14 @@ $controller=Join-Path $PSScriptRoot 'autopilot.py'
 $env:PYTHONIOENCODING='utf-8'
 $runtimeResult=& $python -B $controller --runtime-check
 if($LASTEXITCODE -ne 0){throw 'Daily runtime check failed; no batch was collected'}
-if($RuntimeCheck){$runtimeResult;return}
+if($RuntimeCheck){
+    if($LaunchDirectory){
+        New-Item -ItemType Directory -Path $LaunchDirectory -Force | Out-Null
+        $runtimeResult | Set-Content -LiteralPath (Join-Path $LaunchDirectory 'runtime-check.json') -Encoding utf8
+    }
+    $runtimeResult
+    return
+}
 
 $current=& $python -B $controller --status | ConvertFrom-Json
 if($current.processAlive){$current | ConvertTo-Json -Depth 20;return}

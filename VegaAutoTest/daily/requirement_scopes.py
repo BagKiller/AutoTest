@@ -1,6 +1,7 @@
 """Analyze original changes separately while testing one immutable product HEAD."""
 from pathlib import Path
 import copy
+import model_author
 
 
 def generate(d, child, manifest, registry, sched, root, generate_one, repair, gap_factory):
@@ -27,9 +28,18 @@ def generate(d, child, manifest, registry, sched, root, generate_one, repair, ga
         try:
             old = previous.get(commit['sha'])
             receipt = d.load(scope / 'preparation' / 'authored.json')
-            if repair and old and old.get('response'):
+            affected = repair and (not repair.get('caseIds') or any(
+                set(req.get('caseIds', [])).intersection(repair['caseIds'])
+                for req in (receipt or {}).get('requirements', [])))
+            if affected and old and old.get('response'):
+                editable = model_author.repair_files(old['response'], repair.get('caseIds'), registry)
+                diagnostics = repair['diagnostics']
+                if repair.get('diagnosticsByCase'):
+                    own_ids = {cid for req in (receipt or {}).get('requirements', []) for cid in req.get('caseIds', [])}
+                    if own_ids:
+                        diagnostics = '\n'.join(text for cid, text in repair['diagnosticsByCase'].items() if cid in own_ids)
                 receipt = generate_one(d, scope, cm, registry, sched, root,
-                    dict(response=old['response'], diagnostics=repair['diagnostics']))
+                    dict(response=old['response'], diagnostics=diagnostics, files=editable))
             elif receipt is None:
                 receipt = generate_one(d, scope, cm, registry, sched, root)
             requirements = copy.deepcopy(receipt['requirements'])

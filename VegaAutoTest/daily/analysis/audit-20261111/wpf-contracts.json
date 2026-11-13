@@ -1,0 +1,26 @@
+{
+  "sourceSha256": "726fc8a90a67b95e4606e44f232536bb35497e7d35c4e3087fa8f0bb91e7075d",
+  "evidenceOrigin": "Observed independent process tool results during this fix",
+  "checks": [
+    {
+      "mode": "startup",
+      "exitCode": 0,
+      "stdout": "PASS startup"
+    },
+    {
+      "mode": "work",
+      "exitCode": 0,
+      "stdout": "PASS work"
+    },
+    {
+      "mode": "shared-budget",
+      "exitCode": 0,
+      "stdout": "PASS shared-budget"
+    },
+    {
+      "mode": "async",
+      "exitCode": 0,
+      "stdout": "PASS async"
+    }
+  ]
+}

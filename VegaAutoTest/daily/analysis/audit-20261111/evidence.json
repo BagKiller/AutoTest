@@ -1,0 +1,992 @@
+[
+  {
+    "batch": "20261107T233009+0800_6c2fc8",
+    "phase": "FINISHED",
+    "collectedCommits": 0,
+    "acceptanceState": "NO_COMMITS",
+    "statusCounts": {},
+    "commitResults": [],
+    "officialRuns": [],
+    "unverifiedUiCount": 0,
+    "preparations": [],
+    "controllerSourcesChangedSinceRun": [
+      "daily.py",
+      "model_author.py"
+    ]
+  },
+  {
+    "batch": "20261108T233009+0800_e23e3b",
+    "phase": "FINISHED",
+    "collectedCommits": 0,
+    "acceptanceState": "NO_COMMITS",
+    "statusCounts": {},
+    "commitResults": [],
+    "officialRuns": [],
+    "unverifiedUiCount": 0,
+    "preparations": [],
+    "controllerSourcesChangedSinceRun": [
+      "daily.py",
+      "model_author.py"
+    ]
+  },
+  {
+    "batch": "20261109T233003+0800_9869e6",
+    "phase": "FINISHED",
+    "collectedCommits": 6,
+    "acceptanceState": "INCOMPLETE",
+    "statusCounts": {
+      "NEEDS_CASE": 1
+    },
+    "commitResults": [
+      {
+        "sha": "4ab875986b1e35ceb105c8bc413ad0068b6cbdb8",
+        "status": "NEEDS_CASE",
+        "caseIds": [
+          "authored-vc694f7ee9e-d1359f210fb3-lock-refresh-serialization-compatibility"
+        ]
+      },
+      {
+        "sha": "249d4163fd18f7471a959399efbef2ee2588e8fa",
+        "status": "NEEDS_CASE",
+        "caseIds": [
+          "authored-va29c9303e4-d1359f210fb3-gallery-calibration-filter"
+        ]
+      },
+      {
+        "sha": "351149b47922635ebfd7c051c0f5bcdfc2efcf35",
+        "status": "NEEDS_CASE",
+        "caseIds": []
+      },
+      {
+        "sha": "9a473a61c8a2313a42d985257c7c0267c790dfdb",
+        "status": "NEEDS_CASE",
+        "caseIds": []
+      },
+      {
+        "sha": "7a5206d1118d7c3cacb8e38a0285616d66207f05",
+        "status": "NEEDS_CASE",
+        "caseIds": []
+      },
+      {
+        "sha": "d1359f210fb3829a599cf5e65f0ba0446a22456e",
+        "status": "NEEDS_CASE",
+        "caseIds": []
+      }
+    ],
+    "officialRuns": [
+      {
+        "caseId": "authored-va29c9303e4-d1359f210fb3-gallery-calibration-filter",
+        "verdict": "PASS",
+        "verdictCode": "OK",
+        "runId": "20261109T165552Z_wi0_7446362",
+        "resultPath": "C:\\AutoTest\\AutoTest\\VegaAutoTest\\daily\\runs\\20261109T233003+0800_9869e6\\commits\\d1359f210fb3829a599cf5e65f0ba0446a22456e\\runner\\20261109T165552Z_wi0_7446362\\result.json"
+      },
+      {
+        "caseId": "daily-recent10-v3",
+        "verdict": "PASS",
+        "verdictCode": "OK",
+        "runId": "20261109T165607Z_wi0_a9f7ad2",
+        "resultPath": "C:\\AutoTest\\AutoTest\\VegaAutoTest\\daily\\runs\\20261109T233003+0800_9869e6\\commits\\d1359f210fb3829a599cf5e65f0ba0446a22456e\\runner\\20261109T165607Z_wi0_a9f7ad2\\result.json"
+      },
+      {
+        "caseId": "daily-supplement",
+        "verdict": "PASS",
+        "verdictCode": "OK",
+        "runId": "20261109T165721Z_wi0_dd24b7c",
+        "resultPath": "C:\\AutoTest\\AutoTest\\VegaAutoTest\\daily\\runs\\20261109T233003+0800_9869e6\\commits\\d1359f210fb3829a599cf5e65f0ba0446a22456e\\runner\\20261109T165721Z_wi0_dd24b7c\\result.json"
+      },
+      {
+        "caseId": "wi3644-core",
+        "verdict": "PASS",
+        "verdictCode": "OK",
+        "runId": "20261109T165757Z_wi0_c356854",
+        "resultPath": "C:\\AutoTest\\AutoTest\\VegaAutoTest\\daily\\runs\\20261109T233003+0800_9869e6\\commits\\d1359f210fb3829a599cf5e65f0ba0446a22456e\\runner\\20261109T165757Z_wi0_c356854\\result.json"
+      }
+    ],
+    "unverifiedUiCount": 4,
+    "preparations": [
+      {
+        "receipt": "C:\\AutoTest\\AutoTest\\VegaAutoTest\\daily\\runs\\20261109T233003+0800_9869e6\\commits\\d1359f210fb3829a599cf5e65f0ba0446a22456e\\preparation\\case-check.json",
+        "records": 15,
+        "compileOrDiscoveryFailures": 8,
+        "runtimeCounts": [
+          {
+            "verdict": "BLOCKED",
+            "code": "TIMEOUT",
+            "count": 4
+          },
+          {
+            "verdict": null,
+            "code": null,
+            "count": 8
+          },
+          {
+            "verdict": "PASS",
+            "code": "OK",
+            "count": 2
+          },
+          {
+            "verdict": "ERROR",
+            "code": "HARNESS_EXCEPTION",
+            "count": 1
+          }
+        ],
+        "generatedCaseCount": 15,
+        "frozenCaseCount": 4,
+        "candidates": [
+          {
+            "caseId": "authored-v21c1db9483-d1359f210fb3-wafermap-displayed-legend-scope",
+            "layer": "logic",
+            "compileExitCode": 0,
+            "discoveryLog": "C:\\AutoTest\\AutoTest\\VegaAutoTest\\daily\\runs\\20261109T233003+0800_9869e6\\commits\\d1359f210fb3829a599cf5e65f0ba0446a22456e\\preparation\\checks\\discovery-3f46086c1c7b217f.log",
+            "compileErrors": [],
+            "runtimeVerdict": "BLOCKED",
+            "runtimeCode": "TIMEOUT",
+            "runtimeResult": "C:\\AutoTest\\AutoTest\\VegaAutoTest\\daily\\runs\\20261109T233003+0800_9869e6\\commits\\d1359f210fb3829a599cf5e65f0ba0446a22456e\\preparation\\trials\\4fa1e29cd682\\runner\\20261109T161503Z_wi0_7982e1a\\result.json",
+            "testErrorMessages": []
+          },
+          {
+            "caseId": "authored-v21c1db9483-d1359f210fb3-wafermap-first-category-selection",
+            "layer": "logic",
+            "compileExitCode": 0,
+            "discoveryLog": "C:\\AutoTest\\AutoTest\\VegaAutoTest\\daily\\runs\\20261109T233003+0800_9869e6\\commits\\d1359f210fb3829a599cf5e65f0ba0446a22456e\\preparation\\checks\\discovery-33dec033191ef5e8.log",
+            "compileErrors": [],
+            "runtimeVerdict": "BLOCKED",
+            "runtimeCode": "TIMEOUT",
+            "runtimeResult": "C:\\AutoTest\\AutoTest\\VegaAutoTest\\daily\\runs\\20261109T233003+0800_9869e6\\commits\\d1359f210fb3829a599cf5e65f0ba0446a22456e\\preparation\\trials\\0e9ca4601932\\runner\\20261109T162503Z_wi0_848e486\\result.json",
+            "testErrorMessages": []
+          },
+          {
+            "caseId": "authored-v276c0691c8-d1359f210fb3-spa-dc-dca-isolation",
+            "layer": "logic",
+            "compileExitCode": 0,
+            "discoveryLog": "C:\\AutoTest\\AutoTest\\VegaAutoTest\\daily\\runs\\20261109T233003+0800_9869e6\\commits\\d1359f210fb3829a599cf5e65f0ba0446a22456e\\preparation\\checks\\discovery-9b2323e9c5cc067c.log",
+            "compileErrors": [],
+            "runtimeVerdict": "BLOCKED",
+            "runtimeCode": "TIMEOUT",
+            "runtimeResult": "C:\\AutoTest\\AutoTest\\VegaAutoTest\\daily\\runs\\20261109T233003+0800_9869e6\\commits\\d1359f210fb3829a599cf5e65f0ba0446a22456e\\preparation\\trials\\9186ad12adce\\runner\\20261109T163504Z_wi0_ac05248\\result.json",
+            "testErrorMessages": []
+          },
+          {
+            "caseId": "authored-v932a73b175-d1359f210fb3-comment-contract-driver",
+            "layer": "logic",
+            "compileExitCode": 1,
+            "discoveryLog": "C:\\AutoTest\\AutoTest\\VegaAutoTest\\daily\\runs\\20261109T233003+0800_9869e6\\commits\\d1359f210fb3829a599cf5e65f0ba0446a22456e\\preparation\\checks\\discovery-225f5313943df2dc.log",
+            "compileErrors": [
+              [
+                "CS0104",
+                "'EventInfo' is an ambiguous reference between 'Vega.Data.Defects.EventInfo' and 'System.Reflection.EventInfo'"
+              ]
+            ],
+            "runtimeVerdict": null,
+            "runtimeCode": null,
+            "runtimeResult": null
+          },
+          {
+            "caseId": "authored-v932a73b175-d1359f210fb3-comment-contract-haze",
+            "layer": "logic",
+            "compileExitCode": 1,
+            "discoveryLog": "C:\\AutoTest\\AutoTest\\VegaAutoTest\\daily\\runs\\20261109T233003+0800_9869e6\\commits\\d1359f210fb3829a599cf5e65f0ba0446a22456e\\preparation\\checks\\discovery-4d5571c14faf6e30.log",
+            "compileErrors": [
+              [
+                "CS0104",
+                "'EventInfo' is an ambiguous reference between 'Vega.Data.Defects.EventInfo' and 'System.Reflection.EventInfo'"
+              ]
+            ],
+            "runtimeVerdict": null,
+            "runtimeCode": null,
+            "runtimeResult": null
+          },
+          {
+            "caseId": "authored-v932a73b175-d1359f210fb3-comment-contract-imaging",
+            "layer": "logic",
+            "compileExitCode": 1,
+            "discoveryLog": "C:\\AutoTest\\AutoTest\\VegaAutoTest\\daily\\runs\\20261109T233003+0800_9869e6\\commits\\d1359f210fb3829a599cf5e65f0ba0446a22456e\\preparation\\checks\\discovery-019c3d7f17ebe11e.log",
+            "compileErrors": [
+              [
+                "CS0104",
+                "'EventInfo' is an ambiguous reference between 'Vega.Data.Defects.EventInfo' and 'System.Reflection.EventInfo'"
+              ]
+            ],
+            "runtimeVerdict": null,
+            "runtimeCode": null,
+            "runtimeResult": null
+          },
+          {
+            "caseId": "authored-v932a73b175-d1359f210fb3-comment-contract-slipline",
+            "layer": "logic",
+            "compileExitCode": 1,
+            "discoveryLog": "C:\\AutoTest\\AutoTest\\VegaAutoTest\\daily\\runs\\20261109T233003+0800_9869e6\\commits\\d1359f210fb3829a599cf5e65f0ba0446a22456e\\preparation\\checks\\discovery-ce1b6ac1e6b91758.log",
+            "compileErrors": [
+              [
+                "CS0104",
+                "'EventInfo' is an ambiguous reference between 'Vega.Data.Defects.EventInfo' and 'System.Reflection.EventInfo'"
+              ]
+            ],
+            "runtimeVerdict": null,
+            "runtimeCode": null,
+            "runtimeResult": null
+          },
+          {
+            "caseId": "authored-va29c9303e4-d1359f210fb3-account-gallery-reload",
+            "layer": "logic",
+            "compileExitCode": 0,
+            "discoveryLog": "C:\\AutoTest\\AutoTest\\VegaAutoTest\\daily\\runs\\20261109T233003+0800_9869e6\\commits\\d1359f210fb3829a599cf5e65f0ba0446a22456e\\preparation\\checks\\discovery-1203180ad098f1f0.log",
+            "compileErrors": [],
+            "runtimeVerdict": "BLOCKED",
+            "runtimeCode": "TIMEOUT",
+            "runtimeResult": "C:\\AutoTest\\AutoTest\\VegaAutoTest\\daily\\runs\\20261109T233003+0800_9869e6\\commits\\d1359f210fb3829a599cf5e65f0ba0446a22456e\\preparation\\trials\\ae2c147b67a8\\runner\\20261109T164505Z_wi0_bac0380\\result.json",
+            "testErrorMessages": []
+          },
+          {
+            "caseId": "authored-va29c9303e4-d1359f210fb3-gallery-calibration-filter",
+            "layer": "logic",
+            "compileExitCode": 0,
+            "discoveryLog": "C:\\AutoTest\\AutoTest\\VegaAutoTest\\daily\\runs\\20261109T233003+0800_9869e6\\commits\\d1359f210fb3829a599cf5e65f0ba0446a22456e\\preparation\\checks\\discovery-bf5ef319142bb1d1.log",
+            "compileErrors": [],
+            "runtimeVerdict": "PASS",
+            "runtimeCode": "OK",
+            "runtimeResult": "C:\\AutoTest\\AutoTest\\VegaAutoTest\\daily\\runs\\20261109T233003+0800_9869e6\\commits\\d1359f210fb3829a599cf5e65f0ba0446a22456e\\preparation\\trials\\01200988f8a2\\runner\\20261109T165505Z_wi0_d9c2772\\result.json",
+            "testErrorMessages": []
+          },
+          {
+            "caseId": "authored-vadcf2d0aed-d1359f210fb3-ccm-configuration-contract",
+            "layer": "logic",
+            "compileExitCode": 1,
+            "discoveryLog": "C:\\AutoTest\\AutoTest\\VegaAutoTest\\daily\\runs\\20261109T233003+0800_9869e6\\commits\\d1359f210fb3829a599cf5e65f0ba0446a22456e\\preparation\\checks\\discovery-2356fa4be85e7264.log",
+            "compileErrors": [
+              [
+                "CS1061",
+                "'(string, string, string, int, bool)' does not contain a definition for 'Origin' and no accessible extension method 'Origin' accepting a first argument of type '(string, string, string, int, bool)' could be found (are you missing a using directive or an assembly reference?)"
+              ],
+              [
+                "CS1061",
+                "'(string, string, string, int, bool)' does not contain a definition for 'Delay' and no accessible extension method 'Delay' accepting a first argument of type '(string, string, string, int, bool)' could be found (are you missing a using directive or an assembly reference?)"
+              ],
+              [
+                "CS1061",
+                "'(string, string, string, int, bool)' does not contain a definition for 'Target' and no accessible extension method 'Target' accepting a first argument of type '(string, string, string, int, bool)' could be found (are you missing a using directive or an assembly reference?)"
+              ],
+              [
+                "CS1061",
+                "'(string, string, string, int, bool)' does not contain a definition for 'Throughput' and no accessible extension method 'Throughput' accepting a first argument of type '(string, string, string, int, bool)' could be found (are you missing a using directive or an assembly reference?)"
+              ],
+              [
+                "CS0428",
+                "Cannot convert method group 'Wait' to non-delegate type 'bool'. Did you intend to invoke the method?"
+              ]
+            ],
+            "runtimeVerdict": null,
+            "runtimeCode": null,
+            "runtimeResult": null
+          },
+          {
+            "caseId": "authored-vadcf2d0aed-d1359f210fb3-ccm-configuration-ui",
+            "layer": "uia",
+            "compileExitCode": 1,
+            "discoveryLog": "C:\\AutoTest\\AutoTest\\VegaAutoTest\\daily\\runs\\20261109T233003+0800_9869e6\\commits\\d1359f210fb3829a599cf5e65f0ba0446a22456e\\preparation\\checks\\discovery-7dfcfc2a12ba1557.log",
+            "compileErrors": [
+              [
+                "CS1061",
+                "'(string, string, string, int, bool)' does not contain a definition for 'Origin' and no accessible extension method 'Origin' accepting a first argument of type '(string, string, string, int, bool)' could be found (are you missing a using directive or an assembly reference?)"
+              ],
+              [
+                "CS1061",
+                "'(string, string, string, int, bool)' does not contain a definition for 'Delay' and no accessible extension method 'Delay' accepting a first argument of type '(string, string, string, int, bool)' could be found (are you missing a using directive or an assembly reference?)"
+              ],
+              [
+                "CS1061",
+                "'(string, string, string, int, bool)' does not contain a definition for 'Target' and no accessible extension method 'Target' accepting a first argument of type '(string, string, string, int, bool)' could be found (are you missing a using directive or an assembly reference?)"
+              ],
+              [
+                "CS1061",
+                "'(string, string, string, int, bool)' does not contain a definition for 'Throughput' and no accessible extension method 'Throughput' accepting a first argument of type '(string, string, string, int, bool)' could be found (are you missing a using directive or an assembly reference?)"
+              ],
+              [
+                "CS0428",
+                "Cannot convert method group 'Wait' to non-delegate type 'bool'. Did you intend to invoke the method?"
+              ]
+            ],
+            "runtimeVerdict": null,
+            "runtimeCode": null,
+            "runtimeResult": null
+          },
+          {
+            "caseId": "authored-vadcf2d0aed-d1359f210fb3-ccm-delay-behavior",
+            "layer": "logic",
+            "compileExitCode": 1,
+            "discoveryLog": "C:\\AutoTest\\AutoTest\\VegaAutoTest\\daily\\runs\\20261109T233003+0800_9869e6\\commits\\d1359f210fb3829a599cf5e65f0ba0446a22456e\\preparation\\checks\\discovery-938ed008f77dd94a.log",
+            "compileErrors": [
+              [
+                "CS1061",
+                "'(string, string, string, int, bool)' does not contain a definition for 'Origin' and no accessible extension method 'Origin' accepting a first argument of type '(string, string, string, int, bool)' could be found (are you missing a using directive or an assembly reference?)"
+              ],
+              [
+                "CS1061",
+                "'(string, string, string, int, bool)' does not contain a definition for 'Delay' and no accessible extension method 'Delay' accepting a first argument of type '(string, string, string, int, bool)' could be found (are you missing a using directive or an assembly reference?)"
+              ],
+              [
+                "CS1061",
+                "'(string, string, string, int, bool)' does not contain a definition for 'Target' and no accessible extension method 'Target' accepting a first argument of type '(string, string, string, int, bool)' could be found (are you missing a using directive or an assembly reference?)"
+              ],
+              [
+                "CS1061",
+                "'(string, string, string, int, bool)' does not contain a definition for 'Throughput' and no accessible extension method 'Throughput' accepting a first argument of type '(string, string, string, int, bool)' could be found (are you missing a using directive or an assembly reference?)"
+              ],
+              [
+                "CS0428",
+                "Cannot convert method group 'Wait' to non-delegate type 'bool'. Did you intend to invoke the method?"
+              ]
+            ],
+            "runtimeVerdict": null,
+            "runtimeCode": null,
+            "runtimeResult": null
+          },
+          {
+            "caseId": "authored-vadcf2d0aed-d1359f210fb3-scan-only-start-log",
+            "layer": "logic",
+            "compileExitCode": 1,
+            "discoveryLog": "C:\\AutoTest\\AutoTest\\VegaAutoTest\\daily\\runs\\20261109T233003+0800_9869e6\\commits\\d1359f210fb3829a599cf5e65f0ba0446a22456e\\preparation\\checks\\discovery-af79a0d2d7b026a6.log",
+            "compileErrors": [
+              [
+                "CS1061",
+                "'(string, string, string, int, bool)' does not contain a definition for 'Origin' and no accessible extension method 'Origin' accepting a first argument of type '(string, string, string, int, bool)' could be found (are you missing a using directive or an assembly reference?)"
+              ],
+              [
+                "CS1061",
+                "'(string, string, string, int, bool)' does not contain a definition for 'Delay' and no accessible extension method 'Delay' accepting a first argument of type '(string, string, string, int, bool)' could be found (are you missing a using directive or an assembly reference?)"
+              ],
+              [
+                "CS1061",
+                "'(string, string, string, int, bool)' does not contain a definition for 'Target' and no accessible extension method 'Target' accepting a first argument of type '(string, string, string, int, bool)' could be found (are you missing a using directive or an assembly reference?)"
+              ],
+              [
+                "CS1061",
+                "'(string, string, string, int, bool)' does not contain a definition for 'Throughput' and no accessible extension method 'Throughput' accepting a first argument of type '(string, string, string, int, bool)' could be found (are you missing a using directive or an assembly reference?)"
+              ],
+              [
+                "CS0428",
+                "Cannot convert method group 'Wait' to non-delegate type 'bool'. Did you intend to invoke the method?"
+              ]
+            ],
+            "runtimeVerdict": null,
+            "runtimeCode": null,
+            "runtimeResult": null
+          },
+          {
+            "caseId": "authored-vc694f7ee9e-d1359f210fb3-lock-refresh-http-factory-compatibility",
+            "layer": "logic",
+            "compileExitCode": 0,
+            "discoveryLog": "C:\\AutoTest\\AutoTest\\VegaAutoTest\\daily\\runs\\20261109T233003+0800_9869e6\\commits\\d1359f210fb3829a599cf5e65f0ba0446a22456e\\preparation\\checks\\discovery-2d3f146cae0d17d9.log",
+            "compileErrors": [],
+            "runtimeVerdict": "ERROR",
+            "runtimeCode": "HARNESS_EXCEPTION",
+            "runtimeResult": "C:\\AutoTest\\AutoTest\\VegaAutoTest\\daily\\runs\\20261109T233003+0800_9869e6\\commits\\d1359f210fb3829a599cf5e65f0ba0446a22456e\\preparation\\trials\\dfd93b5839f4\\runner\\20261109T165520Z_wi0_50a96de\\result.json",
+            "testErrorMessages": [
+              "System.IO.FileNotFoundException : Could not load file or assembly 'Microsoft.Extensions.Http, Version=8.0.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60'. 系统找不到指定的文件。"
+            ]
+          },
+          {
+            "caseId": "authored-vc694f7ee9e-d1359f210fb3-lock-refresh-serialization-compatibility",
+            "layer": "logic",
+            "compileExitCode": 0,
+            "discoveryLog": "C:\\AutoTest\\AutoTest\\VegaAutoTest\\daily\\runs\\20261109T233003+0800_9869e6\\commits\\d1359f210fb3829a599cf5e65f0ba0446a22456e\\preparation\\checks\\discovery-f170c6e214c1fcb0.log",
+            "compileErrors": [],
+            "runtimeVerdict": "PASS",
+            "runtimeCode": "OK",
+            "runtimeResult": "C:\\AutoTest\\AutoTest\\VegaAutoTest\\daily\\runs\\20261109T233003+0800_9869e6\\commits\\d1359f210fb3829a599cf5e65f0ba0446a22456e\\preparation\\trials\\0b45aa2bbafc\\runner\\20261109T165534Z_wi0_5b2b38f\\result.json",
+            "testErrorMessages": []
+          }
+        ],
+        "scopes": [
+          {
+            "sha": "249d4163fd18f7471a959399efbef2ee2588e8fa",
+            "budget": {
+              "usedSeconds": 359.5175106525421
+            },
+            "requests": [
+              {
+                "folder": "a29c9303e4-0",
+                "remainingSourceRequests": 3,
+                "compilerRepair": false,
+                "sourcesCount": 1,
+                "sourceCharacters": 7487,
+                "uiFindContractIncluded": false
+              },
+              {
+                "folder": "a29c9303e4-1",
+                "remainingSourceRequests": 2,
+                "compilerRepair": false,
+                "sourcesCount": 21,
+                "sourceCharacters": 118319,
+                "uiFindContractIncluded": false
+              },
+              {
+                "folder": "a29c9303e4-2",
+                "remainingSourceRequests": 1,
+                "compilerRepair": false,
+                "sourcesCount": 21,
+                "sourceCharacters": 138018,
+                "uiFindContractIncluded": false
+              },
+              {
+                "folder": "a29c9303e4-3",
+                "remainingSourceRequests": 0,
+                "compilerRepair": false,
+                "sourcesCount": 22,
+                "sourceCharacters": 138683,
+                "uiFindContractIncluded": false
+              }
+            ]
+          },
+          {
+            "sha": "351149b47922635ebfd7c051c0f5bcdfc2efcf35",
+            "budget": {
+              "usedSeconds": 385.68385004997253
+            },
+            "requests": [
+              {
+                "folder": "adcf2d0aed-0",
+                "remainingSourceRequests": 3,
+                "compilerRepair": false,
+                "sourcesCount": 4,
+                "sourceCharacters": 40823,
+                "uiFindContractIncluded": false
+              },
+              {
+                "folder": "adcf2d0aed-1",
+                "remainingSourceRequests": 2,
+                "compilerRepair": false,
+                "sourcesCount": 11,
+                "sourceCharacters": 89344,
+                "uiFindContractIncluded": false
+              },
+              {
+                "folder": "adcf2d0aed-2",
+                "remainingSourceRequests": 1,
+                "compilerRepair": false,
+                "sourcesCount": 21,
+                "sourceCharacters": 123188,
+                "uiFindContractIncluded": false
+              },
+              {
+                "folder": "adcf2d0aed-3",
+                "remainingSourceRequests": 0,
+                "compilerRepair": false,
+                "sourcesCount": 22,
+                "sourceCharacters": 137703,
+                "uiFindContractIncluded": false
+              }
+            ]
+          },
+          {
+            "sha": "4ab875986b1e35ceb105c8bc413ad0068b6cbdb8",
+            "budget": {
+              "usedSeconds": 284.4926564693451
+            },
+            "requests": [
+              {
+                "folder": "c694f7ee9e-0",
+                "remainingSourceRequests": 3,
+                "compilerRepair": false,
+                "sourcesCount": 0,
+                "sourceCharacters": 0,
+                "uiFindContractIncluded": false
+              },
+              {
+                "folder": "c694f7ee9e-1",
+                "remainingSourceRequests": 2,
+                "compilerRepair": false,
+                "sourcesCount": 6,
+                "sourceCharacters": 15534,
+                "uiFindContractIncluded": false
+              },
+              {
+                "folder": "c694f7ee9e-2",
+                "remainingSourceRequests": 1,
+                "compilerRepair": false,
+                "sourcesCount": 8,
+                "sourceCharacters": 22878,
+                "uiFindContractIncluded": false
+              },
+              {
+                "folder": "c694f7ee9e-3",
+                "remainingSourceRequests": 0,
+                "compilerRepair": false,
+                "sourcesCount": 11,
+                "sourceCharacters": 34499,
+                "uiFindContractIncluded": false
+              }
+            ]
+          },
+          {
+            "sha": "7a5206d1118d7c3cacb8e38a0285616d66207f05",
+            "budget": {
+              "usedSeconds": 336.50708508491516
+            },
+            "requests": [
+              {
+                "folder": "21c1db9483-0",
+                "remainingSourceRequests": 3,
+                "compilerRepair": false,
+                "sourcesCount": 2,
+                "sourceCharacters": 20139,
+                "uiFindContractIncluded": false
+              },
+              {
+                "folder": "21c1db9483-1",
+                "remainingSourceRequests": 2,
+                "compilerRepair": false,
+                "sourcesCount": 9,
+                "sourceCharacters": 84545,
+                "uiFindContractIncluded": false
+              },
+              {
+                "folder": "21c1db9483-2",
+                "remainingSourceRequests": 1,
+                "compilerRepair": false,
+                "sourcesCount": 17,
+                "sourceCharacters": 136037,
+                "uiFindContractIncluded": false
+              },
+              {
+                "folder": "21c1db9483-3",
+                "remainingSourceRequests": 0,
+                "compilerRepair": false,
+                "sourcesCount": 21,
+                "sourceCharacters": 134832,
+                "uiFindContractIncluded": false
+              }
+            ]
+          },
+          {
+            "sha": "9a473a61c8a2313a42d985257c7c0267c790dfdb",
+            "budget": {
+              "usedSeconds": 299.7423987388611
+            },
+            "requests": [
+              {
+                "folder": "276c0691c8-0",
+                "remainingSourceRequests": 3,
+                "compilerRepair": false,
+                "sourcesCount": 1,
+                "sourceCharacters": 3044,
+                "uiFindContractIncluded": false
+              },
+              {
+                "folder": "276c0691c8-1",
+                "remainingSourceRequests": 2,
+                "compilerRepair": false,
+                "sourcesCount": 9,
+                "sourceCharacters": 61082,
+                "uiFindContractIncluded": false
+              },
+              {
+                "folder": "276c0691c8-2",
+                "remainingSourceRequests": 1,
+                "compilerRepair": false,
+                "sourcesCount": 24,
+                "sourceCharacters": 110344,
+                "uiFindContractIncluded": false
+              },
+              {
+                "folder": "276c0691c8-3",
+                "remainingSourceRequests": 0,
+                "compilerRepair": false,
+                "sourcesCount": 26,
+                "sourceCharacters": 123026,
+                "uiFindContractIncluded": false
+              }
+            ]
+          },
+          {
+            "sha": "d1359f210fb3829a599cf5e65f0ba0446a22456e",
+            "budget": {
+              "usedSeconds": 327.8118851184845
+            },
+            "requests": [
+              {
+                "folder": "932a73b175-0",
+                "remainingSourceRequests": 3,
+                "compilerRepair": false,
+                "sourcesCount": 9,
+                "sourceCharacters": 79785,
+                "uiFindContractIncluded": false
+              },
+              {
+                "folder": "932a73b175-1",
+                "remainingSourceRequests": 2,
+                "compilerRepair": false,
+                "sourcesCount": 19,
+                "sourceCharacters": 138962,
+                "uiFindContractIncluded": false
+              },
+              {
+                "folder": "932a73b175-2",
+                "remainingSourceRequests": 1,
+                "compilerRepair": false,
+                "sourcesCount": 18,
+                "sourceCharacters": 137464,
+                "uiFindContractIncluded": false
+              },
+              {
+                "folder": "932a73b175-3",
+                "remainingSourceRequests": 0,
+                "compilerRepair": false,
+                "sourcesCount": 19,
+                "sourceCharacters": 124479,
+                "uiFindContractIncluded": false
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "controllerSourcesChangedSinceRun": [
+      "daily.py",
+      "model_author.py"
+    ]
+  },
+  {
+    "batch": "20261110T233003+0800_01d26a",
+    "phase": "FINISHED",
+    "collectedCommits": 3,
+    "acceptanceState": "INCOMPLETE",
+    "statusCounts": {
+      "NEEDS_CASE": 1
+    },
+    "commitResults": [
+      {
+        "sha": "31bc939172de9e3cd396873bbb62cda1446caa9d",
+        "status": "NEEDS_CASE",
+        "caseIds": []
+      },
+      {
+        "sha": "a51e83c38652ddcf64a7786e98faafbf8ff17ecc",
+        "status": "NEEDS_CASE",
+        "caseIds": []
+      },
+      {
+        "sha": "2a3f19acce49efdda78d48d03c3ed57221639284",
+        "status": "NEEDS_CASE",
+        "caseIds": []
+      }
+    ],
+    "officialRuns": [
+      {
+        "caseId": "daily-recent10-v3",
+        "verdict": "PASS",
+        "verdictCode": "OK",
+        "runId": "20261110T160509Z_wi0_617720b",
+        "resultPath": "C:\\AutoTest\\AutoTest\\VegaAutoTest\\daily\\runs\\20261110T233003+0800_01d26a\\commits\\2a3f19acce49efdda78d48d03c3ed57221639284\\runner\\20261110T160509Z_wi0_617720b\\result.json"
+      },
+      {
+        "caseId": "daily-supplement",
+        "verdict": "PASS",
+        "verdictCode": "OK",
+        "runId": "20261110T160625Z_wi0_233c97e",
+        "resultPath": "C:\\AutoTest\\AutoTest\\VegaAutoTest\\daily\\runs\\20261110T233003+0800_01d26a\\commits\\2a3f19acce49efdda78d48d03c3ed57221639284\\runner\\20261110T160625Z_wi0_233c97e\\result.json"
+      }
+    ],
+    "unverifiedUiCount": 4,
+    "preparations": [
+      {
+        "receipt": "C:\\AutoTest\\AutoTest\\VegaAutoTest\\daily\\runs\\20261110T233003+0800_01d26a\\commits\\2a3f19acce49efdda78d48d03c3ed57221639284\\preparation\\case-check.json",
+        "records": 9,
+        "compileOrDiscoveryFailures": 6,
+        "runtimeCounts": [
+          {
+            "verdict": null,
+            "code": null,
+            "count": 6
+          },
+          {
+            "verdict": "ERROR",
+            "code": "HARNESS_EXCEPTION",
+            "count": 3
+          }
+        ],
+        "generatedCaseCount": 9,
+        "frozenCaseCount": 2,
+        "candidates": [
+          {
+            "caseId": "authored-v7aec5004a5-2a3f19acce49-reprocess-cancel-ui",
+            "layer": "uia",
+            "compileExitCode": 1,
+            "discoveryLog": "C:\\AutoTest\\AutoTest\\VegaAutoTest\\daily\\runs\\20261110T233003+0800_01d26a\\commits\\2a3f19acce49efdda78d48d03c3ed57221639284\\preparation\\checks\\discovery-3c40971b91aa0322.log",
+            "compileErrors": [
+              [
+                "CS1744",
+                "Named argument 'automationId' specifies a parameter for which a positional argument has already been given"
+              ],
+              [
+                "CS9035",
+                "Required member 'WaferRunInfo.WaferID' must be set in the object initializer or attribute constructor."
+              ],
+              [
+                "CS7036",
+                "There is no argument given that corresponds to the required parameter 'collectionName' of 'CollectionContent.CollectionContent(string)'"
+              ],
+              [
+                "CS9035",
+                "Required member 'WaferRunInfo.LotID' must be set in the object initializer or attribute constructor."
+              ]
+            ],
+            "runtimeVerdict": null,
+            "runtimeCode": null,
+            "runtimeResult": null
+          },
+          {
+            "caseId": "authored-v7aec5004a5-2a3f19acce49-reprocess-toolbar-ordering",
+            "layer": "logic",
+            "compileExitCode": 1,
+            "discoveryLog": "C:\\AutoTest\\AutoTest\\VegaAutoTest\\daily\\runs\\20261110T233003+0800_01d26a\\commits\\2a3f19acce49efdda78d48d03c3ed57221639284\\preparation\\checks\\discovery-3d07df0ea1aae1e5.log",
+            "compileErrors": [
+              [
+                "CS1744",
+                "Named argument 'automationId' specifies a parameter for which a positional argument has already been given"
+              ],
+              [
+                "CS9035",
+                "Required member 'WaferRunInfo.WaferID' must be set in the object initializer or attribute constructor."
+              ],
+              [
+                "CS7036",
+                "There is no argument given that corresponds to the required parameter 'collectionName' of 'CollectionContent.CollectionContent(string)'"
+              ],
+              [
+                "CS9035",
+                "Required member 'WaferRunInfo.LotID' must be set in the object initializer or attribute constructor."
+              ]
+            ],
+            "runtimeVerdict": null,
+            "runtimeCode": null,
+            "runtimeResult": null
+          },
+          {
+            "caseId": "authored-vc680adcefc-2a3f19acce49-graphic-category-state",
+            "layer": "logic",
+            "compileExitCode": 0,
+            "discoveryLog": "C:\\AutoTest\\AutoTest\\VegaAutoTest\\daily\\runs\\20261110T233003+0800_01d26a\\commits\\2a3f19acce49efdda78d48d03c3ed57221639284\\preparation\\checks\\discovery-c5b9cbbead8afc2a.log",
+            "compileErrors": [],
+            "runtimeVerdict": "ERROR",
+            "runtimeCode": "HARNESS_EXCEPTION",
+            "runtimeResult": "C:\\AutoTest\\AutoTest\\VegaAutoTest\\daily\\runs\\20261110T233003+0800_01d26a\\commits\\2a3f19acce49efdda78d48d03c3ed57221639284\\preparation\\trials\\94f08f469ed6\\runner\\20261110T160413Z_wi0_5eec39a\\result.json",
+            "testErrorMessages": [
+              "System.ArgumentException : Object of type 'System.Object' cannot be converted to type 'Vega.Utility.Common.IConfigsManager'."
+            ]
+          },
+          {
+            "caseId": "authored-vc680adcefc-2a3f19acce49-graphic-load-defaults",
+            "layer": "logic",
+            "compileExitCode": 0,
+            "discoveryLog": "C:\\AutoTest\\AutoTest\\VegaAutoTest\\daily\\runs\\20261110T233003+0800_01d26a\\commits\\2a3f19acce49efdda78d48d03c3ed57221639284\\preparation\\checks\\discovery-e30bf7ffd4ad12bc.log",
+            "compileErrors": [],
+            "runtimeVerdict": "ERROR",
+            "runtimeCode": "HARNESS_EXCEPTION",
+            "runtimeResult": "C:\\AutoTest\\AutoTest\\VegaAutoTest\\daily\\runs\\20261110T233003+0800_01d26a\\commits\\2a3f19acce49efdda78d48d03c3ed57221639284\\preparation\\trials\\feb8e9d1d5da\\runner\\20261110T160429Z_wi0_bae505d\\result.json",
+            "testErrorMessages": [
+              "System.ArgumentException : Object of type 'System.Object' cannot be converted to type 'Vega.Utility.Common.IConfigsManager'."
+            ]
+          },
+          {
+            "caseId": "authored-vc680adcefc-2a3f19acce49-graphic-menu-rebuild",
+            "layer": "logic",
+            "compileExitCode": 0,
+            "discoveryLog": "C:\\AutoTest\\AutoTest\\VegaAutoTest\\daily\\runs\\20261110T233003+0800_01d26a\\commits\\2a3f19acce49efdda78d48d03c3ed57221639284\\preparation\\checks\\discovery-b028a55604c53e82.log",
+            "compileErrors": [],
+            "runtimeVerdict": "ERROR",
+            "runtimeCode": "HARNESS_EXCEPTION",
+            "runtimeResult": "C:\\AutoTest\\AutoTest\\VegaAutoTest\\daily\\runs\\20261110T233003+0800_01d26a\\commits\\2a3f19acce49efdda78d48d03c3ed57221639284\\preparation\\trials\\295ff441dce1\\runner\\20261110T160445Z_wi0_f4e6c62\\result.json",
+            "testErrorMessages": [
+              "System.ArgumentException : Object of type 'System.Object' cannot be converted to type 'Vega.Utility.Common.IConfigsManager'."
+            ]
+          },
+          {
+            "caseId": "authored-ve3da330cc5-2a3f19acce49-haze-calibration",
+            "layer": "logic",
+            "compileExitCode": 1,
+            "discoveryLog": "C:\\AutoTest\\AutoTest\\VegaAutoTest\\daily\\runs\\20261110T233003+0800_01d26a\\commits\\2a3f19acce49efdda78d48d03c3ed57221639284\\preparation\\checks\\discovery-f7b72bbb852a3de0.log",
+            "compileErrors": [
+              [
+                "CS7036",
+                "There is no argument given that corresponds to the required parameter 'timeout' of 'UiFind.Wait(AutomationElement, string, TimeSpan, string?, string?, ControlType?, bool)'"
+              ]
+            ],
+            "runtimeVerdict": null,
+            "runtimeCode": null,
+            "runtimeResult": null
+          },
+          {
+            "caseId": "authored-ve3da330cc5-2a3f19acce49-haze-evaluator",
+            "layer": "logic",
+            "compileExitCode": 1,
+            "discoveryLog": "C:\\AutoTest\\AutoTest\\VegaAutoTest\\daily\\runs\\20261110T233003+0800_01d26a\\commits\\2a3f19acce49efdda78d48d03c3ed57221639284\\preparation\\checks\\discovery-fbf95ab07421ff57.log",
+            "compileErrors": [
+              [
+                "CS7036",
+                "There is no argument given that corresponds to the required parameter 'timeout' of 'UiFind.Wait(AutomationElement, string, TimeSpan, string?, string?, ControlType?, bool)'"
+              ]
+            ],
+            "runtimeVerdict": null,
+            "runtimeCode": null,
+            "runtimeResult": null
+          },
+          {
+            "caseId": "authored-ve3da330cc5-2a3f19acce49-haze-page-mode",
+            "layer": "uia",
+            "compileExitCode": 1,
+            "discoveryLog": "C:\\AutoTest\\AutoTest\\VegaAutoTest\\daily\\runs\\20261110T233003+0800_01d26a\\commits\\2a3f19acce49efdda78d48d03c3ed57221639284\\preparation\\checks\\discovery-aacdbf70f717124e.log",
+            "compileErrors": [
+              [
+                "CS7036",
+                "There is no argument given that corresponds to the required parameter 'timeout' of 'UiFind.Wait(AutomationElement, string, TimeSpan, string?, string?, ControlType?, bool)'"
+              ]
+            ],
+            "runtimeVerdict": null,
+            "runtimeCode": null,
+            "runtimeResult": null
+          },
+          {
+            "caseId": "authored-ve3da330cc5-2a3f19acce49-haze-transport",
+            "layer": "logic",
+            "compileExitCode": 1,
+            "discoveryLog": "C:\\AutoTest\\AutoTest\\VegaAutoTest\\daily\\runs\\20261110T233003+0800_01d26a\\commits\\2a3f19acce49efdda78d48d03c3ed57221639284\\preparation\\checks\\discovery-d6fccb04bfe7f619.log",
+            "compileErrors": [
+              [
+                "CS7036",
+                "There is no argument given that corresponds to the required parameter 'timeout' of 'UiFind.Wait(AutomationElement, string, TimeSpan, string?, string?, ControlType?, bool)'"
+              ]
+            ],
+            "runtimeVerdict": null,
+            "runtimeCode": null,
+            "runtimeResult": null
+          }
+        ],
+        "scopes": [
+          {
+            "sha": "2a3f19acce49efdda78d48d03c3ed57221639284",
+            "budget": {
+              "usedSeconds": 548.8803565502167
+            },
+            "requests": [
+              {
+                "folder": "e3da330cc5-0",
+                "remainingSourceRequests": 3,
+                "compilerRepair": false,
+                "sourcesCount": 9,
+                "sourceCharacters": 79839,
+                "uiFindContractIncluded": false
+              },
+              {
+                "folder": "e3da330cc5-1",
+                "remainingSourceRequests": 2,
+                "compilerRepair": false,
+                "sourcesCount": 12,
+                "sourceCharacters": 101043,
+                "uiFindContractIncluded": false
+              },
+              {
+                "folder": "e3da330cc5-2",
+                "remainingSourceRequests": 1,
+                "compilerRepair": false,
+                "sourcesCount": 20,
+                "sourceCharacters": 137858,
+                "uiFindContractIncluded": false
+              },
+              {
+                "folder": "e3da330cc5-3",
+                "remainingSourceRequests": 0,
+                "compilerRepair": false,
+                "sourcesCount": 23,
+                "sourceCharacters": 135099,
+                "uiFindContractIncluded": false
+              }
+            ]
+          },
+          {
+            "sha": "31bc939172de9e3cd396873bbb62cda1446caa9d",
+            "budget": {
+              "usedSeconds": 415.1283814907074
+            },
+            "requests": [
+              {
+                "folder": "c680adcefc-0",
+                "remainingSourceRequests": 3,
+                "compilerRepair": false,
+                "sourcesCount": 9,
+                "sourceCharacters": 77251,
+                "uiFindContractIncluded": false
+              },
+              {
+                "folder": "c680adcefc-1",
+                "remainingSourceRequests": 2,
+                "compilerRepair": false,
+                "sourcesCount": 19,
+                "sourceCharacters": 139175,
+                "uiFindContractIncluded": false
+              },
+              {
+                "folder": "c680adcefc-2",
+                "remainingSourceRequests": 1,
+                "compilerRepair": false,
+                "sourcesCount": 19,
+                "sourceCharacters": 122258,
+                "uiFindContractIncluded": false
+              },
+              {
+                "folder": "c680adcefc-3",
+                "remainingSourceRequests": 0,
+                "compilerRepair": false,
+                "sourcesCount": 15,
+                "sourceCharacters": 137896,
+                "uiFindContractIncluded": false
+              }
+            ]
+          },
+          {
+            "sha": "a51e83c38652ddcf64a7786e98faafbf8ff17ecc",
+            "budget": {
+              "usedSeconds": 404.1412012577057
+            },
+            "requests": [
+              {
+                "folder": "7aec5004a5-0",
+                "remainingSourceRequests": 3,
+                "compilerRepair": false,
+                "sourcesCount": 2,
+                "sourceCharacters": 19900,
+                "uiFindContractIncluded": false
+              },
+              {
+                "folder": "7aec5004a5-1",
+                "remainingSourceRequests": 2,
+                "compilerRepair": false,
+                "sourcesCount": 13,
+                "sourceCharacters": 61813,
+                "uiFindContractIncluded": false
+              },
+              {
+                "folder": "7aec5004a5-2",
+                "remainingSourceRequests": 1,
+                "compilerRepair": false,
+                "sourcesCount": 23,
+                "sourceCharacters": 112611,
+                "uiFindContractIncluded": false
+              },
+              {
+                "folder": "7aec5004a5-3",
+                "remainingSourceRequests": 0,
+                "compilerRepair": false,
+                "sourcesCount": 27,
+                "sourceCharacters": 139610,
+                "uiFindContractIncluded": false
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "controllerSourcesChangedSinceRun": []
+  }
+]

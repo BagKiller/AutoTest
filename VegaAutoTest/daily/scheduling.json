@@ -1,291 +1,367 @@
 {
-  "schemaVersion": 1,
-  "tagCases": {
-    "sizes": [
-      "wi3644-core",
-      "daily-recent10-v3"
-    ],
-    "bfp": [
-      "daily-recent10-v3"
-    ],
-    "pmt": [
-      "daily-recent10-v3"
-    ],
-    "autooptics": [
-      "daily-recent10-v3"
-    ],
-    "notch": [
-      "daily-recent10-v3"
-    ],
-    "loadport": [
-      "daily-recent10-v3"
-    ],
-    "gem-handshake": [
-      "daily-recent10-v3"
-    ],
-    "run-isolation": [
-      "daily-recent10-v3",
-      "daily-supplement"
-    ],
-    "ni-abort": [
-      "daily-supplement"
-    ],
-    "io-hwv2": [
-      "daily-recent10-v3"
-    ],
-    "xy-notch-gate": [
-      "daily-recent10-v3"
-    ],
-    "afs-close": [
-      "daily-recent10-v3"
-    ]
-  },
-  "baselineCases": [
-    "daily-recent10-v3",
-    "daily-supplement"
+ "schemaVersion": 1,
+ "tagCases": {
+  "sizes": [
+   "wi3644-core",
+   "daily-recent10-v3"
   ],
-  "caseProfiles": {
-    "wi3690-recovery": [
-      "Vega100-PIC"
-    ],
-    "wi3693-recovery": [
-      "Vega300-HWv1"
-    ],
-    "wi3652-dialog-recovery": [
-      "Vega300-HWv1"
-    ],
-    "wi3677-ui-evidence": [
-      "Vega300-HWv1"
-    ],
-    "wi3579": [
-      "Vega100-PIC"
-    ],
-    "wi3611": [
-      "Vega100-PIC"
-    ],
-    "simulation-ui-00b3004a58de": [
-      "Vega300-HWv1",
-      "Vega500"
-    ],
-    "simulation-ui-6b4cf4af7928": [
-      "Vega500"
-    ],
-    "simulation-ui-227ace851042": [
-      "Vega100-PIC"
-    ],
-    "simulation-ui-bd9ccb55d6de": [
-      "Vega300-HWv1",
-      "Vega500"
-    ],
-    "simulation-ui-19c18be54684": [
-      "Vega100-PIC"
-    ],
-    "simulation-ui-9fa008a98a35": [
-      "Vega300-HWv1"
-    ],
-    "simulation-ui-d117a21d8bef": [
-      "Vega300-HWv1"
-    ],
-    "simulation-ui-eba9945afbca": [
-      "Vega300-HWv1"
-    ],
-    "simulation-ui-b428717a56aa": [
-      "Vega300-HWv1"
-    ],
-    "authored-v9c24106368-055b805acc67-bf3704-contrast": [],
-    "authored-v9c24106368-055b805acc67-bf3704-seconds-window": [],
-    "authored-v9c24106368-055b805acc67-bf3704-vm-contract": [],
-    "authored-v9c24106368-055b805acc67-bf3704-acquisition-statistics": [],
-    "authored-v9c24106368-055b805acc67-bf3704-record-lifecycle": [],
-    "authored-v9c24106368-055b805acc67-bf3704-ui-workflow": [
-      "Vega100-PIC",
-      "Vega100-Coherent",
-      "Vega300-HWv1",
-      "Vega300-HWv2",
-      "Vega500"
-    ],
-    "authored-v1013043576-055b805acc67-bf3704-contrast": [],
-    "authored-v1013043576-055b805acc67-bf3704-seconds-window": [],
-    "authored-v1013043576-055b805acc67-bf3704-vm-contract": [],
-    "authored-v1013043576-055b805acc67-bf3704-acquisition-statistics": [],
-    "authored-v1013043576-055b805acc67-bf3704-record-lifecycle": [],
-    "authored-v1013043576-055b805acc67-bf3704-ui-workflow": [
-      "Vega100-PIC",
-      "Vega100-Coherent",
-      "Vega300-HWv1",
-      "Vega300-HWv2",
-      "Vega500"
-    ],
-    "authored-v0250ff55dc-9acb461b7cf8-wi3670-component": [],
-    "authored-v0250ff55dc-9acb461b7cf8-wi3670-workflow": [
-      "Vega100-PIC",
-      "Vega100-Coherent",
-      "Vega300-HWv1",
-      "Vega300-HWv2",
-      "Vega500"
-    ],
-    "authored-vf339a20d06-e05bb7f732f6-native-saturation": [],
-    "authored-vf339a20d06-e05bb7f732f6-xaml-selection": [],
-    "authored-v27ffeb903e-e05bb7f732f6-native-saturation": [],
-    "authored-v27ffeb903e-e05bb7f732f6-xaml-selection": [],
-    "authored-vc95a6a1a9d-8894b083ccb4-unobserved-handler": [],
-    "authored-vc95a6a1a9d-8894b083ccb4-fallback-log": [],
-    "authored-vdceebf0e01-d07d0e7045b7-uniformity-component-contract": [],
-    "authored-vdceebf0e01-d07d0e7045b7-uniformity-import-reentry-statistics": [
-      "Vega100-PIC",
-      "Vega100-Coherent",
-      "Vega300-HWv1",
-      "Vega300-HWv2",
-      "Vega500"
-    ],
-    "authored-v62156ef44b-d07d0e7045b7-uniformity-component-contract": [],
-    "authored-v62156ef44b-d07d0e7045b7-uniformity-import-reentry-statistics": [
-      "Vega100-PIC",
-      "Vega100-Coherent",
-      "Vega300-HWv1",
-      "Vega300-HWv2",
-      "Vega500"
-    ],
-    "authored-v20261030fix01-d07d0e7045b7-uniformity-component-contract": [],
-    "authored-v20261030fix01-d07d0e7045b7-uniformity-import-reentry-statistics": [
-      "Vega100-PIC",
-      "Vega100-Coherent",
-      "Vega300-HWv1",
-      "Vega300-HWv2",
-      "Vega500"
-    ],
-    "authored-v4c8f7777cc-1c6ef991b4b4-component-library-localization": [],
-    "authored-v4c8f7777cc-1c6ef991b4b4-component-library-navigation": [
-      "Vega100-PIC",
-      "Vega100-Coherent",
-      "Vega300-HWv1",
-      "Vega300-HWv2",
-      "Vega500"
-    ],
-    "authored-v4c8f7777cc-1c6ef991b4b4-force-abort-ui-audit": [
-      "Vega100-PIC",
-      "Vega100-Coherent",
-      "Vega300-HWv1",
-      "Vega300-HWv2",
-      "Vega500"
-    ],
-    "authored-v6ff8ebfc51-b2edbb8776c5-offline-name-rules": [],
-    "authored-v6ff8ebfc51-b2edbb8776c5-offline-name-dialog-contract": [],
-    "authored-v6ff8ebfc51-b2edbb8776c5-offline-name-ui-validation": [
-      "Vega100-PIC",
-      "Vega100-Coherent",
-      "Vega300-HWv1",
-      "Vega300-HWv2",
-      "Vega500"
-    ],
-    "authored-vf983c77d92-b2edbb8776c5-offline-name-rules": [],
-    "authored-vf983c77d92-b2edbb8776c5-offline-name-dialog-contract": [],
-    "authored-vf983c77d92-b2edbb8776c5-offline-name-ui-validation": [
-      "Vega100-PIC",
-      "Vega100-Coherent",
-      "Vega300-HWv1",
-      "Vega300-HWv2",
-      "Vega500"
-    ],
-    "authored-v463dcce191-41c701e143bb-wi3755-recommendation": [],
-    "authored-v463dcce191-41c701e143bb-wi3755-table": [],
-    "authored-v463dcce191-41c701e143bb-wi3755-runtime": [],
-    "authored-v4bc8d03c35-41c701e143bb-wi3737-signal": [],
-    "authored-v4bc8d03c35-41c701e143bb-wi3737-policy-candidates": [],
-    "authored-v4bc8d03c35-41c701e143bb-wi3737-depth-images": [],
-    "authored-v4bc8d03c35-41c701e143bb-wi3737-diagnostics-ui": [
-      "Vega100-PIC",
-      "Vega100-Coherent"
-    ],
-    "authored-v0dbb6c974b-41c701e143bb-wi3703-map-behavior": [],
-    "authored-v0dbb6c974b-41c701e143bb-wi3703-map-drawing": [],
-    "authored-v0dbb6c974b-41c701e143bb-wi3703-recipe-range": [],
-    "authored-v904f792e76-41c701e143bb-uniformity-data": [],
-    "authored-v904f792e76-41c701e143bb-uniformity-pipeline": [],
-    "authored-v904f792e76-41c701e143bb-uniformity-statistics": [],
-    "authored-v904f792e76-41c701e143bb-uniformity-ui-statistics": [
-      "Vega500"
-    ],
-    "authored-vf5c8153eb0-41c701e143bb-wi3740-normal-size-rows": [],
-    "authored-vf5c8153eb0-41c701e143bb-wi3740-cluster-size-rows": [],
-    "authored-v4210959106-58337cc216f5-wi3716-contracts": [],
-    "authored-v4210959106-58337cc216f5-wi3716-runtime-boundaries": [],
-    "authored-v4210959106-58337cc216f5-wi3716-v100-config-ui": [
-      "Vega100-PIC",
-      "Vega100-Coherent"
-    ],
-    "authored-v4210959106-58337cc216f5-wi3716-other-model-config-ui": [
-      "Vega300-HWv1",
-      "Vega300-HWv2",
-      "Vega500"
-    ],
-    "authored-vefd63ed545-58337cc216f5-wi3731-anchor-contracts": [],
-    "authored-vefd63ed545-58337cc216f5-wi3731-append-diagnostics": [],
-    "authored-vefd63ed545-58337cc216f5-wi3731-persistence-diagnostics": [],
-    "authored-vdbcce9731f-58337cc216f5-wi3608-aclut-motion": [],
-    "authored-vdbcce9731f-58337cc216f5-wi3608-aclut-contracts": [],
-    "authored-vdbcce9731f-58337cc216f5-wi3608-aclut-idle-stop-ui": [
-      "Vega300-HWv1",
-      "Vega300-HWv2",
-      "Vega500"
-    ],
-    "authored-v1887c980ec-0230b3b3628f-dependency-runtime-contracts": [],
-    "authored-v1887c980ec-0230b3b3628f-data-json-dependency-compatibility": [],
-    "authored-v22b3517d81-0230b3b3628f-wi3750-optical-rows": [],
-    "authored-v22b3517d81-0230b3b3628f-wi3750-summary-rebuild": [],
-    "authored-v22b3517d81-0230b3b3628f-wi3750-editor-summary": [
-      "Vega100-PIC",
-      "Vega100-Coherent"
-    ],
-    "authored-vee8c2cf027-0230b3b3628f-wi3757-range-contracts": [],
-    "authored-vee8c2cf027-0230b3b3628f-wi3757-header-components": [],
-    "authored-vee8c2cf027-0230b3b3628f-wi3757-legacy-bson": [],
-    "authored-vee8c2cf027-0230b3b3628f-wi3757-main-header-ui": [
-      "Vega100-PIC",
-      "Vega100-Coherent",
-      "Vega300-HWv1",
-      "Vega300-HWv2",
-      "Vega500"
-    ],
-    "authored-ved81ec4c0d-0230b3b3628f-wi3716-mode": [],
-    "authored-ved81ec4c0d-0230b3b3628f-wi3716-recipe202": [],
-    "authored-ved81ec4c0d-0230b3b3628f-wi3716-cache-reader": [],
-    "authored-ved81ec4c0d-0230b3b3628f-wi3716-missing202": [],
-    "authored-v54f9267e12-0230b3b3628f-wi3731-anchor-contract": [],
-    "authored-v54f9267e12-0230b3b3628f-wi3731-extended-monitoring": [],
-    "authored-v54f9267e12-0230b3b3628f-wi3731-short-malformed-anchor": [],
-    "authored-v8617b87748-0230b3b3628f-wi3608-aclut-motion": [],
-    "authored-v8617b87748-0230b3b3628f-wi3608-aclut-lifecycle": [],
-    "authored-v8617b87748-0230b3b3628f-wi3608-aclut-idle-stop-ui": [
-      "Vega300-HWv1",
-      "Vega300-HWv2",
-      "Vega500"
-    ]
-  },
-  "defaultUiProfile": "Vega500",
-  "profileOrder": [
-    "Vega100-PIC",
-    "Vega100-Coherent",
-    "Vega300-HWv1",
-    "Vega300-HWv2",
-    "Vega500"
+  "bfp": [
+   "daily-recent10-v3"
   ],
-  "headlessLayerModels": {
-    "logic": "不区分机型",
-    "logic-none": "无匹配机型",
-    "logic100": "Vega100",
-    "logic-channels100": "Vega100",
-    "logic300": "Vega300-HWv1",
-    "logic300-hwv2": "Vega300-HWv2",
-    "logic500": "Vega500"
-  },
-  "hardwareTags": {
-    "ni-abort": "NI 采集卡外部停止错误码与真实采集竞态，需真机 NI 卡",
-    "loadport": "SEPLAT/E87 Host 上片握手，需真机或协议联调台",
-    "gem-handshake": "GEM Load TCS 握手与 Host 并发时序，需真机或协议联调台",
-    "io-hwv2": "Slit/W1FF 真实 IO 接线，需对应硬件版本整机",
-    "afs-close": "MS 电机 30 秒超时的物理响应，需真实电机",
-    "notch": "对位通道真实信号质量，需真机数据"
-  },
-  "headlessBudgetMinutes": 150
+  "pmt": [
+   "daily-recent10-v3"
+  ],
+  "autooptics": [
+   "daily-recent10-v3"
+  ],
+  "notch": [
+   "daily-recent10-v3"
+  ],
+  "loadport": [
+   "daily-recent10-v3"
+  ],
+  "gem-handshake": [
+   "daily-recent10-v3"
+  ],
+  "run-isolation": [
+   "daily-recent10-v3",
+   "daily-supplement"
+  ],
+  "ni-abort": [
+   "daily-supplement"
+  ],
+  "io-hwv2": [
+   "daily-recent10-v3"
+  ],
+  "xy-notch-gate": [
+   "daily-recent10-v3"
+  ],
+  "afs-close": [
+   "daily-recent10-v3"
+  ]
+ },
+ "baselineCases": [
+  "daily-recent10-v3",
+  "daily-supplement"
+ ],
+ "caseProfiles": {
+  "wi3690-recovery": [
+   "Vega100-PIC"
+  ],
+  "wi3693-recovery": [
+   "Vega300-HWv1"
+  ],
+  "wi3652-dialog-recovery": [
+   "Vega300-HWv1"
+  ],
+  "wi3677-ui-evidence": [
+   "Vega300-HWv1"
+  ],
+  "wi3579": [
+   "Vega100-PIC"
+  ],
+  "wi3611": [
+   "Vega100-PIC"
+  ],
+  "simulation-ui-00b3004a58de": [
+   "Vega300-HWv1",
+   "Vega500"
+  ],
+  "simulation-ui-6b4cf4af7928": [
+   "Vega500"
+  ],
+  "simulation-ui-227ace851042": [
+   "Vega100-PIC"
+  ],
+  "simulation-ui-bd9ccb55d6de": [
+   "Vega300-HWv1",
+   "Vega500"
+  ],
+  "simulation-ui-19c18be54684": [
+   "Vega100-PIC"
+  ],
+  "simulation-ui-9fa008a98a35": [
+   "Vega300-HWv1"
+  ],
+  "simulation-ui-d117a21d8bef": [
+   "Vega300-HWv1"
+  ],
+  "simulation-ui-eba9945afbca": [
+   "Vega300-HWv1"
+  ],
+  "simulation-ui-b428717a56aa": [
+   "Vega300-HWv1"
+  ],
+  "authored-v9c24106368-055b805acc67-bf3704-contrast": [],
+  "authored-v9c24106368-055b805acc67-bf3704-seconds-window": [],
+  "authored-v9c24106368-055b805acc67-bf3704-vm-contract": [],
+  "authored-v9c24106368-055b805acc67-bf3704-acquisition-statistics": [],
+  "authored-v9c24106368-055b805acc67-bf3704-record-lifecycle": [],
+  "authored-v9c24106368-055b805acc67-bf3704-ui-workflow": [
+   "Vega100-PIC",
+   "Vega100-Coherent",
+   "Vega300-HWv1",
+   "Vega300-HWv2",
+   "Vega500"
+  ],
+  "authored-v1013043576-055b805acc67-bf3704-contrast": [],
+  "authored-v1013043576-055b805acc67-bf3704-seconds-window": [],
+  "authored-v1013043576-055b805acc67-bf3704-vm-contract": [],
+  "authored-v1013043576-055b805acc67-bf3704-acquisition-statistics": [],
+  "authored-v1013043576-055b805acc67-bf3704-record-lifecycle": [],
+  "authored-v1013043576-055b805acc67-bf3704-ui-workflow": [
+   "Vega100-PIC",
+   "Vega100-Coherent",
+   "Vega300-HWv1",
+   "Vega300-HWv2",
+   "Vega500"
+  ],
+  "authored-v0250ff55dc-9acb461b7cf8-wi3670-component": [],
+  "authored-v0250ff55dc-9acb461b7cf8-wi3670-workflow": [
+   "Vega100-PIC",
+   "Vega100-Coherent",
+   "Vega300-HWv1",
+   "Vega300-HWv2",
+   "Vega500"
+  ],
+  "authored-vf339a20d06-e05bb7f732f6-native-saturation": [],
+  "authored-vf339a20d06-e05bb7f732f6-xaml-selection": [],
+  "authored-v27ffeb903e-e05bb7f732f6-native-saturation": [],
+  "authored-v27ffeb903e-e05bb7f732f6-xaml-selection": [],
+  "authored-vc95a6a1a9d-8894b083ccb4-unobserved-handler": [],
+  "authored-vc95a6a1a9d-8894b083ccb4-fallback-log": [],
+  "authored-vdceebf0e01-d07d0e7045b7-uniformity-component-contract": [],
+  "authored-vdceebf0e01-d07d0e7045b7-uniformity-import-reentry-statistics": [
+   "Vega100-PIC",
+   "Vega100-Coherent",
+   "Vega300-HWv1",
+   "Vega300-HWv2",
+   "Vega500"
+  ],
+  "authored-v62156ef44b-d07d0e7045b7-uniformity-component-contract": [],
+  "authored-v62156ef44b-d07d0e7045b7-uniformity-import-reentry-statistics": [
+   "Vega100-PIC",
+   "Vega100-Coherent",
+   "Vega300-HWv1",
+   "Vega300-HWv2",
+   "Vega500"
+  ],
+  "authored-v20261030fix01-d07d0e7045b7-uniformity-component-contract": [],
+  "authored-v20261030fix01-d07d0e7045b7-uniformity-import-reentry-statistics": [
+   "Vega100-PIC",
+   "Vega100-Coherent",
+   "Vega300-HWv1",
+   "Vega300-HWv2",
+   "Vega500"
+  ],
+  "authored-v4c8f7777cc-1c6ef991b4b4-component-library-localization": [],
+  "authored-v4c8f7777cc-1c6ef991b4b4-component-library-navigation": [
+   "Vega100-PIC",
+   "Vega100-Coherent",
+   "Vega300-HWv1",
+   "Vega300-HWv2",
+   "Vega500"
+  ],
+  "authored-v4c8f7777cc-1c6ef991b4b4-force-abort-ui-audit": [
+   "Vega100-PIC",
+   "Vega100-Coherent",
+   "Vega300-HWv1",
+   "Vega300-HWv2",
+   "Vega500"
+  ],
+  "authored-v6ff8ebfc51-b2edbb8776c5-offline-name-rules": [],
+  "authored-v6ff8ebfc51-b2edbb8776c5-offline-name-dialog-contract": [],
+  "authored-v6ff8ebfc51-b2edbb8776c5-offline-name-ui-validation": [
+   "Vega100-PIC",
+   "Vega100-Coherent",
+   "Vega300-HWv1",
+   "Vega300-HWv2",
+   "Vega500"
+  ],
+  "authored-vf983c77d92-b2edbb8776c5-offline-name-rules": [],
+  "authored-vf983c77d92-b2edbb8776c5-offline-name-dialog-contract": [],
+  "authored-vf983c77d92-b2edbb8776c5-offline-name-ui-validation": [
+   "Vega100-PIC",
+   "Vega100-Coherent",
+   "Vega300-HWv1",
+   "Vega300-HWv2",
+   "Vega500"
+  ],
+  "authored-v463dcce191-41c701e143bb-wi3755-recommendation": [],
+  "authored-v463dcce191-41c701e143bb-wi3755-table": [],
+  "authored-v463dcce191-41c701e143bb-wi3755-runtime": [],
+  "authored-v4bc8d03c35-41c701e143bb-wi3737-signal": [],
+  "authored-v4bc8d03c35-41c701e143bb-wi3737-policy-candidates": [],
+  "authored-v4bc8d03c35-41c701e143bb-wi3737-depth-images": [],
+  "authored-v4bc8d03c35-41c701e143bb-wi3737-diagnostics-ui": [
+   "Vega100-PIC",
+   "Vega100-Coherent"
+  ],
+  "authored-v0dbb6c974b-41c701e143bb-wi3703-map-behavior": [],
+  "authored-v0dbb6c974b-41c701e143bb-wi3703-map-drawing": [],
+  "authored-v0dbb6c974b-41c701e143bb-wi3703-recipe-range": [],
+  "authored-v904f792e76-41c701e143bb-uniformity-data": [],
+  "authored-v904f792e76-41c701e143bb-uniformity-pipeline": [],
+  "authored-v904f792e76-41c701e143bb-uniformity-statistics": [],
+  "authored-v904f792e76-41c701e143bb-uniformity-ui-statistics": [
+   "Vega500"
+  ],
+  "authored-vf5c8153eb0-41c701e143bb-wi3740-normal-size-rows": [],
+  "authored-vf5c8153eb0-41c701e143bb-wi3740-cluster-size-rows": [],
+  "authored-v4210959106-58337cc216f5-wi3716-contracts": [],
+  "authored-v4210959106-58337cc216f5-wi3716-runtime-boundaries": [],
+  "authored-v4210959106-58337cc216f5-wi3716-v100-config-ui": [
+   "Vega100-PIC",
+   "Vega100-Coherent"
+  ],
+  "authored-v4210959106-58337cc216f5-wi3716-other-model-config-ui": [
+   "Vega300-HWv1",
+   "Vega300-HWv2",
+   "Vega500"
+  ],
+  "authored-vefd63ed545-58337cc216f5-wi3731-anchor-contracts": [],
+  "authored-vefd63ed545-58337cc216f5-wi3731-append-diagnostics": [],
+  "authored-vefd63ed545-58337cc216f5-wi3731-persistence-diagnostics": [],
+  "authored-vdbcce9731f-58337cc216f5-wi3608-aclut-motion": [],
+  "authored-vdbcce9731f-58337cc216f5-wi3608-aclut-contracts": [],
+  "authored-vdbcce9731f-58337cc216f5-wi3608-aclut-idle-stop-ui": [
+   "Vega300-HWv1",
+   "Vega300-HWv2",
+   "Vega500"
+  ],
+  "authored-v1887c980ec-0230b3b3628f-dependency-runtime-contracts": [],
+  "authored-v1887c980ec-0230b3b3628f-data-json-dependency-compatibility": [],
+  "authored-v22b3517d81-0230b3b3628f-wi3750-optical-rows": [],
+  "authored-v22b3517d81-0230b3b3628f-wi3750-summary-rebuild": [],
+  "authored-v22b3517d81-0230b3b3628f-wi3750-editor-summary": [
+   "Vega100-PIC",
+   "Vega100-Coherent"
+  ],
+  "authored-vee8c2cf027-0230b3b3628f-wi3757-range-contracts": [],
+  "authored-vee8c2cf027-0230b3b3628f-wi3757-header-components": [],
+  "authored-vee8c2cf027-0230b3b3628f-wi3757-legacy-bson": [],
+  "authored-vee8c2cf027-0230b3b3628f-wi3757-main-header-ui": [
+   "Vega100-PIC",
+   "Vega100-Coherent",
+   "Vega300-HWv1",
+   "Vega300-HWv2",
+   "Vega500"
+  ],
+  "authored-ved81ec4c0d-0230b3b3628f-wi3716-mode": [],
+  "authored-ved81ec4c0d-0230b3b3628f-wi3716-recipe202": [],
+  "authored-ved81ec4c0d-0230b3b3628f-wi3716-cache-reader": [],
+  "authored-ved81ec4c0d-0230b3b3628f-wi3716-missing202": [],
+  "authored-v54f9267e12-0230b3b3628f-wi3731-anchor-contract": [],
+  "authored-v54f9267e12-0230b3b3628f-wi3731-extended-monitoring": [],
+  "authored-v54f9267e12-0230b3b3628f-wi3731-short-malformed-anchor": [],
+  "authored-v8617b87748-0230b3b3628f-wi3608-aclut-motion": [],
+  "authored-v8617b87748-0230b3b3628f-wi3608-aclut-lifecycle": [],
+  "authored-v8617b87748-0230b3b3628f-wi3608-aclut-idle-stop-ui": [
+   "Vega300-HWv1",
+   "Vega300-HWv2",
+   "Vega500"
+  ],
+  "authored-v932a73b175-d1359f210fb3-comment-contract-imaging": [],
+  "authored-v932a73b175-d1359f210fb3-comment-contract-haze": [],
+  "authored-v932a73b175-d1359f210fb3-comment-contract-driver": [],
+  "authored-v932a73b175-d1359f210fb3-comment-contract-slipline": [],
+  "authored-v21c1db9483-d1359f210fb3-wafermap-first-category-selection": [],
+  "authored-v21c1db9483-d1359f210fb3-wafermap-displayed-legend-scope": [],
+  "authored-v276c0691c8-d1359f210fb3-spa-dc-dca-isolation": [],
+  "authored-vadcf2d0aed-d1359f210fb3-ccm-delay-behavior": [],
+  "authored-vadcf2d0aed-d1359f210fb3-ccm-configuration-contract": [],
+  "authored-vadcf2d0aed-d1359f210fb3-scan-only-start-log": [],
+  "authored-vadcf2d0aed-d1359f210fb3-ccm-configuration-ui": [
+   "Vega500"
+  ],
+  "authored-va29c9303e4-d1359f210fb3-account-gallery-reload": [],
+  "authored-va29c9303e4-d1359f210fb3-gallery-calibration-filter": [],
+  "authored-vc694f7ee9e-d1359f210fb3-lock-refresh-serialization-compatibility": [],
+  "authored-vc694f7ee9e-d1359f210fb3-lock-refresh-http-factory-compatibility": [],
+  "authored-ve3da330cc5-2a3f19acce49-haze-evaluator": [],
+  "authored-ve3da330cc5-2a3f19acce49-haze-calibration": [],
+  "authored-ve3da330cc5-2a3f19acce49-haze-transport": [],
+  "authored-ve3da330cc5-2a3f19acce49-haze-page-mode": [
+   "Vega500"
+  ],
+  "authored-v7aec5004a5-2a3f19acce49-reprocess-toolbar-ordering": [],
+  "authored-v7aec5004a5-2a3f19acce49-reprocess-cancel-ui": [
+   "Vega500"
+  ],
+  "authored-vc680adcefc-2a3f19acce49-graphic-category-state": [],
+  "authored-vc680adcefc-2a3f19acce49-graphic-load-defaults": [],
+  "authored-vc680adcefc-2a3f19acce49-graphic-menu-rebuild": [],
+  "authored-v3db24e699f-58606ec9c840-edge-source-and-forwarding-contracts": [
+   "Vega100-PIC"
+  ],
+  "authored-v3db24e699f-58606ec9c840-edge-retrofit-configuration": [
+   "Vega100-PIC"
+  ],
+  "authored-v3db24e699f-58606ec9c840-optional-edge-daq-lifecycle": [
+   "Vega100-PIC"
+  ],
+  "authored-v1441a8d983-58606ec9c840-bps-film-table-contract": [],
+  "authored-v1441a8d983-58606ec9c840-bps-verification-components": [],
+  "authored-v1441a8d983-58606ec9c840-bps-film-session-workflow": [
+   "Vega500"
+  ],
+  "authored-v100cda71d2-58606ec9c840-slow-shutter-device-contract": [],
+  "authored-v100cda71d2-58606ec9c840-lot-recipe-state-and-save": [],
+  "authored-v100cda71d2-58606ec9c840-lot-recipe-interaction-components": [],
+  "authored-v7d86af43a1-58606ec9c840-bps-film-table-contract": [],
+  "authored-v7d86af43a1-58606ec9c840-bps-verification-components": [],
+  "authored-v7d86af43a1-58606ec9c840-bps-film-session-workflow": [
+   "Vega500"
+  ],
+  "authored-v2e26a4f0c4-58606ec9c840-slow-shutter-device-contract": [],
+  "authored-v2e26a4f0c4-58606ec9c840-lot-recipe-state-and-save": [],
+  "authored-v2e26a4f0c4-58606ec9c840-lot-recipe-interaction-components": [],
+  "authored-v5d94924feb-1d5442d7ef10-recovery-carrier-checks": [],
+  "authored-v5d94924feb-1d5442d7ef10-recovery-loading-presentation": [],
+  "authored-v5d94924feb-1d5442d7ef10-abort-manual-operation-gate": [],
+  "authored-vd84a959194-1d5442d7ef10-klarf-enabled-channel-signature": [],
+  "authored-vd84a959194-1d5442d7ef10-klarf-attribute-removal": [],
+  "authored-vd84a959194-1d5442d7ef10-klarf-late-baseline": [],
+  "authored-v4a0133cf48-1d5442d7ef10-manual-operation-boundaries": [
+   "Vega500"
+  ],
+  "authored-v4a0133cf48-1d5442d7ef10-plus-slow-shutter-close": [
+   "Vega500"
+  ],
+  "authored-vf9320f27da-1d5442d7ef10-klarf-unsaved-selection-deltas": [
+   "Vega500"
+  ],
+  "authored-vf9320f27da-1d5442d7ef10-klarf-ordinary-advanced-deltas": [
+   "Vega500"
+  ],
+  "wi3756-klarf-throughput-ui": [
+   "Vega500"
+  ]
+ },
+ "defaultUiProfile": "Vega500",
+ "profileOrder": [
+  "Vega100-PIC",
+  "Vega100-Coherent",
+  "Vega300-HWv1",
+  "Vega300-HWv2",
+  "Vega500"
+ ],
+ "headlessLayerModels": {
+  "logic": "不区分机型",
+  "logic-none": "无匹配机型",
+  "logic100": "Vega100",
+  "logic-channels100": "Vega100",
+  "logic300": "Vega300-HWv1",
+  "logic300-hwv2": "Vega300-HWv2",
+  "logic500": "Vega500"
+ },
+ "hardwareTags": {
+  "ni-abort": "NI 采集卡外部停止错误码与真实采集竞态，需真机 NI 卡",
+  "loadport": "SEPLAT/E87 Host 上片握手，需真机或协议联调台",
+  "gem-handshake": "GEM Load TCS 握手与 Host 并发时序，需真机或协议联调台",
+  "io-hwv2": "Slit/W1FF 真实 IO 接线，需对应硬件版本整机",
+  "afs-close": "MS 电机 30 秒超时的物理响应，需真实电机",
+  "notch": "对位通道真实信号质量，需真机数据"
+ },
+ "headlessBudgetMinutes": 150
 }

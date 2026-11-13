@@ -1,6 +1,7 @@
 // Copyright (c) Shanghai Vega Technology Co., Ltd. All rights reserved.
 
 using System.Reflection;
+using System.Diagnostics;
 using System.Runtime.ExceptionServices;
 using System.Windows;
 using System.Windows.Threading;
@@ -40,6 +41,7 @@ public static class WpfTestHost
 
     private static readonly object Gate = new();
     private static Dispatcher? s_dispatcher;
+    private static Task<Dispatcher>? s_startup;
     private static Exception? s_startupError;
     private static string? s_poisoned;
     private static IReadOnlyList<string> s_loaded = Array.Empty<string>();
@@ -90,7 +92,9 @@ public static class WpfTestHost
     /// </summary>
     public static T RunAsync<T>(Func<Task<T>> body)
     {
-        var dispatcher = EnsureStarted();
+        var timeout = Timeout;
+        var watch = Stopwatch.StartNew();
+        var dispatcher = EnsureStarted(timeout, watch);
         if (dispatcher.CheckAccess())
             throw new InvalidOperationException("WpfTestHost.Run/RunAsync cannot be nested; call the inner code directly.");
 
@@ -106,11 +110,16 @@ public static class WpfTestHost
                 return Task.FromException<T>(error);
             }
         }).Task.Unwrap();
-        var timeout = Timeout;
+        return AwaitBounded(operation, timeout, watch, "work");
+    }
+
+    private static T AwaitBounded<T>(Task<T> operation, TimeSpan timeout, Stopwatch watch, string stage)
+    {
         bool completed;
         try
         {
-            completed = operation.Wait(timeout);
+            var remaining = timeout - watch.Elapsed;
+            completed = operation.Wait(remaining > TimeSpan.Zero ? remaining : TimeSpan.Zero);
         }
         catch (AggregateException error) when (error.InnerExceptions.Count == 1)
         {
@@ -120,7 +129,7 @@ public static class WpfTestHost
 
         if (!completed)
         {
-            var reason = $"WPF test host work did not finish within {timeout.TotalSeconds:F0}s. "
+            var reason = $"WPF test host {stage} did not finish within {timeout.TotalSeconds:F0}s (startup and work share this limit). "
                 + "Typical cause: a synchronous wait (.Result/.Wait()/GetAwaiter().GetResult()) on async work "
                 + "that must resume on the WPF thread, or non-UI work run inside WpfTestHost.Run. "
                 + "Keep only WPF object creation/inspection inside Run and await product async APIs via RunAsync.";
@@ -132,8 +141,9 @@ public static class WpfTestHost
         return operation.GetAwaiter().GetResult();
     }
 
-    private static Dispatcher EnsureStarted()
+    private static Dispatcher EnsureStarted(TimeSpan timeout, Stopwatch watch)
     {
+        Task<Dispatcher> startupTask;
         lock (Gate)
         {
             if (s_poisoned is not null)
@@ -143,47 +153,52 @@ public static class WpfTestHost
             if (s_dispatcher is not null)
                 return s_dispatcher;
 
-            using var ready = new ManualResetEventSlim();
-            Exception? error = null;
-            Dispatcher? dispatcher = null;
-            var thread = new Thread(() =>
+            if (s_startup is null)
             {
-                try
+                // A task survives a caller timing out: a late initializer cannot
+                // signal a disposed event, publish a usable host, or restart it.
+                var ready = new TaskCompletionSource<Dispatcher>(TaskCreationOptions.RunContinuationsAsynchronously);
+                s_startup = ready.Task;
+                var thread = new Thread(() =>
                 {
-                    var application = Application.Current
-                        ?? new Application { ShutdownMode = ShutdownMode.OnExplicitShutdown };
-                    s_loaded = LoadProductDictionaries(application);
-                    dispatcher = Dispatcher.CurrentDispatcher;
-                }
-                catch (Exception startup)
+                    try
+                    {
+                        var application = Application.Current
+                            ?? new Application { ShutdownMode = ShutdownMode.OnExplicitShutdown };
+                        var loaded = LoadProductDictionaries(application);
+                        var dispatcher = Dispatcher.CurrentDispatcher;
+                        lock (Gate)
+                        {
+                            if (s_poisoned is not null)
+                            {
+                                ready.TrySetException(new WpfHostTimeoutException(s_poisoned));
+                                return;
+                            }
+                            s_loaded = loaded;
+                            s_dispatcher = dispatcher;
+                            ready.TrySetResult(dispatcher);
+                        }
+                        Dispatcher.Run();
+                    }
+                    catch (Exception error)
+                    {
+                        lock (Gate)
+                            s_startupError = error;
+                        ready.TrySetException(new InvalidOperationException(
+                            "WPF test host could not load the product resources: " + error.Message, error));
+                    }
+                })
                 {
-                    error = startup;
-                }
-                finally
-                {
-                    ready.Set();
-                }
-
-                if (error is null)
-                    Dispatcher.Run();
-            })
-            {
-                IsBackground = true,
-                Name = "Vega WPF test host",
-            };
-            thread.SetApartmentState(ApartmentState.STA);
-            thread.Start();
-            ready.Wait();
-
-            if (error is not null)
-            {
-                s_startupError = error;
-                throw new InvalidOperationException("WPF test host could not load the product resources: " + error.Message, error);
+                    IsBackground = true,
+                    Name = "Vega WPF test host",
+                };
+                thread.SetApartmentState(ApartmentState.STA);
+                thread.Start();
             }
-
-            s_dispatcher = dispatcher!;
-            return s_dispatcher;
+            startupTask = s_startup;
         }
+        // Never hold Gate while waiting for user code or resource constructors.
+        return AwaitBounded(startupTask, timeout, watch, "startup");
     }
 
     private static IReadOnlyList<string> LoadProductDictionaries(Application application)

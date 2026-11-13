@@ -47,21 +47,50 @@ VERDICT_RANK = {"FAIL": 0, "ERROR": 1, "BLOCKED": 2, None: 3, "PASS": 4}
 CLOSED = ("ACCEPTED", "NOT_APPLICABLE", "ACKNOWLEDGED")
 
 
+def _long_path(path):
+    # This host has HKLM LongPathsEnabled=0 (checked 2026-11-13): paths over 260
+    # chars fail with WinError 206 even though the volume supports longer names.
+    # The \\?\ prefix bypasses MAX_PATH normalization for absolute paths.
+    resolved = os.path.abspath(str(path))
+    return '\\\\?\\' + resolved if len(resolved) >= 248 and os.name == 'nt' else str(path)
+
+
 def save(path, obj):
-    path.parent.mkdir(parents=True, exist_ok=True)
+    # mkdir with the extended-length prefix too: deep revalidation scope dirs
+    # (>248 chars) fail WinError 3/206 without it on this LongPathsEnabled=0 host.
+    os.makedirs(_long_path(path.parent), exist_ok=True)
     # Nested campaign/SHA/run evidence paths are already close to MAX_PATH.
     # Appending a full UUID to the destination name made otherwise valid paths
     # fail with FileNotFoundError during atomic writes.
     temporary = path.with_name('.' + uuid.uuid4().hex[:12] + '.tmp')
     try:
-        temporary.write_text(json.dumps(obj, ensure_ascii=False, indent=2), encoding="utf-8")
-        os.replace(temporary, path)
+        with open(_long_path(temporary), 'w', encoding="utf-8") as stream:
+            stream.write(json.dumps(obj, ensure_ascii=False, indent=2))
+        # Real-time antivirus scanners intermittently hold the destination for a
+        # few milliseconds; one controller lost two whole scope generations to a
+        # single os.replace race (2026-11-13 WinError 5). Retry briefly before
+        # treating the write as a real failure. The extended-length prefix keeps
+        # deep revalidation scope paths (260+ chars, WinError 206) writable.
+        last_error = None
+        for _ in range(6):
+            try:
+                os.replace(_long_path(temporary), _long_path(path))
+                last_error = None
+                break
+            except PermissionError as error:
+                last_error = error
+                time.sleep(0.25)
+        if last_error is not None:
+            raise last_error
     finally:
-        temporary.unlink(missing_ok=True)
+        if temporary.exists():
+            os.unlink(_long_path(temporary))
 
 
 def load(path, default=None):
-    return json.loads(path.read_text(encoding="utf-8-sig")) if path.exists() else default
+    # Same extended-length prefix as save(): deep evidence paths must round-trip.
+    resolved = _long_path(path)
+    return json.loads(open(resolved, encoding="utf-8-sig").read()) if os.path.exists(resolved) else default
 
 
 def now_cn():
@@ -793,7 +822,8 @@ def acknowledge(sha, reason):
 # ────────────────────────────── 报告 ──────────────────────────────
 
 STATUS_TEXT = {"ACCEPTED": "已验收", "PARTIAL": "部分验收", "PENDING": "待执行", "NEEDS_CASE": "缺用例",
-               "FAIL": "失败", "ERROR": "工具异常", "BLOCKED": "无法判定", "NOT_APPLICABLE": "无需验证"}
+               "INSUFFICIENT_INFO": "信息不足", "FAIL": "失败", "ERROR": "工具异常", "BLOCKED": "无法判定",
+               "NOT_APPLICABLE": "无需验证"}
 
 
 def md(text):
@@ -960,7 +990,7 @@ def main():
         if not source.is_relative_to((ROOT / 'daily' / 'runs').resolve()):
             raise ValueError('Source batch must be inside daily/runs')
         original = load(source / 'manifest.json')
-        out = source / ('revalidation-' + now_cn().strftime('%Y%m%dT%H%M%S') + '_' + uuid.uuid4().hex[:6])
+        out = source / ('rev-' + now_cn().strftime('%Y%m%dT%H%M%S') + '_' + uuid.uuid4().hex[:6])
         manifest = dict(original, batchId=out.name, mode='targeted-revalidation', strategy='individual',
                         revalidationOf=str(source), revalidationRequestedAt=now_cn().isoformat())
         save(out / 'manifest.json', manifest)

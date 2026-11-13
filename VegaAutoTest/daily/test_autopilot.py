@@ -330,23 +330,29 @@ class ControllerTests(unittest.TestCase):
         self.assertEqual(repaired['files'][0]['content'], '// corrected API usage')
         self.assertEqual(original['files'][0]['content'], '// generated test')
 
-    def test_ui_test_files_are_excluded_from_logic_project(self):
+    def test_case_projects_compile_only_their_declared_sources(self):
         # 2026-11-10: one UI file's compile error took every logic case down with it.
+        # Per-case projects now compile ONLY the case's declared sourceFiles.
         response = self.response()
         response['files'] = [
             dict(path='Logic/Behavior.cs', content='public class Bounds { }'),
             dict(path='Ui/BoundsUi.cs', content='public class BoundsUi : L2TestBase { void T(){ LaunchAndPrepare(); } }'),
             dict(path='Shared.cs', content='static class Helpers { }')]
+        response['cases'][0]['sourceFiles'] = ['Logic/Behavior.cs', 'Shared.cs']
         response['cases'].append(dict(key='bounds-ui', title='UI', className='Vega.AutoTest.Authored.BoundsUi',
-                                      layer='uia', profiles=['Vega100-PIC'], minAssertions=1))
+                                      layer='uia', profiles=['Vega100-PIC'], minAssertions=1,
+                                      sourceFiles=['Ui/BoundsUi.cs', 'Shared.cs']))
         response['requirements'][0]['caseKeys'] = ['bounds', 'bounds-ui']
         m.install(a.d, self.child, self.manifest, response, self.registry, self.sched, 'v1')
         root = self.root / 'probes' / 'authored' / 'v1' / ('a' * 12)
-        logic = (root / 'Authored.logic.csproj').read_text(encoding='utf-8')
-        uia = (root / 'Authored.uia.csproj').read_text(encoding='utf-8')
-        self.assertIn('<Compile Remove="Ui/BoundsUi.cs"/>', logic)
-        self.assertNotIn('Compile Remove="Shared.cs"', logic)
-        self.assertNotIn('Compile Remove', uia)
+        logic = (root / 'Authored.bounds.csproj').read_text(encoding='utf-8')
+        uia = (root / 'Authored.bounds-ui.csproj').read_text(encoding='utf-8')
+        self.assertIn('<Compile Include="Logic/Behavior.cs"/>', logic)
+        self.assertIn('<Compile Include="Shared.cs"/>', logic)
+        self.assertNotIn('Ui/BoundsUi.cs', logic)
+        self.assertIn('<Compile Include="Ui/BoundsUi.cs"/>', uia)
+        self.assertIn('Shared.cs', uia)
+        self.assertNotIn('Logic/Behavior.cs', uia)
 
     def test_multi_profile_ui_case_requires_profile_basis(self):
         # AGENTS.md 1.1: 2026-11-05 scheduled one common-module UI case on all five profiles.
@@ -354,23 +360,67 @@ class ControllerTests(unittest.TestCase):
         response = self.response()
         response['cases'][0].update(layer='uia', profiles=['Vega100-PIC', 'Vega500'])
         response['files'][0]['content'] = 'void T(){ Launch(); }'
-        response['requirements'][0].update(uiRequired=True, profiles=['Vega100-PIC', 'Vega500'])
+        response['requirements'][0].update(uiRequired=True, profiles=['Vega100-PIC', 'Vega500'],
+                                           uiBasis='Repro steps name the on-screen workflow')
         with self.assertRaisesRegex(ValueError, 'profileBasis'):
             m.install(a.d, self.child, self.manifest, response, self.registry, self.sched, 'v1')
         response['requirements'][0]['profileBasis'] = 'Work item names Vega100 PIC and Vega500 separately'
         m.install(a.d, self.child, self.manifest, response, self.registry, self.sched, 'v2')
 
-    def test_single_representative_ui_profile_needs_no_basis(self):
+    def test_single_representative_ui_profile_needs_no_profile_basis_but_still_ui_basis(self):
         self.sched['profileOrder'] = ['Vega100-PIC', 'Vega500']
         response = self.response()
         response['cases'][0].update(layer='uia', profiles=['Vega500'])
         response['files'][0]['content'] = 'void T(){ Launch(); }'
         response['requirements'][0].update(uiRequired=True, profiles=['Vega500'])
-        m.install(a.d, self.child, self.manifest, response, self.registry, self.sched, 'v1')
+        with self.assertRaisesRegex(ValueError, 'uiBasis'):
+            m.install(a.d, self.child, self.manifest, response, self.registry, self.sched, 'v1')
+        response['requirements'][0]['uiBasis'] = 'Acceptance criteria: observe the result dialog on screen'
+        m.install(a.d, self.child, self.manifest, response, self.registry, self.sched, 'v2')
+
+    def test_ui_required_without_ui_basis_is_rejected(self):
+        # 2026-11-13 policy: UI sessions are opt-in with work-item evidence, never default.
+        response = self.response()
+        response['cases'][0].update(layer='uia', profiles=['Vega100-PIC'])
+        response['files'][0]['content'] = 'void T(){ Launch(); }'
+        response['requirements'][0].update(uiRequired=True, profiles=['Vega100-PIC'], profileBasis='',
+                                           uiBasis='', caseKeys=['bounds'])
+        with self.assertRaisesRegex(ValueError, 'uiBasis'):
+            m.install(a.d, self.child, self.manifest, response, self.registry, self.sched, 'v1')
+        response['requirements'][0]['uiBasis'] = 'Repro steps: open Diagnostics page and observe result'
+        m.install(a.d, self.child, self.manifest, response, self.registry, self.sched, 'v2')
+
+    def test_insufficient_info_must_not_claim_executable_cases(self):
+        response = self.response()
+        response['requirements'][0].update(gapKind='INSUFFICIENT_INFO', gap='Work item has title only')
+        with self.assertRaisesRegex(ValueError, 'INSUFFICIENT_INFO'):
+            m.install(a.d, self.child, self.manifest, response, self.registry, self.sched, 'v1')
+        response['requirements'][0]['caseKeys'] = []
+        response['requirements'][0]['existingCaseIds'] = []
+        installed = m.install(a.d, self.child, self.manifest, response, self.registry, self.sched, 'v2')
+        self.assertEqual(installed[0]['gapKind'], 'INSUFFICIENT_INFO')
+
+    def test_insufficient_info_requires_a_stated_gap(self):
+        response = self.response()
+        response['requirements'][0].update(gapKind='INSUFFICIENT_INFO', gap='', caseKeys=[], existingCaseIds=[])
+        with self.assertRaisesRegex(ValueError, 'state which work-item fields'):
+            m.install(a.d, self.child, self.manifest, response, self.registry, self.sched, 'v1')
+
+    def test_repro_shaped_requirement_must_have_ui_case_not_logic_only(self):
+        # 2026-11-13 evening policy: a work item with repro steps MUST be verified by a
+        # UI test following them; a logic-only mapping is rejected for one repair round.
+        response = self.response()
+        response['requirements'][0]['steps'] = ['打开Vega并登录', '打开KLARF输出页并取消勾选DW2 Default', '修改产量并检查勾选']
+        with self.assertRaisesRegex(ValueError, 'mandatory-UI policy'):
+            m.install(a.d, self.child, self.manifest, response, self.registry, self.sched, 'v1')
+        # Component tests alone remain valid for non-repro (pure logic) requirements.
+        plain = self.response()
+        m.install(a.d, self.child, self.manifest, plain, self.registry, self.sched, 'v2')
 
     def test_required_ui_without_executable_case_cannot_be_claimed_covered(self):
         response = self.response()
-        response['requirements'][0].update(uiRequired=True, profiles=['Vega100-PIC'])
+        response['requirements'][0].update(uiRequired=True, profiles=['Vega100-PIC'],
+                                           uiBasis='Repro steps demand an actual login and page check')
         with self.assertRaisesRegex(ValueError, 'executable UI'):
             m.install(a.d, self.child, self.manifest, response, self.registry, self.sched, 'v1')
 

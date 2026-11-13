@@ -136,6 +136,28 @@ class LatestTests(unittest.TestCase):
         status = {r['sha'][0]: r['status'] for r in latest.commit_results(d, root, child, runs)}
         self.assertEqual(status, dict(b='NEEDS_CASE', a='PENDING'))
 
+    def test_insufficient_info_commit_is_tagged_not_needs_case(self):
+        # 2026-11-13 policy: work items without repro steps/acceptance criteria are
+        # tagged as insufficient info, distinct from authoring shortfalls.
+        root = self.root / 'batch'
+        child = root / 'commits' / ('h' * 40)
+        d.save(root / 'requirement-scopes.json', [dict(sha='a' * 40, title='tagged', workItems=[1]),
+                                                  dict(sha='b' * 40, title='mixed', workItems=[2])])
+        d.save(child / 'plan.json', dict(coverageRequirements=[
+            dict(id='a-req', sourceCommit='a' * 40, caseIds=[], gaps=['Work item provides title only'],
+                 gapKind='INSUFFICIENT_INFO'),
+            # Mixed commit: one unguessable scenario plus one executable one that passed.
+            dict(id='b-tag', sourceCommit='b' * 40, caseIds=[], gaps=['Work item provides title only'],
+                 gapKind='INSUFFICIENT_INFO'),
+            dict(id='b-exec', sourceCommit='b' * 40, caseIds=['cb'], gaps=[])]))
+        runs = [dict(caseId='cb', phase='headless', runId='r1', verdict='PASS')]
+        results = {r['sha'][0]: r for r in latest.commit_results(d, root, child, runs)}
+        self.assertEqual(results['a']['status'], 'INSUFFICIENT_INFO')
+        # A mixed commit keeps the honest uncovered-scenario status; its reason
+        # still names the insufficient-info gap.
+        self.assertEqual(results['b']['status'], 'NEEDS_CASE')
+        self.assertIn('Work item provides title only', results['b']['reason'])
+
     # ── half-removed worktree recovery (2026-11-04 nightly failure) ──
 
     def broken_workspace(self, registered=True, recorded=False):

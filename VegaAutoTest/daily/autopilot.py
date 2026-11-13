@@ -119,13 +119,14 @@ def gap_requirements(manifest, reason, candidate=None):
         requirements = []
         for item in candidate['requirements']:
             req = {k: v for k, v in item.items() if k not in ('caseKeys', 'existingCaseIds')}
-            req.update(caseIds=[], gap=(item.get('gap', '') + '; preparation failed: ' + reason).strip('; '))
+            req.update(caseIds=[], gap=(item.get('gap', '') + '; preparation failed: ' + reason).strip('; '),
+                       gapKind='TEST_PREPARATION')
             requirements.append(req)
         return requirements
     return [dict(id='preparation-unavailable', workItems=manifest['commits'][0].get('workItems', []),
         steps=['Generate behavior tests from this exact commit and requirement snapshot'],
         expected='Requirements could not be fully evaluated; no product acceptance claimed',
-        uiRequired=False, uiAssessment='UNKNOWN', profiles=[], caseIds=[], gap=reason)]
+        uiRequired=False, uiAssessment='UNKNOWN', profiles=[], caseIds=[], gap=reason, gapKind='TEST_PREPARATION')]
 
 
 def generate(d, child, manifest, registry, sched, root, repair=None):
@@ -142,13 +143,16 @@ def generate_one(d, child, manifest, registry, sched, root, repair=None):
     saved = d.load(context_path, {})
     if saved.get('sha') == manifest['head']:
         for name, source in saved.get('sources', {}).items():
-            payload['sources'][name] = model_author.source_excerpt(source)
+            # Saved values are already bounded excerpts with ORIGINAL line numbers.
+            payload['sources'][name] = source
         while sum(map(len, payload['sources'].values())) > 140000:
             payload['sources'].pop(next(iter(payload['sources'])))
     if repair:
         payload['previousGeneration'] = repair['response']
         payload['compilerDiagnostics'] = repair['diagnostics']
         payload['compilerRepair'] = True
+        payload['repairFiles'] = repair.get('files',
+            model_author.repair_files(repair['response'], repair.get('caseIds'), registry))
     token = uuid.uuid4().hex[:10]
     budget_path = child / 'preparation' / 'author-budget.json'
     budget = d.load(budget_path, dict(usedSeconds=0))
@@ -156,11 +160,15 @@ def generate_one(d, child, manifest, registry, sched, root, repair=None):
         budget['usedSeconds'] += time.time() - budget.pop('activeStarted')
     validation_retry = False
     validation_base = None
-    for index in range(5):
+    source_rounds = 0
+    for index in range(12):
         remaining = 1200 - budget['usedSeconds']
         if remaining <= 0:
             raise RuntimeError('Per-commit 20 minute model authoring budget exhausted')
-        payload['remainingSourceRequests'] = max(0, 3 - index)
+        # Reserve inference time for actual code/review, without exhausting a
+        # three-round quota while most of the 20-minute budget is still unused.
+        payload['remainingSourceRequests'] = max(0, 8 - source_rounds) if remaining > 180 else 0
+        payload['remainingAuthorSeconds'] = int(remaining)
         folder = child / 'preparation' / 'model' / (token + '-' + str(index))
         progress(root, 'AUTHORING', sha=manifest['head'], inference=str(folder))
         budget['activeStarted'] = time.time()
@@ -174,18 +182,20 @@ def generate_one(d, child, manifest, registry, sched, root, repair=None):
             budget['usedSeconds'] += time.time() - budget.pop('activeStarted')
             d.save(budget_path, budget)
         if response.get('neededSources'):
-            if index < 3:
+            if payload['remainingSourceRequests']:
                 model_author.add_sources(d, payload, manifest, response['neededSources'])
+                source_rounds += 1
                 d.save(context_path, dict(sha=manifest['head'], sources=payload['sources']))
                 continue
-            payload['validationError'] = 'Source request rounds exhausted. Emit tests and concrete external gaps now.'
+            payload['validationError'] = ('Source/time budget exhausted. Emit executable coverage now; '
+                'classify missing internal APIs as INTERNAL_CONTEXT, never as missing machine authorization/hardware.')
             continue
         if validation_base is not None:
-            merge = model_author.compiler_repair if repair else model_author.validation_repair
-            response = merge(validation_base, response)
+            response = (model_author.compiler_repair(validation_base, response, payload['repairFiles'])
+                        if repair else model_author.validation_repair(validation_base, response))
             d.save(folder / 'effective-response.json', response)
         elif repair:
-            response = model_author.compiler_repair(repair['response'], response)
+            response = model_author.compiler_repair(repair['response'], response, payload['repairFiles'])
             d.save(folder / 'effective-response.json', response)
         version = 'v' + token
         d.save(child / 'preparation' / 'candidate-response.json', response)
@@ -234,8 +244,9 @@ def recover_authored(child, manifest, registry, sched):
                 if event.get('item', {}).get('type') in ('command_execution', 'file_change', 'mcp_tool_call', 'web_search'):
                     raise ValueError('Recovered inference attempted forbidden tools')
             if payload.get('compilerRepair') or payload.get('validationRepair'):
-                merge = model_author.compiler_repair if payload.get('compilerRepair') else model_author.validation_repair
-                response = merge(payload['previousGeneration'], response)
+                response = (model_author.compiler_repair(payload['previousGeneration'], response, payload.get('repairFiles'))
+                            if payload.get('compilerRepair') else
+                            model_author.validation_repair(payload['previousGeneration'], response))
                 response_path = folder / 'recovered-effective-response.json'
                 d.save(response_path, response)
             if not response.get('requirements') and not manifest['commits'][0].get('noProductChange'):
@@ -291,13 +302,29 @@ def prepare_commit(root, slot, plan, registry, sched):
             except d.queue_driver.CaseRuntimePreflightError:
                 # Compiler repair must not alter a runtime verdict or threshold.
                 raise
-            except Exception:
-                diagnostics = '\n'.join(p.read_text(encoding='utf-8', errors='replace')[-10000:]
-                    for p in (child / 'preparation' / 'checks').glob('*.log'))
+            except d.queue_driver.CaseDiscoveryError as error:
+                checked = d.load(child / 'preparation' / 'case-check.json', {})
+                failed = [r for r in checked.get('records', []) if r['caseId'] in error.case_ids
+                          and (r['exitCode'] != 0 or not r.get('discoveredTests'))]
+                diagnostics_by_case = {}
+                for record in failed:
+                    diagnostics_by_case.setdefault(record['caseId'], []).append(
+                        (child / record['log']).read_text(encoding='utf-8', errors='replace')[-10000:])
+                diagnostics_by_case = {cid: '\n'.join(logs) for cid, logs in diagnostics_by_case.items()}
+                diagnostics = '\n'.join(diagnostics_by_case.values())
                 if repair_index or receipt is None:
                     raise
+                # Archive the first receipt/logs before the repaired discovery
+                # writes its current receipt. Raw trial directories are immutable.
+                archive = child / 'preparation' / 'before-compiler-repair'
+                for record in checked.get('records', []):
+                    saved_log = archive / record['log']
+                    saved_log.parent.mkdir(parents=True, exist_ok=True)
+                    saved_log.write_bytes((child / record['log']).read_bytes())
+                d.save(archive / 'case-check.json', checked)
                 receipt = generate(d, child, manifest, registry, sched, root,
-                    repair=dict(response=receipt['response'], diagnostics=diagnostics))
+                    repair=dict(response=receipt['response'], diagnostics=diagnostics,
+                                diagnosticsByCase=diagnostics_by_case, caseIds=error.case_ids))
                 requirements = receipt['requirements']
                 author_evidence = Path(receipt['responsePath'])
     except model_author.ModelCapacityUnavailable:
@@ -323,11 +350,15 @@ def prepare_commit(root, slot, plan, registry, sched):
                 if invalid:
                     req['caseIds'] = [cid for cid in req['caseIds'] if cid in valid]
                     req['gap'] = (req.get('gap', '') + '; executable test preparation failed: ' + str(error)).strip('; ')
+                    if req.get('gapKind') in (None, 'NONE'):
+                        req['gapKind'] = 'TEST_PREPARATION'
             d.save(child / 'execution.json', dict(state='COVERAGE_CHECKED', reason='Test preparation incomplete; baselines still execute'))
         if repo is None or not (child / 'build-reference.json').exists():
             for req in requirements:
                 req['caseIds'] = []
                 req['gap'] = (req.get('gap', '') + '; independent product build failed: ' + str(error)).strip('; ')
+                if req.get('gapKind') in (None, 'NONE'):
+                    req['gapKind'] = 'TEST_PREPARATION'
         author_evidence = failure_path
     for req in requirements:
         if req.get('gap') or not req['caseIds']:
@@ -353,6 +384,8 @@ def prepare_commit(root, slot, plan, registry, sched):
             except Exception as item_error:
                 requirement['caseIds'] = []
                 requirement['gap'] = (requirement.get('gap', '') + '; preparation rejected: ' + str(item_error)).strip('; ')
+                if requirement.get('gapKind') in (None, 'NONE'):
+                    requirement['gapKind'] = 'TEST_PREPARATION'
                 requirement['attemptEvidence'] = [attempt(child, rejected,
                     'Validate this acceptance scenario', str(item_error))]
         reviewed = {wi for req in requirements for wi in req.get('workItems', [])}
@@ -580,6 +613,20 @@ def preflight(root):
 
 
 def runtime_check():
+    required = [d.DOTNET, Path(d.SHELL), d.ROOT / 'daily' / 'daily.py',
+                d.ROOT / 'harness' / 'UiFind.cs', d.ROOT / 'harness' / 'Wpf' / 'WpfTestHost.cs']
+    if any(not path.is_file() for path in required):
+        raise RuntimeError('Daily runtime files missing: ' + ', '.join(str(p) for p in required if not p.is_file()))
+    if not __import__('shutil').which('git'):
+        raise RuntimeError('Git is unavailable in the scheduled execution environment')
+    registry, scheduling = d.load(d.REGISTRY), d.load(d.SCHEDULING)
+    if not isinstance(registry.get('cases'), list) or not scheduling.get('profileOrder'):
+        raise RuntimeError('Daily case registry/model scheduling is invalid')
+    runtimes = subprocess.run([str(d.DOTNET), '--list-runtimes'], capture_output=True,
+        encoding='utf-8', errors='replace', timeout=15)
+    if runtimes.returncode or any(not re.search(r'^' + re.escape(name) + r' 8\.', runtimes.stdout, re.M)
+            for name in ('Microsoft.NETCore.App', 'Microsoft.WindowsDesktop.App', 'Microsoft.AspNetCore.App')):
+        raise RuntimeError('SDK8 must provide .NET, WindowsDesktop and AspNetCore 8 shared runtimes')
     executable = model_author.find_transport()
     result = subprocess.run([executable, 'exec', '--help'], capture_output=True, encoding='utf-8', errors='replace', timeout=15)
     if result.returncode or any(flag not in result.stdout for flag in ('--ignore-user-config', '--output-schema', '--json')):
@@ -592,6 +639,8 @@ def runtime_check():
         cliStructuredInferenceAvailable=True, existingModelLoginAvailable=True, checkedAt=d.now_cn().isoformat(),
         pid=os.getpid(), sessionName=os.environ.get('SESSIONNAME'),
         inheritedPathHasCodex=bool(__import__('shutil').which('codex')))
+    receipt.update(dotnet8RuntimesAvailable=True, gitAvailable=True,
+                   registryAvailable=True, profileCount=len(scheduling['profileOrder']))
     d.save(d.ROOT / 'daily' / 'controller-runtime.json', receipt)
     return receipt
 
@@ -602,7 +651,11 @@ def run(root):
         raise ValueError('Controller only accepts individual queue roots')
     provenance = root / 'controller' / ('code-' + d.now_cn().strftime('%Y%m%dT%H%M%S') + '.json')
     d.save(provenance, dict(sources={p.name: d.coverage_contract.digest(p) for p in Path(__file__).parent.glob('*.py')
-                                   if not p.name.startswith('test_')}, recordedAt=d.now_cn().isoformat()))
+                                   if not p.name.startswith('test_')},
+        harnessSources={p.relative_to(d.ROOT / 'harness').as_posix(): d.coverage_contract.digest(p)
+                        for p in (d.ROOT / 'harness').rglob('*.cs')
+                        if not {'bin', 'obj'}.intersection(p.relative_to(d.ROOT / 'harness').parts)},
+        recordedAt=d.now_cn().isoformat()))
     supervisor = Supervisor(root)
     supervisor.recover()
     original_run = d.run_bounded
@@ -663,7 +716,9 @@ def run(root):
         # night produced no Runner result at all (e.g. the target build failed).
         progress(root, 'FINISHED' if tests_executed else 'FINISHED_NO_TESTS', report=str(root / 'report.md'),
                  statusCounts=data['statusCounts'], acceptanceState=data['acceptanceState'],
-                 testsExecuted=tests_executed, runnerRunCount=data.get('runnerRunCount'))
+                 testsExecuted=tests_executed, runnerRunCount=data.get('runnerRunCount'),
+                 **{key: data[key] for key in ('executionTargetCount', 'collectedCommitCount',
+                    'collectedCommitStatusCounts', 'statusCountsScope') if key in data})
         return data
     finally:
         d.run_bounded = original_run
