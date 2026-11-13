@@ -16,22 +16,30 @@ public sealed class UiElementNotFoundException : Exception
 /// children), prefers AutomationId, and never dereferences a missing Name/AutomationId.
 /// A required control that is absent raises <see cref="UiElementNotFoundException"/> with
 /// the nearby tree; it is never silently skipped.
+///
+/// Every method has the same shape (2026-11-11): (root, description, automationId:, name:,
+/// controlType:, nameContains:), and Wait additionally takes an optional timeout: last.
+/// The 2026-11-10 batch failed to compile because Optional/All lacked the description and
+/// Wait required a positional timeout.
 /// </summary>
 public static class UiFind
 {
     private const int SummaryLimit = 40;
 
+    /// <summary>Default for <see cref="Wait"/> when no timeout is given.</summary>
+    public static readonly TimeSpan DefaultWait = TimeSpan.FromSeconds(15);
+
     /// <summary>First matching descendant, or null. Criteria that are null are ignored.</summary>
-    public static AutomationElement? Optional(AutomationElement root, string? automationId = null,
+    public static AutomationElement? Optional(AutomationElement root, string description, string? automationId = null,
         string? name = null, ControlType? controlType = null, bool nameContains = false)
-        => All(root, automationId, name, controlType, nameContains).FirstOrDefault();
+        => All(root, description, automationId, name, controlType, nameContains).FirstOrDefault();
 
     /// <summary>All matching descendants, in tree order. Transient UIA errors exclude only that element.</summary>
-    public static IReadOnlyList<AutomationElement> All(AutomationElement root, string? automationId = null,
+    public static IReadOnlyList<AutomationElement> All(AutomationElement root, string description, string? automationId = null,
         string? name = null, ControlType? controlType = null, bool nameContains = false)
     {
         if (automationId is null && name is null && controlType is null)
-            throw new ArgumentException("Specify at least one of automationId, name or controlType");
+            throw new ArgumentException($"UiFind '{description}': specify at least one of automationId, name or controlType");
 
         AutomationElement[] candidates;
         try
@@ -53,27 +61,37 @@ public static class UiFind
     /// <summary>First matching descendant; throws with the surrounding tree when absent.</summary>
     public static AutomationElement Require(AutomationElement root, string description, string? automationId = null,
         string? name = null, ControlType? controlType = null, bool nameContains = false)
-        => Optional(root, automationId, name, controlType, nameContains)
-           ?? throw new UiElementNotFoundException(
-               $"UI element not found: {description} (automationId={automationId ?? "-"}, name={name ?? "-"}"
-               + $"{(nameContains ? " [contains]" : string.Empty)}, type={controlType?.ToString() ?? "-"}). "
-               + "Nearby elements: " + Summary(root));
+        => Optional(root, description, automationId, name, controlType, nameContains)
+           ?? throw NotFound(root, description, automationId, name, controlType, nameContains, null);
 
-    /// <summary>Wait up to <paramref name="timeout"/> for a required control.</summary>
-    public static AutomationElement Wait(AutomationElement root, string description, TimeSpan timeout,
-        string? automationId = null, string? name = null, ControlType? controlType = null, bool nameContains = false)
+    /// <summary>Wait for a required control (default <see cref="DefaultWait"/>); throws with the tree when absent.</summary>
+    public static AutomationElement Wait(AutomationElement root, string description, string? automationId = null,
+        string? name = null, ControlType? controlType = null, bool nameContains = false, TimeSpan? timeout = null)
     {
-        var deadline = DateTime.UtcNow + timeout;
+        var limit = timeout ?? DefaultWait;
+        var deadline = DateTime.UtcNow + limit;
         while (true)
         {
-            var found = Optional(root, automationId, name, controlType, nameContains);
+            var found = Optional(root, description, automationId, name, controlType, nameContains);
             if (found is not null)
                 return found;
             if (DateTime.UtcNow >= deadline)
-                return Require(root, description, automationId, name, controlType, nameContains);
+                throw NotFound(root, description, automationId, name, controlType, nameContains, limit);
             Thread.Sleep(300);
         }
     }
+
+    /// <summary>Compatibility form with the timeout third: Wait(root, description, TimeSpan, ...).</summary>
+    public static AutomationElement Wait(AutomationElement root, string description, TimeSpan timeout,
+        string? automationId = null, string? name = null, ControlType? controlType = null, bool nameContains = false)
+        => Wait(root, description, automationId, name, controlType, nameContains, timeout);
+
+    private static UiElementNotFoundException NotFound(AutomationElement root, string description, string? automationId,
+        string? name, ControlType? controlType, bool nameContains, TimeSpan? waited)
+        => new($"UI element not found: {description} (automationId={automationId ?? "-"}, name={name ?? "-"}"
+               + $"{(nameContains ? " [contains]" : string.Empty)}, type={controlType?.ToString() ?? "-"}"
+               + $"{(waited is { } w ? $", waited {w.TotalSeconds:F0}s" : string.Empty)}). "
+               + "Nearby elements: " + Summary(root));
 
     private static bool Matches(AutomationElement element, string? automationId, string? name,
         ControlType? controlType, bool nameContains)

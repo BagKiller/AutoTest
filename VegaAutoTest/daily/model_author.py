@@ -79,14 +79,18 @@ In logic tests use Assert.Throws/ThrowsAsync or Record.Exception/ExceptionAsync 
 expected product exceptions. UI test files must never catch Exception or
 UiPrerequisiteException, including shared helpers compiled into a UI project.
 Every caseKey must have a matching className and nonempty methods. Select only relevant cases.
-Each generated class belongs to ONE layer. UI cases must derive L2TestBase, call LaunchAndPrepare,
+Each generated class belongs to ONE layer. Put each UI test class (L2TestBase subclass) in its own
+file containing nothing the logic tests use: those files are excluded from the logic project.
+UI cases must derive L2TestBase, call LaunchAndPrepare,
 use LoginFlow(Dialogs, States, Log).Watch(Vega).WaitReady(MainWindow!, TimeSpan.FromMinutes(3)),
 perform the
 actual requested screen actions and compare business output, not just startup or page presence.
 L2TestBase exposes protected Log, Assertions, Vega, MainWindow, Dialogs, States; Dispose flushes.
-Locate controls ONLY through Vega.AutoTest.Harness.UiFind: Require/Wait(root, description,
-automationId:, name:, controlType:, nameContains:) for controls the scenario needs, Optional/All
-when absence is a legitimate observed state. Prefer automationId. Never read element.Name,
+Locate controls ONLY through Vega.AutoTest.Harness.UiFind. Every method takes the same
+arguments: UiFind.Require/Wait/Optional/All(root, "description", automationId: ..., name: ...,
+controlType: ..., nameContains: ...); Wait additionally accepts timeout: TimeSpan (default 15 s).
+Pass criteria by NAME after the description, never positionally. Use Require/Wait for controls
+the scenario needs, Optional/All when absence is a legitimate observed state. Prefer automationId. Never read element.Name,
 AutomationId or Properties.* directly (they can be null), and never catch UiElementNotFoundException.
 If the requirement is that a control exists or is visible, record that comparison explicitly.
 Logic tests that create WPF controls, windows, styles or view models touching Application
@@ -394,12 +398,17 @@ def install(d, child, manifest, response, registry, sched, version):
     for path, content in normalized.values():
         path.parent.mkdir(parents=True, exist_ok=True)
         path.write_text(content, encoding='utf-8', newline='\n')
+    # UI test files (L2TestBase subclasses) are not compiled into the logic project:
+    # a compile error in one UI file must not take every logic case of the same
+    # generation down with it (2026-11-10: one UI file broke three logic cases).
+    # Shared helpers stay in both projects; the UI project still compiles everything.
+    ui_sources = sorted(path.relative_to(destination).as_posix() for path, content in normalized.values()
+                        if path.suffix == '.cs' and re.search(r':\s*L2TestBase\b', content))
     for layer in {next(iter(c['layers'])) for c in cases}:
-        # Compile only this layer's classes? A single source can share helpers;
-        # filters ensure execution remains scoped, both projects compile all files.
         project = destination / ('Authored.' + layer + '.csproj')
         project.parent.mkdir(parents=True, exist_ok=True)
-        project.write_text(project_text(d), encoding='utf-8', newline='\n')
+        excluded = ui_sources if layer == 'logic' else ()
+        project.write_text(project_text(d, excluded), encoding='utf-8', newline='\n')
     for case, authored in zip(cases, response.get('cases', [])):
         if any(c['id'] == case['id'] for c in registry['cases']):
             raise ValueError('Generated case ID already exists')
@@ -416,12 +425,13 @@ PRODUCT_WPF_DICTIONARIES = ('/Vega.UI.Common;component/Themes/General.xaml',
                             '/Vega.UI.Inspection;component/Recipe/Themes/EditableTabControlStyle.xaml')
 
 
-def project_text(d):
+def project_text(d, excluded_sources=()):
     # Authored projects always live in probes/authored/<version>/<sha>/.
     # Relative references allow the same revision to run on the validation host.
     harness = '../../../../harness/Vega.AutoTest.Harness.csproj'
     wpf_host = '../../../../harness/Wpf/WpfTestHost.cs'
     dictionaries = '|'.join(PRODUCT_WPF_DICTIONARIES)
+    removed = ''.join(f'\n <Compile Remove="{path}"/>' for path in excluded_sources)
     # Runtime configuration comes from the SAME build output as the referenced
     # product DLLs ($(ProductBin) of this SHA), keeping relative paths
     # (Resources\...). Only configuration-type files are copied: Resources also
@@ -438,7 +448,7 @@ def project_text(d):
  <PackageReference Include="xunit.runner.visualstudio" Version="2.5.3"/>
  <PackageReference Include="Moq" Version="4.20.70"/>
  <ProjectReference Include="{harness}"/>
- <Compile Include="{wpf_host}" Link="Harness/Wpf/WpfTestHost.cs"/>
+ <Compile Include="{wpf_host}" Link="Harness/Wpf/WpfTestHost.cs"/>{removed}
  <AssemblyAttribute Include="System.Reflection.AssemblyMetadataAttribute"><_Parameter1>VegaWpfResourceDictionaries</_Parameter1><_Parameter2>{dictionaries}</_Parameter2></AssemblyAttribute>
  <Reference Include="$(ProductBin)/*.dll"/>
  <Content Include="$(ProductBin)/*.dll" Link="%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest"/>

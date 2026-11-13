@@ -330,6 +330,24 @@ class ControllerTests(unittest.TestCase):
         self.assertEqual(repaired['files'][0]['content'], '// corrected API usage')
         self.assertEqual(original['files'][0]['content'], '// generated test')
 
+    def test_ui_test_files_are_excluded_from_logic_project(self):
+        # 2026-11-10: one UI file's compile error took every logic case down with it.
+        response = self.response()
+        response['files'] = [
+            dict(path='Logic/Behavior.cs', content='public class Bounds { }'),
+            dict(path='Ui/BoundsUi.cs', content='public class BoundsUi : L2TestBase { void T(){ LaunchAndPrepare(); } }'),
+            dict(path='Shared.cs', content='static class Helpers { }')]
+        response['cases'].append(dict(key='bounds-ui', title='UI', className='Vega.AutoTest.Authored.BoundsUi',
+                                      layer='uia', profiles=['Vega100-PIC'], minAssertions=1))
+        response['requirements'][0]['caseKeys'] = ['bounds', 'bounds-ui']
+        m.install(a.d, self.child, self.manifest, response, self.registry, self.sched, 'v1')
+        root = self.root / 'probes' / 'authored' / 'v1' / ('a' * 12)
+        logic = (root / 'Authored.logic.csproj').read_text(encoding='utf-8')
+        uia = (root / 'Authored.uia.csproj').read_text(encoding='utf-8')
+        self.assertIn('<Compile Remove="Ui/BoundsUi.cs"/>', logic)
+        self.assertNotIn('Compile Remove="Shared.cs"', logic)
+        self.assertNotIn('Compile Remove', uia)
+
     def test_multi_profile_ui_case_requires_profile_basis(self):
         # AGENTS.md 1.1: 2026-11-05 scheduled one common-module UI case on all five profiles.
         self.sched['profileOrder'] = ['Vega100-PIC', 'Vega500']
