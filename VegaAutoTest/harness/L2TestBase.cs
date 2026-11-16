@@ -71,6 +71,8 @@ public abstract class L2TestBase : IDisposable
             // 先记住界面再杀进程。修复前这次快照就是未改基线。
             if (MainWindow is not null)
             {
+                // 无论用例成败，都保留结束时的画面，作为判定的最后一张过程截图。
+                StepEvidence.Capture(MainWindow, "final");
                 UiSnapshot.Save(MainWindow);
                 Log.Step("已记住当前界面 ui-snapshot.json");
             }

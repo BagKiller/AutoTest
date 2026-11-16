@@ -406,16 +406,52 @@ class ControllerTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, 'state which work-item fields'):
             m.install(a.d, self.child, self.manifest, response, self.registry, self.sched, 'v1')
 
-    def test_repro_shaped_requirement_must_have_ui_case_not_logic_only(self):
-        # 2026-11-13 evening policy: a work item with repro steps MUST be verified by a
-        # UI test following them; a logic-only mapping is rejected for one repair round.
+    REPRO = ('【前置条件】：打开Vega并登录 【复现流程】：1、Recipe中添加Linear、SPA 2、修改Recipe单位为Rppm '
+             '3、切换界面再次切换回来 【预期结果】：Recipe显示符合预期 【实际结果】：置灰失效 【版本】：1.2.8')
+
+    def repro_work_item(self):
+        a.d.save(self.child / 'preparation' / 'workitems.json', dict(workItems=[dict(
+            id=7000, state='AVAILABLE', fields={'Microsoft.VSTS.TCM.ReproSteps': self.REPRO})]))
+
+    def ui_response(self, captures):
         response = self.response()
-        response['requirements'][0]['steps'] = ['打开Vega并登录', '打开KLARF输出页并取消勾选DW2 Default', '修改产量并检查勾选']
-        with self.assertRaisesRegex(ValueError, 'mandatory-UI policy'):
+        body = ''.join(f'StepEvidence.Capture(MainWindow, "step-{n}-x"); ' for n in captures)
+        response['files'] = [dict(path='ReproUi.cs', content='class ReproUi : L2TestBase { void T(){ ' + body + '} }')]
+        response['cases'] = [dict(key='repro-ui', title='Repro', className='Vega.AutoTest.Authored.ReproUi',
+                                  layer='uia', profiles=['Vega100-PIC'], minAssertions=1, sourceFiles=['ReproUi.cs'])]
+        response['requirements'][0].update(caseKeys=['repro-ui'], uiRequired=True, profiles=['Vega100-PIC'],
+                                           steps=['model paraphrase'], uiBasis='')
+        return response
+
+    def test_work_item_repro_steps_require_one_ui_test_of_those_steps(self):
+        # 2026-11-13 user rule: the work item's own repro field (not model text) decides.
+        self.repro_work_item()
+        with self.assertRaisesRegex(ValueError, 'has repro steps: map it to ONE uia test'):
+            m.install(a.d, self.child, self.manifest, self.response(), self.registry, self.sched, 'v1')
+        with self.assertRaisesRegex(ValueError, 'missing step-3'):
+            m.install(a.d, self.child, self.manifest, self.ui_response([1, 2]), self.registry, self.sched, 'v2')
+        installed = m.install(a.d, self.child, self.manifest, self.ui_response([1, 2, 3]), self.registry,
+                              self.sched, 'v3')
+        # The controller, not the model, owns the steps and expectation.
+        self.assertEqual(installed[0]['steps'], ['Recipe中添加Linear、SPA', '修改Recipe单位为Rppm', '切换界面再次切换回来'])
+        self.assertEqual(installed[0]['expected'], 'Recipe显示符合预期')
+        self.assertTrue(installed[0]['reproDriven'] and installed[0]['uiRequired'])
+
+    def test_repro_work_item_rejects_extra_logic_cases(self):
+        self.repro_work_item()
+        response = self.ui_response([1, 2, 3])
+        response['files'].append(dict(path='Behavior.cs', content='// logic'))
+        response['cases'].append(dict(key='bounds', title='extra', className='Vega.AutoTest.Authored.Bounds',
+                                      layer='logic', profiles=[], minAssertions=1, sourceFiles=['Behavior.cs']))
+        response['requirements'][0]['caseKeys'] = ['repro-ui', 'bounds']
+        with self.assertRaisesRegex(ValueError, 'ONLY to its uia repro test'):
             m.install(a.d, self.child, self.manifest, response, self.registry, self.sched, 'v1')
-        # Component tests alone remain valid for non-repro (pure logic) requirements.
-        plain = self.response()
-        m.install(a.d, self.child, self.manifest, plain, self.registry, self.sched, 'v2')
+
+    def test_without_work_item_repro_screen_words_do_not_force_ui(self):
+        # The old keyword regex forced UI on any model text containing "check"/"open".
+        response = self.response()
+        response['requirements'][0]['steps'] = ['open the parser and check that select() returns 3']
+        m.install(a.d, self.child, self.manifest, response, self.registry, self.sched, 'v1')
 
     def test_required_ui_without_executable_case_cannot_be_claimed_covered(self):
         response = self.response()

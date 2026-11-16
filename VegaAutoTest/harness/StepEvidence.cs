@@ -24,17 +24,31 @@ public static class StepEvidence
         {
             if (window is null)
             {
+                Missing(path, "window is null");
                 return string.Empty;
             }
             using var image = FlaUI.Core.Capturing.Capture.Element(window);
             image.ToFile(path);
         }
-        catch
+        catch (Exception error)
         {
-            // 截图失败不能阻塞步骤执行；缺图在报告里体现为该步骤无像素证据
+            // 截图失败不能阻塞步骤执行，但必须留下可见的缺图记录，报告里不会悄悄少一张。
+            Missing(path, error.GetType().Name + ": " + error.Message);
             return string.Empty;
         }
         return path;
+    }
+
+    private static void Missing(string path, string reason)
+    {
+        try
+        {
+            File.WriteAllText(Path.ChangeExtension(path, ".missing.txt"), "screenshot not captured: " + reason);
+        }
+        catch
+        {
+            // 证据目录不可写时，原始测试异常优先
+        }
     }
 
     private static string Sanitize(string label)

@@ -11,15 +11,21 @@
 - 报告标注 `testingPolicy=latest-head`、`perCommitAcceptance=false`。逐提交状态 `PASSED_AT_HEAD` 表示该提交的需求在最新 HEAD 构建上通过，不宣称各提交在自己 SHA 上独立验收。
 - `--strategy individual`（每个提交在自己的 SHA 上独立构建）只在用户单独要求逐提交专项复验时显式使用；夜间控制器从不自行创建 individual 批次。`--strategy merged` 仅兼容旧批次。
 
-### 1.2 UI 验证规则：有复现步骤必须 UI 实测（2026-11-13 用户明确修订，取代本节早前"默认不强启"条款）
+### 1.2 有复现步骤就按复现步骤做 UI 验证，以 UI 结果为准（2026-11-13 用户规则，程序强制）
 
-- **有复现步骤/验收标准 → 强制 UI 验证**：工作项带复现步骤或验收标准，且描述的是屏幕操作流程（打开/登录/点击/勾选/导航/观察结果）时，必须生成 uia 层用例**严格按复现步骤原文逐步执行**，断言验收标准原文；禁止用逻辑/组件测试替代，禁止自主分析代码另写测试场景，禁止模型发散。报告逐提交状态以该 UI 实测为准。
-- **过程截图证据**：UI 用例在每个关键步骤（登录完成、动作执行后、最终结果）调用 harness `StepEvidence.Capture(MainWindow, "step-N-说明")` 保留截图（落在 result.json 同目录，`step-NN-标签.png`），作为可证明失败与否的过程证据；截图不改变正式 verdict（仍只来自 Runner result.json）。
-- **无复现步骤且验收不可屏幕观察**：才允许逻辑/组件测试，或打 `INSUFFICIENT_INFO` 标签；两类情况都不得宣称 UI 已验。
-- **程序门禁**（不靠提示语）：`model_author.install` 拒绝"复现型需求只映射 logic 用例"的生成（进入一次校验修正）；`coverage_preparation.freeze` 对复现型需求 + 无 uia 用例的组合记硬缺口 **"Mandatory UI not executed"**，阻断完整验收；报告逐提交状态因此保持 NEEDS_CASE/FAIL，不得标注 UI 已验。识别标准：steps/expected 文本含登录/打开/点击/勾选/选择/导航/页面/界面/菜单/弹窗/下拉/对话框/窗口/检查显示/观察（中英）。
-- 早前（2026-11-13 上午）"uiRequired 默认 false、有 uiBasis 才启动"的条款被本条**取代**：有复现步骤就是依据本身，不需要额外 uiBasis 证明；`uiBasis` 字段仍保留用于引用原文。
-- 落地状态：`model_author.py`（POLICY + install 门禁 + _repro_shaped）、`coverage_preparation.py`（freeze 兜底 + 同名判定）、`harness/StepEvidence.cs`（截图 API）已实现；157 个测试全绿。已有用例（如 wi3756-klarf-throughput-ui）符合本规则。
+**触发条件看工单本身，不看模型。** 控制器从 ADO 工单的「复现步骤」(`Microsoft.VSTS.TCM.ReproSteps`) 或「验收标准」(`Microsoft.VSTS.Common.AcceptanceCriteria`) 字段解析出步骤和预期（`daily/ui_repro.py`）：支持 `【前置条件】【复现流程】【预期结果】【实际结果】` 分段和 `期望：/实际：` 行内写法；`实际结果`、`版本`、`其他` 不进入步骤；前置条件（打开 Vega 并登录）由 `LaunchAndPrepare` + 登录前置完成。字段为空的工单才走一般分析流程。
 
+对有复现步骤的工作项：
+
+1. **只做一个 UI 用例，严格照步骤执行。** 生成器收到控制器解析好的 `reproSpec`，按步骤原文顺序逐步做界面操作，不增不减；diff 和源码只用来查控件的 AutomationId/名称，不用来另编测试场景。
+2. **不发散。** 该工作项只能映射到这一个 uia 用例；映射了逻辑/组件用例，或没有 uia 用例，`model_author.install` 直接拒绝（进入一次修正）。需求的 `steps`/`expected` 由控制器用工单原文覆盖，模型的改写不生效。
+3. **每步一张截图。** UI 用例源码必须对每个步骤调用 `StepEvidence.Capture(MainWindow, "step-N-…")`（N = 1..步骤数），缺任何一步安装即被拒绝；断言后再截一张 `result`。`L2TestBase.Dispose` 无论成败都自动截 `final`。截图失败会留下 `step-NN-*.missing.txt`，不会悄悄缺图。截图与 `result.json` 在同一目录。
+4. **以 UI 结果为准。** 冻结时该工作项只保留 UI 用例，逻辑用例不为它执行；没有 UI 用例记硬缺口 `Mandatory repro UI not executed`（状态 NEEDS_CASE）。逐提交状态（`summary.json` 的 `commitResults`，`verificationLayer=UI`）只取该 UI 运行的 Runner verdict：UI FAIL 即 FAIL，UI PASS 才是 PASSED_AT_HEAD；同一用例的无界面运行不算 UI 验证。同一提交其他（无复现步骤）需求的结果只在说明里列出，不改变该状态。
+5. **报告**：根 `report.md` 的「复现步骤 UI 验证」一节逐工作项列出步骤原文、预期、结论和过程截图链接。截图是证据，正式 verdict 仍只来自 Runner `result.json`。
+6. 唯一例外：步骤必须依赖真机才能做到时，需求可标 `gapKind=EXTERNAL_HARDWARE` 并写明原因；它仍是 NEEDS_CASE，不算验收。Simulator 界面能做到的一律自动执行。
+7. 无复现步骤且无可观察预期的工作项标 `INSUFFICIENT_INFO`，不猜测场景。
+
+早前"按关键词判断是否复现型"和"uiRequired 无 uiBasis 降级为逻辑"两条规则已删除。
 ### 1.1 机型范围与会话复用（2026-11-06 用户补充）
 
 此处“版本”指 Vega 机型/硬件配置，不改变固定 HEAD、逐提交归属结果的策略。

@@ -12,23 +12,11 @@ import urllib.error
 import urllib.parse
 import urllib.request
 import xml.etree.ElementTree as ET
+import ui_repro
 
 
 def digest(path):
     return hashlib.sha256(path.read_bytes()).hexdigest()
-
-
-def _repro_shaped(requirement):
-    """Work item text describes concrete on-screen steps (open/login/click/navigate/observe).
-
-    Mirrors model_author._repro_shaped so generation and freeze enforce the same rule.
-    """
-    import re
-    text = ' '.join(requirement.get('steps', [])) + ' ' + requirement.get('expected', '')
-    return bool(re.search(
-        r'(登录|打开|点击|勾选|选择|导航|页面|界面|菜单|弹窗|下拉|对话框|窗口|检查.*显示|观察|'
-        r'open|login|click|check|select|navigate|page|menu|dialog|window|uncheck|tick)',
-        text, re.IGNORECASE))
 
 
 def draft(d, child, manifest, registry, sched):
@@ -163,6 +151,7 @@ def freeze(d, child, manifest, registry, sched, review_path, require_evidence=Fa
     by_id = {c['id']: c for c in registry['cases']}
     normalized = []
     known_wis = set(manifest['commits'][0].get('workItems', []))
+    repro = {spec['workItem']: spec for spec in ui_repro.specs(sources, known_wis)}
     reviewed_wis = set()
     for item in requirements:
         if not item.get('id') or not item.get('expected') or not item.get('steps') or type(item.get('uiRequired')) is not bool:
@@ -179,24 +168,22 @@ def freeze(d, child, manifest, registry, sched, review_path, require_evidence=Fa
         gaps = [item['gap']] if item.get('gap') else []
         if not ids and item.get('gapKind') != 'INSUFFICIENT_INFO':
             gaps.append('No executable case prepared for this acceptance scenario')
-        # 2026-11-13 evening policy: a repro-shaped requirement (steps/acceptance criteria
-        # describing an on-screen flow) MUST map to a uia-layer case. Logic-only mapping is
-        # a hard gap that blocks complete acceptance — never presented as UI verified.
-        if _repro_shaped(item) and not any(
-                any(d.is_ui_layer(n, l) for n, l in by_id[cid]['layers'].items()) for cid in ids):
-            gaps.append('Mandatory UI not executed: work item has repro steps/acceptance criteria; '
-                        'the mapped cases are logic-only and do not verify the on-screen flow '
-                        '(2026-11-13 policy)')
+        # 2026-11-13 user rule: a work item WITH repro steps/acceptance criteria (read from
+        # the work item itself) is verified only by a UI test of those steps. Without one,
+        # the requirement is a hard gap; logic results never stand in for it.
+        spec = next((repro[w] for w in wis if w in repro), None)
+        if spec:
+            item = dict(item, steps=list(spec['steps']), expected=spec['expected'] or item['expected'],
+                        uiRequired=True, reproDriven=True, reproSpec=spec)
+            ui_ids = [cid for cid in ids if any(d.is_ui_layer(n, l) for n, l in by_id[cid]['layers'].items())]
+            if not ui_ids:
+                gaps.append('Mandatory repro UI not executed: work item %s has repro steps; no UI test of '
+                            'those steps was prepared (logic results do not substitute)' % spec['workItem'])
+            ids = ui_ids
+            item['caseIds'] = ui_ids
         if item['uiRequired']:
-            # 2026-11-13 user policy: UI verification is opt-in with evidence, never default.
-            # No basis: the whole UI requirement is downgraded in one stroke — do not
-            # demand an executable UI case for a session we have decided not to start.
-            basis = str(item.get('uiBasis', '') or '').strip()
             profiles = item.get('profiles', [])
-            if not basis:
-                gaps.append('uiRequired without uiBasis: downgraded to logic-only; UI session not started '
-                            '(quote work-item repro/acceptance text to enable UI verification)')
-            elif not profiles:
+            if not profiles:
                 gaps.append('Required UI model/profile not specified')
             elif not any(profile in sched.get('caseProfiles', {}).get(cid, []) and
                          any(d.is_ui_layer(n, l) for n, l in by_id[cid]['layers'].items()) for cid in ids

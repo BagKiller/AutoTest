@@ -215,8 +215,8 @@ class IndividualTests(unittest.TestCase):
         self.assertEqual(rows[0]['status'], 'NEEDS_CASE')
         self.assertIn('Required UI case/profile missing', rows[0]['reason'])
 
-    def test_ui_required_without_ui_basis_downgrades_to_logic_only(self):
-        # 2026-11-13 policy: no uiBasis means no UI session; the gap is recorded.
+    def test_ui_required_without_ui_basis_is_not_downgraded_at_freeze(self):
+        # The morning "UI is opt-in" downgrade was superseded by the mandatory-UI rule.
         p = self.prepare()
         slot = p['commitSlots'][0]
         child = Path(slot['batch'])
@@ -232,19 +232,19 @@ class IndividualTests(unittest.TestCase):
         self.discovery_receipt(child, slot['sha'], ['wi7'])
         cp = d.individual.freeze_one(d, p, slot['sha'], self.registry, self.sched, review_path)
         gaps = cp['coverageRequirements'][0]['gaps']
-        self.assertTrue(any('uiRequired without uiBasis' in gap for gap in gaps))
-        # The downgrade is one stroke: no additional per-profile UI case demands.
-        self.assertNotIn('Required UI case/profile missing', ' '.join(gaps))
+        self.assertFalse(any('uiBasis' in gap for gap in gaps))
+        self.assertTrue(cp['uiSlots'])
 
-    def test_repro_shaped_requirement_with_logic_only_case_gets_mandatory_ui_gap(self):
-        # 2026-11-13 evening policy: repro steps describing an on-screen flow MUST map to a
-        # uia-layer case; logic-only mapping is a hard gap (acceptance never shown as UI-verified).
+    def test_work_item_repro_with_logic_only_case_gets_mandatory_ui_gap(self):
+        # 2026-11-13 user rule: the work item's repro field (not the review text) decides;
+        # logic-only mapping is a hard gap and the logic case is not executed for it.
         self.registry['cases'][0]['layers'].pop('uia')
         p = self.prepare()
         slot = p['commitSlots'][0]
         child = Path(slot['batch'])
         source = child / 'preparation' / 'workitems.json'
-        d.save(source, dict(workItems=[dict(id=7000, state='AVAILABLE')]))
+        d.save(source, dict(workItems=[dict(id=7000, state='AVAILABLE', fields={
+            'Microsoft.VSTS.TCM.ReproSteps': '【复现流程】：1、打开输出页 2、取消勾选DW2 【预期结果】：勾选保持不变'})]))
         requirement = dict(id='acceptance', workItems=[7000],
                            steps=['打开Vega并登录', '打开输出页并取消勾选DW2 Default', '修改产量并检查勾选'],
                            expected='勾选保持不变', uiRequired=False,
@@ -255,8 +255,12 @@ class IndividualTests(unittest.TestCase):
         d.save(review_path, review)
         self.discovery_receipt(child, slot['sha'], ['wi7'])
         cp = d.individual.freeze_one(d, p, slot['sha'], self.registry, self.sched, review_path)
-        gaps = ' '.join(cp['coverageRequirements'][0]['gaps'])
-        self.assertIn('Mandatory UI not executed', gaps)
+        requirement = cp['coverageRequirements'][0]
+        self.assertIn('Mandatory repro UI not executed', ' '.join(requirement['gaps']))
+        self.assertEqual(requirement['steps'], ['打开输出页', '取消勾选DW2'])
+        self.assertTrue(requirement['reproDriven'])
+        self.assertEqual(requirement['caseIds'], [])
+        self.assertNotIn('wi7', {item['caseId'] for item in cp['headless']})
 
     def test_real_case_reuse_and_ui_execution_are_still_required(self):
         p = self.prepare()

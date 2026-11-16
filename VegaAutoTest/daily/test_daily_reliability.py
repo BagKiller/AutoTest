@@ -230,7 +230,7 @@ class ReliabilityTests(unittest.TestCase):
     def test_context_supplies_real_harness_contracts_separately_from_product_inventory(self):
         actual = Path(__file__).resolve().parents[1]
         f = self.controller()
-        names = ['harness/UiFind.cs', 'harness/Wpf/WpfTestHost.cs', 'harness/AssertionRecorder.cs',
+        names = ['harness/UiFind.cs', 'harness/StepEvidence.cs', 'harness/Wpf/WpfTestHost.cs', 'harness/AssertionRecorder.cs',
                  'harness/L2TestBase.cs', 'daily/Start-ModelValidation.ps1']
         for name in names:
             target = f.root / name

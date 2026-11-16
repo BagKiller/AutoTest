@@ -184,3 +184,7 @@ UI 验证必须实际启动目标版本的 Vega.exe，在合法授权的 Simulat
 - `Start-DailyValidation.ps1 -RuntimeCheck -LaunchDirectory <目录>` 可在任务计划程序中验证 Git、SDK8 三套共享运行时、registry、机型调度及现有模型登录，并保存 `runtime-check.json`，不会收集或执行产品测试。
 
 回归入口：`python.exe -B -m unittest discover -p "test_*.py"`（在 daily 下）；`tests/verify_authored_isolation.py` 验证真实 SDK 的生成工程隔离，可选 `--model-smoke` 检查真实模型生成。`tests/Vega.AutoTest.WpfHost.Contracts` 的 startup/work/shared-budget/async 模式在独立进程验证 WPF 的启动、执行和异步契约。这些合成框架测试不代表产品或 UI 验收。
+
+## 2026-11-13 复现步骤 UI 验证
+
+工单有「复现步骤」或「验收标准」时，控制器从工单字段解析步骤和预期，只生成一个按步骤原文逐步执行的 UI 用例，每步截图（`step-NN-*.png`），逐提交状态以该 UI 运行的 Runner verdict 为准（`verificationLayer=UI`），逻辑测试不能替代。根报告「复现步骤 UI 验证」一节列出步骤、预期、结论和截图。详见 `AGENTS.md` §1.2，实现见 `ui_repro.py`。

@@ -10,6 +10,7 @@ import re
 import shutil
 from pathlib import Path
 from xml.sax.saxutils import escape
+import ui_repro
 
 
 def obj(properties):
@@ -59,7 +60,8 @@ Never emit shell commands, modify product source/configuration, weaken assertion
 Read acceptance requirements, then author actual behavioral tests even when no existing tests exist.
 Do not use absence of registered tests/UI slots as a reason to stop: creating tests is your job.
 Separate component behavior, actual UI workflow, and genuine external hardware/data requirements.
-Cover all work items and changed behavior. Explain each oracle from a work item or product contract.
+Cover all work items. For work items in reproSpec only REPRO MODE applies (below); for the others
+cover the changed behavior and explain each oracle from a work item or product contract.
 Do not invent measured ground truth. Synthetic inputs ARE allowed for deterministic behavior:
 derive explicit expected output independently from the documented contract, cover edges/failures.
 Do not merely compare source strings, DLL existence, method existence, or copy the implementation.
@@ -79,17 +81,26 @@ INSUFFICIENT_INFO when the work item provides no reproducible steps, no acceptan
 no description specific enough to derive an observable expectation (tag it and move on; do NOT
 guess scenarios or manufacture fixtures from the diff alone), and NONE when there is no gap.
 Missing supplied excerpts are not evidence of unavailable hardware.
-UI requirements (2026-11-13 user policy, OVERRIDES any earlier "default false" reading):
-If the work item HAS repro steps or acceptance criteria describing an on-screen flow
-(open app/login/navigate/click/observe), UI verification is MANDATORY, not optional:
-author a UI test that follows the repro steps in their exact order and asserts the
-acceptance criteria verbatim. Do NOT substitute component/logic tests for it and do NOT
-analyze code to invent alternative scenarios. Set uiRequired=true for such requirements,
-uiBasis quotes the repro text. Capture StepEvidence.Capture(MainWindow, "step-N-what")
-after each key step (login done, action performed, final result) so PASS/FAIL has pixel
-evidence; use the harness StepEvidence API. Only requirements WITHOUT repro steps and
-without screen-verifiable acceptance criteria may be logic-only; tag those
-INSUFFICIENT_INFO instead of guessing. When in doubt between logic and UI, choose UI.
+REPRO MODE (2026-11-13 user rule; OVERRIDES every other instruction above and below for the
+work items listed in input reproSpec). reproSpec holds, per work item, the repro steps and the
+expected result that the CONTROLLER parsed from the work item itself. For each reproSpec entry:
+- Emit exactly ONE requirement (workItems=[that id], uiRequired=true) mapped to ONE uia case.
+  Do not emit logic/component cases or extra scenarios for that work item, and do not analyze the
+  diff to invent other checks. The diff/source are only for finding control AutomationIds/names.
+- The uia test performs reproSpec.steps in their exact order, one step at a time, nothing added
+  or skipped. Preconditions such as "open Vega and log in" are done by LaunchAndPrepare + WaitReady.
+- Immediately after performing step N call StepEvidence.Capture(MainWindow, "step-N-<short ascii>")
+  with the literal text "step-N" (N = 1..len(steps)), then after checking the result call
+  StepEvidence.Capture(MainWindow, "result"). No loops around these calls.
+- Check reproSpec.expected on screen and record it with Assertions (description = the expected
+  text, expected = what the work item says, actual = what the screen shows). If the screen does
+  not match, the test FAILS; never relax the expectation.
+- If a step needs data that exists only on real hardware, keep the requirement with
+  gapKind=EXTERNAL_HARDWARE and a precise gap; anything a Simulator UI can do must be automated.
+The controller overwrites the requirement steps/expected with reproSpec, rejects logic-only mapping
+and rejects a UI test whose source lacks a step-N capture for every step.
+Work items NOT in reproSpec follow the general rules; when such an item has no observable
+expectation, tag it INSUFFICIENT_INFO instead of guessing.
 Tests target net8.0-windows10.0.19041.0, x64, xUnit2, WPF. A fixed project and product DLL references
 are provided by the controller. Do not emit csproj, props, targets, scripts or package changes.
 All test classes use namespace Vega.AutoTest.Authored and public xUnit [Fact] test methods.
@@ -258,9 +269,12 @@ def context(d, child, manifest, registry, sched):
     all_sources = [n for n in inventory if n.endswith(('.cs', '.xaml', '.csproj'))]
     focused = [n for n in all_sources if n.split('/')[0] in roots or Path(n).stem in tokens]
     d.save(child / 'preparation' / 'source-inventory.json', dict(sha=manifest['head'], files=all_sources))
+    workitems = d.load(child / 'preparation' / 'workitems.json')
     return dict(sha=manifest['head'], commit=commit, analysisSourceCommit=manifest.get('analysisSourceCommit'),
+        # Steps parsed by the CONTROLLER from the work item's repro/acceptance fields.
+        reproSpec=ui_repro.specs(workitems, commit.get('workItems', [])),
         diff=diff, diffTruncated=False,
-        workItems=d.load(child / 'preparation' / 'workitems.json'),
+        workItems=workitems,
         attachments=d.load(child / 'preparation' / 'attachments' / 'index.json', {}),
         sourceInventory=focused, _sourceInventory=all_sources,
         sources=texts, existingCases=candidates, profiles=sched['profileOrder'],
@@ -273,7 +287,7 @@ def context(d, child, manifest, registry, sched):
 
 def harness_contracts(d):
     """Generator APIs come from the automation revision, not the product inventory."""
-    paths = ('UiFind.cs', 'Wpf/WpfTestHost.cs')
+    paths = ('UiFind.cs', 'StepEvidence.cs', 'Wpf/WpfTestHost.cs')
     return {name: dict(source=(d.ROOT / 'harness' / name).read_text(encoding='utf-8'),
                        sha256=hashlib.sha256((d.ROOT / 'harness' / name).read_bytes()).hexdigest())
             for name in paths}
@@ -423,22 +437,45 @@ def install(d, child, manifest, response, registry, sched, version):
     requirements = []
     known_cases = {c['id'] for c in registry['cases'] if c.get('targetSha') in (None, sha)}
 
-    def by_id_case_layers(cid, registry, cases, keys):
-        """Layer map shaped for d.is_ui_layer(name, layer): authored cases have no real layer dict yet."""
-        authored = {c['id']: case for c, case in zip(cases, response.get('cases', []))}
-        if cid in authored:
-            return {authored[cid]['layer']: {'project': 'probes/authored/x/probe.csproj'}}
-        known = {c['id']: c for c in registry['cases']}
-        return known.get(cid, {}).get('layers', {})
+    # 2026-11-13 user rule: the work item's own repro/acceptance fields (not model text)
+    # decide UI verification. Each such work item gets exactly the UI test of its steps.
+    repro = {spec['workItem']: spec for spec in ui_repro.specs(
+        d.load(child / 'preparation' / 'workitems.json'), manifest['commits'][0].get('workItems', []))}
+    authored_layer = {keys[c['key']]: c['layer'] for c in response.get('cases', [])}
 
-    def _repro_shaped(req):
-        """Work item text describes concrete UI steps (open/login/click/navigate/observe)."""
-        import re as _re
-        text = ' '.join(req.get('steps', [])) + ' ' + req.get('expected', '')
-        return bool(_re.search(
-            r'(登录|打开|点击|勾选|选择|导航|页面|界面|菜单|弹窗|下拉|对话框|窗口|检查.*显示|观察|'
-            r'open|login|click|check|select|navigate|page|menu|dialog|window|uncheck|tick)',
-            text, _re.IGNORECASE))
+    def is_ui_case(cid):
+        if cid in authored_layer:
+            return authored_layer[cid] == 'uia'
+        known = {c['id']: c for c in registry['cases']}
+        return any(d.is_ui_layer(n, l) for n, l in known.get(cid, {}).get('layers', {}).items())
+
+    sources = {name: content for name, (_, content) in normalized.items()}
+
+    def captured(case_key):
+        case = next(c for c in response['cases'] if c['key'] == case_key)
+        names = case.get('sourceFiles') or [n for n in sources if n.endswith('.cs')]
+        return set().union(*(ui_repro.captured_steps(sources.get(n.lower(), '')) for n in names))
+
+    for wi, spec in repro.items():
+        items = [r for r in response.get('requirements', []) if wi in r.get('workItems', [])]
+        hardware_gap = items and all(r.get('gapKind') == 'EXTERNAL_HARDWARE' and r.get('gap')
+                                     and not r['caseKeys'] and not r['existingCaseIds'] for r in items)
+        if hardware_gap:
+            continue
+        mapped = [cid for r in items for cid in [keys[k] for k in r['caseKeys'] if k in keys] + r['existingCaseIds']]
+        if not any(is_ui_case(cid) for cid in mapped):
+            raise ValueError(f'Work item {wi} has repro steps: map it to ONE uia test that performs those steps '
+                             '(REPRO MODE); logic/component tests do not substitute')
+        if any(not is_ui_case(cid) for cid in mapped):
+            raise ValueError(f'Work item {wi} has repro steps: map it ONLY to its uia repro test; '
+                             'remove the logic/component cases (no extra scenarios in REPRO MODE)')
+        need = set(range(1, len(spec['steps']) + 1))
+        for r in items:
+            for key in r['caseKeys']:
+                if key in keys and is_ui_case(keys[key]) and not need <= captured(key):
+                    missing = ', '.join('step-%d' % n for n in sorted(need - captured(key)))
+                    raise ValueError(f'Repro UI test {key} for work item {wi} must call StepEvidence.Capture('
+                                     f'MainWindow, "step-N-...") after every repro step; missing {missing}')
 
     for item in response.get('requirements', []):
         if not item.get('oracle') or not item.get('expected') or not item.get('steps'):
@@ -447,16 +484,12 @@ def install(d, child, manifest, response, registry, sched, version):
             raise ValueError('Requirement references an unknown case')
         req = {k: v for k, v in item.items() if k not in ('caseKeys', 'existingCaseIds')}
         req['caseIds'] = [keys[k] for k in item['caseKeys']] + item['existingCaseIds']
-        # 2026-11-13 user policy (evening revision): a work item WITH repro steps or
-        # acceptance criteria MUST be verified by a UI test following those steps —
-        # component tests do not substitute. The controller enforces the mapping:
-        # repro-shaped requirement + no UI-layer case => rejected for one repair round.
-        if _repro_shaped(req) and not any(
-                any(d.is_ui_layer(n, l) for n, l in by_id_case_layers(cid, registry, cases, keys).items())
-                for cid in req['caseIds']):
-            raise ValueError('Work item has repro steps/acceptance criteria: author a uia-layer test that follows '
-                             'the repro steps with StepEvidence screenshots; logic/component tests do not '
-                             'substitute (2026-11-13 mandatory-UI policy)')
+        spec = next((repro[w] for w in req.get('workItems', []) if w in repro), None)
+        if spec:
+            # Steps and expectation are the work item's, never the model's paraphrase.
+            req.update(steps=list(spec['steps']), expected=spec['expected'] or req['expected'],
+                       uiRequired=True, reproDriven=True, reproSpec=spec,
+                       uiBasis=req.get('uiBasis') or ('work item %s %s' % (spec['workItem'], spec['source'])))
         if req['uiRequired'] and not req.get('uiBasis', '').strip():
             raise ValueError('uiRequired=true requires uiBasis quoting the work-item repro/acceptance text or '
                              'a UI-specific code condition; start a UI session only with that basis (2026-11-13 policy)')

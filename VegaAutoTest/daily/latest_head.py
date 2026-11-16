@@ -208,6 +208,12 @@ def commit_results(d, root, child, runs):
         own = [r for r in requirements if r.get('sourceCommit') == sha or
                (not r.get('sourceCommit') and str(r.get('id', '')).startswith('source-')
                 and str(r['id'])[len('source-'):] in wis)]
+        repro = [r for r in own if r.get('reproDriven')]
+        if repro and plan is not None and not commit.get('noProductChange'):
+            # 2026-11-13 user rule: a work item with repro steps is judged by its UI run.
+            results.append(_repro_result(root, commit, repro, [r for r in own if not r.get('reproDriven')],
+                                         by_case, finished))
+            continue
         cases = sorted({cid for r in own for cid in r.get('caseIds', [])})
         gaps = [g for r in own for g in r.get('gaps', [])]
         verdicts = {cid: [x.get('verdict') for x in by_case.get(cid, [])] for cid in cases}
@@ -245,13 +251,82 @@ def commit_results(d, root, child, runs):
     return results
 
 
+_UI_RANK = {'FAIL': 0, 'ERROR': 1, 'BLOCKED': 2}
+
+
+def _screenshots(root, run):
+    """Step screenshots written next to a UI run's result.json (StepEvidence / final snapshot)."""
+    path = run.get('resultPath')
+    if not path:
+        return []
+    directory = Path(path).parent
+    found = sorted(directory.rglob('step-*.png')) + sorted(directory.rglob('ui-snapshot.png'))
+    out = []
+    for item in found:
+        try:
+            out.append(item.resolve().relative_to(Path(root).resolve()).as_posix())
+        except ValueError:
+            out.append(str(item))
+    return out
+
+
+def _repro_result(root, commit, repro, others, by_case, finished):
+    """Status of a commit whose work item has repro steps = result of the UI run of those steps."""
+    ui_runs, cases, gaps = [], [], []
+    for requirement in repro:
+        gaps += [g for g in requirement.get('gaps', [])]
+        for cid in requirement.get('caseIds', []):
+            cases.append(cid)
+            ui_runs += [x for x in by_case.get(cid, []) if x.get('phase') != 'headless']
+    verdicts = [x.get('verdict') for x in ui_runs]
+    if any(v in _UI_RANK for v in verdicts):
+        status = min((v for v in verdicts if v in _UI_RANK), key=_UI_RANK.get)
+    elif not cases or not ui_runs:
+        status = 'NEEDS_CASE' if not cases or gaps else ('NOT_RUN' if finished else 'PENDING')
+    elif all(v == 'PASS' for v in verdicts):
+        status = 'PASSED_AT_HEAD'
+    else:
+        status = 'NOT_RUN' if finished else 'PENDING'
+    spec_steps = [s for r in repro for s in (r.get('reproSpec') or {}).get('steps', r.get('steps', []))]
+    reason = '; '.join(gaps) if status != 'PASSED_AT_HEAD' and gaps else ''
+    if not ui_runs and cases:
+        reason = (reason + '; ' if reason else '') + 'UI 复现用例未执行'
+    other_cases = sorted({cid for r in others for cid in r.get('caseIds', [])})
+    other_verdicts = sorted({x.get('verdict') or 'NOT_RUN' for cid in other_cases for x in by_case.get(cid, [])} or
+                            ({'NOT_RUN'} if other_cases else set()))
+    if other_cases:
+        reason = (reason + '; ' if reason else '') + '非复现需求（不影响本状态）: ' + '/'.join(other_verdicts)
+    return dict(sha=commit['sha'], title=commit.get('title', ''), workItems=commit.get('workItems', []),
+                status=status, verificationLayer='UI', reason=reason,
+                requirementIds=[r['id'] for r in repro + others], caseIds=sorted(set(cases)),
+                reproSteps=spec_steps, reproExpected=' / '.join(
+                    (r.get('reproSpec') or {}).get('expected', r.get('expected', '')) for r in repro),
+                screenshots=[shot for run in ui_runs for shot in _screenshots(root, run)],
+                runs=[dict(caseId=x['caseId'], phase=x.get('phase'), runId=x.get('runId'), verdict=x.get('verdict'))
+                      for x in ui_runs])
+
+
 def commit_lines(d, results, head):
     lines = ['', '## 逐提交测试结果（同一 HEAD 构建）', '',
              f'全部用例在 `{head[:12]}` 的一次构建上执行。PASSED_AT_HEAD 表示该提交的需求在最新 HEAD 上通过，'
-             '不代表该提交在自己的 SHA 上独立验收（perCommitAcceptance=false）。', '',
-             '| 提交 | 标题 | 工作项 | 状态 | 用例 | runId | 说明 |', '| --- | --- | --- | --- | --- | --- | --- |']
+             '不代表该提交在自己的 SHA 上独立验收（perCommitAcceptance=false）。'
+             '工作项带复现步骤的提交，状态只取按复现步骤执行的 UI 用例结果（验证层=UI）。', '',
+             '| 提交 | 标题 | 工作项 | 验证层 | 状态 | 用例 | runId | 说明 |',
+             '| --- | --- | --- | --- | --- | --- | --- | --- |']
     for r in results:
         run_ids = ', '.join(sorted({x['runId'] for x in r['runs'] if x.get('runId')}))
         lines.append(f"| `{r['sha'][:8]}` | {d.md(r['title'])} | {d.md(', '.join(map(str, r['workItems'])))} | "
-                     f"{r['status']} | {d.md(', '.join(r['caseIds']))} | {d.md(run_ids)} | {d.md(r['reason'])} |")
+                     f"{r.get('verificationLayer', '-')} | {r['status']} | {d.md(', '.join(r['caseIds']))} | "
+                     f"{d.md(run_ids)} | {d.md(r['reason'])} |")
+    repro = [r for r in results if r.get('verificationLayer') == 'UI']
+    if repro:
+        lines += ['', '### 复现步骤 UI 验证', '']
+        for r in repro:
+            lines += [f"**`{r['sha'][:8]}` 工作项 {', '.join(map(str, r['workItems']))}：{r['status']}**", '']
+            lines += [f'{i}. {d.md(step)}' for i, step in enumerate(r.get('reproSteps', []), 1)]
+            lines += ['', f"预期：{d.md(r.get('reproExpected') or '-')}", '']
+            if r.get('screenshots'):
+                lines += ['过程截图：' + ' '.join(f'[{Path(s).name}]({s})' for s in r['screenshots']), '']
+            else:
+                lines += ['过程截图：无（UI 用例未执行或未产生截图）', '']
     return lines + ['']
