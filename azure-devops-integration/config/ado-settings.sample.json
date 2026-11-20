@@ -1,12 +1,17 @@
 {
   "schemaVersion": "1.0",
-  "collectionBaseUrl": null,
+  "collectionBaseUrl": "<FILL_FROM_DISCOVERY>",
   "project": "Vega_SW",
-  "apiVersion": null,
+  "apiVersion": "<NEGOTIATED_API_VERSION>",
   "readOnly": true,
   "writeTestResultsEnabled": false,
   "createTestPlansEnabled": false,
   "modifyWorkItemsEnabled": false,
   "createBugsEnabled": false,
-  "publishArtifactsEnabled": false
+  "publishArtifactsEnabled": false,
+  "executeRunnerEnabled": false,
+  "allowInsecureHttp": false,
+  "autotestRoot": "C:\\AutoTest\\AutoTest\\VegaAutoTest",
+  "runsRoot": "C:\\AutoTest\\AutoTest\\VegaAutoTest\\runs",
+  "registryPath": "C:\\AutoTest\\AutoTest\\VegaAutoTest\\cases\\registry.json"
 }

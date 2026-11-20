@@ -1,0 +1,38 @@
+﻿commit fe6dcc62d7c88d1e95866b1693db0006609592ed
+Author:     Ma, Junyan <Ma, Junyan>
+AuthorDate: Wed Nov 11 13:31:31 2026 +0800
+Commit:     Ma, Junyan <Ma, Junyan>
+CommitDate: Wed Nov 11 13:31:31 2026 +0800
+
+    已合并 PR 5118: feat: 每个collection扫描前随SetupHardware并行打开慢门；Lot Recipe下拉框支持输入过滤（master 移植）
+    
+    ## 问题背景 / Context
+    
+    1. **慢门（DUV laser slow shutter）可能未开**：异常或人工操作后未恢复时，后续扫描直接失败。需要每个 collection 扫描前检查，未开则自动重新打开。
+    2. **Lot 界面选择 Recipe 只能全量列表滚动查找**：recipe 数量多时定位困难，需要输入即过滤。
+    
+    ## 修改内容 / Changes
+    
+    ### 1. 每个collection扫描前随SetupHardware并行打开慢门（e3f9bfaae）
+    - `WaferRunSequenceBase.cs`：`SetupHardwareAsync` 任务列表内联 `Task.Run(() => _illuminationOptics.TurnOnDUVLaserSlowShutter(), cancellationToken)`——TurnOn 自带"已开则跳过"（幂等）且有 LD 层日志，无需 BL 包装方法；失败经 `Task.WhenAll` 上抛 → 既有 catch 链 SendAbort + GEM 报警，不加配置开关
+    - LD 层（评审 🔴 修复）：`TurnOnDUVLaserSlowShutter` 的 `if (ShutterOpen()==Succeed)` 原先无 else——激光内层快门打开失败（未就绪 Refuse / 打开超时转失败结果，均不抛异常）时**静默返回**，10 处调用方（wafer run / XYAutoCal / 8 个校准 Executor）带着关闭的慢门继续执行且无告警。修复：捕获结果，else 分支 `Logger.Error` + 抛 `VegaDeviceException`，GEMAlarmID 用 `$"{{Name}}_{{shutterResult.AlarmName}}"`（与气缸分支同构，对应 ALID 40044/40045，不引入未注册报警名）；既有 `catch (XDeviceException){{throw;}}` 保证原样上抛
+    
+    ### 2. Lot Recipe 下拉框输入过滤（6507ad96f）
+    - `LotViewModel.cs`：
+      - `RecipeSearchText` + `AvailableRecipesView`（ICollectionView 忽略大小写 Contains 过滤；搜索词为空或等于选中项路径时显示全部）
+      - **选中项恒保留在过滤视图内**：`Refresh()` 的 Reset 会使 Selector 把视图外的 SelectedItem 置空并回写 `SelectedRecipe=null`，曾导致 LostFocus 回显为空、`SaveData` 整段跳过而静默丢弃本页其他编辑（DSA/LotRunSetting/分级）而 JobProvider.SaveFile 照常落盘
+      - `SaveData` 仅 Recipe 回写受选中项约束，其余编辑不再因 SelectedRecipe 为空被跳过；`LoadData` 开头清空上次过滤词
+      - 刷新守卫：文本==选中项路径（键盘导航/选中回写产生）不触发 Refresh（Reset 会打断下拉导航）；选中变化仅在竞态残留时刷新
+    - `LotView.xaml`：可编辑 ComboBox（`IsEditable` + `StaysOpenOnEdit` + `TextSearch.TextPath="RecipePath"` + `DisplayMemberPath`），Text 双向绑定过滤词
+    - `LotView.xaml.cs`：
+      - GotFocus：自动展开下拉（StaysOpenOnEdit 不会自动打开）+ 全选文本
+      - **↑↓ 键盘导航**：本应用上层在隧道阶段将方向键标记已处理（日志证实 ComboBox 层订阅与原生导航均失效），故以 `handledEventsToo:true` 挂内部编辑 TextBox 的 PreviewKeyDown，在过滤结果中移动 SelectedItem；选中项与搜索词不匹配时不作导航锚点（↓ 从首个匹配项开始）
+      - 点击编辑区重开下拉（焦点未离开时 GotFocus 不触发）；DropDownClosed/LostFocus 回显实际选中项（点击不可聚焦空白时焦点不离开、LostFocus 不触发）；Enter 选中后取消全选高亮、光标置末尾
+    
+    ## 验证 / Verification
+    
+    - 编译 0 错误；Lot 交互经真机日志验证（过滤/↑↓导航/Enter 选中/失焦回显/重新展开均正常）
+    - Sim 机台验证由开发完成
+    - master 基线由开发自行验证（LD 实现 3 个：Optics/Plus/LiteVega100）
+    
+    相关工作项: #3803, #3804

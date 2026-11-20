@@ -1,0 +1,25 @@
+﻿ Vega.BL.IWaferRun/NotchChannelResolver.cs          |  20 +++
+ Vega.BL.WaferRun/WaferRunSequenceBase.cs           | 163 +++++++++++++++------
+ Vega.LD.DataCollector/DataCollectorLiteVega100.cs  |  97 ++++++++++--
+ Vega.PD.DAQDevice/NICardDevice.cs                  |  23 ++-
+ Vega.PD.IDAQDevice/EdgeForwardPolicy.cs            |  15 ++
+ .../EdgeForwardPolicyTests.cs                      |  57 +++++++
+ .../NotchSourceResolverTests.cs                    |  27 ++++
+ Vega.Utility.Common/Configs/DataCollectorConfig.cs |   2 +-
+ Vega.Utility.Common/Configs/EdgeDetectionConfig.cs |  10 +-
+ Vega.Utility.Helper/ToolFeaturesHelper.cs          |   3 +
+ Vega/Resources/ComponentConfig.json                |   5 +-
+ Vega/Resources/HardwareProfiles.json               |   2 +
+ .../MachineConfiguration/DataCollector.json        |   2 +-
+ .../DataCollector.zh-Hans.json                     |   2 +-
+ .../DataCollector/DAQDevice_2.json                 |  11 ++
+ .../DataCollector/DAQDevice_2.zh-Hans.json         |  11 ++
+ .../MachineConfiguration/EdgeDetection.json        |  17 ++-
+ .../EdgeDetection.zh-Hans.json                     |  17 ++-
+ Vega/Vega_Inno.iss                                 |  16 +-
+ .../0026-vega100-edge-detector-retrofit.md         |  62 ++++++++
+ ve-docs/living-spec/decisions/index.md             |   1 +
+ .../modules/component-composition/state.md         |   3 +-
+ .../living-spec/modules/data-collector/state.md    |   8 +-
+ ve-docs/living-spec/modules/wafer-run/state.md     |   8 +-
+ 24 files changed, 503 insertions(+), 79 deletions(-)

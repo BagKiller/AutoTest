@@ -1,0 +1,1082 @@
+﻿diff --git a/Vega.BL.IWaferRun/NotchChannelResolver.cs b/Vega.BL.IWaferRun/NotchChannelResolver.cs
+index b28289b1..a034d307 100644
+--- a/Vega.BL.IWaferRun/NotchChannelResolver.cs
++++ b/Vega.BL.IWaferRun/NotchChannelResolver.cs
+@@ -16,6 +16,18 @@ public enum NotchDataChannelFamily
+     DW,
+ }
+ 
++/// <summary>
++/// 外→内机型（加装 Edge Detector 的 Vega100）notch 对位数据来源（机台级配置 Edge Detection/
++/// NotchDataSource，"DarkField"|"EdgeDetector"，缺省 DarkField）。
++/// DarkField = 现状暗场家族（NotchDataChannel 家族 + 入射选通道）；
++/// EdgeDetector = 第二张 NI 卡上的被动边缘检测器（逻辑通道 9999，条目 ValidOn 保证仅 ED 机型可达）。
++/// </summary>
++public enum NotchDataSourceType
++{
++    DarkField,
++    EdgeDetector,
++}
++
+ /// <summary>
+ /// 外→内机型（Vega100，无独立边缘激光）notch 数据源通道：家族可配置 + 按 collection 入射选型，
+ /// 与配方 GetPhysicalChannels 的同族选型同规则（DN: Normal→DN_Normal/Oblique→DN_Oblique；
+@@ -40,4 +52,12 @@ public static class NotchChannelResolver
+     /// </summary>
+     public static NotchDataChannelFamily ParseFamily(string? configured)
+         => string.Equals(configured, "DN", StringComparison.OrdinalIgnoreCase) ? NotchDataChannelFamily.DN : NotchDataChannelFamily.DW;
++
++    /// <summary>
++    /// 数据来源容错解析："EdgeDetector"（忽略大小写）→ EdgeDetector；
++    /// 其余（空/未配置/"DarkField"/非法值）→ DarkField（默认=现状）。照 <see cref="ParseFamily"/> 范式。
++    /// 非法值的 Warning 由调用方承载（此处保持纯静态零依赖）。
++    /// </summary>
++    public static NotchDataSourceType ParseSource(string? configured)
++        => string.Equals(configured, "EdgeDetector", StringComparison.OrdinalIgnoreCase) ? NotchDataSourceType.EdgeDetector : NotchDataSourceType.DarkField;
+ }
+diff --git a/Vega.BL.WaferRun/WaferRunSequenceBase.cs b/Vega.BL.WaferRun/WaferRunSequenceBase.cs
+index 63d68190..c8f2cf19 100644
+--- a/Vega.BL.WaferRun/WaferRunSequenceBase.cs
++++ b/Vega.BL.WaferRun/WaferRunSequenceBase.cs
+@@ -1100,9 +1100,14 @@ public class WaferRunSequenceBase
+ 
+         // 预扫通道按 202 固定入射解析（不随生产配方入射漂移；家族沿用 NotchDataChannel 配置）。
+         // 日志记录两套入射便于追溯（生产 Oblique + 预扫 Normal 是合法组合）。
+-        var notchChannel = NotchChannelResolver.Resolve(prescanIncidence, NotchFamily);
++        // EdgeDetector 源：不解析暗场家族，通道 = EdgeLogicalChannel（9999，第二张卡边缘检测器）。
++        var isEdgeDetectorSource = NotchSource == NotchDataSourceType.EdgeDetector;
++        var notchChannel = isEdgeDetectorSource
++            ? (ChannelMode) _configsManager.EdgeDetectionConfig.EdgeChannel
++            : NotchChannelResolver.Resolve(prescanIncidence, NotchFamily);
+         var productionIncidence = waferRun.RecipeSnapshot.CollectionElement.Collections[collectionIndex].DarkField.SizingContent.Incidence;
+-        _logger.Information(_compName, $"[NotchChannel] Coll {collectionIndex} dedicated prescan notch source {notchChannel} (family {NotchFamily}, prescan optics incidence={prescanIncidence}/throughput={prescanThroughput} from recipe {BaseFile.AlignmentScanRecipeID}, production incidence={productionIncidence}).");
++        var prescanSourceText = isEdgeDetectorSource ? "source EdgeDetector" : $"family {NotchFamily}";
++        _logger.Information(_compName, $"[NotchChannel] Coll {collectionIndex} dedicated prescan notch source {notchChannel} ({prescanSourceText}, prescan optics incidence={prescanIncidence}/throughput={prescanThroughput} from recipe {BaseFile.AlignmentScanRecipeID}, production incidence={productionIncidence}).");
+ 
+         try
+         {
+@@ -1129,35 +1134,40 @@ public class WaferRunSequenceBase
+             // 槽位保持进入时状态）。克隆取 202 解析块的值（生成器已约束 DN/DW2 块非 ODp4/PMT>0，家族
+             // 热切换无需重生成配方）。无需归还动作：独立扫描段完整收尾，主扫 SetupHardwareAsync 按生产
+             // 配方全套重下发自然覆盖。BSS 电机位置按 202 模式调整（仅预扫段内）。
+-            var prescanBlock = prescanCollection.DarkField.ChannelSettingContent[notchChannel];
+-            // 守卫：拒绝前缀兜底块——索引器在无精确匹配时按 CollectorName 前缀取块，兜底块会让
+-            // clone 宣称的模式与 DAQ 实际采集的解析通道静默分叉（现场改 202 入射而旧块残留时发生）。
+-            if (prescanBlock.ChannelMode != notchChannel)
+-            {
+-                throw new VegaBaseException(message: $"Alignment scan recipe {BaseFile.AlignmentScanRecipeID} has no exact {notchChannel} block (prefix fallback hit {prescanBlock.ChannelMode}); add the {notchChannel} block in the recipe editor or set 'Edge Detection/NotchScanMode' back to Inline.").WithGEMAlarmID("RecipeSystemError");
+-            }
+-            if (prescanBlock.OpticalFilter == CollectODFilterType.ODp4 || prescanBlock.PMTVolatge <= 0)
+-            {
+-                _logger.Warning(_compName, $"[NotchChannel] Coll {collectionIndex} alignment scan recipe {notchChannel} block has unusable values (OD={prescanBlock.OpticalFilter}, PMT={prescanBlock.PMTVolatge}); the prescan channel will collect zeros and alignment is expected to fail. Adjust recipe {BaseFile.AlignmentScanRecipeID} (OD/PMT) to fix.");
+-            }
+-            var prescanClone = new DFCollectorSettingContent(notchChannel)
+-            {
+-                IsEnabled = true,
+-                NMask = prescanBlock.NMask,
+-                NPolarizer = prescanBlock.NPolarizer,
+-                WMask = prescanBlock.WMask,
+-                WPolarizer = prescanBlock.WPolarizer,
+-                FFilter = prescanBlock.FFilter,
+-                OpticalFilter = prescanBlock.OpticalFilter,
+-                PMTVolatge = prescanBlock.PMTVolatge
+-            };
+-
++            // EdgeDetector 源短路 collector 侧全套：ED 预扫采集 9999（边缘检测器，非 PMT 通道），无光学
++            // 块可克隆/可校验（块精确匹配守卫不触发）；照明侧 202 全套照旧下发。
+             // V100：BEA OD 按 202 LaserPower 挡位派生（单权威），跳过配方残留值
+             var effectiveBeaOD = RecipeBeaOdResolver.GetEffectiveBEAOD(prescanCollection.DarkField.IncidenceFilterType, prescanCollection.DarkField.SizingContent.LaserPower);
+             var prescanLaserPower = prescanCollection.DarkField.SizingContent.LaserPower;
++            DFCollectorSettingContent? prescanClone = null;
++            if (!isEdgeDetectorSource)
++            {
++                var prescanBlock = prescanCollection.DarkField.ChannelSettingContent[notchChannel];
++                // 守卫：拒绝前缀兜底块——索引器在无精确匹配时按 CollectorName 前缀取块，兜底块会让
++                // clone 宣称的模式与 DAQ 实际采集的解析通道静默分叉（现场改 202 入射而旧块残留时发生）。
++                if (prescanBlock.ChannelMode != notchChannel)
++                {
++                    throw new VegaBaseException(message: $"Alignment scan recipe {BaseFile.AlignmentScanRecipeID} has no exact {notchChannel} block (prefix fallback hit {prescanBlock.ChannelMode}); add the {notchChannel} block in the recipe editor or set 'Edge Detection/NotchScanMode' back to Inline.").WithGEMAlarmID("RecipeSystemError");
++                }
++                if (prescanBlock.OpticalFilter == CollectODFilterType.ODp4 || prescanBlock.PMTVolatge <= 0)
++                {
++                    _logger.Warning(_compName, $"[NotchChannel] Coll {collectionIndex} alignment scan recipe {notchChannel} block has unusable values (OD={prescanBlock.OpticalFilter}, PMT={prescanBlock.PMTVolatge}); the prescan channel will collect zeros and alignment is expected to fail. Adjust recipe {BaseFile.AlignmentScanRecipeID} (OD/PMT) to fix.");
++                }
++                prescanClone = new DFCollectorSettingContent(notchChannel)
++                {
++                    IsEnabled = true,
++                    NMask = prescanBlock.NMask,
++                    NPolarizer = prescanBlock.NPolarizer,
++                    WMask = prescanBlock.WMask,
++                    WPolarizer = prescanBlock.WPolarizer,
++                    FFilter = prescanBlock.FFilter,
++                    OpticalFilter = prescanBlock.OpticalFilter,
++                    PMTVolatge = prescanBlock.PMTVolatge
++                };
+ 
+-            // notch 光学上下文一行（对位追溯主入口，同 SetupHardwareAsync 形态）
+-            _logger.Information(_compName, $"[NotchChannel] Coll {collectionIndex} dedicated prescan optics context: source={notchChannel} (clone), incidence={prescanIncidence}, throughput={prescanThroughput}, laserPower={prescanLaserPower}%, BEAOD={effectiveBeaOD}, incPolarizer={prescanPolarizer}, OD={prescanBlock.OpticalFilter}, PMT={prescanBlock.PMTVolatge}, NMask={prescanBlock.NMask}, NPolarizer={prescanBlock.NPolarizer}, WMask={prescanBlock.WMask}, WPolarizer={prescanBlock.WPolarizer}, FFilter={prescanBlock.FFilter}");
++                // notch 光学上下文一行（对位追溯主入口，同 SetupHardwareAsync 形态）
++                _logger.Information(_compName, $"[NotchChannel] Coll {collectionIndex} dedicated prescan optics context: source={notchChannel} (clone), incidence={prescanIncidence}, throughput={prescanThroughput}, laserPower={prescanLaserPower}%, BEAOD={effectiveBeaOD}, incPolarizer={prescanPolarizer}, OD={prescanBlock.OpticalFilter}, PMT={prescanBlock.PMTVolatge}, NMask={prescanBlock.NMask}, NPolarizer={prescanBlock.NPolarizer}, WMask={prescanBlock.WMask}, WPolarizer={prescanBlock.WPolarizer}, FFilter={prescanBlock.FFilter}");
++            }
+ 
+             var opticsTasks = new List<Task>
+             {
+@@ -1168,13 +1178,18 @@ public class WaferRunSequenceBase
+                 _illuminationOptics.SetPolarizerModeAsync(prescanPolarizer, _linkedCancellationToken),
+                 SetDUVLaserPowerAsync(prescanLaserPower, waferRun.LaserPowInACCali, _linkedCancellationToken),
+                 _illuminationOptics.SetBEAODFilterAsync(effectiveBeaOD, _linkedCancellationToken),
+-                SetMoveBEAL3L4Async(prescanIncidence, prescanThroughput, _linkedCancellationToken),
+-                _collectionOptics.SetCollectorOpticalSettingAsync(prescanClone, _linkedCancellationToken),
+-                _bssControllor.BSSMotorPosOffsetAsync(prescanIncidence, prescanThroughput, _linkedCancellationToken)
++                SetMoveBEAL3L4Async(prescanIncidence, prescanThroughput, _linkedCancellationToken)
+             };
++            if (prescanClone is not null)
++            {
++                opticsTasks.Add(_collectionOptics.SetCollectorOpticalSettingAsync(prescanClone, _linkedCancellationToken));
++            }
++            opticsTasks.Add(_bssControllor.BSSMotorPosOffsetAsync(prescanIncidence, prescanThroughput, _linkedCancellationToken));
+ 
+-            // 预扫通道 AutoZero 偏置（与 SetupForCollectAsync 启用 collector 同门同形，值取 202 对应块）
+-            if (_configsManager.WaferRunConfig.SetAZOffsetEnable && !_caliHelper.AutoZeroCaliHasDone)
++            // 预扫通道 AutoZero 偏置（与 SetupForCollectAsync 启用 collector 同门同形，值取 202 对应块；
++            // clone 的 OD/PMT 与解析块逐字同值）。EdgeDetector 源短路（clone 为 null 即 ED）：预扫采集
++            // 9999（边缘检测器）非 PMT 通道，偏置无对象且会动主扫前的 PMT 零偏置状态。
++            if (prescanClone is not null && _configsManager.WaferRunConfig.SetAZOffsetEnable && !_caliHelper.AutoZeroCaliHasDone)
+             {
+                 var prescanCondition = new BaseOpticsCondition
+                 {
+@@ -1192,15 +1207,19 @@ public class WaferRunSequenceBase
+                     WCollectMaskType = prescanCollection.DarkField.ChannelSettingContent.DW2.WMask
+                 };
+                 var prescanCollectorType = ChannelModeHelper.IsNarrowCollector(notchChannel) ? CollectorType.Narrow : CollectorType.Wide2;
+-                SetAutoZeroOffset(prescanCondition, prescanCollectorType, prescanLaserPower, prescanBlock.PMTVolatge, prescanBlock.OpticalFilter);
++                SetAutoZeroOffset(prescanCondition, prescanCollectorType, prescanLaserPower, prescanClone.PMTVolatge, prescanClone.OpticalFilter);
+             }
+ 
+             await Task.WhenAll(opticsTasks);
+ 
+-            // 配置采集卡：使用 PreScan 专属缓存键与文件名前缀；缓存键不得与主扫 GetDataCacheKey(collectionIndex) 同键，避免数据竞速与覆写。
++            // DAQ：预扫独立缓存键 + 预扫专属文件基底（不与主扫 coll 0 的 GetRamdiskFileBase 命名重叠，
++            // 避免数据竞速与覆写；键仅用于进程内缓存寻址，不进文件名）。暗场源 bEdge=false：notch 通道是
++            // 真检测通道；EdgeDetector 源照 V200 独立扫环形态 bEdge=true + 空通道表（SetCollectChannel
++            // 内部补 9999），卡 2 单通道截断采集边缘窗口（scanTracks==edgeTracks，min==max 守卫不咬）。
+             var prescanCacheKey = $"{waferRun.GetDataCacheKey(collectionIndex)}_PreScan";
+             var prescanFileBase = $"{waferRun.GetRamdiskFileBase(collectionIndex)}_PreScan";
+-            bool result = _dataCollector.SetCollectChannel(prescanCacheKey, [notchChannel], _edgeTracks, false, _edgeTracks,
++            bool result = _dataCollector.SetCollectChannel(prescanCacheKey,
++                isEdgeDetectorSource ? [] : [notchChannel], _edgeTracks, isEdgeDetectorSource, _edgeTracks,
+                 fileBaseName: prescanFileBase, cancellationToken: _linkedCancellationToken);
+             if (!result)
+             {
+@@ -1408,13 +1427,15 @@ public class WaferRunSequenceBase
+             _edgeScanData = new ushort[_edgeTracks * _waferAlignmentService.CurrentEdgeScan.SamplePerTrack];
+             _logger.Information(_compName, $"[EdgeAlign] SetupHardware alloc _edgeScanData: _edgeTracks={_edgeTracks}, SamplePerTrack={_waferAlignmentService.CurrentEdgeScan.SamplePerTrack}, _edgeScanData.Length={_edgeScanData.Length}, umPerTrack={umPerTrack}, waferSizeInMicron={waferSizeInMicron}, LoadOrientation={waferRun.LoadOrientation}");
+ 
+-            if (ToolFeaturesHelper.IsOuterToInnerScan)
++            if (ToolFeaturesHelper.IsOuterToInnerScan && NotchSource != NotchDataSourceType.EdgeDetector)
+             {
+                 // notch 数据源家族可配置（V100 专属，废除三级回退；NotchDataChannel 默认 DW）：配方含
+                 // 所选通道 → 该通道即检测通道，带内与检测范围重叠的轨道由检测读消费并转发副本进边缘
+                 // 缓冲（拆带双读，见 DoPerformDataCollectionForChannel）；配方无该通道 → 记入
+                 // _notchAppendChannel，DAQ 表副本追加内部加采（对位专用、算法无感，见下方 collectorTask
+                 // 与 DoPerformEdgeDataCollectionAsync）。
++                // EdgeDetector 源不进此块：对位数据走 9999（第二张卡），无暗场家族解析、无 fan-out/加采
++                // 形态（两通道保持 null → DoPerformEdgeDataCollectionAsync 独占整带自读自然成立）。
+                 var notchChannel = ResolveNotchChannel(waferRun, index);
+                 if (channels.Contains(notchChannel))
+                 {
+@@ -1437,19 +1458,31 @@ public class WaferRunSequenceBase
+         var collectorTask = Task.Run(() =>
+         {
+             _logger.Information(_compName, $"[Pipeline] TPT {waferRun.WaferID} Coll {index} DAQ SetCollectChannel task START");
+-            // 外→内机型（Vega100）EdgeLogicalChannel 恒为 9999（配置不动作；条目已 ValidOn 排除 Vega100，
+-            // V100 配置页不显示该设置项）：bEdge 传 false，不把幻影通道
+-            // 加进采集表——PD 层对 edgeChannel 有真实截断语义，配真实通道反而会掐断该检测通道的采集；
+-            // notch 数据由 DoPerformEdgeDataCollectionAsync 在解析通道上读取（ResolveNotchChannel）。
+-            bool bEdge = !_hasDoneEdgeDetection && !ToolFeaturesHelper.IsOuterToInnerScan;
+-            // channels 与 collectionRun.PhysicalChannels 共享引用，必须创建副本追加，避免加采通道泄漏进分析链路。
++            // 外→内机型（V100）数据源为暗场家族（NotchDataSource=DarkField，缺省）时：9999 是幻影
++            // 通道（EdgeLogicalChannel 条目 ValidOn 排除无 token 的 V100，配置页不显示该设置项），
++            // bEdge 传 false，不把幻影通道加进采集表——PD 层对 edgeChannel 有真实截断语义，配真实通道
++            // 反而会掐断该检测通道的采集；notch 数据由 DoPerformEdgeDataCollectionAsync 在解析通道上
++            // 读取（ResolveNotchChannel）。
++            // 数据源为 EdgeDetector 时（O2I+ED）：9999 是真实边缘通道（第二张卡 TypeChannel_2=[9999]），
++            // 必须以 bEdge=true 进采集表——卡 2 单通道截断采集边缘窗口（PD EdgeForwardPolicy，决策 10）。
++            bool bEdge = !_hasDoneEdgeDetection && (!ToolFeaturesHelper.IsOuterToInnerScan || NotchSource == NotchDataSourceType.EdgeDetector);
++            // edgeTracks 实参 = 截断窗长度：O2I+ED 时读窗为 [_notchBandStartTrack, +_edgeTracks)（ExtendScan
++            // 下 bandStart>0，读窗起址勿硬编码 0），传窗口长度才能整窗覆盖；头部 gap [0, bandStart) 在正常
++            // 配置（bandStart=0）下不存在。其余形态维持 _edgeTracks 原语义（V200 扫环 scanTracks==edgeTracks）。
++            // 跨层契约（PR 5090 review #3 锚定）：PD 侧 CreateDaqTask 只接受"长度"（总样本 = 每轨样本 ×
++            // edgeTracks，无起址概念——NICardDevice 以此算截断窗 min），LD 读侧按绝对轨道寻址（startIndex =
++            // _notchBandStartTrack + 读进度）。"长度 = bandStart + edgeTracks"是两式拼合的唯一正解；若 PD 侧
++            // 将来改为绝对寻址语义，此处必须同步重推，否则静默少读 bandStart 条轨道。
++            int edgeTracksForDaq = ToolFeaturesHelper.IsOuterToInnerScan && bEdge ? _notchBandStartTrack + _edgeTracks : _edgeTracks;
++            // 加采红线：channels 形参与 collectionRun.PhysicalChannels 同引用，必须副本追加——原地 Add
++            // 会让加采通道泄进整个分析管线（send worker/算法元数据/结果），无感边界全线失守。
+             List<ChannelMode> daqChannels = channels;
+             if (_notchAppendChannel is ChannelMode appendedChannel)
+             {
+                 daqChannels = [.. channels, appendedChannel];
+                 _logger.Information(_compName, $"[NotchChannel] Coll {index} alignment-only acquisition {appendedChannel} appended to DAQ table (recipe lacks the notch-source channel; invisible to the analysis pipeline).");
+             }
+-            bool result = _dataCollector.SetCollectChannel(waferRun.GetDataCacheKey(index), daqChannels, scanTracks, bEdge, _edgeTracks, RawSampleTracks,
++            bool result = _dataCollector.SetCollectChannel(waferRun.GetDataCacheKey(index), daqChannels, scanTracks, bEdge, edgeTracksForDaq, RawSampleTracks,
+                 waferRun.GetRamdiskFileBase(index), cancellationToken);
+             if (!result)
+             {
+@@ -1882,7 +1915,8 @@ public class WaferRunSequenceBase
+         // _notchAppendChannel：SetupHardwareAsync 是 virtual，override 插入 await 后字段可能尚未
+         // 就绪；纯判定输入相同恒同值。机型门（IsOuterToInnerScan）先行：NotchDataChannel 是
+         // Vega100 专属配置（ValidOn），非外→内机型不得触发其读取与告警。
+-        if (ToolFeaturesHelper.IsOuterToInnerScan && !_hasDoneEdgeDetection)
++        // EdgeDetector 源短路：ED 无加采，不应按 DF 家族解析候选通道并施加其配方块的 PMT 偏置。
++        if (ToolFeaturesHelper.IsOuterToInnerScan && !_hasDoneEdgeDetection && NotchSource != NotchDataSourceType.EdgeDetector)
+         {
+             var notchAppendCandidate = NotchChannelResolver.Resolve(currentScanCollection.DarkField.SizingContent.Incidence, NotchFamily);
+             if (_configsManager.WaferRunConfig.SetAZOffsetEnable
+@@ -2184,10 +2218,14 @@ public class WaferRunSequenceBase
+     private async Task DoPerformEdgeDataCollectionAsync(WaferRunInfo waferRun, int collectionIndex, CancellationToken cancellationToken, string? cacheKeyOverride = null, ChannelMode? channelOverride = null)
+     {
+         // 外→内机型（Vega100）无独立边缘激光：notch 数据源家族可配置（默认 DW，按入射选通道；配方
+-        // 含该通道 = 检测通道；无 = _notchAppendChannel 加采通道）；非外→内机型沿用配置通道（独立边缘激光）。
+-        // Dedicated 预扫传 channelOverride（202 固定入射解析），不读生产配方入射。
++        // 含该通道 = 检测通道；无 = _notchAppendChannel 加采通道）；NotchDataSource=EdgeDetector 时
++        // 通道恒为 9999（第二张卡边缘检测器，_notchFanoutChannel/_notchAppendChannel 均保持 null →
++        // exclusiveCount 自然取 _edgeTracks 整带自读，无需特判）；非外→内机型沿用配置通道（独立边缘激光）。
++        // Dedicated 预扫传 channelOverride（202 固定入射解析或 ED 的 9999），不读生产配方入射。
+         var notchChannel = channelOverride ?? (ToolFeaturesHelper.IsOuterToInnerScan
+-            ? ResolveNotchChannel(waferRun, collectionIndex)
++            ? NotchSource == NotchDataSourceType.EdgeDetector
++                ? (ChannelMode) _configsManager.EdgeDetectionConfig.EdgeChannel
++                : ResolveNotchChannel(waferRun, collectionIndex)
+             : (ChannelMode) _configsManager.EdgeDetectionConfig.EdgeChannel);
+         var samplePerTrack = _waferAlignmentService.CurrentEdgeScan.SamplePerTrack;
+         _logger.Information(_compName, $"[EdgeAlign] DoPerformEdgeDataCollectionAsync ENTER: _edgeTracks={_edgeTracks}, _notchBandStartTrack={_notchBandStartTrack}, SamplePerTrack={samplePerTrack}, _edgeScanData.Length={_edgeScanData?.Length ?? -1}, expectedTotal={_edgeTracks * samplePerTrack}, _abondonedTracks={_abondonedTracks}");
+@@ -2371,6 +2409,37 @@ public class WaferRunSequenceBase
+         }
+     }
+ 
++    /// <summary>
++    /// notch 对位数据来源（Edge Detection/NotchDataSource，"DarkField"|"EdgeDetector"，缺省与非法值
++    /// 按 DarkField——加装 Edge Detector 的 Vega100 可切第二张卡上的被动边缘检测器，逻辑通道 9999）。
++    /// 照 <see cref="NotchFamily"/> 范本：首访缓存一次、无逐 run 复位（装机级配置进程内不漂移；
++    /// 范本注释自称"每 run"但代码无复位——照抄范本、勿自加复位）。非法值 Warning 至多一条。
++    /// 消费点：SetupHardwareAsync 的 O2I 块与 bEdge 判定、两处 AutoZero 加采偏置块、
++    /// DoPerformEdgeDataCollectionAsync 通道解析、Dedicated 预扫 ED 分支。
++    /// </summary>
++    private NotchDataSourceType? _notchSource;
++
++    private NotchDataSourceType NotchSource
++    {
++        get
++        {
++            if (_notchSource.HasValue)
++            {
++                return _notchSource.Value;
++            }
++
++            var configured = _configsManager.EdgeDetectionConfig.NotchDataSource;
++            if (!string.IsNullOrWhiteSpace(configured)
++                && !string.Equals(configured, "DarkField", StringComparison.OrdinalIgnoreCase)
++                && !string.Equals(configured, "EdgeDetector", StringComparison.OrdinalIgnoreCase))
++            {
++                _logger.Warning(_compName, $"Invalid 'Edge Detection/NotchDataSource' value '{configured}'; falling back to DarkField.");
++            }
++            _notchSource = NotchChannelResolver.ParseSource(configured);
++            return _notchSource.Value;
++        }
++    }
++
+     /// <summary>
+     /// 外→内机型（Vega100）notch 数据源：家族可配置（<see cref="NotchFamily"/>，默认 DW）+ 按
+     /// collection 入射选型（与配方 GetPhysicalChannels 的同族选型同规则）。解析恒成功；所选通道
+diff --git a/Vega.LD.DataCollector/DataCollectorLiteVega100.cs b/Vega.LD.DataCollector/DataCollectorLiteVega100.cs
+index 230df8fc..4b724aa6 100644
+--- a/Vega.LD.DataCollector/DataCollectorLiteVega100.cs
++++ b/Vega.LD.DataCollector/DataCollectorLiteVega100.cs
+@@ -1,6 +1,7 @@
+ // Copyright (c) Shanghai Vega Technology Co., Ltd. All rights reserved.
+ 
+ using Autofac.Features.AttributeFilters;
++using Autofac.Features.Indexed;
+ using Galaxy.Platform.IComponent;
+ using Galaxy.Platform.ILogging;
+ using Vega.Data.Commons;
+@@ -12,13 +13,24 @@ namespace Vega.LD.DataCollector;
+ /// <summary>
+ /// 单卡数据采集器（Vega100 等，"少一张卡"变体）。
+ /// 设备无关逻辑见 <see cref="DataCollectorBase"/>，本类仅实现单卡相关的设备 hook。
++/// <para>
++/// Edge Detector 加装机型（HasEdgeDetector）可选挂第二张同型号 NI 卡（DAQDevice_2，采集 9999 边缘通道）：
++/// 卡 2 经 <c>IIndex</c> 可选解析，无 token 机器上键不存在 → null 旁路，全部 hook 行为与单卡现状逐字节等价。
++/// 通道→卡的分派完全由 <c>DAQDevice_2.json</c> 的机型变体条目决定（方案 A：两卡收到同一份完整通道表，
++/// 无映射的卡静默不参与，照 V200 <see cref="DataCollector"/> 双卡范式）。
++/// </para>
+ /// </summary>
+ public class DataCollectorLiteVega100([KeyFilter("DAQDevice_1")] IDAQDevice _dAQDevice_1,
++                                      IIndex<string, IDAQDevice> daqDeviceIndex,
+                                       IDAQBoard daqBoard,
+                                       IConfigsManager configsManager,
+                                       ILogService logService) : DataCollectorBase(daqBoard, configsManager, logService)
+ {
+     private DeviceCmdResult _daqDevice1TaskReady = new(DeviceCmdResultState.Fail, "DataCollector");
++    private DeviceCmdResult _daqDevice2TaskReady = new(DeviceCmdResultState.Fail, "DataCollector");
++
++    /// <summary>可选第二张卡（DAQDevice_2，仅 Vega100+Edge Detector 装机存在）；其余机型为 null 旁路。</summary>
++    private readonly IDAQDevice? _dAQDevice_2 = daqDeviceIndex.TryGetValue("DAQDevice_2", out var d2) ? d2 : null;
+ 
+     /// <inheritdoc />
+     protected override bool AreDevicesReady => _dAQDevice_1 is not null;
+@@ -27,7 +39,9 @@ public class DataCollectorLiteVega100([KeyFilter("DAQDevice_1")] IDAQDevice _dAQ
+     protected override bool InitDevices()
+     {
+         _logService.Debug(DebugModules.DataCollector, Name,
+-            $"[InitDataCollector] Start - DAQDevice_1: {_dAQDevice_1?.GetType().Name}");
++            _dAQDevice_2 is null
++                ? $"[InitDataCollector] Start - DAQDevice_1: {_dAQDevice_1?.GetType().Name}"
++                : $"[InitDataCollector] Start - DAQDevice_1: {_dAQDevice_1?.GetType().Name}, DAQDevice_2: {_dAQDevice_2.GetType().Name}");
+ 
+         if (null == _dAQDevice_1 || null == _daqBoard)
+         {
+@@ -46,22 +60,61 @@ public class DataCollectorLiteVega100([KeyFilter("DAQDevice_1")] IDAQDevice _dAQ
+         _logService.Debug(DebugModules.DataCollector, Name,
+             $"[InitDataCollector] DAQDevice_1 init: {result1}");
+ 
+-        return result1.ResultState == DeviceCmdResultState.Succeed;
++        if (_dAQDevice_2 is null)
++        {
++            return result1.ResultState == DeviceCmdResultState.Succeed;
++        }
++
++        _dAQDevice_2.TryRecoverIfAborted();
++        var result2 = _dAQDevice_2.InitLoadConfigInfo(2, _daqConfig.SamplesPerTrack);
++        _logService.Debug(DebugModules.DataCollector, Name,
++            $"[InitDataCollector] DAQDevice_2 init: {result2}");
++
++        return result1.ResultState == DeviceCmdResultState.Succeed && result2.ResultState == DeviceCmdResultState.Succeed;
+     }
+ 
+     /// <inheritdoc />
+     protected override List<DeviceCmdResult> CreateAllDaqTasks(string strWafer, List<int> channelModes,
+         int edgeChannel, int scanTracks, int edgeTracks, IReadOnlyList<int>? rawSampleTracks, string? fileBaseName, CancellationToken cancellationToken)
+     {
+-        _daqDevice1TaskReady = _dAQDevice_1.CreateDaqTask(strWafer, channelModes, edgeChannel, scanTracks, edgeTracks, rawSampleTracks, fileBaseName, cancellationToken);
+-        _logService.Debug(DebugModules.DataCollector, Name,
+-            $"[SetCollectChannel] DAQDevice_1.CreateDaqTask result: {_daqDevice1TaskReady}");
++        if (_dAQDevice_2 is null)
++        {
++            _daqDevice1TaskReady = _dAQDevice_1.CreateDaqTask(strWafer, channelModes, edgeChannel, scanTracks, edgeTracks, rawSampleTracks, fileBaseName, cancellationToken);
++            _logService.Debug(DebugModules.DataCollector, Name,
++                $"[SetCollectChannel] DAQDevice_1.CreateDaqTask result: {_daqDevice1TaskReady}");
++
++            return [_daqDevice1TaskReady];
++        }
+ 
+-        return [_daqDevice1TaskReady];
++        // 双卡并发建任务（照 V200 DataCollector 范式）：两卡下发同一份完整通道表（方案 A），
++        // 卡 2 仅在通道表含其映射通道时实际建任务，无映射 → 静默不参与。
++        List<Task> lists =
++        [
++            Task.Run(() =>
++            {
++                _daqDevice1TaskReady = _dAQDevice_1.CreateDaqTask(strWafer, channelModes, edgeChannel, scanTracks, edgeTracks, rawSampleTracks, fileBaseName, cancellationToken);
++                _logService.Debug(DebugModules.DataCollector, Name,
++                    $"[SetCollectChannel] DAQDevice_1.CreateDaqTask result: {_daqDevice1TaskReady}");
++            }),
++            Task.Run(() =>
++            {
++                _daqDevice2TaskReady = _dAQDevice_2.CreateDaqTask(strWafer, channelModes, edgeChannel, scanTracks, edgeTracks, rawSampleTracks, fileBaseName, cancellationToken);
++                _logService.Debug(DebugModules.DataCollector, Name,
++                    $"[SetCollectChannel] DAQDevice_2.CreateDaqTask result: {_daqDevice2TaskReady}");
++            }),
++        ];
++
++        Task.WaitAll([.. lists]);
++
++        return [_daqDevice1TaskReady, _daqDevice2TaskReady];
+     }
+ 
+     /// <inheritdoc />
+-    protected override void StopAllDaqTasks() => _ = _dAQDevice_1?.StopDaqTask();
++    protected override void StopAllDaqTasks()
++    {
++        _ = _dAQDevice_1?.StopDaqTask();
++        _ = _dAQDevice_2?.StopDaqTask();
++    }
+ 
+     /// <inheritdoc />
+     protected override List<Task> StartDeviceTasks(CancellationToken cancellationToken)
+@@ -78,6 +131,22 @@ public class DataCollectorLiteVega100([KeyFilter("DAQDevice_1")] IDAQDevice _dAQ
+             _logService.Debug(DebugModules.DataCollector, Name,
+                 "[StartAcquisition] DAQDevice_1 not ready, skipping");
+         }
++
++        if (_dAQDevice_2 is not null)
++        {
++            if (_daqDevice2TaskReady.ResultState == DeviceCmdResultState.Succeed)
++            {
++                list.Add(_dAQDevice_2.StartDaqTaskAsync(cancellationToken));
++                _logService.Debug(DebugModules.DataCollector, Name,
++                    "[StartAcquisition] Started DAQDevice_2 task");
++            }
++            else
++            {
++                _logService.Debug(DebugModules.DataCollector, Name,
++                    "[StartAcquisition] DAQDevice_2 not ready, skipping");
++            }
++        }
++
+         return list;
+     }
+ 
+@@ -90,11 +159,21 @@ public class DataCollectorLiteVega100([KeyFilter("DAQDevice_1")] IDAQDevice _dAQ
+             _logService.Debug(DebugModules.DataCollector, Name,
+                 "[StopAcquisition] DAQDevice_1 stopped");
+         }
++
++        if (_dAQDevice_2 != null)
++        {
++            _ = _dAQDevice_2.StopDaqTask();
++            _logService.Debug(DebugModules.DataCollector, Name,
++                "[StopAcquisition] DAQDevice_2 stopped");
++        }
+     }
+ 
+     /// <inheritdoc />
+-    protected override bool IsAnyDeviceFaulted => _dAQDevice_1?.IsCollectionFaulted ?? false;
++    protected override bool IsAnyDeviceFaulted =>
++        (_dAQDevice_1?.IsCollectionFaulted ?? false) ||
++        (_dAQDevice_2?.IsCollectionFaulted ?? false);
+ 
+     /// <inheritdoc />
+-    protected override Exception? GetFirstDeviceException() => _dAQDevice_1?.GetCollectionException();
++    protected override Exception? GetFirstDeviceException() =>
++        _dAQDevice_1?.GetCollectionException() ?? _dAQDevice_2?.GetCollectionException();
+ }
+diff --git a/Vega.PD.DAQDevice/NICardDevice.cs b/Vega.PD.DAQDevice/NICardDevice.cs
+index fd1a2068..e5a00c40 100644
+--- a/Vega.PD.DAQDevice/NICardDevice.cs
++++ b/Vega.PD.DAQDevice/NICardDevice.cs
+@@ -7,6 +7,7 @@ using System.Runtime.InteropServices;
+ using Vega.Data.Commons;
+ using Vega.PD.IDAQDevice;
+ using Vega.Utility.Common;
++using Vega.Utility.Helper;
+ namespace Vega.PD.DAQDevice;
+ 
+ [LogDetail]
+@@ -71,6 +72,8 @@ public class NICardDevice(IConfigsManager _configsManager) : DAQDeviceBase<DAQWa
+         ClearCollectionException();
+         // 复位外部停止标志：新一片采集开始，读循环回到"读失败=致命错误"的正常判定。
+         _externalStopRequested = false;
++        // 快照 Edge Detector 装机 token：装机级配置进程内不漂移，缓存后单通道截断守卫不进热路径。
++        _hasEdgeDetectorToken = ToolFeaturesHelper.HasEdgeDetector;
+ 
+         bool wasCancelled = false;
+         var result = AutomaticRetryWithoutExHandler(() =>
+@@ -1008,11 +1011,21 @@ public class NICardDevice(IConfigsManager _configsManager) : DAQDeviceBase<DAQWa
+         }
+         else if (_dicPhysicalChannel.ContainsKey(PHYSICAL_CHANNEL.CHANNEL_1))
+         {
+-            InvokeDatasPhysicalChannel(waferInfo1, PHYSICAL_CHANNEL.CHANNEL_1);
++            // 单物理通道 edge 截断（卡 2 只挂 9999 的形态）：token 守卫 + 边缘窗口最小采样数，见 EdgeForwardPolicy。
++            if (EdgeForwardPolicy.ShouldForward(_dicPhysicalChannel[PHYSICAL_CHANNEL.CHANNEL_1].isEdgeChannel,
++                    _hasEdgeDetectorToken, ulongCurTotalRead, ulongReadMinSamplesCount))
++            {
++                InvokeDatasPhysicalChannel(waferInfo1, PHYSICAL_CHANNEL.CHANNEL_1);
++            }
+         }
+         else
+         {
+-            InvokeDatasPhysicalChannel(waferInfo1, PHYSICAL_CHANNEL.CHANNEL_2);
++            // 同上：卡上仅 CHANNEL_2 有映射（V100+ED 第二张卡形态）。
++            if (EdgeForwardPolicy.ShouldForward(_dicPhysicalChannel[PHYSICAL_CHANNEL.CHANNEL_2].isEdgeChannel,
++                    _hasEdgeDetectorToken, ulongCurTotalRead, ulongReadMinSamplesCount))
++            {
++                InvokeDatasPhysicalChannel(waferInfo1, PHYSICAL_CHANNEL.CHANNEL_2);
++            }
+         }
+ 
+         // 数据处理完成日志
+@@ -1306,6 +1319,12 @@ public class NICardDevice(IConfigsManager _configsManager) : DAQDeviceBase<DAQWa
+     /// </summary>
+     private volatile bool _externalStopRequested;
+ 
++    /// <summary>
++    /// Edge Detector 装机 token（HasEdgeDetector）快照，CreateDaqTask 入口缓存、不进热路径。
++    /// 仅 Vega100-*-ED profile 授予；无 token 机型单物理通道 edge 数据保持既有全量转发（零行为变化）。
++    /// </summary>
++    private bool _hasEdgeDetectorToken;
++
+     #endregion
+ 
+     #region C库接口函数
+diff --git a/Vega.PD.IDAQDevice/EdgeForwardPolicy.cs b/Vega.PD.IDAQDevice/EdgeForwardPolicy.cs
+new file mode 100644
+index 00000000..772075c3
+--- /dev/null
++++ b/Vega.PD.IDAQDevice/EdgeForwardPolicy.cs
+@@ -0,0 +1,15 @@
++// Copyright (c) Shanghai Vega Technology Co., Ltd. All rights reserved.
++
++namespace Vega.PD.IDAQDevice;
++
++/// <summary>
++/// 单物理通道 edge 截断守卫（纯静态；NICardDevice 与测试项目经既有引用共享）。
++/// token 由调用方在 <c>CreateDaqTask</c> 入口快照传入，谓词本身不做环境判定。
++/// </summary>
++public static class EdgeForwardPolicy
++{
++    /// <summary>非 edge 通道 / 无 token / 未达最小采样数 → 放行转发。</summary>
++    public static bool ShouldForward(bool isEdgeChannel, bool hasEdgeDetectorToken,
++        ulong curTotalRead, ulong minSamplesCount)
++        => !isEdgeChannel || !hasEdgeDetectorToken || curTotalRead < minSamplesCount;
++}
+diff --git a/Vega.UI.Diagnostics.Tests/EdgeForwardPolicyTests.cs b/Vega.UI.Diagnostics.Tests/EdgeForwardPolicyTests.cs
+new file mode 100644
+index 00000000..b5995e67
+--- /dev/null
++++ b/Vega.UI.Diagnostics.Tests/EdgeForwardPolicyTests.cs
+@@ -0,0 +1,57 @@
++// Copyright (c) Shanghai Vega Technology Co., Ltd. All rights reserved.
++
++using System.Reflection;
++using Vega.PD.IDAQDevice;
++using Vega.Utility.Helper;
++
++namespace Vega.UI.Diagnostics.Tests;
++
++/// <summary>
++/// 单物理通道 edge 截断守卫真值表（实施计划 §4.3b / 决策 10）。
++/// NICardDevice 的守卫内嵌 private ProcessBuffer（原生 buffer/XComponent 生命周期交织不可反射驱动），
++/// Sim 侧 DAQDeviceSimBase 对 edge 通道又是存量无条件截断（无 token 判断）——本真值表是 token 守卫的
++/// 唯一覆盖；真机 V200 12 寸 inline 单 9999 回归由硬件阶段补充。
++/// </summary>
++public class EdgeForwardPolicyTests
++{
++    [Theory]
++    [InlineData(false, false, 0UL, 0UL, true)]      // 非 edge 通道：恒转发（双保险之一，V200 检测通道）
++    [InlineData(false, true, 999UL, 100UL, true)]   // 非 edge 通道越过窗长：守卫不咬非 edge（对齐双通道 :994 else-if 语义）
++    [InlineData(true, false, 0UL, 100UL, true)]     // edge 通道无 token：全量转发（V200 12寸 inline 单 9999 零行为变化）
++    [InlineData(true, true, 0UL, 100UL, true)]      // edge 通道 + token，未达窗长：窗口内转发
++    [InlineData(true, true, 99UL, 100UL, true)]     // 边界：cur == min-1 仍在窗内
++    [InlineData(true, true, 100UL, 100UL, false)]   // 边界：cur == min 窗口已读满，截断（与双通道分支 :994 的 < 语义逐字一致）
++    [InlineData(true, true, 101UL, 100UL, false)]   // 超窗：截断（目标行为——卡 2 只采边缘窗口）
++    [InlineData(true, true, 999UL, 100UL, false)]   // 深超窗：持续截断（消除整盘 GB 级滞留）
++    public void ShouldForward_MatchesTruthTable(bool isEdgeChannel, bool hasEdgeDetectorToken,
++        ulong curTotalRead, ulong minSamplesCount, bool expected)
++    {
++        Assert.Equal(expected, EdgeForwardPolicy.ShouldForward(isEdgeChannel, hasEdgeDetectorToken, curTotalRead, minSamplesCount));
++    }
++
++    /// <summary>ToolFeaturesHelper.AllGrants 的私有 Lazy 缓存；测试经反射替换以覆盖 token 维度（照 VegaFeaturesTests 范式）。</summary>
++    private static readonly FieldInfo s_allGrantsField = typeof(ToolFeaturesHelper)
++        .GetField("s_allGrants", BindingFlags.NonPublic | BindingFlags.Static)
++        ?? throw new InvalidOperationException("ToolFeaturesHelper.s_allGrants not found.");
++
++    [Theory]
++    [InlineData(new[] { "HasEdgeDetector" }, true)]                    // 仅 Vega100-*-ED profile 授予
++    [InlineData(new[] { "HasLaserPIC", "HasEdgeDetector" }, true)]     // 与激光族正交、可并存
++    [InlineData(new[] { "Vega100", "HasLaserPIC" }, false)]            // 非 ED profile（仓库默认 Vega100-PIC）
++    [InlineData(new string[] { }, false)]                              // 无 grants（兜底）
++    public void HasEdgeDetector_FollowsGrantSpelling(string[] grants, bool expected)
++    {
++        // token 拼写四处一致（HardwareProfiles grants / ComponentConfig Condition / MachineConfig ValidOn /
++        // ToolFeaturesHelper）是红线：拼错 = 静默回退全量采集，Sim 亦观测不到，此处是唯一检出点。
++        var original = (Lazy<List<string>>?) s_allGrantsField.GetValue(null);
++        s_allGrantsField.SetValue(null, new Lazy<List<string>>(() => [.. grants]));
++        try
++        {
++            Assert.Equal(expected, ToolFeaturesHelper.HasEdgeDetector);
++        }
++        finally
++        {
++            s_allGrantsField.SetValue(null, original);
++        }
++    }
++}
+diff --git a/Vega.Utility.Common.Tests/NotchSourceResolverTests.cs b/Vega.Utility.Common.Tests/NotchSourceResolverTests.cs
+new file mode 100644
+index 00000000..962e87f8
+--- /dev/null
++++ b/Vega.Utility.Common.Tests/NotchSourceResolverTests.cs
+@@ -0,0 +1,27 @@
++// Copyright (c) Shanghai Vega Technology Co., Ltd. All rights reserved.
++
++using Vega.BL.IWaferRun;
++
++namespace Vega.Utility.Common.Tests;
++
++/// <summary>
++/// Vega100+Edge Detector notch 对位数据来源容错解析（Edge Detection/NotchDataSource，默认 DarkField）。
++/// 大小写变体按"忽略大小写"归一（与 ParseFamily 的 DN/dn 同口径）；空/未配置/非法值回 DarkField（=现状）。
++/// </summary>
++public class NotchSourceResolverTests
++{
++    [Theory]
++    [InlineData("EdgeDetector", NotchDataSourceType.EdgeDetector)]
++    [InlineData("edgedetector", NotchDataSourceType.EdgeDetector)]
++    [InlineData("EDGEDETECTOR", NotchDataSourceType.EdgeDetector)]
++    [InlineData("DarkField", NotchDataSourceType.DarkField)]
++    [InlineData("darkfield", NotchDataSourceType.DarkField)]
++    [InlineData("", NotchDataSourceType.DarkField)]
++    [InlineData(null, NotchDataSourceType.DarkField)]
++    [InlineData("XX", NotchDataSourceType.DarkField)]
++    [InlineData("Dark Field", NotchDataSourceType.DarkField)]
++    public void ParseSource_FallsBackToDarkField(string? configured, NotchDataSourceType expected)
++    {
++        Assert.Equal(expected, NotchChannelResolver.ParseSource(configured));
++    }
++}
+diff --git a/Vega.Utility.Common/Configs/DataCollectorConfig.cs b/Vega.Utility.Common/Configs/DataCollectorConfig.cs
+index b3d65fdb..17f69e00 100644
+--- a/Vega.Utility.Common/Configs/DataCollectorConfig.cs
++++ b/Vega.Utility.Common/Configs/DataCollectorConfig.cs
+@@ -45,7 +45,7 @@ public class DataCollectorConfig
+     /// <summary>
+     /// 采集卡设备2
+     /// </summary>
+-    [MachineConfigurationSection("DAQDevice_2", validOn: "Vega200")]
++    [MachineConfigurationSection("DAQDevice_2", validOn: "Vega200|HasEdgeDetector")]
+     public DAQConfig DAQConfigs_2 { get; set; } = new DAQConfig();
+     [MachineConfigurationSection("DAQDevice_QT1426", validOn: "Vega300|Vega500")]
+     public QT1426DAQConfig QT1426_DAQConfigs { get; set; } = new QT1426DAQConfig();
+diff --git a/Vega.Utility.Common/Configs/EdgeDetectionConfig.cs b/Vega.Utility.Common/Configs/EdgeDetectionConfig.cs
+index 69167f4c..b964b0cc 100644
+--- a/Vega.Utility.Common/Configs/EdgeDetectionConfig.cs
++++ b/Vega.Utility.Common/Configs/EdgeDetectionConfig.cs
+@@ -6,15 +6,23 @@ namespace Vega.Utility.Common;
+ [MachineConfigurationSection("Edge Detection")]
+ public class EdgeDetectionConfig
+ {
+-    [MachineConfiguration("EdgeLogicalChannel",validOn: "Vega200|Vega300|Vega500")]
++    [MachineConfiguration("EdgeLogicalChannel",validOn: "Vega200|Vega300|Vega500|HasEdgeDetector")]
+     public int EdgeChannel { get; set; }
+     /// <summary>
+     /// 外→内机型（Vega100）notch 对位数据源通道家族："DN"|"DW"（忽略大小写），其余值含未配置均按 DW。
+     /// 内→外机型不消费（专用边缘激光 EdgeLogicalChannel）。选型见 NotchChannelResolver（家族+入射→通道）。
++    /// 仅 NotchDataSource=DarkField 时消费；NotchDataSource=EdgeDetector 时对位数据走 9999。
+     /// </summary>
+     [MachineConfiguration("NotchDataChannel")]
+     public string NotchDataChannel { get; set; } = "DW";
+     /// <summary>
++    /// 外→内机型（加装 Edge Detector 的 Vega100）notch 对位数据来源："DarkField"|"EdgeDetector"（忽略大小写），
++    /// 其余值含未配置均按 DarkField（=现状）。EdgeDetector = 第二张 NI 卡上的被动边缘检测器（逻辑通道 9999）。
++    /// 条目级 ValidOn 保证无 Edge Detector 硬件的机型结构性选不到该来源。解析见 NotchChannelResolver.ParseSource。
++    /// </summary>
++    [MachineConfiguration("NotchDataSource", validOn: "Vega100,HasEdgeDetector")]
++    public string NotchDataSource { get; set; } = "DarkField";
++    /// <summary>
+     /// 外→内机型（Vega100）notch 对位扫描模式："Inline"|"Dedicated"（忽略大小写），其余值含未配置均按 Inline（=现状）。
+     /// Dedicated = 固定光学（系统配方 202）独立环扫预扫对位一次，主扫不再采集边缘数据。解析见 NotchScanModeResolver。
+     /// 内→外机型不消费。
+diff --git a/Vega.Utility.Helper/ToolFeaturesHelper.cs b/Vega.Utility.Helper/ToolFeaturesHelper.cs
+index 5fafc6fb..7edba4de 100644
+--- a/Vega.Utility.Helper/ToolFeaturesHelper.cs
++++ b/Vega.Utility.Helper/ToolFeaturesHelper.cs
+@@ -129,6 +129,9 @@ public static class ToolFeaturesHelper
+     /// <summary>激光为 Coherent 型号（Vega100 装机级选择）。</summary>
+     public static bool HasLaserCoherent => AllGrants.Contains("HasLaserCoherent");
+ 
++    /// <summary>Edge Detector 硬件是否存在（Vega100 装机级选择，加装后边缘数据源可切 EdgeDetector）。</summary>
++    public static bool HasEdgeDetector => AllGrants.Contains("HasEdgeDetector");
++
+     /// <summary>
+     /// Wide1 OD 电机硬件是否存在（Vega200/Vega500，Vega300 家族不含）。
+     /// 边缘保留：跨 ToolType 不规则分布，HWv2 场景下此决策需显式表达在 profile 里。
+diff --git a/Vega/Resources/ComponentConfig.json b/Vega/Resources/ComponentConfig.json
+index 657524a0..e655cc0e 100644
+--- a/Vega/Resources/ComponentConfig.json
++++ b/Vega/Resources/ComponentConfig.json
+@@ -11,6 +11,7 @@
+     // Features : EFEM(存量 Rorze 兜底，装机向导不再写入), EFEMRorze(Rorze), EFEMFortrend(富创德),
+     //            GEM(这个现在也没用，是和Gem/GemSim重复), LPM（Vega300 默认添加）, DIC（Vega300 默认添加）,
+     //            EdgeChuck/VacuumChuck（选型，Vega300/500）、LaserPIC/LaserCoherent（Vega100 激光器选型，二选一）
++    //            capability grants（HardwareProfiles.json 授予）：HasF2Thorlabs/HasF2Actus/HasWide1*/HasATT 等；HasEdgeDetector（Vega100 Edge Detector 加装，仅 Vega100-*-ED profile 授予）
+     //            EFEM 厂商 token 三选一且互斥：EFEMFortrend 不能与 EFEMRorze / EFEM 同时出现（启动期直接报错）
+     //            Features 与 RootCondition 合并参与组件 Condition 匹配，可作硬件/功能选配维度（见 Galaxy XComponentContainer）
+     "ToolConfigCollection": {
+@@ -1224,7 +1225,7 @@
+             "Interface": "Vega.PD.IDAQDevice.IDAQDevice, Vega.PD.IDAQDevice",
+             "Implementation": "Vega.PD.DAQDevice.NICardDevice, Vega.PD.DAQDevice",
+             "RunOrder": 1000,
+-            "Condition": "Vega200,Tool",
++            "Condition": "Vega200|(Vega100,HasEdgeDetector),Tool",
+             "EnableInterceptor": true,
+             "NameRegister": true
+         },
+@@ -1241,7 +1242,7 @@
+             "Interface": "Vega.PD.IDAQDevice.IDAQDevice, Vega.PD.IDAQDevice",
+             "Implementation": "Vega.PD.DAQDeviceSim.DAQDeviceSim, Vega.PD.DAQDeviceSim",
+             "RunOrder": 1000,
+-            "Condition": "Vega200,Simulator",
++            "Condition": "Vega200|(Vega100,HasEdgeDetector),Simulator",
+             "NameRegister": true
+         },
+         {
+diff --git a/Vega/Resources/HardwareProfiles.json b/Vega/Resources/HardwareProfiles.json
+index 05dd1c45..6cc73c65 100644
+--- a/Vega/Resources/HardwareProfiles.json
++++ b/Vega/Resources/HardwareProfiles.json
+@@ -6,6 +6,8 @@
+   "Profiles": {
+     "Vega100-PIC":      { "Grants": ["HasF2Thorlabs", "HasLaserPIC"] },
+     "Vega100-Coherent": { "Grants": ["HasF2Thorlabs", "HasLaserCoherent"] },
++    "Vega100-PIC-ED":      { "Grants": ["HasF2Thorlabs", "HasLaserPIC", "HasEdgeDetector"] },
++    "Vega100-Coherent-ED": { "Grants": ["HasF2Thorlabs", "HasLaserCoherent", "HasEdgeDetector"] },
+     "Vega200":          { "Grants": ["HasF2Thorlabs", "HasWide1OD"] },
+     "Vega300-HWv1":     { "Grants": ["HasF2Thorlabs", "HasWide1FF", "HasWide1ND1", "HasWide1ND2", "HasATT"] },
+     "Vega300-HWv2":     { "Grants": ["HasF2Actus", "HasSlit", "HasSlitCylinder", "HasW1FFCylinder", "HasATT", "HasWide1OD"] },
+diff --git a/Vega/Resources/MachineConfiguration/DataCollector.json b/Vega/Resources/MachineConfiguration/DataCollector.json
+index 6716d90b..464abc43 100644
+--- a/Vega/Resources/MachineConfiguration/DataCollector.json
++++ b/Vega/Resources/MachineConfiguration/DataCollector.json
+@@ -12,7 +12,7 @@
+             "Name": "DAQDevice_2",
+             "Title": "DAQ Device 2",
+             "Source": "DAQDevice_2",
+-            "ValidOn": "Vega200"
++            "ValidOn": "Vega200|HasEdgeDetector"
+         },
+         {
+             "Name": "DAQDevice_QT1426",
+diff --git a/Vega/Resources/MachineConfiguration/DataCollector.zh-Hans.json b/Vega/Resources/MachineConfiguration/DataCollector.zh-Hans.json
+index a50dc28e..977d562e 100644
+--- a/Vega/Resources/MachineConfiguration/DataCollector.zh-Hans.json
++++ b/Vega/Resources/MachineConfiguration/DataCollector.zh-Hans.json
+@@ -12,7 +12,7 @@
+             "Name": "DAQDevice_2",
+             "Title": "数据采集设备2",
+             "Source": "DAQDevice_2",
+-            "ValidOn": "Vega200"
++            "ValidOn": "Vega200|HasEdgeDetector"
+         },
+         {
+             "Name": "DAQDevice_QT1426",
+diff --git a/Vega/Resources/MachineConfiguration/DataCollector/DAQDevice_2.json b/Vega/Resources/MachineConfiguration/DataCollector/DAQDevice_2.json
+index fa8578a1..432bf6ea 100644
+--- a/Vega/Resources/MachineConfiguration/DataCollector/DAQDevice_2.json
++++ b/Vega/Resources/MachineConfiguration/DataCollector/DAQDevice_2.json
+@@ -52,10 +52,21 @@
+             "Min": "0",
+             "Max": "9999",
+             "ValueType": "IntegerCollection",
++            "ValidOn": "Vega200|Vega300|Vega500",
+             "Name": "DAQ Type Channel_1",
+             "Title": "DAQ Type Channel 1",
+             "Description": "DAQ Device2 Channel_1 Type."
+         },
++        {
++            "Value": [],
++            "Min": "0",
++            "Max": "9999",
++            "ValueType": "IntegerCollection",
++            "ValidOn": "Vega100,HasEdgeDetector",
++            "Name": "DAQ Type Channel_1",
++            "Title": "DAQ Type Channel 1",
++            "Description": "DAQ Device2 Channel_1 Type. Empty on Vega100+Edge Detector: card 2 only carries the edge channel on Channel_2."
++        },
+         {
+             "Value": "port2_16",
+             "ValueType": "String",
+diff --git a/Vega/Resources/MachineConfiguration/DataCollector/DAQDevice_2.zh-Hans.json b/Vega/Resources/MachineConfiguration/DataCollector/DAQDevice_2.zh-Hans.json
+index 569bcbc3..e20124f5 100644
+--- a/Vega/Resources/MachineConfiguration/DataCollector/DAQDevice_2.zh-Hans.json
++++ b/Vega/Resources/MachineConfiguration/DataCollector/DAQDevice_2.zh-Hans.json
+@@ -52,10 +52,21 @@
+             "Min": "0",
+             "Max": "9999",
+             "ValueType": "IntegerCollection",
++            "ValidOn": "Vega200|Vega300|Vega500",
+             "Name": "DAQ Type Channel_1",
+             "Title": "数据采集通道1类型",
+             "Description": "数据采集设备2通道1类型。"
+         },
++        {
++            "Value": [],
++            "Min": "0",
++            "Max": "9999",
++            "ValueType": "IntegerCollection",
++            "ValidOn": "Vega100,HasEdgeDetector",
++            "Name": "DAQ Type Channel_1",
++            "Title": "数据采集通道1类型",
++            "Description": "数据采集设备2通道1类型。Vega100+边缘检测器机型为空集：第二张卡仅通道2承载边缘通道。"
++        },
+         {
+             "Value": "port2_16",
+             "ValueType": "String",
+diff --git a/Vega/Resources/MachineConfiguration/EdgeDetection.json b/Vega/Resources/MachineConfiguration/EdgeDetection.json
+index 672f9fc2..feb1de74 100644
+--- a/Vega/Resources/MachineConfiguration/EdgeDetection.json
++++ b/Vega/Resources/MachineConfiguration/EdgeDetection.json
+@@ -9,7 +9,7 @@
+             "Max": "9999",
+             "ValueType": "Integer",
+             "Name": "EdgeLogicalChannel",
+-            "ValidOn": "Vega200|Vega300|Vega500",
++            "ValidOn": "Vega200|Vega300|Vega500|HasEdgeDetector",
+             "Title": "Edge Logical Channel",
+             "Description": "Logical Channel number for Edge Detection DAQ."
+         },
+@@ -24,7 +24,20 @@
+             "Name": "NotchDataChannel",
+             "ValidOn": "Vega100",
+             "Title": "Notch Data Channel",
+-            "Description": "Notch alignment data source channel family on OuterToInner scan tools (Vega100): DN or DW (case-insensitive). Any other value or missing falls back to DW."
++            "Description": "Notch alignment data source channel family on OuterToInner scan tools (Vega100): DN or DW (case-insensitive). Any other value or missing falls back to DW. Only consumed when NotchDataSource=DarkField."
++        },
++        {
++            "IsHidden": "false",
++            "Value": "DarkField",
++            "Options": [
++                "DarkField",
++                "EdgeDetector"
++            ],
++            "ValueType": "StringCombo",
++            "Name": "NotchDataSource",
++            "ValidOn": "Vega100,HasEdgeDetector",
++            "Title": "Notch Data Source",
++            "Description": "Notch alignment data source on OuterToInner scan tools (Vega100 with Edge Detector retrofit): DarkField (default, one dark-field channel, same as before) or EdgeDetector (passive edge detector on the second NI card, logical channel 9999). Any other value or missing falls back to DarkField."
+         },
+         {
+             "IsHidden": "false",
+diff --git a/Vega/Resources/MachineConfiguration/EdgeDetection.zh-Hans.json b/Vega/Resources/MachineConfiguration/EdgeDetection.zh-Hans.json
+index 327d8331..5e2bd25e 100644
+--- a/Vega/Resources/MachineConfiguration/EdgeDetection.zh-Hans.json
++++ b/Vega/Resources/MachineConfiguration/EdgeDetection.zh-Hans.json
+@@ -9,7 +9,7 @@
+             "Max": "9999",
+             "ValueType": "Integer",
+             "Name": "EdgeLogicalChannel",
+-            "ValidOn": "Vega200|Vega300|Vega500",
++            "ValidOn": "Vega200|Vega300|Vega500|HasEdgeDetector",
+             "Title": "边缘检测逻辑通道",
+             "Description": "边缘检测数据采集的逻辑通道号。"
+         },
+@@ -24,7 +24,20 @@
+             "Name": "NotchDataChannel",
+             "ValidOn": "Vega100",
+             "Title": "缺口对位数据通道",
+-            "Description": "外→内扫描机型（Vega100）notch 对位数据源通道家族：DN 或 DW（忽略大小写），其余值含未配置均按 DW。"
++            "Description": "外→内扫描机型（Vega100）notch 对位数据源通道家族：DN 或 DW（忽略大小写），其余值含未配置均按 DW。仅 NotchDataSource=DarkField 时消费。"
++        },
++        {
++            "IsHidden": "false",
++            "Value": "DarkField",
++            "Options": [
++                "DarkField",
++                "EdgeDetector"
++            ],
++            "ValueType": "StringCombo",
++            "Name": "NotchDataSource",
++            "ValidOn": "Vega100,HasEdgeDetector",
++            "Title": "缺口对位数据来源",
++            "Description": "外→内扫描机型（加装 Edge Detector 的 Vega100）notch 对位数据来源：DarkField（默认，某一暗场通道，与现状一致）或 EdgeDetector（第二张 NI 卡上的被动边缘检测器，逻辑通道 9999）。其余值含未配置均按 DarkField。"
+         },
+         {
+             "IsHidden": "false",
+diff --git a/Vega/Vega_Inno.iss b/Vega/Vega_Inno.iss
+index 7386734d..59d656fb 100644
+--- a/Vega/Vega_Inno.iss
++++ b/Vega/Vega_Inno.iss
+@@ -211,10 +211,14 @@ end;
+ 
+ function SelectedVega100ProfileId(): String;
+ begin
+-  if LaserTypePage.SelectedValueIndex = 1 then
+-    Result := 'Vega100-Coherent'
++  // 激光族 × Edge Detector 加装组合映射到 -ED profile（HardwareProfiles.json）
++  case LaserTypePage.SelectedValueIndex of
++    1: Result := 'Vega100-PIC-ED';
++    2: Result := 'Vega100-Coherent';
++    3: Result := 'Vega100-Coherent-ED';
+   else
+     Result := 'Vega100-PIC';
++  end;
+ end;
+ 
+ procedure ApplyProfileSelection(var Line: String; const Key, ProfileId: String);
+@@ -864,11 +868,15 @@ begin
+ 
+   { Step 8: Laser Type Page (Vega100 only, skipped otherwise via ShouldSkipPage) }
+   LaserTypePage := CreateInputOptionPage(HWSuitePage.ID, laserTypeStr1, laserTypeStr2, '', True, True);
+-  SetArrayLength(LaserTypeOptions, 2);
++  SetArrayLength(LaserTypeOptions, 4);
+   LaserTypeOptions[0] := 'LaserPIC';
+-  LaserTypeOptions[1] := 'LaserCoherent';
++  LaserTypeOptions[1] := 'LaserPIC + EdgeDetector';
++  LaserTypeOptions[2] := 'LaserCoherent';
++  LaserTypeOptions[3] := 'LaserCoherent + EdgeDetector';
+   LaserTypePage.Add(LaserTypeOptions[0]);
+   LaserTypePage.Add(LaserTypeOptions[1]);
++  LaserTypePage.Add(LaserTypeOptions[2]);
++  LaserTypePage.Add(LaserTypeOptions[3]);
+   LaserTypePage.SelectedValueIndex := 0;
+   TempLaserType := 0;
+ 
+diff --git a/ve-docs/living-spec/decisions/0026-vega100-edge-detector-retrofit.md b/ve-docs/living-spec/decisions/0026-vega100-edge-detector-retrofit.md
+new file mode 100644
+index 00000000..718e70a4
+--- /dev/null
++++ b/ve-docs/living-spec/decisions/0026-vega100-edge-detector-retrofit.md
+@@ -0,0 +1,62 @@
++# Decision 0026: Vega100 Edge Detector 加装（HasEdgeDetector token + 可选第二张 NI 卡 + 边缘数据源切换）
++
++## Status
++
++`Active`
++
++## Impact
++
++`Runtime / Abstraction / Boundary`
++
++## Applies To
++
++- Modules: component-composition, data-collector, wafer-run
++- State: `modules/component-composition/state.md`、`modules/data-collector/state.md`、`modules/wafer-run/state.md`
++- Code Areas: `Vega/Resources/ComponentConfig.json`、`Vega/Resources/HardwareProfiles.json`、`Vega/Resources/MachineConfiguration/DataCollector*`、`Vega/Resources/MachineConfiguration/EdgeDetection*`、`Vega.LD.DataCollector/DataCollectorLiteVega100.cs`、`Vega.PD.DAQDevice/NICardDevice.cs`、`Vega.PD.IDAQDevice/EdgeForwardPolicy.cs`、`Vega.BL.WaferRun/WaferRunSequenceBase.cs`、`Vega.BL.IWaferRun/NotchChannelResolver.cs`、`Vega/Vega_Inno.iss`
++
++## Decision
++
++Vega100 加装被动边缘信号接收器（Edge Detector）+ 第二张同型号 NI 采集卡，对位/边缘数据可在暗场通道（现状）与边缘检测器（逻辑通道 9999，第二张卡）之间切换。装机表达 = capability token `HasEdgeDetector`（decisions/0019 第三轴；仅 `Vega100-PIC-ED` / `Vega100-Coherent-ED` 两个新 profile 授予，装机向导 `Vega_Inno.iss` LaserType 页四选一写入）。
++
++- **机器配置四级门全部以同一 token 表达**（拼写四处一致是红线：HardwareProfiles grants / ComponentConfig Condition / MachineConfig ValidOn / `ToolFeaturesHelper.HasEdgeDetector`）：① ComponentConfig 既有 `DAQDevice_2` V200 双条目条件括号分组扩展 token（`Vega200,Tool` → `Vega200|(Vega100,HasEdgeDetector),Tool`、`Vega200,Simulator` → `Vega200|(Vega100,HasEdgeDetector),Simulator`，不新增条目；显式锁定 Vega100，不依赖"token 授予域只含 Vega100"的隐式事实，授予域将来扩大不会隐式扩散）；② `DataCollector.json` 索引 DAQDevice_2 段与 `DataCollectorConfig.DAQConfigs_2` 的 ValidOn `Vega200` → `Vega200|HasEdgeDetector`；③ `DAQDevice_2.json` 的 `DAQ Type Channel_1` 拆同名双条目（`[2,9]` ValidOn `Vega200|Vega300|Vega500`；`[]` 空集 ValidOn `Vega100,HasEdgeDetector`——V100+ED 卡 2 仅 Channel_2 承载 9999）；④ `EdgeDetection.json` 新条目 `NotchDataSource`（StringCombo DarkField|EdgeDetector，缺省 DarkField，ValidOn `Vega100,HasEdgeDetector`）与 `EdgeLogicalChannel` ValidOn 追加 `|HasEdgeDetector`。**token 扩展用纯 OR 追加或括号显式分组，禁止无括号的带逗号混合**：`Vega200|Vega100,HasEdgeDetector` 会按逗号 AND 先结合成 `(Vega200|Vega100),HasEdgeDetector`，杀死 V200 整段；括号形式 `Vega200|(Vega100,HasEdgeDetector)` 由 `ValidHelper` 递归解析正确求值（`SplitTopLevel` 按深度忽略括号内分隔符）。
++- **数据源切换 `NotchDataSource`**（`EdgeDetectionConfig.NotchDataSource`，`NotchChannelResolver.ParseSource` 容错解析，序列侧 `NotchSource` 属性首访缓存一次照 `NotchFamily` 范本）：`DarkField`（缺省）= 现状暗场家族链（decisions/0022）；`EdgeDetector` = 通道恒取 `EdgeDetectionConfig.EdgeChannel`（9999），跳过家族解析与 fan-out/加采（`_notchFanoutChannel`/`_notchAppendChannel` 保持 null → `exclusiveCount` 自然取 `_edgeTracks` 整带自读），主扫 AutoZero 加采偏置块同步短路（ED 非 PMT 通道，无偏置对象）。Inline 与 Dedicated（0023）两形态都支持 ED；Dedicated 预扫以 `prescanClone is null` 为 ED 短路信号（跳过块查找/守卫/克隆/collector 光学任务/AutoZero），DAQ 侧 `channels=[]` + `bEdge=true`（SetCollectChannel 内部补 9999）。
++- **双卡分派方案 A**：两卡收到同一份完整通道表，无映射的卡静默不参与（`results.Any(Succeed)` 容忍卡 1 无映射失败/卡 2 成功），照 V200 `DataCollector` 范式。`DataCollectorLiteVega100` 构造函数注入 `IIndex<string, IDAQDevice>`，`TryGetValue("DAQDevice_2")` 可选解析——无 token 机器键不存在 → null 旁路，全部 hook 与单卡现状逐字节等价（含首行日志三元式保持逐日志一致）。
++- **PD 单物理通道 edge 截断守卫（EdgeForwardPolicy，纯静态）**：`ShouldForward(isEdgeChannel, hasEdgeDetectorToken, curTotalRead, minSamplesCount) = !isEdgeChannel || !hasEdgeDetectorToken || curTotalRead < minSamplesCount`。NICardDevice 两个单物理通道分支（CHANNEL_1 else-if 与 final else）经此守卫转发；token 在 `CreateDaqTask` 入口快照（装机级配置进程内不漂移，不进热路径）。语义对齐既有双通道分支的 `<`（curTotalRead 为读前计数）。无 token 机型守卫恒放行 = 零行为变化。
++- **O2I+ED 的 edgeTracks 实参 = 截断窗长度**：`edgeTracksForDaq = IsOuterToInnerScan && bEdge ? _notchBandStartTrack + _edgeTracks : _edgeTracks`——ExtendScan 下读窗起址是 bandStart 而非 0，传窗口长度才能整窗覆盖；其余形态（V200 扫环 scanTracks==edgeTracks、V100 DF bEdge=false）维持 `_edgeTracks` 原语义。Dedicated 预扫 ED 形态 scanTracks==edgeTracks，min==max 守卫不咬。
++- **零变化保证**：非加装 Vega100 与 V200/300/500 不领 token → 全部新路径不可达（ValidOn 四级 + token 快照双保险）；配置/日志在不领 token 机器上逐条与现状一致。
++
++## Reason
++
++- 加装是装机级选项而非机型差异：按 0019 三轴判定落 capability token（同 ToolType 内装机变体），不该发明 Gen 或 ToolType 条目。
++- 方案 A（同表分派）避免在 LD 层按机型拆通道表副本——分派事实集中在 `DAQDevice_2.json` 的 ValidOn 变体条目，机型差异只改 JSON（0020 同款哲学）。
++- 截断守卫放 PD 纯静态类而非内联 `ProcessBuffer`：原生 buffer/XComponent 生命周期交织不可反射驱动，真值表单测是 token 维度唯一覆盖点（Sim 侧 DAQDeviceSimBase 对 edge 是存量无条件截断，无 token 判断）。
++- `NotchDataSource` 建在 0022 家族开关之上而非替代它：家族（DN/DW）只在 DarkField 源下有意义，ED 源的通道是固定 9999，二级开关语义清晰、缺省值 = 现状。
++
++## Rejected Options
++
++| Option | Why Rejected |
++| --- | --- |
++| ComponentConfig 按机型差异写两份通道表（方案 B） | 分派逻辑散进装配层，机型差异不可在 JSON 单点审视；方案 A 分派事实全部收敛在 DAQDevice_2.json |
++| LD 层在 `SetCollectChannel` 前按 token 拆分通道表 | 复制 V200 `DataCollector` 已有的"同表下发 + 无映射静默"语义，徒增一层机型分支 |
++| 截断守卫内联在 NICardDevice.ProcessBuffer | 不可单测；`EdgeForwardPolicy` 纯静态真值表是 token/窗口边界唯一检出点 |
++| ED 源复用 `_notchAppendChannel` 加采机制 | 9999 是真实边缘通道（独立卡），不是"配方缺通道的内部加采"；append 会把 9999 泄进 DAQ 表的暗场卡 |
++| `EdgeLogicalChannel` 保持排除 Vega100、ED 硬编码 9999 | 通道号应可配置（EdgeLogicalChannel 语义本就是边缘逻辑通道）；条目 ValidOn 追加 token 即可让 V100+ED 配置页可见，且是纯 OR 追加 |
++| token 条件写 `Vega200|Vega100,HasEdgeDetector` | 逗号 AND 先结合，等于要求 V200 也有 token，杀死 V200 的 DAQDevice_2 段（ValidOn 语法红线） |
++
++## Resulting Constraints
++
++- `HasEdgeDetector` 拼写四处一致（grants / Condition / ValidOn / ToolFeaturesHelper），改拼写须四处同批；真值表单测 `EdgeForwardPolicyTests.HasEdgeDetector_FollowsGrantSpelling` 是唯一检出点。
++- token 对既有 ValidOn/Condition 的扩展：纯 OR 追加（`Vega200|HasEdgeDetector` 形态）或括号显式分组（`Vega200|(Vega100,HasEdgeDetector)` 形态）均可；**禁止无括号的带逗号混合**（逗号 AND 优先于竖线 OR，先结合会杀死 OR 段）。ComponentConfig 装配条件用括号形态显式锁定 Vega100，不依赖 token 授予域的隐式事实。
++- 无 token 机器的零行为变化是验收标准：日志逐条一致（LD `InitDevices` 首行日志三元式即为此保持）、单卡路径不进任何新分支。
++- O2I+ED 下 `SetCollectChannel` 的 edgeTracks 实参必须是窗口长度（bandStart + _edgeTracks），改回 `_edgeTracks` 会在 ExtendScan（bandStart>0）形态截掉窗口头部；该组合的 Sim 回归须避开 30 轨 clamp/文件尾 Array.Copy 已知形态。
++- `DataCollectorLiteVega100` 卡 2 失败 = 整体失败（InitDevices/建任务与卡 1 AND）；卡 1/卡 2 通道表映射失败按 `Any(Succeed)` 容忍（方案 A 语义）。
++- ED 源下不得触发暗场家族解析、fan-out/append、AutoZero 加采偏置、Dedicated 预扫的 collector 克隆——新增消费点须带 `NotchSource != EdgeDetector` 同款短路。
++- `DAQDevice_2.json` 中英文两份须同步双条目（zh-Hans 是整体替换非字段合并）；Channel_1 两条目 ValidOn 必须互斥（重叠时字典静默、后条目胜）。
++
++## Review Triggers
++
++- 修改 `HardwareProfiles.json` 的 ED profile grants、`ComponentConfig.json` DAQDevice_2 条目、`DataCollector(DAQDevice_2)*.json` 或 `EdgeDetection.json` 的 ValidOn 表达。
++- 修改 `EdgeForwardPolicy`、NICardDevice 单物理通道转发分支或 `CreateDaqTask` 的 token 快照。
++- 修改 `DataCollectorLiteVega100` 的卡 2 hook（InitDevices/CreateAllDaqTasks/Start/Stop/故障传递）。
++- 修改 `WaferRunSequenceBase` 的 `NotchSource` 消费点（O2I 块、bEdge 判定、edgeTracksForDaq、AutoZero 加采门、Dedicated 预扫 ED 分支、`DoPerformEdgeDataCollectionAsync` 通道解析）。
++- 修改 `Vega_Inno.iss` LaserType 页选项与 profile 映射。
+diff --git a/ve-docs/living-spec/decisions/index.md b/ve-docs/living-spec/decisions/index.md
+index b5c97d32..1d209572 100644
+--- a/ve-docs/living-spec/decisions/index.md
++++ b/ve-docs/living-spec/decisions/index.md
+@@ -43,6 +43,7 @@
+ | 0023 | V100 额外 Alignment 预扫描（NotchScanMode=Dedicated，系统配方 202 固定光学） | Runtime, Abstraction, Data | wafer-run, recipe, data-persistence | Active |
+ | 0024 | LPD 尺寸阈值单位口径（编辑器/Binning 范围，存量消费方清单）与 Binning 按属性单位换算 | Data, Abstraction, Legacy | recipe, analysis, wafer-run | Active |
+ | 0025 | BPS 规则按膜系分表（default + 膜系表，BL 收口下发，BPSI 暂不覆盖） | Data, Boundary, Runtime | recipe, optics, calibration | Active |
++| 0026 | Vega100 Edge Detector 加装（HasEdgeDetector token + 可选第二张 NI 卡 + NotchDataSource 边缘数据源切换） | Runtime, Abstraction, Boundary | component-composition, data-collector, wafer-run | Active |
+ 
+ - `ID` 与 `decisions/` 下的文件名编号一致，例如 `0001`。
+ - `Impact` 使用上方枚举，最多 3 个。
+diff --git a/ve-docs/living-spec/modules/component-composition/state.md b/ve-docs/living-spec/modules/component-composition/state.md
+index 935e35d4..b35de4f3 100644
+--- a/ve-docs/living-spec/modules/component-composition/state.md
++++ b/ve-docs/living-spec/modules/component-composition/state.md
+@@ -22,7 +22,7 @@
+ | 装配诊断 UI | `Vega.UI.Diagnostics/SystemDiagnostics/ComponentManager/ComponentManagerViewModel.cs`、`Vega.UI.Instrument/BootManager/BootManageViewModel.cs` | 查看组件实例、RunOrder、DeviceState。 |
+ | 配置管理诊断 UI | `Vega.UI.Diagnostics/SystemDiagnostics/ConfigManager/ConfigManagerViewModel.cs`、`ConfigManagerView.xaml` | 列出可运行时重载的机台配置服务（`IReloadableConfig` 实现；当前登记 `WaferSizeConfig.json`/`ThroughputConfig.json`/`WaferEdgeTypeConfig.json`/`CollectorConfig.json`），显示实际加载路径、修改时间与真实状态（正常/文件缺失/读取失败），路径可点击打开（文件缺失时开所在目录）；页签挂 `Vega.UI.Diagnostics/DiagnosticsTreeNode.json`。 |
+ | 服务定位消费侧 | 全仓库 `XActivator.Activator.CreateInstance<T>()`、`[AutoResolveDependency]` | 99+ 文件使用；示例 `Vega/App.xaml.cs`、`Vega/MainWindowViewModel.cs`。 |
+-| 特性开关读取 | `Vega.Utility.Helper/ToolFeaturesHelper.cs` | 统一封装 `GetToolSpecificFeatures()`/`GetSimpleToolType()`/`GetRootConditions()`/`GetToolType()`（均 Lazy 缓存），派生 EdgeChuck/DIC/LPM/OuterToInner 等特性开关与 IsVega100/200/300/500、IsGen1、IsSimulator、IsEFEMFortrend 等机型/厂商判断；另有 `AllGrants`（`GetAllGrants()`：RootCondition ∪ Features ∪ capability grants）与硬件能力属性（HasSlit/HasSlitCylinder/HasW1FFCylinder/HasWide1FF/ND1/ND2/HasWide1OD/HasATT/HasLaserPIC/HasLaserCoherent/IsF2Actus/IsF2Thorlabs，源自 HardwareProfiles grants）。 |
++| 特性开关读取 | `Vega.Utility.Helper/ToolFeaturesHelper.cs` | 统一封装 `GetToolSpecificFeatures()`/`GetSimpleToolType()`/`GetRootConditions()`/`GetToolType()`（均 Lazy 缓存），派生 EdgeChuck/DIC/LPM/OuterToInner 等特性开关与 IsVega100/200/300/500、IsGen1、IsSimulator、IsEFEMFortrend 等机型/厂商判断；另有 `AllGrants`（`GetAllGrants()`：RootCondition ∪ Features ∪ capability grants）与硬件能力属性（HasSlit/HasSlitCylinder/HasW1FFCylinder/HasWide1FF/ND1/ND2/HasWide1OD/HasATT/HasLaserPIC/HasLaserCoherent/HasEdgeDetector/IsF2Actus/IsF2Thorlabs，源自 HardwareProfiles grants）。 |
+ | Sim/Real 变体 | `ComponentConfig.json` 同名双条目 + 各 `*Sim` 项目 | `Condition: "Tool"` vs `"Simulator"`，可叠加 ToolType、Gen 维度（逗号 AND、竖线 OR）；EFEM 另有厂商轴：`EFEMDevice` 接口下 Rorze 条目 `Tool,(EFEM|EFEMRorze)`、Fortrend 条目 `Tool,EFEMFortrend`（厂商 token 由装机向导互斥写入，裸 `EFEM` 仅兜底存量装机）；Sim 项目如 `Vega.PD.MotionDeviceSim`、`Vega.BL.AnalysisServiceSim` 等。 |
+ | 硬件/功能选型 | 选型三轴（decision 0019）+ 组件 `Condition` 引用 | token 池三源：RootCondition ∪ Features ∪ capability grants（Galaxy `XComponentContainer` 注册期求值；MachineConfiguration 评估侧 `MachineConfigurationService` 与 `AccessControlService`→`MachineConfigurationHelper` 统一走 `IXActivator.GetAllGrants()`）。平台固有硬件用 ToolType 条件；代际差异保留 Gen 条件；同 ToolType 内装机变体用 capability token。EFEM 厂商（Rorze/Fortrend）走 Features 轴上的互斥 token，不领 capability token。匹配大小写敏感；条件不命中或表达式解析失败均静默不装配。 |
+ | 硬件套件选型 | `Vega/Resources/HardwareProfiles.json`、`Vega.Utility.Common/HardwareProfileService.cs`、`Vega.Utility.Common/VegaHardwareCapabilityProvider.cs` | profile（id 前缀约定：等于 ToolType 或 `ToolType-` 开头）声明该套件 grants；`SelectedProfiles` 按机型记录装机选择，无有效选择回退同名 profile；provider 在 `App()` 构造首行注册（必须先于任何 XActivator 访问），把 grants 注入装配 token 池。装机入口为 `Vega_Inno.iss` 向导（HWSuite/Laser 页；HardwareProfiles.json 缺失/读取失败时 Abort 中止安装，防零 grants 交付）。`HardwareProfileService.Load` 对文件缺失/损坏/空配置 fail-fast 抛 `InvalidOperationException`（对齐 XComponentContainer 对 ComponentConfig.json 的处理），不再静默空 grants。 |
+@@ -82,6 +82,7 @@
+ 
+ - `decisions/0007`：机型用户目录隔离（Vega100 → `ResourcesVega100`，`UserDataFolder` 声明式重定向）。
+ - `decisions/0019`：硬件选型三轴判定（ToolType / Gen / Capability Token）。
++- `decisions/0026`：Vega100 Edge Detector 加装——`HasEdgeDetector` token（Vega100-PIC-ED / Vega100-Coherent-ED 两个 profile）、DAQDevice_2 装配条件括号分组扩展（`Vega200|(Vega100,HasEdgeDetector),Tool/Simulator`，不新增条目）、ValidOn 混合条件必须加括号显式分组红线的依据。
+ 
+ ## Verification
+ 
+diff --git a/ve-docs/living-spec/modules/data-collector/state.md b/ve-docs/living-spec/modules/data-collector/state.md
+index a0c5ac58..9eb10dfe 100644
+--- a/ve-docs/living-spec/modules/data-collector/state.md
++++ b/ve-docs/living-spec/modules/data-collector/state.md
+@@ -18,8 +18,8 @@
+ | --- | --- | --- |
+ | LD 契约 | `Vega.LD.IDataCollector/IDataCollector.cs` | 上层唯一入口。 |
+ | LD 实现基类（状态对象+编排） | `Vega.LD.DataCollector/DataCollectorBase.cs` | XComponent 基类：三级缓存 `_dicDataCache`、每通道接收线程、通道锁、设备无关逻辑；定义设备 hook（`InitDevices/CreateAllDaqTasks/...`）。 |
+-| LD 变体 | `DataCollector`（双卡 Vega200/300）、`DataCollectorLiteVega100`（单卡）、`QT1426ProxyDataCollector`（QT1426 代理专用，旧式独立实现，未继承 Base） | 卡数量与机型变体。 |
+-| PD 接口与共享基类 | `Vega.PD.IDAQDevice/` | `IDAQDevice`、`IDAQBoard`、`DAQDeviceBase<T>`（`OnGetDatas` 事件、`IsCollectionFaulted`）、`DAQWaferInfo`、`DaqDataManger<T>`（进程内单例，System.Threading.Channels 无界通道字典，PD→LD 数据管道）。 |
++| LD 变体 | `DataCollector`（双卡 Vega200/300）、`DataCollectorLiteVega100`（单卡；Edge Detector 加装机型经 `IIndex` 可选挂第二张卡，见 `decisions/0026`）、`QT1426ProxyDataCollector`（QT1426 代理专用，旧式独立实现，未继承 Base） | 卡数量与机型变体。 |
++| PD 接口与共享基类 | `Vega.PD.IDAQDevice/` | `IDAQDevice`、`IDAQBoard`、`DAQDeviceBase<T>`（`OnGetDatas` 事件、`IsCollectionFaulted`）、`DAQWaferInfo`、`DaqDataManger<T>`（进程内单例，System.Threading.Channels 无界通道字典，PD→LD 数据管道）、`EdgeForwardPolicy`（单物理通道 edge 截断守卫纯静态谓词，`decisions/0026`）。 |
+ | PD 真实设备 | `Vega.PD.DAQDevice/NICardDevice.cs`（P/Invoke NiDQACard）、`XilinxCardDeviceProxy.cs`（gRPC/SSH 代理）、`DAQBoard.cs` | 采集卡与载板。 |
+ | PD Sim 变体 | `Vega.PD.DAQDeviceSim/`、`Vega.PD.BSSDAQDeviceSim/` | `DAQDeviceSim`、`XilinxDAQDeviceSim`、`DAQBoardSim`。 |
+ | BSS PSD 支链（PD 采集 + LD 消费 + 监控配置） | `Vega.PD.IBSSDAQDevice/`、`Vega.PD.BSSDAQDevice/BSSDAQDevice.cs`、`Vega.LD.IBSS/`、`Vega.LD.BSS/`、`Vega.Utility.Common/Configs/PSDMonitorConfig.cs` | PD 侧 `ReadPsdData` 读 18 字节；LD 侧 `BSSControllerVega100` 消费——四象限偏移校正与闭环对准，以及扫描期监控的采集点 `ReadPsdMonitorSampleAsync`（`[DataRecordSource]` 标注，落盘交给 DataRecorder 的 `PSDMonitor` 通道）。`PSDRecordHelp` 只保留按 `PSDMonitorConfig.DataRetentionDays` 清理过期记录文件的职责；开关与采样策略见 `PSDMonitorConfig`。录制链路见 `decisions/0017`。另有诊断页 PSD 实时读取循环（`StartPsdReadingAsync` → `PsdReadLoopAsync`，UI 手动启停、页面级生命周期，数据经既有 `OnCallbackPsdDataUpdate` 回调上屏）：是独立的交互链路，勿与 `decisions/0017` 约束的「扫描期监控录制不自建循环」混淆——该约束针对落盘录制，不针对诊断页交互读。 |
+@@ -57,6 +57,7 @@
+ ## Reuse Points
+ 
+ - 新采集卡数量变体：继承 `DataCollectorBase`，只实现设备 hook（`DataCollector` vs `DataCollectorLiteVega100` 的范式）。
++- 单卡变体可选第二张卡（2026-11 起，`decisions/0026`）：`DataCollectorLiteVega100` 构造注入 `IIndex<string, IDAQDevice>`，`TryGetValue("DAQDevice_2")` 可选解析——无 token 机器键不存在 → null 旁路，全部 hook 与单卡现状逐字节等价（首行日志三元式保持逐日志一致）。双卡分派走**方案 A**：两卡收到同一份完整通道表，无映射的卡静默不参与（`results.Any(Succeed)` 容忍单卡映射失败），卡→通道路由事实全部收敛在 `DAQDevice_2.json` 的 ValidOn 变体条目（`[2,9]` 限 V200|V300|V500；V100+ED 为 Channel_1 空集 + Channel_2=[9999]），勿在 LD 层按机型拆表。PD 侧单物理通道 edge 截断经 `EdgeForwardPolicy.ShouldForward`（纯静态：非 edge 通道或无 token 恒转发；token 机型 edge 通道读满窗长后截断），token 在 `CreateDaqTask` 入口快照；真值表单测 `Vega.UI.Diagnostics.Tests/EdgeForwardPolicyTests.cs` 是 token 维度唯一覆盖（Sim 侧对 edge 是存量无条件截断）。
+ - 新 PD 设备：继承 `DAQDeviceBase<DAQWaferInfo>`，用 `AddDatasPhysicalChannel` 挂接 `DaqDataManger` 通道写入。
+ - 故障传递：`SetCollectionException/IsCollectionFaulted`（PD）→ `IsDAQCollectionFaulted/GetDAQCollectionException`（LD）已贯通。
+ - 驱动版本管理动作范式（WI#3584）：替换类动作统一四段式（备份当前[远端下载+本地指纹复核+三判入架]→瞬态写入 linux-x64+pending 标记→`Restart(true)` 复用既有 SCP 全量推送→`GetDriverInfo` 确认→无论成败清理暂存）；动作任务发布进 `_restartingTask`（与 `StopDaqTask` 的 check-then-assign 同用 `_restartingTaskAssignLock`），与每片扫描后的常规重启、扫描侧 `InitLoadConfigInfo` 的等待天然串行化；`InitEntryHandler` 先清扫上次动作崩溃残留的暂存 .so 再 Restart(true)。同版本重复更新在 pkill 之前短路（SkippedNoChange）。台账 `{app}\drivers-backup\history.tsv` 只增不删，detail 清洗控制字符；纯逻辑（集合指纹/三判/倒序回滚）在 `DAQDriverVersionLogic`，勿内联回代理。受管清单集中在 `DAQDriverVersionLogic.ManagedFileNames`（将来 QT1426 配置文件纳入同机制时参数化，需求 3.9#2）。前置约束：安装目录对 Vega 进程可写（暂存写入是投递机制一环）。**目录基址有意用 `AppDomain.CurrentDomain.BaseDirectory`（不走 PathHelper 用户目录覆盖）**：drivers-bundled/drivers-backup/linux-x64 是受管资产清单而非机台配置，且暂存目录必须与部署机制同源（linux-x64 本就是安装目录概念）、驱动版本实体不可跨目录飘移（备份区随安装目录生灭，卸载连同删除已文档化）——decision/0007 的重定向仅针对 Vega100 用户配置，本机制仅 Tool,Vega300|Vega500，判设计内偏离。页面用户文案走 `DAQDriver_*` 多语言资源（Vega.Utility.Common Resources.resx + Resources.zh-Hans.resx + Resources.Designer.cs **三方必须同步一致**——dotnet build 不再生成 Designer 文件须手动加属性；resx 缺键时 Designer 属性运行时 GetString 返回 null、页面标签静默丢失，PR4862 曾漏 DAQDriver_BundledSummary 一键被评审抓回）。
+@@ -101,10 +102,11 @@
+ - `0007-user-data-folder-redirect.md`（Vega100 用户目录隔离）。
+ - `0017-psd-monitor-via-datarecorder.md`（PSD 监控录制改走 DataRecorder `PSDMonitor` 通道：上下文随文件名、落盘脱离 `0007` 的重定向范围、启停门控刻意不对称）。
+ - `0020-logical-collector-board-slot-separation.md`（逻辑收集器身份与板卡槽位分离：V100 = [Narrow, Wide2] + Wide2→Wide1 槽位覆盖；`DAQ Type Channel_1` 同名双条目 ValidOn 机型类型表）。
++- `0026-vega100-edge-detector-retrofit.md`（Vega100 Edge Detector 加装：HasEdgeDetector token、DAQDevice_2 装配条件括号分组与方案 A 同表分派、单物理通道 edge 截断守卫、ValidOn 混合条件必须加括号显式分组红线）。
+ 
+ ## Verification
+ 
+-- 相关单测：`Vega.Utility.Common.Tests/BoardSlotResolutionTests.cs`（BoardSlotOverrides schema 加载 / 纯静态槽位解析 / 兜底配置同步）。
++- 相关单测：`Vega.Utility.Common.Tests/BoardSlotResolutionTests.cs`（BoardSlotOverrides schema 加载 / 纯静态槽位解析 / 兜底配置同步）、`Vega.UI.Diagnostics.Tests/EdgeForwardPolicyTests.cs`（单物理通道 edge 截断守卫真值表 + `HasEdgeDetector` grant 拼写经反射换 `s_allGrants` 覆盖）。
+ - 无针对本模块其余链路的单元测试。
+ - 验证路径为仿真模式：Condition 切到 `DAQDeviceSim`/`XilinxDAQDeviceSim`/`DAQBoardSim` 跑 WaferRun；Sim 实现同样走 `DaqDataManger` 通道，可验证整条链路。
+ - Xilinx 链路可单独验证：`Vega.PD.XilinxDataCollector` 是独立可执行服务。
+diff --git a/ve-docs/living-spec/modules/wafer-run/state.md b/ve-docs/living-spec/modules/wafer-run/state.md
+index 2f3d79c5..bfef580a 100644
+--- a/ve-docs/living-spec/modules/wafer-run/state.md
++++ b/ve-docs/living-spec/modules/wafer-run/state.md
+@@ -53,8 +53,9 @@ GEM 生产 happy path：`WaferRunEngine.DoPerformWaferRunAsync`（gem-communicat
+ - 尺寸反推与标定数据回退链（2026-09 起）：`CollectionRunInfo.WaferSizeInMicron → WaferSizeType` 统一 `WaferSizeTypeExtensions.FromMicron`（区间判定，未知直径回 WS200 保持旧二值反推行为）；XY 校准结果匹配在既有 WS200→WS300 回退旁新增 WS150→WS200（不链到 WS300，跨两档外推不可信，均带日志）；`WaferRunScanParams` 消费 `BFPCalibrationResult.GetResult` 的 `out usedFallback` 重载，命中回退打 Warning 提示补做该尺寸标定。勿再内联 micron 二值反推。
+ - 内置 NotchScan 配方尺寸契约（2026-10 起）：`WaferRunService.PerformNotchScanAsync` 对系统配方（`NotchScanRecipeLookup.IsSystemRecipeID`，覆盖 ID 200/201，契约见 recipe 模块）先进尺寸校验——`recipe.CollectionElement.WaferSize != NotchScanRecipeLookup.GetExpectedWaferSize(recipe.ID)` 时 `Logger.Error` + `InvalidOperationException` 拒绝，先于 DN 启用/Incidence/Throughput 软检查（防尺寸错误被 soft-return 掩盖）；不自动纠正、不回写库。普通配方不受影响，NotchScan 诊断页路径同受保护。
+ - 边缘分析起点半径的尺寸分离（2026-10 起，默认 97500 µm 待实机确认）：`WaferRunSequenceBase.GetEffectiveEdgeStartRadius` 按本次 recipe 的 `CollectionElement.WaferSize` 解析——WS200 用 `EdgeDetection.json` 的 `Size_8InchConfig.StartRadius`（未配置 =0 回退根级并按序列实例告警；负值/非有限值直接抛出），其余尺寸（含 WS150）用根级 `StartRadius`。三处消费点（`DoPerformEdgeDetectionAsync` 与 `SetupHardwareAsync` 两个 alignment 初始化入口、`SetupForCollectAsync` 的 NotchScan 范围 exOffset 扩展）共用，保证一次扫描内运动范围与分析基准同半径。外→内机型（V100）不走此分支：notch 锚点保持 `WaferScanRange.GetNotchBandInnerRadius` 带内缘计算（`SetupHardwareAsync`），独立 NotchScan 的整条跳过在 `WaferRunXYSequence.PerformNotchScanAsync` 顶部按机型早退（`WaferRunXYCalSequence.cs`），`SetupForCollectAsync` 内仅 NotchScan 范围 exOffset 扩展段有二次短路。
+-- V100 对位数据源家族可配置与无感加采（2026-10 起，decisions/0022）：外→内机型 notch 数据源为机台级配置家族（`Edge Detection/NotchDataChannel`，"DN"|"DW" 忽略大小写，缺省与非法值按 DW；种子 StringCombo + `ValidOn: Vega100`，通用 FileConfigs 编辑器自带下拉；对称地 `EdgeLogicalChannel` 条目 `ValidOn: Vega200|Vega300|Vega500`，V100 配置页不再显示无效的 9999 项）。`NotchChannelResolver.Resolve(IncidenceType, NotchDataChannelFamily)` 纯函数家族+入射选通道（与 `GetPhysicalChannels` 同族规则；V100 宽 = DW2），`ParseFamily` 容错解析，序列侧 `NotchFamily` 私有属性集中读配置并承载非法值 Warning。配方含所选通道 → 拆带双读（fan-out，现状）；配方无 → `SetupHardwareAsync` 以**副本追加**进 DAQ 表内部加采（对位专用，永不进 `PhysicalChannels`——channels 形参与 PhysicalChannels 同引用，原地 Add 即泄漏红线），配套对应块（窄=DN/宽=DW2，索引器按通道选块）"启用克隆"光学装配（克隆须替换**自己槽位**：三光学槽并发下发，错槽会被配方块覆盖并挤掉检测通道光学）、AutoZero 同门同形偏置（窄=Narrow/宽=Wide2）+ 读取期整带自读（`exclusiveCount = _edgeTracks`，fan-out 等待自然跳过；读带循环首行 TrackCount≤0 防御为**跨机型**约束——内→外 9999 路径同进该循环同受益，守卫在 try 内、抛出也走归还）+ 读带后重下发禁用块回 ODp4（try-finally 必达：读取取消/超时也归还、恢复自身异常单独记日志不掩盖对位原始异常；先于对位计算，`CancellationToken.None`。PMT/掩膜/极化片/荧光片停在克隆值=配方对应块静态值，由后续 collection 的 SetupHardwareAsync 按配方重设——OD 是唯一必须归还项）。块不可用值（ODp4/PMT≤0）不拦截不换值，走对位既有失败语义 + 装配期 Warning 痕（禁用块值无任何既有校验，此痕是快速线索）；另每 collection 打一条 `[NotchChannel] optics context` 汇总日志（源通道+形态/入射/吞吐/功率/BEAOD/入射偏振/OD/PMT/N+W mask/N+W 偏振/荧光片），对位追溯主入口——能否找到 edge 是 LP×OD×PMT×mask×偏振组合，无从枚举"哪些值需警告"，以事实全量记录替代判定式；仅 `IsOuterToInnerScan` 生效，内→外机型不经此路径。
+-- V100 额外 Alignment 预扫描模式（2026-10 起，decisions/0023）：外→内机型第二种对位形态，机台级配置 `Edge Detection/NotchScanMode`（"Inline"|"Dedicated" 忽略大小写，缺省与非法值按 Inline=现状；种子 StringCombo + `ValidOn: Vega100`；`Vega.BL.IWaferRun/NotchScanModeResolver.ParseMode` 容错解析，序列侧 `IsDedicatedNotchScan` 每片缓存一次承载非法值 Warning——`NotchFamily` 同模式，消费点全在 `IsOuterToInnerScan` 门内）。Dedicated = 每 run 一次固定光学环扫预扫（`DoPerformDedicatedAlignmentPrescanAsync`，挂 `DoPerformExtraEdgeDetectionAsync` coll 0 主扫前；固定光学源 = 系统配方 202，缺失或解析槽位无精确匹配块（索引器前缀兜底命中）均响亮失败 `RecipeSystemError` 不静默回退 Inline（守卫拒绝兜底块，防启用克隆宣称的 ChannelMode 与 DAQ 实际采集通道静默分叉；前缀槽位整体缺失仅直改库文档可触发、配方编辑器流程不可达，接受现状——届时索引器抛 InvalidOperationException 而非守卫文案，加固项非活缺陷，decisions/0023）；几何按生产配方片径 + 有效 EdgeScope/NotchBandExtendRadius 推导，202 的 WaferSize 不被消费；通道按 202 固定入射经 `NotchChannelResolver.Resolve(202入射, NotchFamily)` 解析（家族仍走 `NotchDataChannel`，decisions/0022），启用克隆替换自己槽位；照明侧共光路全套显式下发（含 SetATT(false)/SetSlitIn(false) 闭环），collector 侧仅下发解析通道槽位（未选中通道连 OD/Mask 准备都不做，预扫不采集它们），BSSMotorPosOffset 预扫段内按 202 模式补发、`PerformAutoBSSAdjustAsync` 不动；预扫独立缓存键/文件基底 `{GetDataCacheKey}_PreScan`/`{GetRamdiskFileBase}_PreScan`（键不进文件名，WI #3660 红线），读取链经 `DoPerformEdgeAlignmentAsync` → `DoPerformEdgeDataCollectionAsync` → 基类 wrapper → `WaferRunDeviceControlHelper` 四层 `cacheKeyOverride`/`channelOverride`/`edgeDataNameOverride` 可选参数复用（缺省=现状，勿改缺省行为，新增覆盖项须同模式挂全链）；run 级 `waferRun.Alignment = waferRun[coll 0].Alignment.Clone()` 回填必做（clone-on-assign 约定；主流程运行期无人给 run 级赋值，coll 1+ 的 `??=` 继承链依赖它）；catch/finally 照 V200 环扫形态 + 预扫后 10s DAQ 保护延迟）。预扫后整 run 跳过边缘对位：主循环 coll 1+ 不复位 `_hasDoneEdgeDetection`（跳过门用专字段 `_dedicatedAlignmentPrescanDone`，`InitWaferRunStateCore` 复位——`_hasDoneEdgeDetection` 被 BFPCal/XYAutoCal 预置 true，语义不可混用）、`SetupForCollectAsync` 跳过 O2I notch 带块与 `motionEndPos` 抬升（ExtendScan 照常生效）、内联对位/加采/fan-out 经既有 `!_hasDoneEdgeDetection` 门自然跳过；光学无需归还（预扫独立段完整收尾，主扫 `SetupHardwareAsync` 按配方全套重下发覆盖）；预扫通道只进预扫自己的 DAQ 表，主扫 `PhysicalChannels` 保持配方原样（纯度红线，0022 同款）。Inline 缺省与现状逐日志一致。
++- V100 边缘数据来源开关 NotchDataSource（2026-11 起，`decisions/0026`）：外→内机型对位数据来源二级开关（`Edge Detection/NotchDataSource`，"DarkField"|"EdgeDetector" 忽略大小写，缺省与非法值按 DarkField=现状；条目 `ValidOn: Vega100,HasEdgeDetector`——仅加装 Edge Detector 的机型可达；`NotchChannelResolver.ParseSource` 容错解析，序列侧 `NotchSource` 属性首访缓存一次照 `NotchFamily` 范本）。EdgeDetector 源 = 第二张 NI 卡被动边缘检测器（通道恒取 `EdgeDetectionConfig.EdgeChannel`=9999，该条目 ValidOn 已追加 `|HasEdgeDetector`）：跳过暗场家族解析与 fan-out/加采（`_notchFanoutChannel`/`_notchAppendChannel` 保持 null → `exclusiveCount` 自然取 `_edgeTracks` 整带自读，无需特判）、主扫 AutoZero 加采偏置块短路（ED 非 PMT 通道）；主扫 DAQ 以 bEdge=true 把 9999 进采集表，**edgeTracks 实参 = 截断窗长度** `_notchBandStartTrack + _edgeTracks`（ExtendScan 下读窗起址为 bandStart 而非 0，传 `_edgeTracks` 会截掉窗口头部；其余形态维持原语义）。Inline 与 Dedicated 两形态均支持：Dedicated 预扫以 `prescanClone is null` 为 ED 短路信号（跳过 202 块查找/守卫/克隆/collector 光学任务/AutoZero），DAQ 侧 `channels=[]` + bEdge=true（SetCollectChannel 内部补 9999，scanTracks==edgeTracks min==max 守卫不咬）。无 token 机器配置条目不可达 = 零行为变化。
++- V100 对位数据源家族可配置与无感加采（2026-10 起，decisions/0022；**仅在 NotchDataSource=DarkField（缺省）时消费**，EdgeDetector 源见上条）：外→内机型 notch 数据源为机台级配置家族（`Edge Detection/NotchDataChannel`，"DN"|"DW" 忽略大小写，缺省与非法值按 DW；种子 StringCombo + `ValidOn: Vega100`，通用 FileConfigs 编辑器自带下拉；对称地 `EdgeLogicalChannel` 条目 `ValidOn: Vega200|Vega300|Vega500|HasEdgeDetector`，无 token 的 V100 配置页不显示 9999 项）。`NotchChannelResolver.Resolve(IncidenceType, NotchDataChannelFamily)` 纯函数家族+入射选通道（与 `GetPhysicalChannels` 同族规则；V100 宽 = DW2），`ParseFamily` 容错解析，序列侧 `NotchFamily` 私有属性集中读配置并承载非法值 Warning。配方含所选通道 → 拆带双读（fan-out，现状）；配方无 → `SetupHardwareAsync` 以**副本追加**进 DAQ 表内部加采（对位专用，永不进 `PhysicalChannels`——channels 形参与 PhysicalChannels 同引用，原地 Add 即泄漏红线），配套对应块（窄=DN/宽=DW2，索引器按通道选块）"启用克隆"光学装配（克隆须替换**自己槽位**：三光学槽并发下发，错槽会被配方块覆盖并挤掉检测通道光学）、AutoZero 同门同形偏置（窄=Narrow/宽=Wide2）+ 读取期整带自读（`exclusiveCount = _edgeTracks`，fan-out 等待自然跳过；读带循环首行 TrackCount≤0 防御为**跨机型**约束——内→外 9999 路径同进该循环同受益，守卫在 try 内、抛出也走归还）+ 读带后重下发禁用块回 ODp4（try-finally 必达：读取取消/超时也归还、恢复自身异常单独记日志不掩盖对位原始异常；先于对位计算，`CancellationToken.None`。PMT/掩膜/极化片/荧光片停在克隆值=配方对应块静态值，由后续 collection 的 SetupHardwareAsync 按配方重设——OD 是唯一必须归还项）。块不可用值（ODp4/PMT≤0）不拦截不换值，走对位既有失败语义 + 装配期 Warning 痕（禁用块值无任何既有校验，此痕是快速线索）；另每 collection 打一条 `[NotchChannel] optics context` 汇总日志（源通道+形态/入射/吞吐/功率/BEAOD/入射偏振/OD/PMT/N+W mask/N+W 偏振/荧光片），对位追溯主入口——能否找到 edge 是 LP×OD×PMT×mask×偏振组合，无从枚举"哪些值需警告"，以事实全量记录替代判定式；仅 `IsOuterToInnerScan` 生效，内→外机型不经此路径。
++- V100 额外 Alignment 预扫描模式（2026-10 起，decisions/0023）：外→内机型第二种对位形态，机台级配置 `Edge Detection/NotchScanMode`（"Inline"|"Dedicated" 忽略大小写，缺省与非法值按 Inline=现状；种子 StringCombo + `ValidOn: Vega100`；`Vega.BL.IWaferRun/NotchScanModeResolver.ParseMode` 容错解析，序列侧 `IsDedicatedNotchScan` 每片缓存一次承载非法值 Warning——`NotchFamily` 同模式，消费点全在 `IsOuterToInnerScan` 门内）。Dedicated = 每 run 一次固定光学环扫预扫（`DoPerformDedicatedAlignmentPrescanAsync`，挂 `DoPerformExtraEdgeDetectionAsync` coll 0 主扫前；固定光学源 = 系统配方 202，缺失或解析槽位无精确匹配块（索引器前缀兜底命中）均响亮失败 `RecipeSystemError` 不静默回退 Inline（守卫拒绝兜底块，防启用克隆宣称的 ChannelMode 与 DAQ 实际采集通道静默分叉；前缀槽位整体缺失仅直改库文档可触发、配方编辑器流程不可达，接受现状——届时索引器抛 InvalidOperationException 而非守卫文案，加固项非活缺陷，decisions/0023）；几何按生产配方片径 + 有效 EdgeScope/NotchBandExtendRadius 推导，202 的 WaferSize 不被消费；通道按 202 固定入射经 `NotchChannelResolver.Resolve(202入射, NotchFamily)` 解析（家族仍走 `NotchDataChannel`，decisions/0022；NotchDataSource=EdgeDetector 时通道恒为 EdgeLogicalChannel(9999)、跳过家族解析与 collector 侧克隆/AutoZero——`prescanClone is null` 即 ED 短路信号，照明侧全套照旧，decisions/0026），启用克隆替换自己槽位；照明侧共光路全套显式下发（含 SetATT(false)/SetSlitIn(false) 闭环），collector 侧仅下发解析通道槽位（未选中通道连 OD/Mask 准备都不做，预扫不采集它们），BSSMotorPosOffset 预扫段内按 202 模式补发、`PerformAutoBSSAdjustAsync` 不动；预扫独立缓存键/文件基底 `{GetDataCacheKey}_PreScan`/`{GetRamdiskFileBase}_PreScan`（键不进文件名，WI #3660 红线），读取链经 `DoPerformEdgeAlignmentAsync` → `DoPerformEdgeDataCollectionAsync` → 基类 wrapper → `WaferRunDeviceControlHelper` 四层 `cacheKeyOverride`/`channelOverride`/`edgeDataNameOverride` 可选参数复用（缺省=现状，勿改缺省行为，新增覆盖项须同模式挂全链）；run 级 `waferRun.Alignment = waferRun[coll 0].Alignment.Clone()` 回填必做（clone-on-assign 约定；主流程运行期无人给 run 级赋值，coll 1+ 的 `??=` 继承链依赖它）；catch/finally 照 V200 环扫形态 + 预扫后 10s DAQ 保护延迟）。预扫后整 run 跳过边缘对位：主循环 coll 1+ 不复位 `_hasDoneEdgeDetection`（跳过门用专字段 `_dedicatedAlignmentPrescanDone`，`InitWaferRunStateCore` 复位——`_hasDoneEdgeDetection` 被 BFPCal/XYAutoCal 预置 true，语义不可混用）、`SetupForCollectAsync` 跳过 O2I notch 带块与 `motionEndPos` 抬升（ExtendScan 照常生效）、内联对位/加采/fan-out 经既有 `!_hasDoneEdgeDetection` 门自然跳过；光学无需归还（预扫独立段完整收尾，主扫 `SetupHardwareAsync` 按配方全套重下发覆盖）；预扫通道只进预扫自己的 DAQ 表，主扫 `PhysicalChannels` 保持配方原样（纯度红线，0022 同款）。Inline 缺省与现状逐日志一致。
+ - XY 校准有效性门槛与 run wafer 告警（2026-09 起）：`WaferRunResultProcessing.ApplyXYCaliToWaferRun` 沿用 matchedResult + WS200→WS300 / WS150→WS200 回退流程（fallback 触发维持既有 `CalibError == 0` 语义），最终结果须 `CalibError` 有限且 > 0 才应用拟合参数（0 = 未校准占位；非有限误差不触发回退、由最终门槛拒绝）；超标（`CalibSpec` 有限且 > 0 且 `CalibError > CalibSpec`）参数仍应用只告警。无有效结果的 Collection 清除同 Incidence 通道键（`RemoveIncidenceChannelParams`，防沿用先前 Collection 参数——离线重放/迁移配方防御），顶层汇总结果仍按最后有效写入者生效。问题行按 Collection 用 `List<string>` 收集（不做元组去重，单 run 最多 2 个 Collection），每片 wafer 一次汇总 Warning 日志（英文）+ `INotificationService.Alert(Warning)` Toast（多语言键 `XYCalibCheckSummaryFmt`/`NoValidResultFmt`/`OutOfSpecFmt`，decisions/0008：Warning 仅系统 Toast）；通知实例经 `DoApplyXYCaliToWaferRun` 钩子由 `WaferRunSequenceBase._notificationService` 传入，在线 sync/background 与离线重放路径共用。勿再拆独立 matcher helper。
+ - send worker 内层任务观察网（2026-10 起，#3637 姊妹案）：`Task.Factory.StartNew` 包装异步方法时外层任务在异步方法首个 await 之后即完成，真正执行的内层任务就此脱管——内层失败无人读取其异常，任务被回收时由终结线程重抛，落入 App 级无上下文兜底日志（历史版本为全局异常框）；故两处 send worker 启动点（`WaferRunSequenceBase` 与 `WaferRunScanOnlySequence`）经 `ObserveTask` 给内层任务挂 `ContinueWith(OnlyOnFaulted)` 观察网。**语义约定：send worker 失败只进日志，不进 `Task.WhenAll` 的错误传播**（内层 `DoPerformSendAnalysisDataAsync` 已自行记录并重新抛出，其失败经 get worker 路径与 `WaferRunFailed` 事件体现，不因观察网而改变既有传播）；新增 send/get worker 启动点一律经 `ObserveTask`，勿裸 `Task.Factory.StartNew` 包异步方法。get worker 等待侧配套（2026-10 起，WI #3733）：`WaitForScanAndSendCompletionAsync` 轮询 `_sendDataToAnalysisFailed`/`_collectionSendFailed`，发送失败时抛 `AnalysisServiceException` 主动退出（离线重放无 DAQ 故障信号，原本完成信号量永不释放致 job 死等；用 `AnalysisServiceException` 而非 `VegaBaseException`，因收尾等待层只显式 rethrow 前者，后者会被 catch-all 降级为 Warning）。**run 级中止是承重语义**：兄弟 send worker 的取数循环同查全局位，任一 collection 发送失败后它们静默停转、不释放各自信号量，只判本 collection 会死等。离线收尾 `Task.WhenAll(...).WaitAsync(_linkedCancellationToken)` 会因 get worker 失败 catch 先取消 `_linkedCts` 而抢先抛 OCE、吞掉 WhenAll 里的真实异常，`WaferRunOfflineSequence` 的 OCE catch 按 `_sendDataToAnalysisFailed`/`_getAnalysisResultFailed` 分流为 `AnalysisServiceException`（勿归为 canceled by user）。失败标志字典 `_collectionGetFailed`/`_collectionSendFailed` 为跨线程读写（send 写 / get 轮询读），保持 `ConcurrentDictionary`。勿删此出口或将失败恢复为仅靠信号量。
+ - Flat 定位边（`NotchTypes.Flat`，2026-10 起）：`Vega.BL.WaferAlignment/WaferAlignmentService.cs` 的 Edge/DUV 对位入口（两种夹持，2026-11-04 起 Flat+EdgeChuck 接入）走「圆拟合定圆心（`FitCircleCore`，Flat 专用 RANSAC 内点带宽 `Pitch/10`）+ 连续内缩区域识别 → 端点弦线粗定位选优 → 选中区域中心向两侧 TLS 精拟合 → 法向定向」。Flat 的边缘扫描预处理不做缺口阈值统计（2026-11-04 起）：`NotchThreshold` 置 0（该 0 值会随 `CurrentEdgeScan` 进诊断页/落库显示，属预期）、`_notchThresolds` 保持清空、EdgeChuck 不再为 Flat 计算 notch 窗均值，「阈值超片外亮度」Error 判定因提前 return 不达。几何失败保留已算出的圆心、核心角度置 0，以 `IsSuccessful=false` 表示整体失败，只写原因码日志，不回退 Notch/质心；Diagnostics 的 EdgeAnalysis 页对失败结果显示正无穷（`double.PositiveInfinity`，中文区域格式为 `∞`）；圆拟合失败则保持零值（2026-11-04 起 Flat+EdgeChuck 的显式拒绝 `UnsupportedFlatPath` 已随接入共用几何移除，`ComputeFlatAlignment` 的 `clampingMode` 仅作上下文透传）。BF 入口保留 PR 4989 的 Notch 路径，Notch（含 EdgeChuck 夹持差异）圆拟合带宽仍为 `Pitch/2`。DUV Flat 在降采样列上自外向内扫描，在满足 `drop > noiseLimit && 2 * outerMaximum < brightness + nextBrightness` 的候选中选择最外侧首个合格者；选中后继续扫描整列完成高斯归一化 min/max（Notch 保持原全局最大值选点；Flat 两种夹持一致用外侧下降沿），DUV 高斯中心统一要求有限且位于拟合窗口内（Notch 的全局最大值选点不变）；窗口不完整、校验失败或高斯关闭时保留离散点，无有效边缘返回 NaN。`WaferRunService.PerformNotchScanAsync` 对 Flat 配方要求 Edge 基准与 DN_Normal 结果存在、成功且有限，否则返回空结果（不返回部分通道/零偏移）；仅消费 DN_Normal，其他通道记录后跳过。`WaferRunXYSequence.CheckYOffset` 的 Flat 分支按配方 `PrimaryFlatLength` 推导实际切深（`WaferScanRange.GetFlatDepth`：R − √(R²−(L/2)²)，6 寸标称 5729.2449875 µm；片径非正、平边长度非有限/非正/不构成弦切或推导值非有限时回退 `CalibrationConfig.XYCalibtraionConfig.FlatDepth`）作为特征有效半径换算 yOffset、用 `PolarPoint.AngleDifference` 取最短角差，告警判定经 `XYCalibtraionConfig.IsYOffsetOutOfSpec` 按 `|yOffset|` 比较 `YOffsetThreshold`（负向偏移同样告警），Notch 维持既有单侧（`yOffset > threshold`）判定与直接相减语义；保存的 `NotchThetaOffset` 仍为带符号值；Flat Simulator 基准由既有仿真分支为首个 Collection 写入。`PrimaryFlatLength` 当前只参与 PR 4989 的几何/窗口推导（`SetupWaferAlignment`），TLS 检测不消费；10 mm 总支撑/单侧 2.5 mm/14 mm 最大缺口门限不能由完整平边长度直接替代（实际参与拟合的可能只是部分平边），长度约束候选/评分留待后续独立设计。边缘扫描环宽度按 `EdgeDetectionConfig.GetEffectiveEdgeScope` 解析：Flat（两种夹持一致，2026-11-04 起）用 `FlatEdgeScope`（默认 8500 µm，0 回退 `EdgeScope`），Notch 仍用 `EdgeScope`；`WaferRunSequenceBase.GetEffectiveEdgeScope` 与 `WaferAlignmentService.SetupWaferAlignment` 的 `TrackCount` 共用该结果，预扫环/内圈 edge detection 的运动范围与对齐分析范围保持一致。`SetupForCollectAsync` 的 NotchScan 扫描终点扩展（`exOffset = 有效范围 + 有效起始锚点 − 配方 endRadius`）同样使用该有效范围，目标终点 = 锚点 + 有效范围：终点未达目标时补到目标；已超过目标（`ExtendScan` 抬过，或等于目标时 `exOffset ≤ 0` 的 500 µm 兜底）时只加 500 µm 运动余量。Flat 非 `EdgeChuck` 的捕获窗由 `_notchScanTailTracks`（`WaferScanRange.GetNotchScanTailTracks`，仅恒定 pitch；启用变 pitch 时在 `SetupHardwareAsync` 前以 `WaferAlignmentSystemError` 拒绝）剔除终点超过目标的末尾轨道，`DoPerformDataCollectionAsync` 再经 `WaferScanRange.TryGetNotchScanCaptureWindow` 从 `notchWindowEndTracks = TotalTrack − _notchScanTailTracks` 往前截取 `_edgeTracks` 轨，使捕获窗固定为 [锚点, 锚点 + 有效范围]，与对齐分析锚点同源；轨数不足以容纳窗口（尾部跳过数非法、末轨早于窗口宽度）时以 `WaferAlignmentSystemError` 显式失败，不静默截短窗口。设参时打 `[FlatNotchScanWindow]` Information 日志（总轨数、尾部跳过数、窗口宽度、pitch、扫描/目标终点半径）。否则终点超过目标时捕获窗整体外移（默认 `FlatEdgeScope − EdgeScope` = 6000 µm，`ExtendScan` 下可能整窗落在片外），半径重建错位。Notch/`EdgeChuck` 的 `_notchScanTailTracks` 恒为 0，保持从采集末尾截取 `_edgeTracks` 的既有行为。Diagnostics EdgeAnalysis 的极坐标图内径取快照 `StartPoint.Radius`（有限、>0 且 <90000 时，如 6 寸 Flat 锚点 67500），否则回退历史常量 28500；图边长超过 4096 px 时按整数倍降采样，避免真实锚点下的大图分配。
+@@ -98,10 +99,11 @@ GEM 生产 happy path：`WaferRunEngine.DoPerformWaferRunAsync`（gem-communicat
+ - `decisions/0024`：LPD 尺寸阈值单位口径（编辑器/Binning 范围）——曲线快照运行时管线随该决策摘除，`WaferRunInfo.CalibrationCurveSnapshot` 持久化字段与每片快照构建/Mongo 写入不再存在，勿回接。
+ - `decisions/0023`：V100 额外 Alignment 预扫描（Dedicated 模式）——NotchScanMode 配置与容错解析、预扫执行形态与固定光学源 202、独立缓存键、run 级回填、`_dedicatedAlignmentPrescanDone` 跳过门语义的依据。
+ - `decisions/0025`：BPS 规则按膜系分表（default + 膜系表，BL 收口下发）——`ValidateRecipe` 膜系前置校验口径、运行期 `SetBPSOD` 查表/回退与读表失败语义、BPSI OD 不在本期范围的依据。
++- `decisions/0026`：Vega100 Edge Detector 加装——NotchDataSource 来源开关（ED=9999 第二张卡）、edgeTracks 截断窗长度语义、ED 源下家族解析/fan-out/加采/AutoZero/预扫克隆全线短路的依据。
+ 
+ ## Verification
+ 
+-- 单测只覆盖外围纯逻辑：`Vega.Utility.Common.Tests/VariablePitchHelperTests.cs`、`CollectMaskNameNormalizeTests.cs`、`NotchChannelResolverTests.cs`（家族×入射 → 通道映射 + `ParseFamily` 容错解析）、`NotchScanModeResolverTests.cs`（`NotchScanMode` 容错解析：Inline/Dedicated/大小写/空与非法值均安全回 Inline）、`AutoFocusOverloadReasonTests.cs`（BPSR/BPSI × 过曝/信号不足四维布尔 → 细分原因串，12 组合）、`AfsCcdChannelStatsTests.cs`（CCD 质心/峰值：空数据不抛、单点、重复峰值取首个、峰值在末位、全零）、`CaliJobNamingTests.cs`（校准 Job 前缀完整命中判定）、`Vega.UI.Common.Tests/OfflineCollectionPathInvalidFlagTests.cs`（WI #3743 路径红框真值表：`IsValid`×路径非空 4 组合 × RawData/Json 两属性，及计算属性的 PropertyChanged 通知与同值赋值不通知）；编排逻辑按项目约定不写单测。XY 校准有效性/超标判定内联于 `ApplyXYCaliToWaferRun`（无法在不扩引用/公开实现的前提下单测，验证走构建 + Sim 矩阵：直接有效/零误差/非有限误差/两种回退/回退无效/spec 未配置/超标仍应用/同入射跨 Collection 参数隔离）。Flat 对位纯几何与圆拟合兼容性：`Vega.BL.WaferAlignment.Tests`（`FlatGeometryTests`、`FlatEdgeValidityTests`、`CircleFitFlatCompatibilityGateTests`、`EdgeScanInfoSerializationTests`、`SetupWaferAlignmentEdgeTypeValidationTests`；当前 DUV Flat 选点采用最外侧首个合格下降沿）——覆盖区域识别→粗定位选优→TLS 精拟合→法向定向、36° 缺失桥接/跨 0°/有效非内缩点切断/区域严格 <180°、最外侧合格下降沿优先于更强内侧下降沿、窗口不完整保留离散点、残差门限上限 500 µm、几何失败保留圆心，以及 DUV Flat 最外侧首个合格下降沿选点与 Notch 原选点对照。DUV Notch 搜索三模式共用链：`NotchCoarseSearchLegacyTests`（原模式一旧链排序式粗定位：宽谷选中/单点深谷邻域拒绝/平线退化/空数组/偏心 CoW 距离语义；该链自 2026-11-06 起无调用者，测试保留为行为快照）；`NotchCoarseSearchCoreTests` 已按 PR 5028 后语义钉死（小数组窄谷经中值平滑抹平、无效邻域候选拒绝 → -1 + "no valley passed" 告警；同输入下原旧链可选中窄谷谷底，两套行为对照见两测试类注释）；`DuvNotchEdgeGapBridgeTests`（短程无效段桥接：插值与置有效/超限段不动/环形跨 0° 段/全无效与长度不符原样返回/输入不可变）；`DuvNotchProfileMedianFilterTests`（中值预滤波：孤立尖刺抑制/孤立 NaN 邻域中值填充/宽坡保留/全 NaN 保持/输入不可变/退化窗原样返回）；`DuvNotchMode3FallbackPolicyTests`（模式三回退选路策略：无值必回退/合成剖面仅 VacuumChuck 回退、EdgeChuck 保留低置信结果/回退链有限值优先采纳/角度相等仍取回退链）；`DuvNotchFitQualityTests`（拟合质量门：干净抛物线通过/桥接中心通过且不计入实测/桥接或实测单侧肩固定 OneSided/中心缺失但两肩实测通过/平线 NonPositiveCurvature/噪声拒绝/浅剖面大散布 DepthSigmaLow/6 点离群簇分别命中 RmsDepthHigh 与 P90DepthHigh（P90 采用 R7 分位数）/6 点最小实测样本通过/顶点越窗/有效点不足/掩码长度不符）；`DuvRawPeakSharedSearchTests`（原始峰值输入共用链：单点尖峰经中值滤除后无候选、含缺口原始剖面经粗搜/深度中心/窗内精修且通过质量门、模式一路由纯函数 `UsesRawPeakNotchInputs` 仅对模式一为真）。新版模式 2 跟踪链单测（2026-11-03）：`WECDHelperDuvEdgeTrackingTests`（亮带外缘跟踪：平台渐变/干净亮带/密集宽带/近峰划痕/内缘退化/暗噪声/窄尖峰；诊断采集开关不改变取点）、`WECDHelperDuvNotchDepthTests`（双掩码深度中心：插值点不改变观测基线且不能掩盖观测台阶、观测覆盖率 <40% 整窗拒绝、500µm 台阶门通过与拒绝、深缺口按 20% 深度判定两肩差、锚点优先与最小半径回退）、`NotchCoarseSearchDuvTrackedTests`（观测支持充分出候选、仅插值点不能通过候选门）、`DuvNotchFitHalfRangeTests`（下限 max(3, 半窗/8) 与最终半窗钳制）、`DuvTrackedCandidateRegionTests`（深度中心候选区域复验：窗口搜索区间左闭右开/整圆回绕双向/无区域约束不限；跟踪器扫描尺寸判定（轨道/采样下限、轨道数上限、网格总量按 long 对 `Array.MaxLength`，含 V100 实测 27/196×320000 放行）与过小输入抛 ArgumentException 契约）、粗搜候选断言区域覆盖真实缺口中心。真实 bin 回归（2026-10-28，三片 + harness 不入库）：WAFER_25 125512 模式一经 NaN 防御诚实失败（不再 5.825 假成功）、模式二 1.1854 rad 不变；WAFER_10 231353 模式二 5.8898 rad（337.5°）与模式一 5.8893 及扇区中值探针的物理凹坑 337.8° 三方一致；WAFER_10 231248（片上几何，修复前两模式均失败）模式二 5.8910 rad（337.5°），与用户目视 337.8° 及同晶圆 65 秒后另一采集（231353）一致，跨采集重复性 0.07°。Flat/Notch 扫描范围解析：`Vega.Utility.Common.Tests/EdgeDetectionConfigScopeTests.cs`（Flat 两种夹持用 FlatEdgeScope、Notch/0 回退用 EdgeScope、默认值覆盖 6 寸平边弦深）。Flat NotchScan 捕获窗尾部跳过：`Vega.Utility.Common.Tests/WaferScanRangeNotchScanTailTests.cs`（终点小于/等于/大于目标终点三种情况，最终捕获窗首轨均回到分析锚点；非法输入返回 0）；捕获窗区间校验 `WaferScanRangeCaptureWindowTests.cs`（合法输入在尾部跳过后仍为锚点区间，总轨数/尾部跳过/窗口宽度非法时返回 false 而非截短）。Flat 几何加固与切深 `WaferScanRangeFlatGeometryTests.cs`（NaN/±Inf/负长度/半弦 ≥ 片半径/非正片径返回 false 且不输出 NaN；6 寸切深 = 5729.2449875 µm；几何非法回退 FlatDepth）。诊断极坐标内径：`Vega.UI.Diagnostics.Tests/EdgeAnalysisPolarInnerRadiusTests.cs`（67500/73500/89999 用快照真实锚点；90000/97500/148500 及非有限/非正锚点回退历史 28500）。Flat XY 最短角差：`Vega.Utility.Common.Tests/PolarPointAngleDifferenceTests.cs`。Flat/Notch yOffset 告警判定：`Vega.Utility.Common.Tests/XYCalibtraionConfigYOffsetTests.cs`（Flat 正/负偏移与跨零角度均触发告警、阈值内不告警、Notch 负向保持既有不告警）。真实 OD0 DUV Flat bin 对照（本机 3 份，2026-10-27 按当前「最外侧首个合格下降沿」规则重跑，harness 不入库）：182426/182636 成功、182943 失败，成功状态与 tooling 一致；同一 trace 边缘点输入的 B 链圆心/角度与 tooling 一致（中心差 <1e-6 µm、角度差 0），端到端从原始 bin 重算 A2 的圆心差 42.5/44.0 µm、角度差 ≤0.0011 rad，低于 500 µm 验收门限；182943 目标 `NoReliableSeed`、tooling `InvalidFlatReference`，双方均失败且保留圆心。此前基于离散点 rawA2 与最大合格下降规则的结果不再作为验收依据；结果记录见 `ve-docs/work/flat-implementation-step0.md`。
++- 单测只覆盖外围纯逻辑：`Vega.Utility.Common.Tests/VariablePitchHelperTests.cs`、`CollectMaskNameNormalizeTests.cs`、`NotchChannelResolverTests.cs`（家族×入射 → 通道映射 + `ParseFamily` 容错解析）、`NotchSourceResolverTests.cs`（`ParseSource` 来源容错解析 9 用例 Theory：EdgeDetector/DarkField 大小写归一 → ED、空/未配置/非法值回 DarkField）、`NotchScanModeResolverTests.cs`（`NotchScanMode` 容错解析：Inline/Dedicated/大小写/空与非法值均安全回 Inline）、`AutoFocusOverloadReasonTests.cs`（BPSR/BPSI × 过曝/信号不足四维布尔 → 细分原因串，12 组合）、`AfsCcdChannelStatsTests.cs`（CCD 质心/峰值：空数据不抛、单点、重复峰值取首个、峰值在末位、全零）、`CaliJobNamingTests.cs`（校准 Job 前缀完整命中判定）、`Vega.UI.Common.Tests/OfflineCollectionPathInvalidFlagTests.cs`（WI #3743 路径红框真值表：`IsValid`×路径非空 4 组合 × RawData/Json 两属性，及计算属性的 PropertyChanged 通知与同值赋值不通知）；编排逻辑按项目约定不写单测。XY 校准有效性/超标判定内联于 `ApplyXYCaliToWaferRun`（无法在不扩引用/公开实现的前提下单测，验证走构建 + Sim 矩阵：直接有效/零误差/非有限误差/两种回退/回退无效/spec 未配置/超标仍应用/同入射跨 Collection 参数隔离）。Flat 对位纯几何与圆拟合兼容性：`Vega.BL.WaferAlignment.Tests`（`FlatGeometryTests`、`FlatEdgeValidityTests`、`CircleFitFlatCompatibilityGateTests`、`EdgeScanInfoSerializationTests`、`SetupWaferAlignmentEdgeTypeValidationTests`；当前 DUV Flat 选点采用最外侧首个合格下降沿）——覆盖区域识别→粗定位选优→TLS 精拟合→法向定向、36° 缺失桥接/跨 0°/有效非内缩点切断/区域严格 <180°、最外侧合格下降沿优先于更强内侧下降沿、窗口不完整保留离散点、残差门限上限 500 µm、几何失败保留圆心，以及 DUV Flat 最外侧首个合格下降沿选点与 Notch 原选点对照。DUV Notch 搜索三模式共用链：`NotchCoarseSearchLegacyTests`（原模式一旧链排序式粗定位：宽谷选中/单点深谷邻域拒绝/平线退化/空数组/偏心 CoW 距离语义；该链自 2026-11-06 起无调用者，测试保留为行为快照）；`NotchCoarseSearchCoreTests` 已按 PR 5028 后语义钉死（小数组窄谷经中值平滑抹平、无效邻域候选拒绝 → -1 + "no valley passed" 告警；同输入下原旧链可选中窄谷谷底，两套行为对照见两测试类注释）；`DuvNotchEdgeGapBridgeTests`（短程无效段桥接：插值与置有效/超限段不动/环形跨 0° 段/全无效与长度不符原样返回/输入不可变）；`DuvNotchProfileMedianFilterTests`（中值预滤波：孤立尖刺抑制/孤立 NaN 邻域中值填充/宽坡保留/全 NaN 保持/输入不可变/退化窗原样返回）；`DuvNotchMode3FallbackPolicyTests`（模式三回退选路策略：无值必回退/合成剖面仅 VacuumChuck 回退、EdgeChuck 保留低置信结果/回退链有限值优先采纳/角度相等仍取回退链）；`DuvNotchFitQualityTests`（拟合质量门：干净抛物线通过/桥接中心通过且不计入实测/桥接或实测单侧肩固定 OneSided/中心缺失但两肩实测通过/平线 NonPositiveCurvature/噪声拒绝/浅剖面大散布 DepthSigmaLow/6 点离群簇分别命中 RmsDepthHigh 与 P90DepthHigh（P90 采用 R7 分位数）/6 点最小实测样本通过/顶点越窗/有效点不足/掩码长度不符）；`DuvRawPeakSharedSearchTests`（原始峰值输入共用链：单点尖峰经中值滤除后无候选、含缺口原始剖面经粗搜/深度中心/窗内精修且通过质量门、模式一路由纯函数 `UsesRawPeakNotchInputs` 仅对模式一为真）。新版模式 2 跟踪链单测（2026-11-03）：`WECDHelperDuvEdgeTrackingTests`（亮带外缘跟踪：平台渐变/干净亮带/密集宽带/近峰划痕/内缘退化/暗噪声/窄尖峰；诊断采集开关不改变取点）、`WECDHelperDuvNotchDepthTests`（双掩码深度中心：插值点不改变观测基线且不能掩盖观测台阶、观测覆盖率 <40% 整窗拒绝、500µm 台阶门通过与拒绝、深缺口按 20% 深度判定两肩差、锚点优先与最小半径回退）、`NotchCoarseSearchDuvTrackedTests`（观测支持充分出候选、仅插值点不能通过候选门）、`DuvNotchFitHalfRangeTests`（下限 max(3, 半窗/8) 与最终半窗钳制）、`DuvTrackedCandidateRegionTests`（深度中心候选区域复验：窗口搜索区间左闭右开/整圆回绕双向/无区域约束不限；跟踪器扫描尺寸判定（轨道/采样下限、轨道数上限、网格总量按 long 对 `Array.MaxLength`，含 V100 实测 27/196×320000 放行）与过小输入抛 ArgumentException 契约）、粗搜候选断言区域覆盖真实缺口中心。真实 bin 回归（2026-10-28，三片 + harness 不入库）：WAFER_25 125512 模式一经 NaN 防御诚实失败（不再 5.825 假成功）、模式二 1.1854 rad 不变；WAFER_10 231353 模式二 5.8898 rad（337.5°）与模式一 5.8893 及扇区中值探针的物理凹坑 337.8° 三方一致；WAFER_10 231248（片上几何，修复前两模式均失败）模式二 5.8910 rad（337.5°），与用户目视 337.8° 及同晶圆 65 秒后另一采集（231353）一致，跨采集重复性 0.07°。Flat/Notch 扫描范围解析：`Vega.Utility.Common.Tests/EdgeDetectionConfigScopeTests.cs`（Flat 两种夹持用 FlatEdgeScope、Notch/0 回退用 EdgeScope、默认值覆盖 6 寸平边弦深）。Flat NotchScan 捕获窗尾部跳过：`Vega.Utility.Common.Tests/WaferScanRangeNotchScanTailTests.cs`（终点小于/等于/大于目标终点三种情况，最终捕获窗首轨均回到分析锚点；非法输入返回 0）；捕获窗区间校验 `WaferScanRangeCaptureWindowTests.cs`（合法输入在尾部跳过后仍为锚点区间，总轨数/尾部跳过/窗口宽度非法时返回 false 而非截短）。Flat 几何加固与切深 `WaferScanRangeFlatGeometryTests.cs`（NaN/±Inf/负长度/半弦 ≥ 片半径/非正片径返回 false 且不输出 NaN；6 寸切深 = 5729.2449875 µm；几何非法回退 FlatDepth）。诊断极坐标内径：`Vega.UI.Diagnostics.Tests/EdgeAnalysisPolarInnerRadiusTests.cs`（67500/73500/89999 用快照真实锚点；90000/97500/148500 及非有限/非正锚点回退历史 28500）。Flat XY 最短角差：`Vega.Utility.Common.Tests/PolarPointAngleDifferenceTests.cs`。Flat/Notch yOffset 告警判定：`Vega.Utility.Common.Tests/XYCalibtraionConfigYOffsetTests.cs`（Flat 正/负偏移与跨零角度均触发告警、阈值内不告警、Notch 负向保持既有不告警）。真实 OD0 DUV Flat bin 对照（本机 3 份，2026-10-27 按当前「最外侧首个合格下降沿」规则重跑，harness 不入库）：182426/182636 成功、182943 失败，成功状态与 tooling 一致；同一 trace 边缘点输入的 B 链圆心/角度与 tooling 一致（中心差 <1e-6 µm、角度差 0），端到端从原始 bin 重算 A2 的圆心差 42.5/44.0 µm、角度差 ≤0.0011 rad，低于 500 µm 验收门限；182943 目标 `NoReliableSeed`、tooling `InvalidFlatReference`，双方均失败且保留圆心。此前基于离散点 rawA2 与最大合格下降规则的结果不再作为验收依据；结果记录见 `ve-docs/work/flat-implementation-step0.md`。
+ - 主验证路径是仿真模式跑主程序：Simulator RootCondition 下用 `GEMServiceSim` 跑生产 lot，或 UI 触发 `RunCurrentRecipeAsync`；离线重处理走 `AnalysisReprocessViewModel` / `RunCurrentRecipeOfflineAsync`。
+ 
+ ## Open Questions

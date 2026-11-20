@@ -1,0 +1,76 @@
+{
+  "schemaVersion": "1.0",
+  "runId": "20261119T081803Z_wi3802_1e89fbf",
+  "workItemId": 3802,
+  "caseId": "wi3802-bps-film-ui",
+  "verdict": "PASS",
+  "verdictReason": "OK: 1/1 断言通过",
+  "verdictCode": "OK",
+  "startedAt": "2026-11-19T16:18:03+08:00",
+  "finishedAt": "2026-11-19T16:18:48+08:00",
+  "durationMs": 45638,
+  "target": {
+    "repoRoot": "C:\\AutoTest\\workspaces\\manual-20261111",
+    "gitCommit": "58606ec9c84080feb715145c8100262097b60ef0",
+    "gitBranch": "HEAD",
+    "gitDirty": false,
+    "vegaExe": "C:\\AutoTest\\workspaces\\manual-20261111\\Vega\\bin\\Debug\\net8.0-windows10.0.19041.0\\win-x64\\Vega.exe",
+    "vegaExeBuiltAt": "2026-11-19T16:00:47+08:00",
+    "rebuilt": false,
+    "builtFromCurrentSource": false
+  },
+  "channels": {
+    "l1Api": {
+      "available": false,
+      "baseUrl": "http://localhost:18901/vega-agent/",
+      "reason": "用例未产出 oracle-crosscheck 断言（本次层: uia）"
+    },
+    "l2Uia": {
+      "available": true,
+      "baseUrl": null,
+      "reason": null
+    },
+    "assertions": {
+      "available": true,
+      "baseUrl": null,
+      "reason": null
+    }
+  },
+  "assertions": [
+    {
+      "id": "bps-film-ui",
+      "kind": "UI",
+      "description": "BPS 诊断页出现膜系表相关界面",
+      "expected": "含膜系",
+      "actual": "texts has 膜系",
+      "delta": null,
+      "tolerance": null,
+      "result": "PASS"
+    }
+  ],
+  "summary": {
+    "total": 1,
+    "passed": 1,
+    "failed": 0,
+    "skipped": 0
+  },
+  "tests": [
+    {
+      "name": "Vega.AutoTest.L2.WorkItem3802L2.OpenBpsDiagnosticsFilmUi",
+      "outcome": "Passed",
+      "durationMs": 34139,
+      "message": null
+    }
+  ],
+  "evidence": {
+    "dir": "C:\\AutoTest\\AutoTest\\VegaAutoTest\\analysis\\cli-drill-20261111\\runner\\20261119T081803Z_wi3802_1e89fbf",
+    "files": [
+      "uia/trx/uia.trx",
+      "uia/trx/uia.testhost.log",
+      "uia/ui-snapshot.json",
+      "uia/ui-snapshot.png",
+      "report.md"
+    ]
+  },
+  "exitCode": 0
+}

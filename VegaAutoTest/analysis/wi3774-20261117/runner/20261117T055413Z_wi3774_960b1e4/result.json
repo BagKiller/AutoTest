@@ -1,0 +1,65 @@
+{
+  "schemaVersion": "1.0",
+  "runId": "20261117T055413Z_wi3774_960b1e4",
+  "workItemId": 3774,
+  "caseId": "wi3774-special-20261117",
+  "verdict": "ERROR",
+  "verdictReason": "HARNESS_EXCEPTION: 1 个用例异常（非断言失败）",
+  "verdictCode": "HARNESS_EXCEPTION",
+  "startedAt": "2026-11-17T13:54:12+08:00",
+  "finishedAt": "2026-11-17T13:55:11+08:00",
+  "durationMs": 58538,
+  "target": {
+    "repoRoot": "C:\\AutoTest\\workspaces\\daily-latest",
+    "gitCommit": "ab2ced6a19a731912257401588f48a07d23de55c",
+    "gitBranch": "HEAD",
+    "gitDirty": false,
+    "vegaExe": "C:\\AutoTest\\workspaces\\daily-latest\\Vega\\bin\\Debug\\net8.0-windows10.0.19041.0\\win-x64\\Vega.exe",
+    "vegaExeBuiltAt": "2026-11-17T11:58:20+08:00",
+    "rebuilt": false,
+    "builtFromCurrentSource": false
+  },
+  "channels": {
+    "l1Api": {
+      "available": false,
+      "baseUrl": "http://localhost:18901/vega-agent/",
+      "reason": "用例未产出 oracle-crosscheck 断言（本次层: uia）"
+    },
+    "l2Uia": {
+      "available": true,
+      "baseUrl": null,
+      "reason": null
+    },
+    "assertions": {
+      "available": true,
+      "baseUrl": null,
+      "reason": null
+    }
+  },
+  "assertions": [],
+  "summary": {
+    "total": 0,
+    "passed": 0,
+    "failed": 0,
+    "skipped": 0
+  },
+  "tests": [
+    {
+      "name": "Vega.AutoTest.Authored.SpaKlarfReproTests.AddingSpaPreservesExistingKlarfSelection",
+      "outcome": "Failed",
+      "durationMs": 40600,
+      "message": "Vega.AutoTest.Harness.UiElementNotFoundException : UI element not found: KLARF settings tab (automationId=-, name=KLARF, type=TabItem). Nearby elements: [TabItem 'Vega.UI.Inspection.OptionSettingsViewModel'; Text 'Display'; Custom ''; Tab '' #OptionSettingsView_OptionSettingTabControl; TabItem 'Vega.UI.Inspection.OptionSettingViewModel'; Text 'Default'; Custom ''; Custom ''; Group '布局选择'; Text '布局选择'; Text '默认布局'; ComboBox '' #SelectLayoutView_DefaultLayoutComboBox; Text 'DSA布局'; ComboBox '' #SelectLayoutView_DSALayoutComboBox; TabItem 'Vega.UI.Inspection.OptionSettingViewModel'; Text '+'; DataGrid '' #OptionSettingsView_OptionSettingViewModelsDataGrid; Header '' #PART_ColumnHeadersPresenter; HeaderItem '设置'; Text '设置'; Thumb '' #PART_RightHeaderGripper; HeaderItem '保存选项'; Text '保存选项'; Thumb '' #PART_LeftHeaderGripper; Thumb '' #PART_RightHeaderGripper; HeaderItem 'Rejected'; Text 'Rejected'; Thumb '' #PART_LeftHeaderGripper; Thumb '' #PART_RightHeaderGripper; HeaderItem 'OverLoad'; Text 'OverLoad'; Thumb '' #PART_LeftHeaderGripper; Thumb '' #PART_RightHeaderGripper; DataItem 'Vega.UI.Inspection.OptionSettingViewModel'; HeaderItem ''; Thumb '' #PART_BottomHeaderGripper; Custom 'Default'; Text 'Default'; Custom '项: Vega.UI.Inspection.OptionSettingViewModel，列显示索引: 1'; ComboBox '']\r\nat Vega.AutoTest.Harness.UiFind.Require(AutomationElement root, String description, String automationId, String name, Nullable`1 controlType, Boolean nameContains) in C:\\AutoTest\\AutoTest\\VegaAutoTest\\harness\\UiFind.cs:line 64\r\n   at Vega.AutoTest.Authored.SpaKlarfReproTests.OpenKlarfSelection() in C:\\AutoTest\\AutoTest\\VegaAutoTest\\probes\\authored\\wi3774-special-20261117\\ab2ced6a19a7\\SpaKlarfReproTests.cs:line 128\r\n   at Vega.AutoTest.Authored.SpaKlarfReproTests.AddingSpaPreservesExistingKlarfSelection() in C:\\AutoTest\\AutoTest\\VegaAutoTest\\probes\\authored\\wi3774-special-20261117\\ab2ced6a19a7\\SpaKlarfReproTests.cs:line 28\r\n   at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)\r\n   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)"
+    }
+  ],
+  "evidence": {
+    "dir": "C:\\AutoTest\\AutoTest\\VegaAutoTest\\analysis\\wi3774-20261117\\runner\\20261117T055413Z_wi3774_960b1e4",
+    "files": [
+      "uia/trx/uia.trx",
+      "uia/trx/uia.testhost.log",
+      "uia/ui-snapshot.json",
+      "uia/ui-snapshot.png",
+      "report.md"
+    ]
+  },
+  "exitCode": 3
+}

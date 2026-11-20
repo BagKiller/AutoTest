@@ -1,0 +1,75 @@
+﻿commit 64e92b2921f8c92f02b1722a88098cf5e1bae7d8
+Author:     Han, Wang <Han, Wang>
+AuthorDate: Wed Nov 18 11:08:35 2026 +0800
+Commit:     Ma, Junyan <Ma, Junyan>
+CommitDate: Wed Nov 18 11:08:35 2026 +0800
+
+    已合并 PR 5162: fix: V100 加装 Edge Detector 机型对位算法入口按数据源分岔（ED 源走边缘激光管线）
+    
+    ## 关联
+    
+    - 工作项：#3828（父需求 #3779）
+    
+    ## 改动内容
+    
+    Vega100 加装 Edge Detector 机型，边缘数据源 NotchDataSource=EdgeDetector 时对位算法入口按数据形态分岔（实机调试试出的结论，事前无此预设）：
+    
+    - ED 源数据与内→外机型专用边缘激光同为被动边缘接收器（信号剖面同族），走 PerformAlignment 边缘激光族；实机验证暗场管线 PerformAlignmentDUVLaser 对 ED 数据不适用
+    - 分岔条件 !IsOuterToInnerScan || NotchSource == EdgeDetector，与既有 bEdge 门（WaferRunSequenceBase:1468）同构；反转（ReverseTrackBlocks）在分支前统一执行，两族通用
+    - DarkField（缺省）与存量机型（无 HasEdgeDetector token）零行为变化
+    - 同步 decision 0026（Decision 节/约束/Review Triggers 消费点清单）、wafer-run state.md、NotchSource 属性注释消费点清单
+    
+    ## 验证
+    
+    - Vega.BL.WaferRun 构建 0 错误（master 基线 cherry-pick 80ac552d，无冲突）
+    - 编排逻辑按项目约定不写单测（wafer-run state.md Verification）
+    
+    ## 真机待验
+    
+    - ED 源对位走 PerformAlignment 后 notch 角度正确性
+    - DarkField 缺省路径回归（预期零变化）
+    
+    相关工作项: #3828
+
+diff --git a/Vega.BL.WaferRun/WaferRunSequenceBase.cs b/Vega.BL.WaferRun/WaferRunSequenceBase.cs
+index c8f2cf19..d3b67c37 100644
+--- a/Vega.BL.WaferRun/WaferRunSequenceBase.cs
++++ b/Vega.BL.WaferRun/WaferRunSequenceBase.cs
+@@ -2140,18 +2140,20 @@ public class WaferRunSequenceBase
+             if (_indexMapper.NeedsBlockReversal)                   // 外→内：edge 数据需反转以兼容 Alignment 内→外假设
+                 WaferRunDeviceControlHelper.ReverseTrackBlocks(ref _edgeScanData, _edgeTracks);
+ 
+-            // 外→内机型（Vega100）notch 数据来自主检测通道（DW/DN 暗场），须用主激光算法管线
+-            // PerformAlignmentDUVLaser（PrepareforAlignmentDUVLaser + FindEdgeDUVLaser + FindNotchDUV，
+-            // 与 XYCal NotchScan 诊断同一算法族）；PerformAlignment 是边缘激光信号管线（FindEdge/
+-            // FindNotch，阈值/拟合按边缘激光特性整定），对暗场主通道数据不适用。反转两族通用
++            // 算法入口跟数据形态走。外→内机型（Vega100）暗场家族源（NotchDataSource=DarkField，缺省）
++            // 的 notch 数据来自主检测通道（DW/DN 暗场），须用主激光算法管线 PerformAlignmentDUVLaser
++            // （PrepareforAlignmentDUVLaser + FindEdgeDUVLaser + FindNotchDUV，与 XYCal NotchScan 诊断
++            // 同一算法族）；EdgeDetector 源与内→外机型专用边缘激光同为被动边缘接收器（信号剖面同族），
++            // 走 PerformAlignment（FindEdge/FindNotch，阈值/拟合按边缘激光特性整定）。反转两族通用
+             // （均假定 track 0 = 最内圈、半径内→外升序）。内→外机型边缘激光数据仍走 PerformAlignment。
+-            if (ToolFeaturesHelper.IsOuterToInnerScan)
++            bool isEdgeLaserFamilyData = !ToolFeaturesHelper.IsOuterToInnerScan || NotchSource == NotchDataSourceType.EdgeDetector;
++            if (isEdgeLaserFamilyData)
+             {
+-                _waferAlignmentService.PerformAlignmentDUVLaser(ref _edgeScanData, cancellationToken);
++                _waferAlignmentService.PerformAlignment(ref _edgeScanData, cancellationToken);
+             }
+             else
+             {
+-                _waferAlignmentService.PerformAlignment(ref _edgeScanData, cancellationToken);
++                _waferAlignmentService.PerformAlignmentDUVLaser(ref _edgeScanData, cancellationToken);
+             }
+             _ = SaveEdgeDataAsync(edgeDataNameOverride ?? $"{waferRun.WaferID}_EdgeData_{waferRun.StartTime:yyyyMMddHHmmss}", _edgeScanData, _waferAlignmentService.CurrentEdgeScan);
+ 
+@@ -2415,7 +2417,8 @@ public class WaferRunSequenceBase
+     /// 照 <see cref="NotchFamily"/> 范本：首访缓存一次、无逐 run 复位（装机级配置进程内不漂移；
+     /// 范本注释自称"每 run"但代码无复位——照抄范本、勿自加复位）。非法值 Warning 至多一条。
+     /// 消费点：SetupHardwareAsync 的 O2I 块与 bEdge 判定、两处 AutoZero 加采偏置块、
+-    /// DoPerformEdgeDataCollectionAsync 通道解析、Dedicated 预扫 ED 分支。
++    /// DoPerformEdgeDataCollectionAsync 通道解析、Dedicated 预扫 ED 分支、
++    /// DoPerformEdgeAlignmentAsync 对位算法入口分岔（ED 源数据与边缘激光同族，走 PerformAlignment）。
+     /// </summary>
+     private NotchDataSourceType? _notchSource;
+ 

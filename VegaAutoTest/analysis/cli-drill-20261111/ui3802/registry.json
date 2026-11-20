@@ -1,0 +1,21 @@
+{
+  "schemaVersion": "1.0",
+  "cases": [
+    {
+      "id": "wi3802-bps-film-ui",
+      "title": "#3802 打开 BPS 诊断并核对膜系表界面",
+      "targetSha": "58606ec9c84080feb715145c8100262097b60ef0",
+      "workItems": [3802],
+      "tags": ["uia"],
+      "layers": {
+        "uia": {
+          "project": "analysis/cli-drill-20261111/ui3802/Ui3802.csproj",
+          "filter": "FullyQualifiedName~WorkItem3802L2",
+          "timeoutSeconds": 900,
+          "requiresVegaExe": true,
+          "minAssertions": 1
+        }
+      }
+    }
+  ]
+}

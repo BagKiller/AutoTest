@@ -1,0 +1,1 @@
+<Project><Import Project="C:\AutoTest\workspaces\manual-20261116\Directory.Build.targets" /><ItemGroup><ProjectReference Remove="..\Vega.ThirdParty.NiDQACard\Vega.ThirdParty.NiDQACard.vcxproj" /></ItemGroup></Project>

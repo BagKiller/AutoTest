@@ -1,0 +1,20 @@
+{
+  "phase": "READY",
+  "elapsedSeconds": 1.7628986,
+  "authenticatedTitle": "Vega500 (1.0.0.0, 2027-02-03) - su",
+  "expectedAccount": "su",
+  "loginSubmitted": true,
+  "menuPresent": true,
+  "menuEnabled": true,
+  "state": "\u7A7A\u95F2",
+  "stateChannel": "UIA",
+  "observationError": null,
+  "dialogError": null,
+  "timeline": [
+    {
+      "atSeconds": 1.7,
+      "state": "\u7A7A\u95F2"
+    }
+  ],
+  "mongoReachability": "reachable"
+}

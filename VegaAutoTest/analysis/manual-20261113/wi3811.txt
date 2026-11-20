@@ -1,0 +1,21 @@
+id=3811 rev=17
+## System.Title
+明场 KLARF 新增 PPD_Polarity 词条、尺寸 Haze 词条与 event 缺项回退
+
+## System.Description
+<div>需求背景：算法在明场（BF）通道回传 PPD_Polarity 属性（-1/0/1），需进 KLARF 输出，未回传时默认 0；不勾选「简化klarf输出」时明场 Extended 按子 arc_event 属性输出，但 event 缺 SIZE/NMSHE/ADC，需回退上级 defect 取值；明场 PPD/Extended 需附加输出 XSize/YSize/DSize/HazeAverage 词条。 </div>
+<div><br> </div>
+<div><b>变更：</b> </div>
+<div>1. PPD_Polarity 加入 KLARF 可选词条树（BF PPD，配方自动合并出新词条），按整数格式输出； </div>
+<div>2. event 输出路径 Size/nmSHE/ADC 未命中时回退主缺陷取值； </div>
+<div>3. 附加定义自动输出：BF PPD 补 XSize/YSize/HazeAverage，Extended 补 HazeAverage。 </div>
+
+## Microsoft.VSTS.TCM.ReproSteps
+
+
+## Microsoft.VSTS.Common.AcceptanceCriteria
+<div>1. KLARF 配置树 BF PPD 下可见并可勾选 PPD_Polarity 词条； </div>
+<div>2. 算法 JSON 回传 PPD_Polarity 时，KLARF 行按整数（-1/0/1）输出，未回传输出 0； </div>
+<div>3. 不勾「简化klarf输出」时，明场 Extended 行 event 缺失的 SIZE/NMSHE/ADC 取主缺陷值输出； </div>
+<div>4. 算法回传 XSize/YSize/HazeAverage 时，BF PPD/Extended 行对应列自动输出（无需手动勾选）； </div>
+<div>5. 存量配方打开 KLARF 配置自动合并出新增词条。 </div>

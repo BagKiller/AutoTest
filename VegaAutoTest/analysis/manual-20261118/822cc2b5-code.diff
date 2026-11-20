@@ -1,0 +1,165 @@
+﻿commit 822cc2b564262ac0728b2dba0a8e48755c800df5
+Author:     Qiu, Junwei <Qiu, Junwei>
+AuthorDate: Wed Nov 18 10:23:38 2026 +0800
+Commit:     Ma, Junyan <Ma, Junyan>
+CommitDate: Wed Nov 18 10:23:38 2026 +0800
+
+    已合并 PR 5159: feat: 结果摘要通道行追加荧光滤光片、光学滤波器与 PMT 电压简写
+    
+    ## 变更内容
+    - 结果页 Collection Summary 的通道行在原「通道名 偏振片 掩膜」后追加三项光学配置（同通道每项取值）：
+      - 荧光滤光片简写：FFilter1→`F1`，FFilter2→`F2`，None→`N`
+      - 光学滤波器简写：`ODpX_Y`→`ODX.Y`（OD0~OD4，保留半档小数，不带 `Collection` 前缀）
+      - PMT 电压裸数值（不带单位）
+    - 抽出 `FormatFluorescenceFilter` / `FormatOpticalFilter` 两个 internal 静态格式化函数，由 `BuildOpticalSummaryRows` 复用
+    - 同步单测与 Living SPEC recipe 模块条目（`modules/recipe/state.md` 第 97 条）
+    
+    ## 原因 / 背景
+    操作员需要从结果摘要直接核对每个启用通道的荧光滤光片、光学滤波器与 PMT 电压，无需回到配方编辑页查询。三项简写格式已与需求方确认。
+    
+    ## 验证方式
+    - `dotnet test Vega.Utility.Common.Tests`：745 通过 / 3 跳过（均为既有跳过，与本次无关）
+    - `CollectionSummaryOpticalRowsTests` 更新既有断言并新增 F1/F2/N、OD 全档位、PMT 小数与默认值、通道行顺序用例
+    - 结果页实际渲染建议仿真/实机加载配方后人工确认（DataGrid + `ExternalWideTokenTextConverter`）![屏幕截图 2026-11-12 092317 (2).png](http://win-devops:8080/DefaultCollection/8dbcd5b4-eeb3-44c5-ac52-dcec2c44d052/_apis/git/repositories/a9010300-dcb2-4e66-b195-767c1741515d/pullRequests/5159/attachments/%E5%B1%8F%E5%B9%95%E6%88%AA%E5%9B%BE%202026-11-12%20092317%20(2).png)
+    
+    相关工作项: #3819
+
+diff --git a/Vega.Data.Recipes/Elements/ResultsLayoutSections/SummaryContent.cs b/Vega.Data.Recipes/Elements/ResultsLayoutSections/SummaryContent.cs
+index 45cd5d94..89500fa9 100644
+--- a/Vega.Data.Recipes/Elements/ResultsLayoutSections/SummaryContent.cs
++++ b/Vega.Data.Recipes/Elements/ResultsLayoutSections/SummaryContent.cs
+@@ -147,7 +147,7 @@ public class CollectionSummaryContent
+ 
+     /// <summary>
+     /// 结果页 collection 摘要的光学信息行投影：Collection Info 行（入射+产量+激光功率(带 % 单位)+偏振）+
+-    /// 无键轨道行（每启用通道一段「通道名 偏振片 掩膜」，段间换行、每通道独占一行）。
++    /// 无键轨道行（每启用通道一段「通道名 偏振片 掩膜 荧光滤光片 光学滤波器 PMT 电压」，段间换行、每通道独占一行）。
+     /// 纯静态字段投影（无服务依赖），仅被本类构造函数与单测调用；掩膜值为机台本地名称字符串（decisions 0003/0010：名称即持久化身份），
+     /// 不转换不本地化；轨道行的宽通道去编号显示由 WaferSummaryView 渲染终点挂 ExternalWideTokenTextConverter 承担（decisions 0021）。
+     /// </summary>
+@@ -168,7 +168,7 @@ public class CollectionSummaryContent
+                     bool isNarrow = ChannelModeHelper.IsNarrowCollector(channel.ChannelMode);
+                     string polarizer = isNarrow ? channel.NPolarizer.ToString() : channel.WPolarizer.ToString();
+                     string mask = isNarrow ? channel.NMask : channel.WMask;
+-                    channelSegments.Add($"{channel.CollectorName} {polarizer} {mask}");
++                    channelSegments.Add($"{channel.CollectorName} {polarizer} {mask} {FormatFluorescenceFilter(channel.FFilter)} {FormatOpticalFilter(channel.OpticalFilter)} {channel.PMTVolatge}");
+                 }
+             }
+         }
+@@ -186,6 +186,31 @@ public class CollectionSummaryContent
+         return rows;
+     }
+ 
++    /// <summary>
++    /// 荧光滤光片简写：FFilter1/FFilter2 显示 F1/F2，None 显示 N。
++    /// </summary>
++    internal static string FormatFluorescenceFilter(FluorescenceFilterType filter) => filter switch
++    {
++        FluorescenceFilterType.FFilter1 => "F1",
++        FluorescenceFilterType.FFilter2 => "F2",
++        _ => "N",
++    };
++
++    /// <summary>
++    /// 光学滤波器简写：按枚举名派生 ODX.Y（ODp2_5→OD2.5），无定义值显示 OD?。
++    /// </summary>
++    internal static string FormatOpticalFilter(CollectODFilterType filter)
++    {
++        // 注意：兜底不能输出裸枚举名（无定义值即裸数字），否则与相邻 PMT 电压段同形、无法分辨。
++        string name = filter.ToString();
++        if (!name.StartsWith("ODp", StringComparison.Ordinal))
++        {
++            return "OD?";
++        }
++
++        return $"OD{name[3..].Replace('_', '.')}";
++    }
++
+     /// <summary>
+     /// Edge Exclusion 值格式化：带 mm 单位；访问链为 null（数据异常降级路径）时返回空串，不输出无数值的裸单位。
+     /// </summary>
+diff --git a/Vega.Utility.Common.Tests/CollectionSummaryOpticalRowsTests.cs b/Vega.Utility.Common.Tests/CollectionSummaryOpticalRowsTests.cs
+index 2c79d67c..75fd4a6c 100644
+--- a/Vega.Utility.Common.Tests/CollectionSummaryOpticalRowsTests.cs
++++ b/Vega.Utility.Common.Tests/CollectionSummaryOpticalRowsTests.cs
+@@ -8,7 +8,8 @@ namespace Vega.Utility.Common.Tests;
+ /// <summary>
+ ///   CollectionSummaryContent.BuildOpticalSummaryRows 光学信息行投影的单测：
+ ///   Collection Info 行追加激光功率与偏振、无键轨道行的 DN/宽通道 N 系与 W 系字段映射
+-///   （陷阱值验证不串读）、多通道每段一行（\n 换行）与通道顺序、禁用通道过滤、
++///   （陷阱值验证不串读）、通道行末追加荧光滤光片/光学滤波器/PMT 电压简写、
++///   多通道每段一行（\n 换行）与通道顺序、禁用通道过滤、
+ ///   零启用通道、行序、collectors 为 null、键唯一、Edge Exclusion 单位与空值兜底（FormatEdgeExclusion）。
+ ///   勿用 ChannelMode.DW1_Oblique 构造 DFCollectorSettingContent：其 ctor 访问
+ ///   CollectorTypeExtensions.EnabledCollectors（配置服务，测试宿主不可用）；
+@@ -64,7 +65,7 @@ public class CollectionSummaryOpticalRowsTests
+         string collectorName = channelMode.ToString().Split('_')[0];
+         // 陷阱值 "S" 是单字母，会误伤 "HighSensitivity" 等正文，断言收窄到轨道行本身
+         string trackRow = TrackRowValue(rows);
+-        Assert.Equal($"{collectorName} {nameof(NCollectorPolarizerType.P)} N-X1", trackRow);
++        Assert.Equal($"{collectorName} {nameof(NCollectorPolarizerType.P)} N-X1 N OD0 500", trackRow);
+         Assert.DoesNotContain("W-Leak", trackRow);
+         Assert.DoesNotContain(nameof(WCollectorPolarizerType.S), trackRow);
+     }
+@@ -79,7 +80,7 @@ public class CollectionSummaryOpticalRowsTests
+             wPolarizer: WCollectorPolarizerType.POL1, nPolarizer: NCollectorPolarizerType.P);
+ 
+         string collectorName = channelMode.ToString().Split('_')[0];
+-        Assert.Equal($"{collectorName} {nameof(WCollectorPolarizerType.POL1)} W1W2-X5", TrackRowValue(rows));
++        Assert.Equal($"{collectorName} {nameof(WCollectorPolarizerType.POL1)} W1W2-X5 N OD0 500", TrackRowValue(rows));
+         Assert.DoesNotContain(rows, row => row.Value.Contains("N-Leak"));
+     }
+ 
+@@ -97,10 +98,51 @@ public class CollectionSummaryOpticalRowsTests
+             ]);
+ 
+         Assert.Equal(
+-            $"DW2 {nameof(WCollectorPolarizerType.POL1)} W1W2-X5\nDN {nameof(NCollectorPolarizerType.P)} N-X1",
++            $"DW2 {nameof(WCollectorPolarizerType.POL1)} W1W2-X5 N OD0 500\nDN {nameof(NCollectorPolarizerType.P)} N-X1 N OD0 500",
+             TrackRowValue(rows));
+     }
+ 
++    [Theory]
++    [InlineData(FluorescenceFilterType.None, "N")]
++    [InlineData(FluorescenceFilterType.FFilter1, "F1")]
++    [InlineData(FluorescenceFilterType.FFilter2, "F2")]
++    public void FluorescenceFilter_UsesShorthand(FluorescenceFilterType filter, string expected)
++        => Assert.Equal(expected, CollectionSummaryContent.FormatFluorescenceFilter(filter));
++
++    [Theory]
++    [InlineData(CollectODFilterType.ODp0, "OD0")]
++    [InlineData(CollectODFilterType.ODp0_5, "OD0.5")]
++    [InlineData(CollectODFilterType.ODp1, "OD1")]
++    [InlineData(CollectODFilterType.ODp1_5, "OD1.5")]
++    [InlineData(CollectODFilterType.ODp2, "OD2")]
++    [InlineData(CollectODFilterType.ODp2_5, "OD2.5")]
++    [InlineData(CollectODFilterType.ODp3, "OD3")]
++    [InlineData(CollectODFilterType.ODp3_5, "OD3.5")]
++    [InlineData(CollectODFilterType.ODp4, "OD4")]
++    [InlineData((CollectODFilterType)9, "OD?")]
++    public void OpticalFilter_UsesShorthand(CollectODFilterType filter, string expected)
++        => Assert.Equal(expected, CollectionSummaryContent.FormatOpticalFilter(filter));
++
++    [Fact]
++    public void ChannelRow_AppendsFluorescenceFilterOpticalFilterAndPmtVoltage()
++    {
++        DFCollectorSettingContent channel = BuildChannel(
++            ChannelMode.DN_Oblique, wMask: "W-Leak", nMask: "N-X1",
++            wPolarizer: WCollectorPolarizerType.S, nPolarizer: NCollectorPolarizerType.P);
++        channel.FFilter = FluorescenceFilterType.FFilter2;
++        channel.OpticalFilter = CollectODFilterType.ODp2_5;
++        channel.PMTVolatge = 650.5;
++
++        List<KeyValuePair<string, string>> rows = CollectionSummaryContent.BuildOpticalSummaryRows(
++            IncidenceType.Oblique,
++            ThroughputType.HighSensitivity,
++            PolarizerType.P,
++            100,
++            [channel]);
++
++        Assert.Equal("DN P N-X1 F2 OD2.5 650.5", TrackRowValue(rows));
++    }
++
+     [Fact]
+     public void DisabledChannel_IsFiltered()
+     {

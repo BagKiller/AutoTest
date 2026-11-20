@@ -1,13 +1,13 @@
-"""Bounded model inference: JSON in/out, no model shell/file/MCP tools.
+"""Legacy frozen-test generator. Not the nightly driver.
 
-The controller, rather than a conversational agent, owns all writes and execution.
-Codex CLI is used only as the authenticated model transport (no API key copy).
+The nightly Cursor CLI session reads the work item, watches the Vega UI, and decides
+the next step itself (daily/model-interactive-runbook.md). This module only
+returns JSON for an old batch that is already being frozen. It has no shell and
+cannot see the screen.
 """
 import hashlib
 import json
-import os
 import re
-import shutil
 from pathlib import Path
 from xml.sax.saxutils import escape
 import ui_repro
@@ -184,66 +184,37 @@ Unselected profiles of a common module are not missing coverage.
 '''
 
 
-def command(executable, folder, schema, output):
-    # No user/project config, hooks, plugins or MCP connectors are inherited.
-    # CWD is an isolated evidence directory; auth stays in its normal private store.
-    return [executable, 'exec', '--ignore-user-config', '--ephemeral', '--skip-git-repo-check',
-        '--sandbox', 'read-only', '--json', '--color', 'never',
-        '--disable', 'shell_tool', '--disable', 'multi_agent', '--disable', 'apply_patch_freeform',
-        '--disable', 'remote_plugin', '-c', 'web_search="disabled"',
-        '-c', 'model_reasoning_effort="high"',
-        '-c', 'approval_policy="never"', '-c', 'project_doc_max_bytes=0',
-        '--cd', str(folder), '--output-schema', str(schema), '--output-last-message', str(output), '-']
+def ui_operation_lookup():
+    """Confirmed hit targets. Nightly generation cannot open this file itself."""
+    path = Path(__file__).with_name('ui-operation-lookup.md')
+    if not path.is_file():
+        return ''
+    text = path.read_text(encoding='utf-8').strip()
+    if len(text) > 12000:
+        text = text[:12000] + '\n[ui-operation-lookup truncated]'
+    return (
+        '\nUI OPERATION LOOKUP (daily/ui-operation-lookup.md). '
+        'When a row matches the screen action, follow 正确操作 and do not repeat 失败做法. '
+        'Visible Chinese text wins over English resource names. Prefer the listed AutomationId.\n'
+        + text + '\n')
+
+
+def request_text(payload):
+    public_payload = {k: v for k, v in payload.items() if not k.startswith('_')}
+    return POLICY + ui_operation_lookup() + '\nINPUT DATA:\n' + json.dumps(
+        public_payload, ensure_ascii=False)
+
+
+def command(*_args, **_kwargs):
+    raise RuntimeError('Codex CLI transport has been removed. Checks run through the local Cursor CLI.')
 
 
 def find_transport():
-    configured = os.environ.get('VEGA_CODEX_EXECUTABLE')
-    if configured:
-        path = Path(configured)
-        if not path.is_absolute() or not path.is_file() or path.suffix.lower() != '.exe':
-            raise RuntimeError('VEGA_CODEX_EXECUTABLE must name an existing absolute executable')
-        return str(path)
-    found = shutil.which('codex')
-    if found and Path(found).suffix.lower() == '.exe':
-        return found
-    # Task Scheduler does not inherit the desktop app's injected PATH. Resolve
-    # its installed native CLI explicitly, never assume an npm .cmd is executable.
-    root = Path(os.environ.get('LOCALAPPDATA', str(Path.home() / 'AppData/Local'))) / 'OpenAI/Codex/bin'
-    candidates = sorted(root.glob('*/codex.exe'), key=lambda p: p.stat().st_mtime, reverse=True)
-    if candidates:
-        return str(candidates[0])
-    raise RuntimeError('Installed Codex CLI model transport is unavailable')
+    raise RuntimeError('Codex CLI transport has been removed. Checks run through the local Cursor CLI.')
 
 
 def infer(d, folder, payload, executable=None, timeout=1200):
-    executable = executable or find_transport()
-    folder.mkdir(parents=True, exist_ok=True)
-    schema, output = folder / 'schema.json', folder / 'response.json'
-    d.save(schema, SCHEMA)
-    public_payload = {k: v for k, v in payload.items() if not k.startswith('_')}
-    request = POLICY + '\nINPUT DATA:\n' + json.dumps(public_payload, ensure_ascii=False)
-    (folder / 'request.txt').write_text(request, encoding='utf-8')
-    # A replay after interruption must not mistake an older response for this call.
-    output.unlink(missing_ok=True)
-    with (folder / 'events.jsonl').open('w', encoding='utf-8') as log:
-        import subprocess
-        with (folder / 'request.txt').open('r', encoding='utf-8') as prompt:
-            result = d.run_bounded(command(executable, folder, schema, output), timeout=timeout,
-                stdin=prompt, stdout=log, stderr=subprocess.STDOUT, cwd=folder)
-    if result.returncode or not output.exists():
-        events = (folder / 'events.jsonl').read_text(encoding='utf-8', errors='replace').lower()
-        if 'usage limit' in events or 'rate limit' in events:
-            raise ModelCapacityUnavailable('Model account usage limit reached; authoring will resume after capacity is available')
-        raise RuntimeError('Model generation failed; see ' + str(folder / 'events.jsonl'))
-    # Tool use would violate the generation-only connector contract.
-    for line in (folder / 'events.jsonl').read_text(encoding='utf-8', errors='replace').splitlines():
-        try:
-            event = json.loads(line)
-        except ValueError:
-            continue
-        if event.get('item', {}).get('type') in ('command_execution', 'file_change', 'mcp_tool_call', 'web_search'):
-            raise RuntimeError('Model transport attempted tool use; response rejected')
-    return d.load(output)
+    raise RuntimeError('Codex CLI transport has been removed. Checks run through the local Cursor CLI.')
 
 
 def context(d, child, manifest, registry, sched):

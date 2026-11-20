@@ -1,0 +1,106 @@
+{
+  "schemaVersion": "1.0",
+  "runId": "20261119T103813Z_wi3804_1886041",
+  "workItemId": 3804,
+  "caseId": "wi3804-lot-recipe-recheck",
+  "verdict": "PASS",
+  "verdictReason": "OK: 4/4 断言通过",
+  "verdictCode": "OK",
+  "startedAt": "2026-11-19T18:38:13+08:00",
+  "finishedAt": "2026-11-19T18:39:20+08:00",
+  "durationMs": 67575,
+  "target": {
+    "repoRoot": "C:\\AutoTest\\workspaces\\manual-20261111",
+    "gitCommit": "58606ec9c84080feb715145c8100262097b60ef0",
+    "gitBranch": "HEAD",
+    "gitDirty": false,
+    "vegaExe": "C:\\AutoTest\\workspaces\\manual-20261111\\Vega\\bin\\Debug\\net8.0-windows10.0.19041.0\\win-x64\\Vega.exe",
+    "vegaExeBuiltAt": "2026-11-19T16:00:47+08:00",
+    "rebuilt": false,
+    "builtFromCurrentSource": false
+  },
+  "channels": {
+    "l1Api": {
+      "available": false,
+      "baseUrl": "http://localhost:18901/vega-agent/",
+      "reason": "用例未产出 oracle-crosscheck 断言（本次层: uia）"
+    },
+    "l2Uia": {
+      "available": true,
+      "baseUrl": null,
+      "reason": null
+    },
+    "assertions": {
+      "available": true,
+      "baseUrl": null,
+      "reason": null
+    }
+  },
+  "assertions": [
+    {
+      "id": "filter-match",
+      "kind": "UI",
+      "description": "输入 BFScan 后列表收缩；不含关键词的未选中项消失；当前选中项仍在",
+      "expected": "count<5; keep 'JRH_EPI_Particle_dual'; other items contain BFScan",
+      "actual": "count=2; items=JRH_EPI_Particle_dual | Cali Recipe Library/BFScanRecipe",
+      "delta": null,
+      "tolerance": null,
+      "result": "PASS"
+    },
+    {
+      "id": "filter-clear",
+      "kind": "UI",
+      "description": "清空输入后恢复全量列表",
+      "expected": "count>=5",
+      "actual": "count=5",
+      "delta": null,
+      "tolerance": null,
+      "result": "PASS"
+    },
+    {
+      "id": "save-reopen",
+      "kind": "UI",
+      "description": "过滤结果中选中 BFScanRecipe，保存并关闭后再进入，显示该项",
+      "expected": "contains BFScanRecipe",
+      "actual": "Cali Recipe Library/BFScanRecipe",
+      "delta": null,
+      "tolerance": null,
+      "result": "PASS"
+    },
+    {
+      "id": "unmatched-leave",
+      "kind": "UI",
+      "description": "输入未匹配文字后离开，回显实际选中项，且不改变已保存内容",
+      "expected": "echo='Cali Recipe Library/BFScanRecipe' saved='Cali Recipe Library/BFScanRecipe'",
+      "actual": "echo='Cali Recipe Library/BFScanRecipe' saved='Cali Recipe Library/BFScanRecipe'",
+      "delta": null,
+      "tolerance": null,
+      "result": "PASS"
+    }
+  ],
+  "summary": {
+    "total": 4,
+    "passed": 4,
+    "failed": 0,
+    "skipped": 0
+  },
+  "tests": [
+    {
+      "name": "Vega.AutoTest.L2.WorkItem3804Check.RecipeFilterSaveAndUnmatchedLeave",
+      "outcome": "Passed",
+      "durationMs": 56241,
+      "message": null
+    }
+  ],
+  "evidence": {
+    "dir": "C:\\AutoTest\\AutoTest\\VegaAutoTest\\analysis\\manual-wi3804\\runner\\20261119T103813Z_wi3804_1886041",
+    "files": [
+      "uia/trx/uia.trx",
+      "uia/trx/uia.testhost.log",
+      "uia/ui-snapshot.json",
+      "uia/ui-snapshot.png",
+      "report.md"
+    ]
+  },
+  "exitCode": 0
+}

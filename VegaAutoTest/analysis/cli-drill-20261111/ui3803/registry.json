@@ -1,0 +1,21 @@
+{
+  "schemaVersion": "1.0",
+  "cases": [
+    {
+      "id": "wi3803-optics-shutter",
+      "title": "#3803 打开光学诊断并查找慢门控件",
+      "targetSha": "58606ec9c84080feb715145c8100262097b60ef0",
+      "workItems": [3803],
+      "tags": ["uia"],
+      "layers": {
+        "uia": {
+          "project": "analysis/cli-drill-20261111/ui3803/Ui3803.csproj",
+          "filter": "FullyQualifiedName~WorkItem3803L2",
+          "timeoutSeconds": 900,
+          "requiresVegaExe": true,
+          "minAssertions": 1
+        }
+      }
+    }
+  ]
+}

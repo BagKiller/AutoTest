@@ -1,0 +1,65 @@
+{
+  "schemaVersion": "1.0",
+  "runId": "20261119T081222Z_wi3802_654c3fc",
+  "workItemId": 3802,
+  "caseId": "wi3802-bps-film-ui",
+  "verdict": "BLOCKED",
+  "verdictReason": "UI_NOT_READY: Vega.AutoTest.Harness.UiPrerequisiteException : [VEGA_UI_PRECONDITION:UI_NOT_READY] 诊断树没有 BPS；树=系统诊断:Vega.Data.Navigation.FixedNavigationNode / ComponentManager:Vega.Data.Navigation.FixedNavigationNode / 配置管理:Vega.Data.Navigation.FixedNavigationNode / 分析子系统:Vega.Data.Navigation.FixedNavigationNode / 设备诊断:Vega.Data.Navigation.FixedNavigationNode / EFEM控制:Vega.Data.Navigation.FixedNavigationNode / DataRecorder:Vega.Data.Navigation.FixedNavigationNode\r\nat Vega.AutoTest.L2.WorkItem3802L2.OpenBpsDiagnosticsFilmUi() in C:\\AutoTest\\AutoTest\\VegaAutoTest\\analysis\\cli-drill-20261111\\ui3802\\WorkItem3802L2.cs:line 25\r\n   at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)\r\n   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)",
+  "verdictCode": "UI_NOT_READY",
+  "startedAt": "2026-11-19T16:12:22+08:00",
+  "finishedAt": "2026-11-19T16:13:04+08:00",
+  "durationMs": 42156,
+  "target": {
+    "repoRoot": "C:\\AutoTest\\workspaces\\manual-20261111",
+    "gitCommit": "58606ec9c84080feb715145c8100262097b60ef0",
+    "gitBranch": "HEAD",
+    "gitDirty": false,
+    "vegaExe": "C:\\AutoTest\\workspaces\\manual-20261111\\Vega\\bin\\Debug\\net8.0-windows10.0.19041.0\\win-x64\\Vega.exe",
+    "vegaExeBuiltAt": "2026-11-19T16:00:47+08:00",
+    "rebuilt": false,
+    "builtFromCurrentSource": false
+  },
+  "channels": {
+    "l1Api": {
+      "available": false,
+      "baseUrl": "http://localhost:18901/vega-agent/",
+      "reason": "用例未产出 oracle-crosscheck 断言（本次层: uia）"
+    },
+    "l2Uia": {
+      "available": true,
+      "baseUrl": null,
+      "reason": null
+    },
+    "assertions": {
+      "available": true,
+      "baseUrl": null,
+      "reason": null
+    }
+  },
+  "assertions": [],
+  "summary": {
+    "total": 0,
+    "passed": 0,
+    "failed": 0,
+    "skipped": 0
+  },
+  "tests": [
+    {
+      "name": "Vega.AutoTest.L2.WorkItem3802L2.OpenBpsDiagnosticsFilmUi",
+      "outcome": "Failed",
+      "durationMs": 31449,
+      "message": "Vega.AutoTest.Harness.UiPrerequisiteException : [VEGA_UI_PRECONDITION:UI_NOT_READY] 诊断树没有 BPS；树=系统诊断:Vega.Data.Navigation.FixedNavigationNode / ComponentManager:Vega.Data.Navigation.FixedNavigationNode / 配置管理:Vega.Data.Navigation.FixedNavigationNode / 分析子系统:Vega.Data.Navigation.FixedNavigationNode / 设备诊断:Vega.Data.Navigation.FixedNavigationNode / EFEM控制:Vega.Data.Navigation.FixedNavigationNode / DataRecorder:Vega.Data.Navigation.FixedNavigationNode\r\nat Vega.AutoTest.L2.WorkItem3802L2.OpenBpsDiagnosticsFilmUi() in C:\\AutoTest\\AutoTest\\VegaAutoTest\\analysis\\cli-drill-20261111\\ui3802\\WorkItem3802L2.cs:line 25\r\n   at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)\r\n   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)"
+    }
+  ],
+  "evidence": {
+    "dir": "C:\\AutoTest\\AutoTest\\VegaAutoTest\\analysis\\cli-drill-20261111\\runner\\20261119T081222Z_wi3802_654c3fc",
+    "files": [
+      "uia/trx/uia.trx",
+      "uia/trx/uia.testhost.log",
+      "uia/ui-snapshot.json",
+      "uia/ui-snapshot.png",
+      "report.md"
+    ]
+  },
+  "exitCode": 2
+}

@@ -1,0 +1,38 @@
+﻿已合并 PR 5140: feat: 表面质量支持按膜系分枝测量（O 树七层膜维度插层 + F2 AFS 修订）
+
+## 概要
+
+表面质量「膜选项」变更（需求 3 + 需求 2 随批）：结果树六层改七层（膜维度插层），测量按所选膜系分枝沉淀；AFS 子函数按膜查表下发 BPS OD/曝光；正入射/C 组改为相机停靠保护并清 AFS 超时残留。
+
+Work Item: #3815
+
+## 主要变更
+
+- **七层结果树**：wafer → 膜（FilmResult）→ ②组 → ③通道 → ④PMT → ⑤LP → ⑥Reading；膜名候选源自 BPS 膜系标定表（首项恒 default），表面质量侧只读
+- **膜指针**：config 增 CurrentFilmName；切 wafer 一律重置回 default（防跨 wafer 残留错挂枝）；SetCurrentFilm 只置指针＋置脏
+- **存量迁移**：旧六层 Results.json 读入自动并入 default 膜枝（迁移先于值域校验，顺序钉死）；导入文件同路径继承迁移
+- ** 修订（AFS 三分派）**：斜入射×P/S = 子函数（膜查表经 SetBPSOD(filmTable) 收口，default 传 null 不碰膜表；整机配置门 AutomaticEnableAutoFocus&&DoBPSSetting 关闭时完全不下发 BPS 设置〔含照旧设置〕——有意受整机配置控制，用户裁定 2026-11-12）；正入射/C = 不执行子函数，双 BPS OD4 停靠（各按机型支持集守卫）＋喂狗＋显式 AfsTimeout=false 清位；其余位点喂狗续命
+- **记账 API 带膜**：AttachGroup/ReplacePmt/SavePmtResult 均含 FilmResult 引用，事件带 FilmName，运行期零膜匹配
+- **UI**：配置页膜下拉（膜表加载失败降级 default＋红字提示）；运行页摘要带目标膜＋膜候选单次快照贯穿门禁与派生；结果页「晶圆＋膜」两级选择、导出文件名＝晶圆名_膜名
+- **消费方**：灵敏度助手 Haze Reader 跨膜取最新实测（全局回退与结果页 GetLastMeasured 同构——候选集内任一 ④ 有采集时间即全按采集时间取最大、无采集者不参与抬升；全无采集才回退操作时间；重拟合/重判不虚抬）
+
+## Living SPEC
+
+新增 decision 0027（膜维度插层与 F2 三分派、整机门控裁决、直调豁免、跨膜消费方口径）；surface-quality/recipe 两个 state.md 与 modules/index.md 已同步。
+
+## 测试
+
+- Vega.Data.SurfaceQuality.Tests 104/104
+- Vega.BL.SurfaceQuality.Tests 61/61
+- Vega.UI.Diagnostics.Tests 68 通过 + 1 既有 Skip（宿主限制）
+- Vega.UI.Inspection.Tests 183/183（含 HazeReadingSessionTests 跨膜取点口径 4 项）
+- Vega.Architecture.Tests 3 项失败为既有基线漂移（合并前后同 3 项，*_MatchesBaseline 基线比对；HC3a 输出可见 wpftmp 临时程序集，与本批无关）
+
+## 真机待验
+
+1. 膜查表下发的 BPS OD/曝光实测值
+2. 正入射组停靠保护位时序与残留清位
+3. 旧结果文件升级后 default 膜下数据完整性
+
+相关工作项: #3815
+

@@ -1,3 +1,5 @@
+> 当前每日策略：Cursor CLI 在本机逐项观察真实界面，以提交 SHA＋绑定工作项为单位；无工单明确跳过。旧 Windows 控制器仅供显式历史复验。先读 daily/AGENTS.md §1.4 和 daily/model-interactive-runbook.md。
+
 # VegaAutoTest 外挂化验证体系说明文档
 
 > 版本：2.0 ｜ 2026-09-17（独立仓库版）
@@ -14,7 +16,7 @@ VegaAutoTest 是 Vega 半导体检测设备控制软件的**确定性自动化�
 1. **人**：开发/测试在本地手跑 UIA 回归用例，验证某工作项的修复效果。
 2. **外部编排层**（Claude Code 的 `wi-verify` skill、code_indicator/vega-agent）：通过 **Runner CLI** 以进程边界方式调用，消费机器可读的 `result.json` 得到 PASS/FAIL/BLOCKED/ERROR 判定。
 
-核心纪律：**AI 在准备阶段理解需求、复用或补写可执行测试；程序执行冻结测试并判定结果**。断言和输入基准在冻结前准备并检查，冻结后不得临场修改。正式判定逻辑固化在 `VerdictResolver`，不得由 LLM 改写结论。每日入口以 `daily/AGENTS.md` 和 `daily/README.md` 的 2026-10-28 流程为准。
+正式判定仍只来自 Runner `result.json`，不得由模型改写结论。每日入口是本机 Cursor CLI：按 `daily/AGENTS.md` §1.4 和 `daily/model-interactive-runbook.md` 读取工作项、看真实界面并决定下一步。历史批次的冻结计划仍然不能改。
 
 ### 1.1 三层结构
 

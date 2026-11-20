@@ -1,0 +1,21 @@
+{
+  "schemaVersion": "1.0",
+  "cases": [
+    {
+      "id": "wi3804-lot-recipe-filter",
+      "title": "#3804 Lot Recipe 下拉输入过滤与清空恢复",
+      "targetSha": "58606ec9c84080feb715145c8100262097b60ef0",
+      "workItems": [3804],
+      "tags": ["uia"],
+      "layers": {
+        "uia": {
+          "project": "analysis/cli-drill-20261111/ui3804/Ui3804.csproj",
+          "filter": "FullyQualifiedName~WorkItem3804L2",
+          "timeoutSeconds": 900,
+          "requiresVegaExe": true,
+          "minAssertions": 2
+        }
+      }
+    }
+  ]
+}

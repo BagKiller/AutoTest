@@ -1,0 +1,15 @@
+﻿commit 23a12f319c94a6e223fa6d0fffb5ca2222c99a9d
+Author:     Zhu, Siyuan <Zhu, Siyuan>
+AuthorDate: Wed Nov 11 14:26:37 2026 +0800
+Commit:     Han, Wang <Han, Wang>
+CommitDate: Wed Nov 11 14:26:37 2026 +0800
+
+    已合并 PR 5116: feat(bps): 支持按膜系独立标定并下发 BPS OD/增益
+    
+    feat(bps): 支持按膜系独立标定并下发 BPS OD/增益
+    
+    1 -新增膜系表 LaserBpsODFilmConfig.json，与机器级 default 表分文件存储；并且BPS diag 产生的 该表可以
+     自动应用在recipe 中
+    2 优化了BPS diag  的校验功能，包括展示UI和判定条件。优化了结果展示界面的按钮行为
+    
+    相关工作项: #3802

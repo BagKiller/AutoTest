@@ -1,0 +1,20 @@
+﻿已合并 PR 5159: feat: 结果摘要通道行追加荧光滤光片、光学滤波器与 PMT 电压简写
+
+## 变更内容
+- 结果页 Collection Summary 的通道行在原「通道名 偏振片 掩膜」后追加三项光学配置（同通道每项取值）：
+  - 荧光滤光片简写：FFilter1→`F1`，FFilter2→`F2`，None→`N`
+  - 光学滤波器简写：`ODpX_Y`→`ODX.Y`（OD0~OD4，保留半档小数，不带 `Collection` 前缀）
+  - PMT 电压裸数值（不带单位）
+- 抽出 `FormatFluorescenceFilter` / `FormatOpticalFilter` 两个 internal 静态格式化函数，由 `BuildOpticalSummaryRows` 复用
+- 同步单测与 Living SPEC recipe 模块条目（`modules/recipe/state.md` 第 97 条）
+
+## 原因 / 背景
+操作员需要从结果摘要直接核对每个启用通道的荧光滤光片、光学滤波器与 PMT 电压，无需回到配方编辑页查询。三项简写格式已与需求方确认。
+
+## 验证方式
+- `dotnet test Vega.Utility.Common.Tests`：745 通过 / 3 跳过（均为既有跳过，与本次无关）
+- `CollectionSummaryOpticalRowsTests` 更新既有断言并新增 F1/F2/N、OD 全档位、PMT 小数与默认值、通道行顺序用例
+- 结果页实际渲染建议仿真/实机加载配方后人工确认（DataGrid + `ExternalWideTokenTextConverter`）![屏幕截图 2026-11-12 092317 (2).png](http://win-devops:8080/DefaultCollection/8dbcd5b4-eeb3-44c5-ac52-dcec2c44d052/_apis/git/repositories/a9010300-dcb2-4e66-b195-767c1741515d/pullRequests/5159/attachments/%E5%B1%8F%E5%B9%95%E6%88%AA%E5%9B%BE%202026-11-12%20092317%20(2).png)
+
+相关工作项: #3819
+

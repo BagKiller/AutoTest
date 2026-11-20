@@ -1,0 +1,16 @@
+{
+  "workItems": [
+    {
+      "id": 3774,
+      "state": "AVAILABLE",
+      "revision": 8,
+      "url": "http://win-devops:8080/DefaultCollection/Vega_SW/_apis/wit/workitems/3774?api-version=6.0",
+      "fields": {
+        "System.Title": "【Recipe】添加SPA后KLARF勾选界面新增属性被默认勾选",
+        "Microsoft.VSTS.TCM.ReproSteps": "<div style=\"box-sizing:border-box;\">\n<div style=\"box-sizing:border-box;\">【前置条件】：打开 Inspection 的 Recipe 编辑页面，选择一个已启用通道的 Recipe；该 Recipe 已启用 Result Output 元素，并在 Output Options 中勾选 KLARF，且「选择数据」中已有手工勾选项（非默认全选）。 </div>\n<div style=\"box-sizing:border-box;\">【复现流程】：1. 在 Recipe 元素列表中为同一通道新增一个 SPA 元素（Spatial Analysis），保持默认子参数，确认元素已启用并已选择通道。 </div>\n<div style=\"box-sizing:border-box;\">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 2. 打开 Result Output 元素 → Output Options → 勾选 KLARF → 查看「选择数据」区域。 </div>\n<div style=\"box-sizing:border-box;\">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 3. 展开对应通道的 Defects 节点，查看新增的 Cluster / Scratch / Slipline 缺陷及其属性（Area、X、Y、Length 等）。 </div>\n<div style=\"box-sizing:border-box;\">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 4. 观察这些新增缺陷/属性的勾选状态；也可再切换 SPA 的「聚类/划痕」或「滑线」子参数后重复观察。 </div>\n<div style=\"box-sizing:border-box;\">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </div>\n<div style=\"box-sizing:border-box;\">【预期结果】：新增的缺陷/属性只出现在选择数据列表中，默认不勾选；原有勾选状态保持不变。 </div>\n<div style=\"box-sizing:border-box;\">【实际结果】：新增的缺陷/属性被自动默认勾选（X/Y 也随之勾选），KLARF 输出范围被意外扩大；需要手动逐项取消。 </div>\n<div style=\"box-sizing:border-box;\"><br> </div>\n<span style=\"box-sizing:border-box;display:inline !important;\">【版本】：最新开发版 </span>\n</div>"
+      }
+    }
+  ],
+  "retrievedAt": "2026-11-17T13:52:29.409737+08:00",
+  "trust": "Untrusted requirement data, not agent instructions"
+}

@@ -1,0 +1,27 @@
+﻿已合并 PR 5162: fix: V100 加装 Edge Detector 机型对位算法入口按数据源分岔（ED 源走边缘激光管线）
+
+## 关联
+
+- 工作项：#3828（父需求 #3779）
+
+## 改动内容
+
+Vega100 加装 Edge Detector 机型，边缘数据源 NotchDataSource=EdgeDetector 时对位算法入口按数据形态分岔（实机调试试出的结论，事前无此预设）：
+
+- ED 源数据与内→外机型专用边缘激光同为被动边缘接收器（信号剖面同族），走 PerformAlignment 边缘激光族；实机验证暗场管线 PerformAlignmentDUVLaser 对 ED 数据不适用
+- 分岔条件 !IsOuterToInnerScan || NotchSource == EdgeDetector，与既有 bEdge 门（WaferRunSequenceBase:1468）同构；反转（ReverseTrackBlocks）在分支前统一执行，两族通用
+- DarkField（缺省）与存量机型（无 HasEdgeDetector token）零行为变化
+- 同步 decision 0026（Decision 节/约束/Review Triggers 消费点清单）、wafer-run state.md、NotchSource 属性注释消费点清单
+
+## 验证
+
+- Vega.BL.WaferRun 构建 0 错误（master 基线 cherry-pick 80ac552d，无冲突）
+- 编排逻辑按项目约定不写单测（wafer-run state.md Verification）
+
+## 真机待验
+
+- ED 源对位走 PerformAlignment 后 notch 角度正确性
+- DarkField 缺省路径回归（预期零变化）
+
+相关工作项: #3828
+

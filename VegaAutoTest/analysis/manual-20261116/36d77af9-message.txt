@@ -1,0 +1,26 @@
+﻿已合并 PR 5142: fix: 直方图统一路径端点闭区间计入边界样本；单样本柱固定1/8宽；自动分箱柱色改用默认定义表
+
+ ## 问题
+  DNA-O 通道只有一个缺陷时，size 恰好等于自动分箱下界，被开区间过滤`v > binMin && v < binMax`（HistogramImageViewModel.cs:1027 等）丢弃，直方图只剩刻度没有柱。
+
+  ## 修改
+  - 统一路径（结果页/配方预览缺陷直方图）三处分箱过滤改为闭端点：整体端点闭合、末柱右闭、内部左闭右开（GetStackedHistBinsDic / GetLogStackedBins / ReGetStackedHistBins）
+  - 越界计数器在统一路径下与柱过滤同步切换口径，边界样本不再消失也不重复计数
+  - 单样本时显示柱数按 8 生成，柱固定占绘图区 1/8 宽，区间仍为 [v, v+1]
+  - 自动分箱柱色改用默认 Binning 颜色定义表（IBinColorDefinitionMapProvider），不再每次随机
+  - 空轴时 Y 轴上限钳到 1
+
+  ## 范围说明
+  Legacy 路径（校准 KTStyle/M53/Ecam、SURF ImageHist）保持开区间不动：
+  已核查无现实命中样本，且求峰/持久化与柱计数解耦，维持"校准口径与历史版本一致"承诺。
+
+  ## 验证
+  - 构建 Vega.UI.Inspection / Vega.UI.Calibration 0 错误
+  - Vega.UI.Common.Tests 46/46 通过（含端点闭区间与单样本柱数断言更新）
+  - Vega.UI.Inspection.Tests Histogram|GraphicLayout 32/32 通过
+  - 界面验证：DNA-O 单缺陷显示 1/8 宽柱；常规结果直方图无回归
+
+![image.png](http://win-devops:8080/DefaultCollection/8dbcd5b4-eeb3-44c5-ac52-dcec2c44d052/_apis/git/repositories/a9010300-dcb2-4e66-b195-767c1741515d/pullRequests/5142/attachments/image.png)
+
+相关工作项: #3796
+

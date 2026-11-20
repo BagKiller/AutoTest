@@ -1,0 +1,12 @@
+id=3694 rev=18
+## System.Title
+binning element改动
+
+## System.Description
+<div>binning的manual模式下，设置时，不限制最小值 </div><div>layout显示以minSize所在的binning开始显示 </div><div>jobsmmary中minSize一下的binning数值展示为NA </div><div>以下SP截图帮助理解： </div><div><img src="http://win-devops:8080/DefaultCollection/8dbcd5b4-eeb3-44c5-ac52-dcec2c44d052/_apis/wit/attachments/0517c5cf-089a-4506-967e-98903ab1036c?fileName=bc9dbf79-a72d-488a-b931-1e3e8fd870ae.png" alt="图像"><br> </div><div><img src="http://win-devops:8080/DefaultCollection/8dbcd5b4-eeb3-44c5-ac52-dcec2c44d052/_apis/wit/attachments/132a7ad3-c0ad-42bf-af0e-bc5c757c1444?fileName=image.png" alt="图像" style="width:465px;height:338px;" width=465 height=338><br> </div><div><img src="http://win-devops:8080/DefaultCollection/8dbcd5b4-eeb3-44c5-ac52-dcec2c44d052/_apis/wit/attachments/3155c25c-9df9-4b4e-8d84-6244b222c4c4?fileName=image.png" alt="图像" style="width:496px;height:290px;" width=496 height=290><br> </div>
+
+## Microsoft.VSTS.TCM.ReproSteps
+
+
+## Microsoft.VSTS.Common.AcceptanceCriteria
+

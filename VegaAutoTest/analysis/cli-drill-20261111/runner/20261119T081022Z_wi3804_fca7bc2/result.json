@@ -1,0 +1,65 @@
+{
+  "schemaVersion": "1.0",
+  "runId": "20261119T081022Z_wi3804_fca7bc2",
+  "workItemId": 3804,
+  "caseId": "wi3804-lot-recipe-filter",
+  "verdict": "BLOCKED",
+  "verdictReason": "LOGIN_NOT_READY: Vega.AutoTest.Harness.UiPrerequisiteException : [VEGA_UI_PRECONDITION:LOGIN_NOT_READY] 认证器里没有选项 Gen2。\r\nat Vega.AutoTest.Harness.AuthenticatorPassword.Select(AutomationElement combo, String display, EvidenceLog log) in C:\\AutoTest\\AutoTest\\VegaAutoTest\\harness\\AuthenticatorPassword.cs:line 436\r\n   at Vega.AutoTest.Harness.AuthenticatorPassword.SelectTool(Window window, AuthenticatorLoginTarget target, EvidenceLog log) in C:\\AutoTest\\AutoTest\\VegaAutoTest\\harness\\AuthenticatorPassword.cs:line 408\r\n   at Vega.AutoTest.Harness.AuthenticatorPassword.ReadPassword(Application app, UIA3Automation automation, AuthenticatorLoginTarget target, EvidenceLog log) in C:\\AutoTest\\AutoTest\\VegaAutoTest\\harness\\AuthenticatorPassword.cs:line 319\r\n   at Vega.AutoTest.Harness.AuthenticatorPassword.ReadFromAuthenticator(String exe, AuthenticatorLoginTarget target, EvidenceLog log) in C:\\AutoTest\\AutoTest\\VegaAutoTest\\harness\\AuthenticatorPassword.cs:line 280\r\n   at Vega.AutoTest.Harness.AuthenticatorPassword.Read(EvidenceLog log) in C:\\AutoTest\\AutoTest\\VegaAutoTest\\harness\\AuthenticatorPassword.cs:line 37\r\n...(truncated, 2593 chars)",
+  "verdictCode": "LOGIN_NOT_READY",
+  "startedAt": "2026-11-19T16:10:22+08:00",
+  "finishedAt": "2026-11-19T16:10:55+08:00",
+  "durationMs": 33550,
+  "target": {
+    "repoRoot": "C:\\AutoTest\\workspaces\\manual-20261111",
+    "gitCommit": "58606ec9c84080feb715145c8100262097b60ef0",
+    "gitBranch": "HEAD",
+    "gitDirty": false,
+    "vegaExe": "C:\\AutoTest\\workspaces\\manual-20261111\\Vega\\bin\\Debug\\net8.0-windows10.0.19041.0\\win-x64\\Vega.exe",
+    "vegaExeBuiltAt": "2026-11-19T16:00:47+08:00",
+    "rebuilt": false,
+    "builtFromCurrentSource": false
+  },
+  "channels": {
+    "l1Api": {
+      "available": false,
+      "baseUrl": "http://localhost:18901/vega-agent/",
+      "reason": "用例未产出 oracle-crosscheck 断言（本次层: uia）"
+    },
+    "l2Uia": {
+      "available": true,
+      "baseUrl": null,
+      "reason": null
+    },
+    "assertions": {
+      "available": true,
+      "baseUrl": null,
+      "reason": null
+    }
+  },
+  "assertions": [],
+  "summary": {
+    "total": 0,
+    "passed": 0,
+    "failed": 0,
+    "skipped": 0
+  },
+  "tests": [
+    {
+      "name": "Vega.AutoTest.L2.WorkItem3804L2.RecipeComboFiltersByTypedText",
+      "outcome": "Failed",
+      "durationMs": 22281,
+      "message": "Vega.AutoTest.Harness.UiPrerequisiteException : [VEGA_UI_PRECONDITION:LOGIN_NOT_READY] 认证器里没有选项 Gen2。\r\nat Vega.AutoTest.Harness.AuthenticatorPassword.Select(AutomationElement combo, String display, EvidenceLog log) in C:\\AutoTest\\AutoTest\\VegaAutoTest\\harness\\AuthenticatorPassword.cs:line 436\r\n   at Vega.AutoTest.Harness.AuthenticatorPassword.SelectTool(Window window, AuthenticatorLoginTarget target, EvidenceLog log) in C:\\AutoTest\\AutoTest\\VegaAutoTest\\harness\\AuthenticatorPassword.cs:line 408\r\n   at Vega.AutoTest.Harness.AuthenticatorPassword.ReadPassword(Application app, UIA3Automation automation, AuthenticatorLoginTarget target, EvidenceLog log) in C:\\AutoTest\\AutoTest\\VegaAutoTest\\harness\\AuthenticatorPassword.cs:line 319\r\n   at Vega.AutoTest.Harness.AuthenticatorPassword.ReadFromAuthenticator(String exe, AuthenticatorLoginTarget target, EvidenceLog log) in C:\\AutoTest\\AutoTest\\VegaAutoTest\\harness\\AuthenticatorPassword.cs:line 280\r\n   at Vega.AutoTest.Harness.AuthenticatorPassword.Read(EvidenceLog log) in C:\\AutoTest\\AutoTest\\VegaAutoTest\\harness\\AuthenticatorPassword.cs:line 37\r\n...(truncated, 2593 chars)"
+    }
+  ],
+  "evidence": {
+    "dir": "C:\\AutoTest\\AutoTest\\VegaAutoTest\\analysis\\cli-drill-20261111\\runner\\20261119T081022Z_wi3804_fca7bc2",
+    "files": [
+      "uia/trx/uia.trx",
+      "uia/trx/uia.testhost.log",
+      "uia/ui-snapshot.json",
+      "uia/ui-snapshot.png",
+      "report.md"
+    ]
+  },
+  "exitCode": 2
+}

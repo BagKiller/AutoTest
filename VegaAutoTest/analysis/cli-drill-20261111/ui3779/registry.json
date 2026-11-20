@@ -1,0 +1,21 @@
+{
+  "schemaVersion": "1.0",
+  "cases": [
+    {
+      "id": "wi3779-v100-no-daq2",
+      "title": "#3779 Vega100-PIC 基线 ComponentManager 无 DAQDevice_2",
+      "targetSha": "58606ec9c84080feb715145c8100262097b60ef0",
+      "workItems": [3779],
+      "tags": ["uia"],
+      "layers": {
+        "uia": {
+          "project": "analysis/cli-drill-20261111/ui3779/Ui3779.csproj",
+          "filter": "FullyQualifiedName~WorkItem3779L2",
+          "timeoutSeconds": 900,
+          "requiresVegaExe": true,
+          "minAssertions": 1
+        }
+      }
+    }
+  ]
+}

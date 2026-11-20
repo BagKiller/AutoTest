@@ -1,0 +1,10 @@
+# WI 3804 rev=19 state=AVAILABLE
+TITLE: 【Lot页面】选择Recipe下拉框支持输入文字过滤列表
+
+## Description
+需求描述：Job→Lot 配置页面选择 Recipe 时只能从全量列表滚动查找，recipe 数量多时定位困难。需要 Recipe 下拉框支持直接输入文字：列表实时过滤为路径包含输入内容的项（忽略大小写）；过滤不影响已选中项，保存行为不变。  验收标准：1. 打开 Job→Lot 页面，点击 Recipe 下拉框输入部分路径字符：列表实时只显示匹配项。 2. 清空输入：恢复全量列表。 3. 在过滤结果中选中 Recipe → 保存 → 重新进入页面：显示与保存内容一致。 4. 输入未匹配文字且不选中直接离开：文本回显实际选中项，保存内容不变。 关联 PR：5117（VegaRelease_1002_0710）。
+
+## ReproSteps
+
+
+## AcceptanceCriteria

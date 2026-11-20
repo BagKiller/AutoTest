@@ -1,0 +1,10 @@
+# WI 3803 rev=20 state=AVAILABLE
+TITLE: 【Wafer Run】每个collection扫描前随SetupHardware并行检查慢门，未开则重新打开
+
+## Description
+需求描述：DUV 激光慢门若处于关闭状态（异常或人工操作后未恢复），后续扫描将失败。需要在每个 collection 扫描前的硬件设置阶段并行检查慢门状态：已开则不干预；未开则自动重新打开并记录日志；重开失败时异常经并行任务汇总上抛，中止该片并走既有 GEM 报警链路（不新增报警号）。不引入配置开关。  验收标准：1. 慢门正常开启时运行 wafer：扫描正常，无慢门重开日志。 2. 手动关闭慢门后运行 wafer：collection 扫描前慢门被自动重新打开，日志可见"未开→重开"记录，扫描正常完成。 3. 慢门重开失败：该片中止，产生既有链路的 GEM 报警。 4. 多 collection 的 recipe 下，每个 collection 扫描前均执行检查。 关联 PR：5117（VegaRelease_1002_0710）。
+
+## ReproSteps
+
+
+## AcceptanceCriteria

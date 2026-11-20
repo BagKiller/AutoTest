@@ -1,0 +1,21 @@
+{
+  "schemaVersion": "1.0",
+  "cases": [
+    {
+      "id": "wi3694-binning-ui",
+      "title": "#3694 打开分档编辑器并查看本机是否有附图中的 Job Summary",
+      "targetSha": "c6bedced2d0773dc612ace3df66ba98edb7f2b80",
+      "workItems": [3694],
+      "tags": ["uia"],
+      "layers": {
+        "uia": {
+          "project": "analysis/manual-20261113/ui3694/Ui3694.csproj",
+          "filter": "FullyQualifiedName~WorkItem3694L2",
+          "timeoutSeconds": 900,
+          "requiresVegaExe": true,
+          "minAssertions": 2
+        }
+      }
+    }
+  ]
+}

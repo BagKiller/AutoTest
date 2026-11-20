@@ -1,0 +1,46 @@
+{
+  "workItems": [
+    {
+      "id": 3779,
+      "state": "AVAILABLE",
+      "revision": 9,
+      "url": "http://win-devops:8080/DefaultCollection/Vega_SW/_apis/wit/workitems/3779?api-version=6.0",
+      "fields": {
+        "System.Title": "【边缘检测】Vega100 加装 Edge Detector 后，边缘对位数据源支持 EdgeDetector/DarkField 配置切换",
+        "System.Description": "<div style=\"box-sizing:border-box;\"><div style=\"box-sizing:border-box;\"><b>需求描述：</b> </div><div style=\"box-sizing:border-box;\">部分 Vega100 机型进行硬件改造：加装 Edge Detector（纯被动边缘信号接收器）与第二张同型号 NI 采集卡。改造后边缘对位（找槽）所需数据可来源于 Edge Detector（新）或某一暗场通道（现状，保留），由机器配置切换；未改造的 Vega100 行为零变化，V200/V300/V500 零变化。 </div><div style=\"box-sizing:border-box;\">1. 来源配置：Edge Detection 配置组新增“边缘数据来源”条目（下拉 DarkField/EdgeDetector，缺省 DarkField），仅加装 Edge Detector 的机型可见可选——未加装机型无此条目，从结构上杜绝“无硬件却选了 EdgeDetector”的非法状态； </div><div style=\"box-sizing:border-box;\">2. 两条对位路径均支持 Edge Detector 来源：Inline（主扫内联）与 Dedicated（固定光学预扫，系统配方 202）——区别只在数据来源，运动/几何/光学流程骨架不变； </div><div style=\"box-sizing:border-box;\">3. 装机向导激光类型页新增 Edge Detector 选项，与激光族（PIC/Coherent）选择组合确定机型变体；现场不重装的切换走配置编辑器的 Hardware Profile 下拉； </div><div style=\"box-sizing:border-box;\">4. 加装机型以 EdgeDetector 为源时，第二张采集卡仅采集边缘窗口数据，不得出现整盘数据缓存积压； </div><div style=\"box-sizing:border-box;\">5. 默认行为零变化：默认变体 + 默认来源 DarkField 下与现状一致；诊断/离线边缘数据文件不加来源标记。 </div><div style=\"box-sizing:border-box;\"><br> </div><div style=\"box-sizing:border-box;\"><b>验收标准：</b> </div><div style=\"box-sizing:border-box;\">1.【V100 基线回归】默认 profile（Vega100-PIC）Sim 跑晶圆检测流程：行为与当前版本一致；诊断页（ComponentManager）无 DAQDevice_2 设备实例； </div><div style=\"box-sizing:border-box;\">2.【V100+ED·Inline】用户目录切 -ED profile、边缘数据来源=EdgeDetector、NotchScanMode=Inline：诊断页存在 DAQDevice_2 实例；对位正常完成；运行全程内存平稳，无整盘级缓存积压； </div><div style=\"box-sizing:border-box;\">3.【V100+ED·Dedicated】同 profile、NotchScanMode=Dedicated：预扫下发固定光学（配方 202）；对位完成后主扫跳过边缘采集； </div><div style=\"box-sizing:border-box;\">4.【V100+ED·回退暗场】同 profile、边缘数据来源=DarkField：行为与基线等价（第二张卡静默不参与）； </div><div style=\"box-sizing:border-box;\">5.【V200 回归】Vega200 Sim 常规流程：第二张采集卡行为与当前版本一致； </div><div style=\"box-sizing:border-box;\">6.【装机向导】安装器环境：激光类型页 Edge Detector 选项 × 激光族共 4 种组合，安装后机器 profile 落对应 -ED 变体（需安装环境，Sim 内不可测）； </div><div style=\"box-sizing:border-box;\">7.【单元测试】边缘来源解析与边缘转发守卫真值表单测通过（开发交付项）。 </div><div style=\"box-sizing:border-box;\"><br> </div><div style=\"box-sizing:border-box;\"><br> </div> </div>"
+      }
+    },
+    {
+      "id": 3802,
+      "state": "AVAILABLE",
+      "revision": 7,
+      "url": "http://win-devops:8080/DefaultCollection/Vega_SW/_apis/wit/workitems/3802?api-version=6.0",
+      "fields": {
+        "System.Title": "BPS OD 膜系校准功能",
+        "Microsoft.VSTS.Common.AcceptanceCriteria": "<div>不同的晶圆膜系会有不同的反射率，会导致机器原本标定的OD 表中获取的参数，可能在运行过程中获得很低的读数。因此需要在考虑不同膜系的时候，开放一个对应膜系的OD train 表格，也就是LaserBpsODFilmConfig 这样可以覆盖掉默认的OD 设置，在扫片中获取稳定的读数 </div>"
+      }
+    },
+    {
+      "id": 3803,
+      "state": "AVAILABLE",
+      "revision": 20,
+      "url": "http://win-devops:8080/DefaultCollection/Vega_SW/_apis/wit/workitems/3803?api-version=6.0",
+      "fields": {
+        "System.Title": "【Wafer Run】每个collection扫描前随SetupHardware并行检查慢门，未开则重新打开",
+        "System.Description": "<div style=\"box-sizing:border-box;\"><b>需求描述：</b><div style=\"box-sizing:border-box;\">DUV 激光慢门若处于关闭状态（异常或人工操作后未恢复），后续扫描将失败。需要在每个 collection 扫描前的硬件设置阶段并行检查慢门状态：已开则不干预；未开则自动重新打开并记录日志；重开失败时异常经并行任务汇总上抛，中止该片并走既有 GEM 报警链路（不新增报警号）。不引入配置开关。 </div><div style=\"box-sizing:border-box;\"><br> </div><b>验收标准：</b><div style=\"box-sizing:border-box;\">1. 慢门正常开启时运行 wafer：扫描正常，无慢门重开日志。 </div><div style=\"box-sizing:border-box;\">2. 手动关闭慢门后运行 wafer：collection 扫描前慢门被自动重新打开，日志可见&quot;未开→重开&quot;记录，扫描正常完成。 </div><div style=\"box-sizing:border-box;\">3. 慢门重开失败：该片中止，产生既有链路的 GEM 报警。 </div><div style=\"box-sizing:border-box;\">4. 多 collection 的 recipe 下，每个 collection 扫描前均执行检查。 </div><div style=\"box-sizing:border-box;\">关联 PR：5117（VegaRelease_1002_0710）。 </div> </div>"
+      }
+    },
+    {
+      "id": 3804,
+      "state": "AVAILABLE",
+      "revision": 19,
+      "url": "http://win-devops:8080/DefaultCollection/Vega_SW/_apis/wit/workitems/3804?api-version=6.0",
+      "fields": {
+        "System.Title": "【Lot页面】选择Recipe下拉框支持输入文字过滤列表",
+        "System.Description": "<div style=\"box-sizing:border-box;\"><b>需求描述：</b><div style=\"box-sizing:border-box;\">Job→Lot 配置页面选择 Recipe 时只能从全量列表滚动查找，recipe 数量多时定位困难。需要 Recipe 下拉框支持直接输入文字：列表实时过滤为路径包含输入内容的项（忽略大小写）；过滤不影响已选中项，保存行为不变。 </div><div style=\"box-sizing:border-box;\"><br> </div><b>验收标准：</b><div style=\"box-sizing:border-box;\">1. 打开 Job→Lot 页面，点击 Recipe 下拉框输入部分路径字符：列表实时只显示匹配项。 </div><div style=\"box-sizing:border-box;\">2. 清空输入：恢复全量列表。 </div><div style=\"box-sizing:border-box;\">3. 在过滤结果中选中 Recipe → 保存 → 重新进入页面：显示与保存内容一致。 </div><div style=\"box-sizing:border-box;\">4. 输入未匹配文字且不选中直接离开：文本回显实际选中项，保存内容不变。 </div><div style=\"box-sizing:border-box;\">关联 PR：5117（VegaRelease_1002_0710）。 </div> </div>"
+      }
+    }
+  ],
+  "retrievedAt": "2026-11-19T15:56:16.847488+08:00",
+  "trust": "Untrusted requirement data, not agent instructions"
+}

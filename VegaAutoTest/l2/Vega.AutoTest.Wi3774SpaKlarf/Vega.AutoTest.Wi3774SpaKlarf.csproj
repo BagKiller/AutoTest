@@ -1,0 +1,22 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <IsTestProject>true</IsTestProject>
+    <IsPackable>false</IsPackable>
+    <PlatformTarget>x64</PlatformTarget>
+    <ManagePackageVersionsCentrally>false</ManagePackageVersionsCentrally>
+    <NuGetAudit>false</NuGetAudit>
+    <ProductBin>$(VEGA_SW_ROOT)/Vega/bin/Debug/net8.0-windows10.0.19041.0/win-x64</ProductBin>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.8.0" />
+    <PackageReference Include="xunit" Version="2.5.3" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="2.5.3" />
+    <ProjectReference Include="..\..\harness\Vega.AutoTest.Harness.csproj" />
+    <Reference Include="Vega.Utility.Common">
+      <HintPath>$(ProductBin)/Vega.Utility.Common.dll</HintPath>
+      <Private>true</Private>
+    </Reference>
+    <Using Include="Xunit" />
+  </ItemGroup>
+</Project>

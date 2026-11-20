@@ -51,9 +51,11 @@ public sealed class RegistryConfig
 public static class CaseRegistry
 {
     public static RegistryConfig Load(string autoTestRoot)
-        => JsonConvert.DeserializeObject<RegistryConfig>(
-               File.ReadAllText(Path.Combine(autoTestRoot, "cases", "registry.json")))
-           ?? throw new InvalidOperationException("registry.json 解析结果为空");
+        => LoadFile(Path.Combine(autoTestRoot, "cases", "registry.json"));
+
+    public static RegistryConfig LoadFile(string path)
+        => JsonConvert.DeserializeObject<RegistryConfig>(File.ReadAllText(path))
+           ?? throw new InvalidOperationException("registry.json 解析结果为空: " + path);
 
     public static bool MatchesTarget(CaseConfig testCase, string? gitCommit)
         => string.IsNullOrWhiteSpace(testCase.TargetSha)

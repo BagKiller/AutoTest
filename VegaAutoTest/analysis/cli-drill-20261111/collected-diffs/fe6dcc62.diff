@@ -1,0 +1,380 @@
+﻿diff --git a/Vega.BL.WaferRun/WaferRunSequenceBase.cs b/Vega.BL.WaferRun/WaferRunSequenceBase.cs
+index 3a718e19..834a501c 100644
+--- a/Vega.BL.WaferRun/WaferRunSequenceBase.cs
++++ b/Vega.BL.WaferRun/WaferRunSequenceBase.cs
+@@ -1595,6 +1595,9 @@ public class WaferRunSequenceBase
+             }),
+             Task.Run(() => _illuminationOptics.SetATT(false), cancellationToken),
+             Task.Run(() => _illuminationOptics.SetSlitIn(_flagNeedSlitIn), cancellationToken),
++            // 每个 collection 扫描前随 SetupHardware 并行检查慢门：TurnOn 自带"已开则跳过"（幂等），
++            // 激光内层快门或气缸打开失败均由 LD 层抛 VegaDeviceException → 经 Task.WhenAll 上抛 SendAbort + GEM 报警，中止该片
++            Task.Run(() => _illuminationOptics.TurnOnDUVLaserSlowShutter(), cancellationToken),
+             _illuminationOptics.SetSpotModeAsync(incidence, throughput, cancellationToken),
+             Task.Run(() => SetBPSOD(incidence, throughput, incPolarizer, currentScanCollection.DarkField.SizingContent.LaserPower, waferRun.LaserPowInACCali, currentScanCollection.DarkField.BPSRODValue, currentScanCollection.DarkField.ExposureTimeValue > 0 ? (ushort?)currentScanCollection.DarkField.ExposureTimeValue : null, effectiveBeaOD), cancellationToken),
+             _illuminationOptics.SetPolarizerModeAsync(incPolarizer, cancellationToken),
+diff --git a/Vega.LD.Optics/IlluminationOptics.cs b/Vega.LD.Optics/IlluminationOptics.cs
+index 8648a855..23208298 100644
+--- a/Vega.LD.Optics/IlluminationOptics.cs
++++ b/Vega.LD.Optics/IlluminationOptics.cs
+@@ -186,7 +186,8 @@ public class IlluminationOptics([KeyFilter("F2Motor")] IMotorGeneral _f2Motor,
+                     throw new InvalidOperationException("SetDUVLaserLockModel Disable Failed");
+                 }
+             }
+-            if (_laser.ShutterOpen().ResultState == DeviceCmdResultState.Succeed)
++            var shutterResult = _laser.ShutterOpen();
++            if (shutterResult.ResultState == DeviceCmdResultState.Succeed)
+             {
+                 Logger.Information(Name, "Turn On laser inner Shutter.");
+                 var result = _slowshutterCylinder.SetTreeLimitCylinder(AdamIOBit.LaserSlowShutter1Output1, false, AdamIOBit.LaserSlowShutter1Output2, true, AdamIOBit.LaserSlowShutter1Sensor1, true, AdamIOBit.LaserSlowShutter1Sensor2, false);
+@@ -201,6 +202,15 @@ public class IlluminationOptics([KeyFilter("F2Motor")] IMotorGeneral _f2Motor,
+                 }
+                 Logger.Information(Name, $"Turn On laser Slow Shutter successed");
+             }
++            else
++            {
++                // 激光内层快门打开失败（未就绪 Refuse / 打开超时等，返回失败结果不抛异常）不能静默通过，
++                // 否则调用方（wafer run / 校准）会带着关闭的慢门继续执行。
++                // AlarmName 自带注册表后缀（LaserDevice_OperationRefuse / _OperationFail → ALID 40044/40045），
++                // 与上方气缸分支同构，勿写死未注册的报警名
++                Logger.Error(Name, $"Turn On laser inner Shutter failed: {shutterResult.ResultState}.");
++                throw new VegaDeviceException(VegaErrorCodes.Device.OperationFailed, deviceId: "Laser", deviceType: "Physical device", message: $"Turn On laser inner Shutter failed {shutterResult.ResultState}.").WithGEMAlarmID($"{Name}_{shutterResult.AlarmName}");
++            }
+             Logger.Debug(DebugModules.Optics, Name, $"[TurnOnDUVLaserSlowShutter] Completed");
+         }
+         catch (XDeviceException)
+diff --git a/Vega.LD.Optics/IlluminationOpticsLiteVega100.cs b/Vega.LD.Optics/IlluminationOpticsLiteVega100.cs
+index be0b939d..6a7054a1 100644
+--- a/Vega.LD.Optics/IlluminationOpticsLiteVega100.cs
++++ b/Vega.LD.Optics/IlluminationOpticsLiteVega100.cs
+@@ -450,7 +450,8 @@ public class IlluminationOpticsLiteVega100([KeyFilter("F2Motor")] IMotorGeneral
+                     throw new InvalidOperationException("SetDUVLaserLockModel Disable Failed");
+                 }
+             }
+-            if (_laser.ShutterOpen().ResultState == DeviceCmdResultState.Succeed)
++            var shutterResult = _laser.ShutterOpen();
++            if (shutterResult.ResultState == DeviceCmdResultState.Succeed)
+             {
+                 Logger.Information(Name, "Turn On laser inner Shutter.");
+                 var result = _beaShutterCylinder.SetLinearCylinder(AdamIOBit.LaserSlowShutter1Output1, false, AdamIOBit.LaserSlowShutter1Output2, true, AdamIOBit.LaserSlowShutter1Sensor1, true);
+@@ -461,6 +462,15 @@ public class IlluminationOpticsLiteVega100([KeyFilter("F2Motor")] IMotorGeneral
+                 }
+                 Logger.Information(Name, $"Turn On laser Slow Shutter successed");
+             }
++            else
++            {
++                // 激光内层快门打开失败（未就绪 Refuse / 打开超时等，返回失败结果不抛异常）不能静默通过，
++                // 否则调用方（wafer run / 校准）会带着关闭的慢门继续执行。
++                // AlarmName 自带注册表后缀（LaserDevice_OperationRefuse / _OperationFail），
++                // 与上方气缸分支同构，勿写死未注册的报警名
++                Logger.Error(Name, $"Turn On laser inner Shutter failed: {shutterResult.ResultState}.");
++                throw new VegaDeviceException(VegaErrorCodes.Device.OperationFailed, deviceId: "Laser", deviceType: "Physical device", message: $"Turn On laser inner Shutter failed {shutterResult.ResultState}.").WithGEMAlarmID($"{Name}_{shutterResult.AlarmName}");
++            }
+             Logger.Debug(DebugModules.Optics, Name, $"[TurnOnDUVLaserSlowShutter] Completed");
+         }
+         catch (XDeviceException)
+diff --git a/Vega.LD.Optics/IlluminationOpticsPlus.cs b/Vega.LD.Optics/IlluminationOpticsPlus.cs
+index 23dbe5db..67243e76 100644
+--- a/Vega.LD.Optics/IlluminationOpticsPlus.cs
++++ b/Vega.LD.Optics/IlluminationOpticsPlus.cs
+@@ -174,6 +174,11 @@ public class IlluminationOpticsPlus([KeyFilter("F2Motor")] IMotorGeneral _f2Moto
+         Logger.Debug(DebugModules.Optics, Name, $"[TurnOnDUVLaserSlowShutter] Start");
+         try
+         {
++            if (IsDUVLaserSlowShutterOn())
++            {
++                Logger.Information(Name, "Laser slow shutter is already open.");
++                return;
++            }
+             if (_configsManager.LaserConfig.DisablePowerLockOnShutterOpen)
+             {
+                 Logger.Information(Name, "SetDUVLaserLockModel Disable");
+@@ -183,7 +188,8 @@ public class IlluminationOpticsPlus([KeyFilter("F2Motor")] IMotorGeneral _f2Moto
+                     throw new InvalidOperationException("SetDUVLaserLockModel Disable Failed");
+                 }
+             }
+-            if (_laser.ShutterOpen().ResultState == DeviceCmdResultState.Succeed)
++            var shutterResult = _laser.ShutterOpen();
++            if (shutterResult.ResultState == DeviceCmdResultState.Succeed)
+             {
+                 Logger.Information(Name, "Turn On laser inner Shutter.");
+                 var result = _slowshutterCylinder.SetTreeLimitCylinder(AdamIOBit.LaserSlowShutter1Output1, true, AdamIOBit.LaserSlowShutter1Output2, false, AdamIOBit.LaserSlowShutter1Sensor1, true, AdamIOBit.LaserSlowShutter1Sensor2, false);
+@@ -198,6 +204,15 @@ public class IlluminationOpticsPlus([KeyFilter("F2Motor")] IMotorGeneral _f2Moto
+                 }
+                 Logger.Information(Name, $"Turn On laser Slow Shutter successed");
+             }
++            else
++            {
++                // 激光内层快门打开失败（未就绪 Refuse / 打开超时等，返回失败结果不抛异常）不能静默通过，
++                // 否则调用方（wafer run / 校准）会带着关闭的慢门继续执行。
++                // AlarmName 自带注册表后缀（LaserDevice_OperationRefuse / _OperationFail → ALID 40044/40045），
++                // 与上方气缸分支同构，勿写死未注册的报警名
++                Logger.Error(Name, $"Turn On laser inner Shutter failed: {shutterResult.ResultState}.");
++                throw new VegaDeviceException(VegaErrorCodes.Device.OperationFailed, deviceId: "Laser", deviceType: "Physical device", message: $"Turn On laser inner Shutter failed {shutterResult.ResultState}.").WithGEMAlarmID($"{Name}_{shutterResult.AlarmName}");
++            }
+             Logger.Debug(DebugModules.Optics, Name, $"[TurnOnDUVLaserSlowShutter] Completed");
+         }
+         catch (XDeviceException)
+diff --git a/Vega.UI.Jobs/Lot/LotView.xaml b/Vega.UI.Jobs/Lot/LotView.xaml
+index a83a6094..ea458caf 100644
+--- a/Vega.UI.Jobs/Lot/LotView.xaml
++++ b/Vega.UI.Jobs/Lot/LotView.xaml
+@@ -31,13 +31,7 @@
+         <Grid Grid.Row="1" Grid.ColumnSpan="2" Margin="0,10">
+             <StackPanel Orientation="Horizontal">
+                 <TextBlock Margin="0,0,5,0" VerticalAlignment="Center" Text="{x:Static prop:Resources.RecipeName}" />
+-                <ComboBox MinWidth="350" AutomationProperties.AutomationId="LotView_AvailableRecipesComboBox" ItemsSource="{Binding AvailableRecipes}" SelectedItem="{Binding SelectedRecipe}">
+-                    <ComboBox.ItemTemplate>
+-                        <DataTemplate>
+-                            <TextBlock Text="{Binding RecipePath}" />
+-                        </DataTemplate>
+-                    </ComboBox.ItemTemplate>
+-                </ComboBox>
++                <ComboBox MinWidth="350" AutomationProperties.AutomationId="LotView_AvailableRecipesComboBox" DisplayMemberPath="RecipePath" IsEditable="True" IsTextSearchEnabled="False" StaysOpenOnEdit="True" TextSearch.TextPath="RecipePath" ItemsSource="{Binding AvailableRecipesView}" SelectedItem="{Binding SelectedRecipe}" Text="{Binding RecipeSearchText, UpdateSourceTrigger=PropertyChanged}" PreviewMouseLeftButtonDown="RecipeComboBox_PreviewMouseLeftButtonDown" DropDownClosed="RecipeComboBox_DropDownClosed" GotFocus="RecipeComboBox_GotFocus" LostFocus="RecipeComboBox_LostFocus" />
+             </StackPanel>
+         </Grid>
+ 
+diff --git a/Vega.UI.Jobs/Lot/LotView.xaml.cs b/Vega.UI.Jobs/Lot/LotView.xaml.cs
+index 2c38de3f..81b0a81a 100644
+--- a/Vega.UI.Jobs/Lot/LotView.xaml.cs
++++ b/Vega.UI.Jobs/Lot/LotView.xaml.cs
+@@ -1,6 +1,10 @@
+ // Copyright (c) Shanghai Vega Technology Co., Ltd. All rights reserved.
+ 
++using System.Linq;
++using System.Windows;
+ using System.Windows.Controls;
++using System.Windows.Input;
++using System.Windows.Media;
+ 
+ namespace Vega.UI.Jobs;
+ /// <summary>
+@@ -26,4 +30,123 @@ public partial class LotView : UserControl
+             }
+         }
+     }
++
++    private void RecipeComboBox_GotFocus(object sender, RoutedEventArgs e)
++    {
++        if (sender is not ComboBox combo) return;
++
++        // 进入输入区即展开下拉：StaysOpenOnEdit 只保证编辑时"保持"打开，不会自动打开，
++        // 不主动展开的话输入过滤词时看不到过滤结果，上下键也无从选择
++        if (!combo.IsDropDownOpen)
++        {
++            combo.IsDropDownOpen = true;
++        }
++        // 全选文本：再次点击输入时直接键入新过滤词，避免在"选中回显的完整路径"后追加字符导致 0 命中。
++        // WPF ComboBox 无 SelectAll，可编辑模式下焦点在内部编辑 TextBox 上，经路由事件的 OriginalSource 取之
++        if (e.OriginalSource is TextBox textBox)
++        {
++            // 上下键的键盘事件会被上层（应用级键盘处理/TextBox 插入符命令）在到达普通订阅前标记已处理
++            // （本应用中 ComboBox 层订阅收不到），须以 handledEventsToo:true 挂到内部 TextBox 的
++            // PreviewKeyDown 上才能可靠接管；先移除防重复订阅
++            textBox.RemoveHandler(TextBox.PreviewKeyDownEvent, new KeyEventHandler(RecipeTextBox_PreviewKeyDown));
++            textBox.AddHandler(TextBox.PreviewKeyDownEvent, new KeyEventHandler(RecipeTextBox_PreviewKeyDown), true);
++            textBox.SelectAll();
++        }
++    }
++
++    private void RecipeTextBox_PreviewKeyDown(object? sender, KeyEventArgs e)
++    {
++        // Enter 选中后下拉已关而焦点仍留在输入框：继续编辑（退格/删除/键入）时重新展开过滤列表，
++        // 此时 GotFocus 不会触发（焦点未离开）
++        if (sender is TextBox tb && tb.TemplatedParent is ComboBox combo && !combo.IsDropDownOpen && IsEditingKey(e.Key))
++        {
++            combo.IsDropDownOpen = true;
++        }
++        if (NavigateFilteredRecipes(e.Key))
++        {
++            e.Handled = true;
++        }
++    }
++
++    private static bool IsEditingKey(Key key)
++        => key is Key.Back or Key.Delete or Key.Space
++           or (>= Key.D0 and <= Key.Z)
++           or (>= Key.NumPad0 and <= Key.NumPad9)
++           or (>= Key.Oem1 and <= Key.OemBackslash);
++
++    private bool NavigateFilteredRecipes(Key key)
++    {
++        // 接管上下键导航：原生导航会把高亮项的完整路径写回 Text，被当作过滤词后 Refresh 的 Reset
++        // 会打断高亮并使列表塌缩成一项，导致键盘无法选择——改为直接在过滤后的列表里移动选中项。
++        // 选中项因"恒保留"规则钉在视图里但与搜索词不匹配时（如搜索 New 而选中 TestRecipe），
++        // 不作为导航锚点：↓ 从首个匹配项开始，且该钉住项不参与导航
++        if (key is not (Key.Down or Key.Up)) return false;
++        if (DataContext is not LotViewModel vm || vm.AvailableRecipesView is not { } view) return false;
++
++        var search = vm.RecipeSearchText;
++        bool selectedMatchesSearch = vm.SelectedRecipe != null
++            && (string.IsNullOrWhiteSpace(search)
++                || vm.SelectedRecipe.RecipePath.Contains(search, StringComparison.OrdinalIgnoreCase));
++        var list = view.OfType<SimpleRecipe>()
++            .Where(r => selectedMatchesSearch || !ReferenceEquals(r, vm.SelectedRecipe))
++            .ToList();
++        if (list.Count == 0) return false;
++
++        int index = selectedMatchesSearch ? list.IndexOf(vm.SelectedRecipe!) : -1;
++        int next = key == Key.Down ? index + 1 : index - 1;
++        if (next < 0 || next >= list.Count) return false;
++
++        vm.SelectedRecipe = list[next];
++        return true;
++    }
++
++    private void RecipeComboBox_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
++    {
++        // 焦点仍在输入框、下拉却被点击空白关闭（light-dismiss）后，再点击输入区需重新展开——此时
++        // GotFocus 不会触发。只响应编辑区（PART_EditableTextBox）内的点击，避免抢在下拉箭头
++        // ToggleButton 之前展开、随后又被 Toggle 切换关闭
++        if (sender is not ComboBox combo || combo.IsDropDownOpen) return;
++        if (combo.Template?.FindName("PART_EditableTextBox", combo) is not TextBox editBox) return;
++        if (e.OriginalSource is not DependencyObject source || !IsDescendantOf(source, editBox)) return;
++
++        combo.IsDropDownOpen = true;
++    }
++
++    private static bool IsDescendantOf(DependencyObject node, DependencyObject ancestor)
++    {
++        while (node is not null)
++        {
++            if (ReferenceEquals(node, ancestor)) return true;
++            node = VisualTreeHelper.GetParent(node);
++        }
++        return false;
++    }
++
++    private void RecipeComboBox_DropDownClosed(object? sender, EventArgs e)
++    {
++        if (sender is not ComboBox combo || DataContext is not LotViewModel vm) return;
++
++        // 点击空白/Esc 关闭下拉时，键盘焦点可能仍留在输入框（LostFocus 不会触发），此处兜底回显实际选中项
++        // SetCurrentValue：直接对 Text 赋本地值会移除 XAML 的 RecipeSearchText 绑定表达式
++        if (!string.Equals(combo.Text, vm.SelectedRecipe?.RecipePath, StringComparison.OrdinalIgnoreCase))
++        {
++            combo.SetCurrentValue(ComboBox.TextProperty, vm.SelectedRecipe?.RecipePath ?? string.Empty);
++        }
++        // Enter/点击选中后，可编辑组合框会把编辑框文本全选高亮——取消选区、光标置末尾，呈现干净的已选状态
++        if (combo.Template?.FindName("PART_EditableTextBox", combo) is TextBox editBox && editBox.Text.Length > 0)
++        {
++            editBox.Select(editBox.Text.Length, 0);
++        }
++    }
++
++    private void RecipeComboBox_LostFocus(object sender, RoutedEventArgs e)
++    {
++        if (sender is not ComboBox combo || DataContext is not LotViewModel vm) return;
++
++        // 输入了过滤词但未选中条目时，回显实际选中项，保证显示与保存内容一致
++        if (!string.Equals(combo.Text, vm.SelectedRecipe?.RecipePath, StringComparison.OrdinalIgnoreCase))
++        {
++            combo.SetCurrentValue(ComboBox.TextProperty, vm.SelectedRecipe?.RecipePath ?? string.Empty);
++        }
++    }
+ }
+diff --git a/Vega.UI.Jobs/Lot/LotViewModel.cs b/Vega.UI.Jobs/Lot/LotViewModel.cs
+index 458ff350..6ef404d3 100644
+--- a/Vega.UI.Jobs/Lot/LotViewModel.cs
++++ b/Vega.UI.Jobs/Lot/LotViewModel.cs
+@@ -8,6 +8,7 @@ using Galaxy.Platform.Patterns.WPF;
+ using Galaxy.UI.Controls;
+ using System.Collections.ObjectModel;
+ using System.Collections.Specialized;
++using System.ComponentModel;
+ using System.ComponentModel.DataAnnotations;
+ using System.Windows;
+ using System.Windows.Data;
+@@ -51,6 +52,10 @@ public partial class LotViewModel(Job job, LotSetting lot) : JobViewModelBase(jo
+     //private string? _lotLevelID;
+     public ObservableCollection<SimpleRecipe> AvailableRecipes { get; set; } = [];
+     [ObservableProperty]
++    private ICollectionView? _availableRecipesView;
++    [ObservableProperty]
++    private string? _recipeSearchText;
++    [ObservableProperty]
+     private SimpleRecipe? _selectedRecipe;
+     [ObservableProperty]
+     private LotSortingOption _sortingOption;
+@@ -71,6 +76,52 @@ public partial class LotViewModel(Job job, LotSetting lot) : JobViewModelBase(jo
+     {
+         if (value != null)
+             IsDSAEnabled = value.HasDSAElement;
++        // 仅当搜索词是"选中项回写的完整路径"（可编辑 ComboBox 的 Text 先于 SelectedItem 绑定到达的竞态，
++        // 此时列表被塌缩成一项）时刷新以恢复全量；键盘导航（搜索词仍为用户输入）时不刷新——
++        // Refresh 的 Reset 会打断下拉高亮与上下键导航
++        if (!string.IsNullOrWhiteSpace(RecipeSearchText)
++            && string.Equals(RecipeSearchText, value?.RecipePath, StringComparison.OrdinalIgnoreCase))
++        {
++            AvailableRecipesView?.Refresh();
++        }
++    }
++
++    partial void OnRecipeSearchTextChanged(string? value)
++    {
++        // 键盘导航/选中回写产生的"完整路径"文本不触发过滤刷新（Reset 会打断下拉高亮与导航）；
++        // 仅用户键入的过滤词才刷新
++        if (SelectedRecipe != null
++            && string.Equals(value, SelectedRecipe.RecipePath, StringComparison.OrdinalIgnoreCase))
++        {
++            return;
++        }
++        AvailableRecipesView?.Refresh();
++    }
++
++    private bool FilterRecipes(object obj)
++    {
++        if (obj is not SimpleRecipe recipe)
++        {
++            return false;
++        }
++        // 当前选中项恒保留在视图内：ICollectionView.Refresh() 触发 Reset 后 WPF Selector 会把
++        // 不在视图内的 SelectedItem 置空并回写 SelectedRecipe = null，
++        // 导致 LostFocus 回显为空、SaveData 整段跳过而丢弃本页其他编辑（DSA/LotRunSetting/分级）
++        if (ReferenceEquals(recipe, SelectedRecipe))
++        {
++            return true;
++        }
++        var search = RecipeSearchText;
++        if (string.IsNullOrWhiteSpace(search))
++        {
++            return true;
++        }
++        // 选中后回显的完整路径不作为过滤条件，避免下拉列表只剩当前一项
++        if (string.Equals(search, SelectedRecipe?.RecipePath, StringComparison.OrdinalIgnoreCase))
++        {
++            return true;
++        }
++        return recipe.RecipePath.Contains(search, StringComparison.OrdinalIgnoreCase);
+     }
+     #endregion
+ 
+@@ -226,6 +277,10 @@ public partial class LotViewModel(Job job, LotSetting lot) : JobViewModelBase(jo
+     {
+         if (_currentLot != null)
+         {
++            // 清空上次过滤词：页面复用时残留旧词会按旧词过滤列表，甚至把恢复的选中项挤出视图
++            RecipeSearchText = null;
++            AvailableRecipesView = CollectionViewSource.GetDefaultView(AvailableRecipes);
++            AvailableRecipesView.Filter = FilterRecipes;
+             var recipes = await RecipeProvider.GetAllFilesByFolderIDAsync(0);
+             List<(SimpleRecipe Recipe, bool IsRoot, string FolderPath, string FileName)> availableRecipes = [];
+             foreach (var recipe in recipes)
+@@ -317,10 +372,15 @@ public partial class LotViewModel(Job job, LotSetting lot) : JobViewModelBase(jo
+ 
+     protected override void SaveData()
+     {
+-        if (_currentLot != null && SelectedRecipe != null)
++        if (_currentLot != null)
+         {
+-            _currentLot.RecipeID = SelectedRecipe.RecipeID;
+-            _currentLot.RecipePath = SelectedRecipe.RecipePath;
++            // 仅 Recipe 回写受选中项约束；其余编辑（公共属性/分级/LotRunSetting）不因 SelectedRecipe
++            // 为空而被跳过——否则"保存成功但改动丢了"（JobProvider.SaveFile 仍会落盘）
++            if (SelectedRecipe != null)
++            {
++                _currentLot.RecipeID = SelectedRecipe.RecipeID;
++                _currentLot.RecipePath = SelectedRecipe.RecipePath;
++            }
+             this.SetCommonProperties(_currentLot);
+ 
+             for (int i = 0; i < SourceStationList.Count; i++)

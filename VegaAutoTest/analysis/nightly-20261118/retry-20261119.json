@@ -1,0 +1,14 @@
+{
+  "targetDay": "2026-11-18",
+  "retriedAt": "2026-11-19T14:03:36.6935457+08:00",
+  "command": "model_daily.py --begin 2026-11-18",
+  "exitCode": 1,
+  "status": "BLOCKED",
+  "reason": "Target day differs from current Beijing date; do not create another window",
+  "batchRoot": null,
+  "head": null,
+  "formalRunnerRunCount": 0,
+  "prepareSessionCount": 0,
+  "restore": "Not applicable",
+  "freeBytes": 42659180544
+}

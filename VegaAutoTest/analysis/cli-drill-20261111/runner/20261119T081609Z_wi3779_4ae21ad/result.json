@@ -1,0 +1,76 @@
+{
+  "schemaVersion": "1.0",
+  "runId": "20261119T081609Z_wi3779_4ae21ad",
+  "workItemId": 3779,
+  "caseId": "wi3779-v100-no-daq2",
+  "verdict": "PASS",
+  "verdictReason": "OK: 1/1 断言通过",
+  "verdictCode": "OK",
+  "startedAt": "2026-11-19T16:16:09+08:00",
+  "finishedAt": "2026-11-19T16:17:00+08:00",
+  "durationMs": 50984,
+  "target": {
+    "repoRoot": "C:\\AutoTest\\workspaces\\manual-20261111",
+    "gitCommit": "58606ec9c84080feb715145c8100262097b60ef0",
+    "gitBranch": "HEAD",
+    "gitDirty": false,
+    "vegaExe": "C:\\AutoTest\\workspaces\\manual-20261111\\Vega\\bin\\Debug\\net8.0-windows10.0.19041.0\\win-x64\\Vega.exe",
+    "vegaExeBuiltAt": "2026-11-19T16:00:47+08:00",
+    "rebuilt": false,
+    "builtFromCurrentSource": false
+  },
+  "channels": {
+    "l1Api": {
+      "available": false,
+      "baseUrl": "http://localhost:18901/vega-agent/",
+      "reason": "用例未产出 oracle-crosscheck 断言（本次层: uia）"
+    },
+    "l2Uia": {
+      "available": true,
+      "baseUrl": null,
+      "reason": null
+    },
+    "assertions": {
+      "available": true,
+      "baseUrl": null,
+      "reason": null
+    }
+  },
+  "assertions": [
+    {
+      "id": "no-daqdevice-2",
+      "kind": "UI",
+      "description": "Vega100-PIC 基线 ComponentManager 无 DAQDevice_2 实例",
+      "expected": "absent",
+      "actual": "absent; tool=Vega100 (EFEM, OuterToInner, LaserPIC)",
+      "delta": null,
+      "tolerance": null,
+      "result": "PASS"
+    }
+  ],
+  "summary": {
+    "total": 1,
+    "passed": 1,
+    "failed": 0,
+    "skipped": 0
+  },
+  "tests": [
+    {
+      "name": "Vega.AutoTest.L2.WorkItem3779L2.Vega100BaselineHasNoDaqDevice2",
+      "outcome": "Passed",
+      "durationMs": 39929,
+      "message": null
+    }
+  ],
+  "evidence": {
+    "dir": "C:\\AutoTest\\AutoTest\\VegaAutoTest\\analysis\\cli-drill-20261111\\runner\\20261119T081609Z_wi3779_4ae21ad",
+    "files": [
+      "uia/trx/uia.trx",
+      "uia/trx/uia.testhost.log",
+      "uia/ui-snapshot.json",
+      "uia/ui-snapshot.png",
+      "report.md"
+    ]
+  },
+  "exitCode": 0
+}

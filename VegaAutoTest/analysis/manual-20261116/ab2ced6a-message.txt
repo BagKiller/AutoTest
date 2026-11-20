@@ -1,0 +1,24 @@
+﻿已合并 PR 5152: fix(#3820): XY校准保存改写全尺寸表防覆盖丢其它尺寸；导出与界面显示同源修放弃后不一致
+
+## 问题背景 / Context
+
+WI #3820：XY 校准结果唯一持久层为 `Resources\CalibrationDataResult\XYCalibrationData.json`（生产每次跑片 `ApplyXYCaliToWaferRun` 从中读取 XY 补偿参数），但保存/放弃/导出三个操作的数据源口径不一致：
+
+1. **保存丢其它尺寸**：保存按钮只序列化当前选中尺寸过滤后的显示表并整文件覆盖，8 寸保存后 12 寸历史校准结果被清除且无法自愈（结果加载只从文件回填），对应尺寸生产片的 XY 补偿随之失效。
+2. **放弃后导出与界面显示不一致**：放弃仅回滚界面内存表与落盘文件，不回滚本次校准结果对象 `_currentResult`（基类 DiscardCalibration 还会将其指向数据库最新记录），而导出按钮序列化的正是 `_currentResult`——导致"两次校准→放弃→导出→再导入"显示的是被放弃那一轮的结果。
+
+## 修改内容 / Changes
+
+- `Vega.UI.Calibration/XYCalibration/XYCalibrationViewModel.cs`
+  - `SaveCalibration`：落盘源从尺寸过滤的 `DisplayXYCalDataTable` 改为全尺寸表 `XYCalibratingDataTable`（与导入/放弃/执行器落盘同口径）
+  - 新增 `ExportCalibration` 重载：导出前从当前全尺寸表重建结果对象再走基类导出流程（复用文件夹选择/日志/消息通知），保证 导出→导入→界面显示 三者一致
+
+## 验证 / Verification
+
+- `Vega.UI.Calibration` 构建 0 error（仅存量 warning）
+- 行为推演：两次校准→放弃后，UI=第一次、导出=第一次、再导入=第一次（修复前导出为第二次）；未放弃时导出=当前最新（所见即所得语义不变）
+
+WI: #3820
+
+相关工作项: #3820
+

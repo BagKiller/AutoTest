@@ -1,0 +1,7 @@
+﻿M	Vega.BL.WaferRun/WaferRunSequenceBase.cs
+M	Vega.LD.Optics/IlluminationOptics.cs
+M	Vega.LD.Optics/IlluminationOpticsLiteVega100.cs
+M	Vega.LD.Optics/IlluminationOpticsPlus.cs
+M	Vega.UI.Jobs/Lot/LotView.xaml
+M	Vega.UI.Jobs/Lot/LotView.xaml.cs
+M	Vega.UI.Jobs/Lot/LotViewModel.cs

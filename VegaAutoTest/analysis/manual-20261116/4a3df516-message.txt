@@ -1,0 +1,28 @@
+﻿已合并 PR 5134: feat: Vega 宿主适配富创德 EFEM REV 0.3 双布局位表 + STATE 分项展示 + 对准角度内联下发 + GEM 报警登记 13 条
+
+## 概述
+
+本 PR 把 Vega 宿主对齐到 EFEM 侧 `feature/fortrend-pd` 的三块定型改动：REV 0.3 双机型位表布局（宿主按机型消费，不再按单一布局读位）、开机状态重建后的 STATE 查询通道（宿主补齐全部展示与刷新触发点）、DD11 v6 错误返回值路由（宿主登记 13 条报警让失败可定位）。另把 Fortrend 对准器的角度语义从「寄存器模式」适配为「内联下发模式」。
+
+---
+
+## 改动内容
+
+1. **STATE 行分项展示**：机器人/对准器/装载台三个状态面板的 Fortrend STATE 行从单行枚举拼接改为分项标签值展示，值按严重度着色；新增共享展示类型 `SubsystemStateItem`（标签值项）与 `SubsystemStateDisplay`（枚举到文案与严重度画刷的映射），装载台面板补齐载具/门/E84 三项且 LP 路与 E84 路独立判定、缺项路 N/A 占位。
+
+2. **机型自适应位表**：系统状态页 IO1 位表按宿主配置（LP3 是否启用）在导航期重建（2LP=24 位、3LP=16 位），3LP 机型新增 IO3 风扇/气缸位组（只读，数据随 LP3 板卡快照到达）；装载台状态面板按板卡快照自描述推断机型（IO3 或 16 位 IO2 = 3LP、24 位 IO2 = 2LP）后取 E84 通道偏移——推断为宿主本地实现（EFEM.Data 位表事实源只提供正向 API，旧文档所记 `LoadPortCountOf` 接口不存在，以 CS0117 证实并勘误）。
+
+3. **STATE 后台扫描入口扩展**：Fortrend STATE 为纯查询通道（无事件推送），装载台/机器人/对准器/循环四个页面在导航进入时、两处手动刷新动作时拉起 GET:STATE 后台扫描（协调器 internal 改 public 供跨程序集调用，在飞去重不变）；Rorze/Sim 分支行为不变。
+
+4. **对准角度内联下发**：Fortrend 协议无角度寄存器——「设定角度」按钮按机型置灰（新增 `BooleanAndConverter` 叠加输入校验与机型支持两条件），对准命令按 `Alignment(module, angle)` 内联下发，解析失败回落设备配置偏移角；循环控制同步适配（角度暂存随每次对准下发），循环三处「读晶圆 ID」分支补门控前置 ALIGN（MOV:TRIGGER 协议无角度参数，读位角由设备层按 OCR 读位角内联，输入角只能独立 ALIGN 下发）；循环测试槽位数校验从「恒 25」放宽为按协议实际回报长度（13/25 合法载具均可跑）；Foup→Stage 循环路径恢复纯对准分支（评审 [7]：该路径勾「对准」不勾「读 ID」时晶圆已上对准器却全程无 ALIGN，master 遗留缺口、两机型通杀）；对准诊断按钮控件 Align/SetAlignAngle 归位 BL 契约、受工具锁定门控（评审 [9]），「设定角度」空值点击从静默返回改记 Warning 日志（评审 [10]）；读 ID 链三处前置 ALIGN 补 `[PreAlign]` 下发角日志、注释口径修正为「MOV:TRIGGER 仅读 ID 不旋转晶圆，读位角由设备侧 OCR 读位角决定」（评审 [8]）；「对准+读 ID」归位 BL 受阻——BL 版返回 Task 不回传 ID（CS0029 证伪「一行归位」），回退直调并立技术债（评审 [12]）。BL 契约贯通（随 EFEM 包 1.1.1.12279）：`IWaferHandlerService.Alignment/AlignmentAsync` 加可选角度参数，循环控制六处直调设备接口归位走 `WaferHandlerService`（受工具锁定门控保护，消除绕层技术债）；对准角文本框改「空 = 未输入 = 不下发角」语义（初值 "0" 会让 Fortrend 未输入直接对准到 0°、让 Rorze「设定角度」把寄存器静默设 0°——后者为在产行为变化修复），校验特性 `DoubleWithRangeAttribute` 扩展 `allowEmpty` 参数放行空值。
+
+5. **GEM 报警登记 13 条**：`AlarmData.xml` 补 3 条操作失败报警 `EFEMDevice_InitializeEFEMModuleFailed` / `EFEMDevice_RefreshWaferPresenceStatusForArmFailed` / `EFEMDevice_GetWaferPresenceStatusForAlignerFailed`（ALID 30165–30167）与 10 条子系统错误报警 `EFEM_{EFEM|TOOL1|WTR|ALIGNER|LP1|LP2|LP3|E84_1|E84_2|E84_3}_Error`（ALID 30168–30177）。ID 前缀按设备层组件注册名 `EFEMDevice` 拼接（`ComponentConfig.json` 三条 EFEM 组件统一注册名，Galaxy `XComponentContainer.Resolve` 赋名；前版文档写 `EFEMDeviceFortrend_` 有误，已勘误）。既有 47 条 `EFEM_*_Error` 全属 Rorze 错误码文本命名空间，与 Fortrend 子系统名同形不同义、零覆盖，本批补齐子系统命名空间。
+
+6. **多语言资源与规格文档**：新增 18 个资源键（英文/中文双语：STATE 标签 5、子系统状态文案 12、IO3 位组标题 1）；living-spec EFEM 模块规格同步双布局位表、SystemStatus 位面板条目与 2LP/3LP 验证判据；评审补登记——组件表新增 STATE 展示投影、STATE 刷新协调器、对准门控转换器三个关键文件行，模块路由表 efem 条目补转换器单文件路由，机型判据句写全（判据条目 "Enable Load Port 3" 宿主与设备同绑、设备开机链自包 1.1.1.12255 起消费、条目无配置 UI 无热切窗口、装载台快照反推为同源稳健层、缺条目默认值分叉由种子合并契约防守）。
+
+## 本地联调开关（已全部归位，2026-11-11）
+
+- `ComponentConfig.json` ✓：本地联调翻转（Vega500 Features `EFEM`→`EFEMFortrend`、两条 EFEMDevice Condition 互换）已不存在——工作区与 master 零差异（2026-11-11 `git diff master` 核实），无需还原。
+
+- `version.props` ✓：联调开关已归位（`UseLocalEFEM=false` 与源一致、`EFEMSourcePath` 回占位路径），工作区仅剩 `EFEMVersion` 1.1.1.11149→**1.1.1.12279** 一行——发包后的正式升级，随 PR 入库；NuGet 包解析命中 1.1....
+

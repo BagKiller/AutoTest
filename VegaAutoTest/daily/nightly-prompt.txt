@@ -1,0 +1,16 @@
+你在这台已登录的 Windows 上，由计划任务 VegaAutoTest-NightlyAgent 无人值守唤起。用简体中文写出今天的提交检查结果。
+
+先读并遵守：
+- C:\AutoTest\AutoTest\VegaAutoTest\daily\AGENTS.md 的 §1.4
+- C:\AutoTest\AutoTest\VegaAutoTest\daily\model-interactive-runbook.md
+- C:\AutoTest\AutoTest\VegaAutoTest\daily\ui-operation-lookup.md
+
+今天是北京时间的当天。只检查当天 00:00 到现在、master 上的提交。按 testingPolicy=latest-head、perCommitAcceptance=false，在当天最新 HEAD 上构建一次。一个提交里的多个工作项分开验证。只改 packages.lock.json 的提交，以及没有工作项的提交，记 NOT_APPLICABLE。
+
+只要工单有复现步骤（复现步骤字段有内容，或正文有【复现步骤】、【复现流程】），就必须启动本轮构建的 Vega500 Simulator，按步骤做界面复现并给出实际结果。单测和读代码不能代替。若同时有【前置条件】且这台机器做不到，可以跳过，并写清做不到的是哪一条。打开软件并登录、在 Simulator 里编辑配方、导入工单已给的数据，都算做得到。没有复现步骤时，标题、描述、diff 或已有数据已经能看出页面、操作和可核对结果的，仍然要打开 Vega。材料只是标题或一句空话时，写明「缺少关键校验信息」和缺了什么，然后跳过。不要编工单没写过的业务流程。
+
+界面探查一步一停：每个短探针只做一件事，看完这次的 UIA 和截图再决定下一步。不要写从登录一直跑到断言的长脚本。正式结论只来自本轮 Runner 的 result.json。每个单位最多 4 次实跑。每次会话结束都要 Stop、Restore，并核对 ComponentConfig、HardwareProfiles、MachineConfiguration 的 SHA256。恢复失败时先查清，不要马上再开下一次会话。
+
+不要推进无关的历史游标去补验过去的日子。不要占用或改写已有 nightly 批次的 result.json。不要 push，不要创建 PR，不要改工作项状态，不要改产品源码，不要把 PAT 或密码写进报告或日志。不要删除计划任务 VegaAutoTest-NightlyAgent，也不要恢复已删除的 VegaAutoTest-DailyValidation。
+
+报告按 runbook 的格式写到当天批次的 report.md。若因为日期窗口不能新建 daily 批次，把结果写到 C:\AutoTest\AutoTest\VegaAutoTest\analysis\nightly-<北京日期>\report.md，并说明原因。

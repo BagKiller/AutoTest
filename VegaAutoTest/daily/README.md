@@ -1,10 +1,20 @@
+# 当前每日入口：模型交互逐项验证（2026-11-17）
+
+北京时间 23:30 由本机计划任务 `VegaAutoTest-NightlyAgent` 唤起 Cursor CLI。先读 [model-interactive-runbook.md](model-interactive-runbook.md) 和 AGENTS.md §1.4。
+
+拉取当日全部提交，从各自提交说明提取工单，以“工作项＋该次提交”为单位；无匹配项明确跳过。固定最新HEAD、编译一次，模型读取工单并观察真实Vega界面，逐项执行、根据截图/UIA/运行证据调整下一步，正式结论由Runner记录。
+
+夜间由计划任务 `VegaAutoTest-NightlyAgent` 调用 `Start-NightlyAgent.ps1`。旧任务 `VegaAutoTest-DailyValidation` 及其 `Install-DailyValidationTask.ps1`、`Start-DailyValidation.ps1` 已删除，不要重建那条旧任务。
+
+---
+
 # Vega 每日提交验证（2026-11-03 统一版）
 
-规则以同目录 `AGENTS.md` 为准；本文说明用法和数据格式。旧批次保留原计划和结果，不迁移、不重跑。
+规则以同目录 `AGENTS.md` 为准；本文说明用法和数据格式。2026-11-17 已删除旧夜间批次、会话和分析记录，不要把它们找回来重跑。
 
-## 现行策略：最新 HEAD 构建一次，逐提交测试
+## 历史脚本策略：最新 HEAD 构建一次，逐提交测试
 
-- 每晚北京时间 23:30，本机 Windows 计划任务 `VegaAutoTest-DailyValidation` 直接运行项目程序（不经过 AI 聊天）。
+- 23:30 由 `VegaAutoTest-NightlyAgent` 唤起 Cursor CLI，按 `model-interactive-runbook.md` 执行。不要改回已删除的 `VegaAutoTest-DailyValidation`。
 - 仅收集北京时间当天 00:00 至触发时刻 master 上全部可达提交（按 committer time），不补收跨日提交。夜间只续跑当天 daily 批次，不自动恢复历史待验或补验；历史专项需另行显式 `--resume`。
 - 每个提交单独读取完整 diff 和工单，单独生成测试和需求场景（`requirement-scopes.json`、`preparation/scopes/<sha>/`）。
 - 全部测试在收集时固定的最新 HEAD 上**只构建一次**并执行。根报告"逐提交测试结果"表逐提交列出用例、runId 和状态，`summary.json` 的 `commitResults` 是同一内容的机读版本。
@@ -12,31 +22,15 @@
 - 磁盘只占一个共享工作区 `C:\AutoTest\workspaces\daily-latest`（约 9-11G）。回收规则见 `AGENTS.md` §2。
 - `--strategy individual`（每个 SHA 独立构建）只用于用户单独要求的逐提交专项复验；`--strategy merged` 仅兼容旧批次。
 
-## 无人值守入口
+## 旧脚本入口已移除
 
-```powershell
-$python='C:\Users\Administrator\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\python.exe'
-cd C:\AutoTest\AutoTest\VegaAutoTest
-
-# 安装/修复计划任务（不保存用户密码；以当前用户交互会话运行，需保持登录）
-& .\daily\Install-DailyValidationTask.ps1
-# 只检查运行环境（Codex CLI 与登录），不收集、不运行测试
-& .\daily\Start-DailyValidation.ps1 -RuntimeCheck
-# 手动启动一次（隐藏的独立监督进程）
-& .\daily\Start-DailyValidation.ps1
-# 查看真实进度（只读）
-& $python -B .\daily\autopilot.py --status
-# 恢复一个已有批次
-& .\daily\Start-DailyValidation.ps1 -Batch <根批次路径>
-```
-
-启动器的 `STARTED` 只证明监督进程已启动。批次 `controller/state.json` 记录真实阶段，`controller/processes/` 保留子进程归属和超时，`controller-launches/<启动>/result.json` 记录监督重试，每次控制器调用的日志单独保存为 `controller-<n>.*.log`。已有活动进程时只返回当前状态，避免重复构建。
+`Install-DailyValidationTask.ps1`、`Start-DailyValidation.ps1` 和 Windows 任务已删除。`autopilot.py --daily` 在当前策略下会直接拒绝，不能当作夜间入口。
 
 控制器执行顺序：收集 → 拉取工单/附件 → 逐提交生成测试与审核 → HEAD 构建一次并编译/发现（最多一次编译修正）→ 冻结 → drain 执行无界面与必需 UI → finally 恢复 → `--check-complete`。`FINISHED` 只证明流程收尾；是否验收通过看根 report/summary 和原始 Runner 结果。`FINISHED_NO_TESTS`（summary `testsExecuted=false`）表示流程收尾但 0 个 Runner 结果，当晚等于没有校验。
 
 共享工作区 `daily-latest` 只给夜间批次和 `--last` 样例使用。回收前会停止工作区内的本项目进程并关闭 .NET 构建服务；若上次 `git worktree remove` 中途失败留下没有 `.git` 的目录，且能证明是本项目的工作区，会自动清理并 prune 后重建（见 `AGENTS.md` §2）。专项复验使用自己的 worktree。
 
-模型生成器 `model_author.py` 使用已登录的本机 Codex CLI（高推理），不读取或复制 API 密钥。模型只返回结构化测试源码及需求审核，没有 shell、写文件、多代理或 MCP 工具；程序校验相对路径、机型、用例 ID 和来源后写入独立版本的测试项目。`preparation/model/` 保存请求、响应和真实错误。每提交模型推理累计最多 20 分钟。
+`model_author.py` 不再调用 Codex。夜间和后续检查都由本机 Cursor CLI 执行。
 
 ## 手动排障命令
 
@@ -122,6 +116,7 @@ cd C:\AutoTest\AutoTest\VegaAutoTest
 2. **路径标签** `tag:<name>`：`classify()` 的路径规则经 `scheduling.json` 的 `tagCases` 映射到回归探针，只算候选，不代表验收。
 3. **未映射模块** `module:<目录>`：路径规则未覆盖的文件按模块分组，列入"需分析"。
 4. 仅文档改动（`ve-docs/`、`*.md`）的提交记为 `NOT_APPLICABLE`。
+5. 仅自动刷新 `packages.lock.json`、没有其他文件改动的维护提交（例如 `chore: 自动更新 NuGet 锁文件 [skip ci]`）按 `AGENTS.md` §1 直接忽略，记为 `NOT_APPLICABLE` 并保留 SHA/diff；不生成需求场景、测试或 UI 计划，不进入需求冻结门禁。仍保留当批固定 HEAD。`[skip ci]` 或机器人作者本身不是忽略依据；同时修改其他文件的提交照常分析。
 
 有产品改动时，`baselineCases`（`daily-recent10-v3`、`daily-supplement`）作为回归底线照常跑，单独标注，不代替工作项验收。
 
@@ -140,7 +135,7 @@ cd C:\AutoTest\AutoTest\VegaAutoTest
 | `NEEDS_CASE` | 有场景缺可执行用例、需求数据或必需 UI/机型覆盖 |
 | `PENDING` | 尚未冻结或用例尚未执行 |
 | `NOT_RUN` | 流程已收尾但用例未得到 PASS 结果（如超出预算） |
-| `NOT_APPLICABLE` | 仅文档改动 |
+| `NOT_APPLICABLE` | 仅文档改动，或按规则忽略的纯自动 NuGet 锁文件维护提交 |
 
 HEAD 槽位整体状态（原有表格）：`ACCEPTED`、`PARTIAL`、`FAIL`、`ERROR`、`BLOCKED`、`PENDING`、`NEEDS_CASE`、`NOT_APPLICABLE`。`summary.json` 的 `acceptanceState`：无提交 `NO_COMMITS`；有失败 `HAS_FAIL`；全部验收且已收尾 `COMPLETE`；其余 `INCOMPLETE`。它表示验收完整性，不是第二套 verdict。
 
@@ -169,9 +164,7 @@ UI 验证必须实际启动目标版本的 Vega.exe，在合法授权的 Simulat
 1. 配置修改前保存内容与 SHA256，Vega 停止后才改 `SelectedToolType`、`RootCondition`、`Features`、`SelectedProfiles` 和独立 `UserDataFolder`（`Start-ModelValidation.ps1 -Action Prepare`）。RootCondition 为 `<机型>,Simulator,GemSim,Gen2`；官方认证器里 Simulator 勾选、Gem 不勾选、Gen2。不得只改机型名称而漏掉 OuterToInner、硬件能力或用户数据目录，不得修改正式授权绕过机型检查。
 2. 登录由测试宿主打开 `C:\AutoTest\runtime\AuthenticatorApp\Authenticator.exe`，在「超级用户密码」页生成并读取密码，账号使用 `su`。机型版本取自 `ComponentConfig.json` 的 `SelectedToolType`，查找顺序：环境变量 `VEGA_AUTOTEST_COMPONENT_CONFIG` → Vega.exe 同级的 `Resources\ComponentConfig.json`（Vega 运行时实际读取、`Prepare` 唯一修改的一份）→ 仅当构建输出缺少配置时，才退回 Vega 工程目录的 `Resources\ComponentConfig.json`（`bin` 的上级，例如 `C:\AutoTest\workspaces\Vega_SW\Vega\Resources\ComponentConfig.json`）。两份的 `SelectedToolType` 不一致时取证日志会写提示（通常说明改了工程配置但没有重新构建）。Simulator/Gem/Gen 取同一 ToolConfig 的 RootCondition，机器 ID 取该机型的 MachineConfiguration。密码只留在内存，不写入报告、剪贴板或仓库。`VEGA_AUTOTEST_USER` / `VEGA_AUTOTEST_PASSWORD` 仍可覆盖。认证器缺失或读不到密码时该会话记 BLOCKED。测试自己启动的认证器读完密码即关闭。启动验证密钥按 `authenticator-flow.json` 处理。
 3. 实际界面执行必须传入 `--session`，程序核对准备会话的提交目录、机型、profile 和配置文件校验值。每个会话有界执行，失败最多恢复重试一次，继续其他会话；finally 停止本轮进程、恢复配置并核对 SHA256。禁止触发真实硬件，GemSim 结果不能当作 SEPLAT/E87 Host 验收。
-4. 不 push、不创建 PR、不写工作项状态。原始 Runner 报告不手改，历史批次不删除。
-
-历史专项脚本归档在 `analysis/recovery-20261027/tools/`，不作为日常入口；旧版本测试工程仍被历史冻结计划引用，保留用于审计。
+4. 不 push、不创建 PR、不写工作项状态。原始 Runner 报告不手改。
 
 ## 2026-11-11 可靠性修正
 
@@ -181,10 +174,12 @@ UI 验证必须实际启动目标版本的 Vega.exe，在合法授权的 Simulat
 - 每提交仍最多 20 分钟推理；源码补查最多八轮，并保留最后三分钟生成预算。已有摘要恢复时保留原始行号。gap 区分内部信息不足、测试准备错误、外部数据/硬件和未知验收基准。
 - WPF 启动与执行共用默认 120 秒 deadline；资源初始化超时也会使宿主立即失效，迟到的初始化线程不能恢复该宿主。
 - latest-head 的旧 `commitCount/statusCounts` 保持执行目标口径兼容；新增 `executionTargetCount`、`collectedCommitStatusCounts` 和口径标签，原始逐提交结果仍在 `commitResults`。
-- `Start-DailyValidation.ps1 -RuntimeCheck -LaunchDirectory <目录>` 可在任务计划程序中验证 Git、SDK8 三套共享运行时、registry、机型调度及现有模型登录，并保存 `runtime-check.json`，不会收集或执行产品测试。
-
 回归入口：`python.exe -B -m unittest discover -p "test_*.py"`（在 daily 下）；`tests/verify_authored_isolation.py` 验证真实 SDK 的生成工程隔离，可选 `--model-smoke` 检查真实模型生成。`tests/Vega.AutoTest.WpfHost.Contracts` 的 startup/work/shared-budget/async 模式在独立进程验证 WPF 的启动、执行和异步契约。这些合成框架测试不代表产品或 UI 验收。
 
 ## 2026-11-13 复现步骤 UI 验证
 
 工单有「复现步骤」或「验收标准」时，控制器从工单字段解析步骤和预期，只生成一个按步骤原文逐步执行的 UI 用例，每步截图（`step-NN-*.png`），逐提交状态以该 UI 运行的 Runner verdict 为准（`verificationLayer=UI`），逻辑测试不能替代。根报告「复现步骤 UI 验证」一节列出步骤、预期、结论和截图。详见 `AGENTS.md` §1.2，实现见 `ui_repro.py`。
+
+## 2026-11-17 界面操作查表
+
+模型自己找不到、事后已确认的点击位置记在 `daily/ui-operation-lookup.md`。写步骤或修定位前先查表。夜间生成不读项目文档，`model_author.infer` 会把该文件附进请求。新行只在用户观察或正式 Runner PASS 之后追加。

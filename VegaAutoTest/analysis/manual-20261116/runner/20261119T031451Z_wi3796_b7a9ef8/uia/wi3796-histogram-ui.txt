@@ -1,0 +1,50 @@
+已按短路径暂存加密附件 C:\AutoTest\data\wi3796\WorkSpaceOfflineJob_20261109134113242_Cycle1_261109134113_JRH_EPI_Particle_dual_20261106__261109134113.json
+主窗口就绪 (10s): Vega500 (1.0.0.0, 2027-02-03)
+每日登录前置：读取目标配置并对齐官方认证器 Vega500,Simulator,GemSim,Gen2
+发现弹窗: title='启动前提示' message='载台类型：边缘夹持'
+  已点击 确定
+  状态通道 -> UIA（API unavailable, fallback to status bar scraping）
+  [3s] 设备状态 -> '初始化'
+发现登录窗口: '请输入用户名和密码以登录'，自动登录 su/***
+机型来源 C:\AutoTest\workspaces\manual-20261116\Vega\bin\Debug\net8.0-windows10.0.19041.0\win-x64\Resources\ComponentConfig.json：SelectedToolType=Vega500
+认证器对齐 Vega500（Vega500,Simulator,GemSim,Gen2），机器ID=0
+已选择 'Vega500'
+已选择 'Gen2'
+已从认证器读取超级用户密码
+  凭据已填
+  登录已提交
+  [13s] 设备状态 -> '空闲'
+[13s] 就绪：状态空闲 + 菜单可用 ✔
+顶层窗口 'Vega500 (1.0.0.0, 2027-02-03) - su' class=Window
+顶层窗口 'report.md - AutoTest - Cursor [Administrator]' class=Chrome_WidgetWin_1
+顶层窗口 '认证器' class=Window
+顶层窗口 'ChatGPT' class=Chrome_WidgetWin_1
+顶层窗口 '截图工具' class=Microsoft-Windows-SnipperEditor
+顶层窗口 'Vega-Monitor' class=CabinetWClass
+顶层窗口 'runs' class=CabinetWClass
+顶层窗口 'AutoTest - Nimbalyst' class=Chrome_WidgetWin_1
+顶层窗口 'CC Switch' class=Tauri Window
+顶层窗口 'ChatGPT - 用户配置 1 - Microsoft​ Edge' class=Chrome_WidgetWin_1
+顶层窗口 'v2rayN - V7.24.4 - X64 - 以管理员身份运行' class=Window
+顶层窗口 'Fork' class=Window
+顶层窗口 '管理员: Windows PowerShell' class=ConsoleWindowClass
+顶层窗口 '新建 文本文档.txt - 记事本' class=Notepad
+顶层窗口 '打开' class=#32770
+已向文件对话框提交附件路径
+文件选择窗口已关闭
+StorageMaintenanceView_GenericDatePicker => 2026/11/1
+StorageMaintenanceView_GenericDatePicker_1 => 2026/11/18
+已把 Wafer_1_202611094113 加入结果 Gallery
+[4s] Gallery 根 id='GalleryControl' 已出现
+=== Gallery 共 7 片（从左到右）===
+  #0 g0/0 job='WorkSpaceOfflineJob_20261109134113242_Cycle1' slot=1 start='2026/11/9 13:41:13' wafer='Wafer_1_202611094113' status='✘' inProcess=False cali=False offscreen=False
+  #1 g1/0 job='RunCurRecipeJob_2026110616090090' slot=4 start='2026/11/6 16:09:01' wafer='WAFER_4' status='失败' inProcess=False cali=False offscreen=False
+  #2 g2/0 job='WorkSpaceOfflineJob_20261027105118866_Cycle1' slot=1 start='2026/10/27 10:51:20' wafer='Wafer_1_202610275120' status='✘' inProcess=False cali=False offscreen=False
+  #3 g2/1 job='WorkSpaceOfflineJob_20261027105118866_Cycle1' slot=1 start='2026/10/27 10:51:18' wafer='Wafer_1_202610275118' status='✘' inProcess=False cali=False offscreen=False
+  #4 g3/0 job='Default Job_20261026113309339_1' slot=10 start='2026/10/26 11:34:28' wafer='Carr001-10_261026113428' status='失败' inProcess=False cali=False offscreen=False
+  #5 g4/0 job='Default Job_202610261127272727_1' slot=10 start='2026/10/26 11:29:48' wafer='Carr002-10_261026112948' status='失败' inProcess=False cali=False offscreen=False
+  #6 g5/0 job='WorkSpaceOfflineJob_20261026104123075_Cycle1' slot=1 start='2026/10/26 10:41:23' wafer='Wafer_1_202610264123' status='✘' inProcess=False cali=False offscreen=False
+点击 Gallery 第 0 个：#0 g0/0 job='WorkSpaceOfflineJob_20261109134113242_Cycle1' slot=1 start='2026/11/9 13:41:13' wafer='Wafer_1_202611094113' status='✘' inProcess=False cali=False offscreen=False
+已打开结果 #0 g0/0 job='WorkSpaceOfflineJob_20261109134113242_Cycle1' slot=1 start='2026/11/9 13:41:13' wafer='Wafer_1_202611094113' status='✘' inProcess=False cali=False offscreen=False
+找到 DNA Oblique LPD 直方图，类别 [LPD,Size] DNA Oblique
+已记住当前界面 ui-snapshot.json

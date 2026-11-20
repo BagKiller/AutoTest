@@ -1,0 +1,11 @@
+# WI 3802 rev=7 state=AVAILABLE
+TITLE: BPS OD 膜系校准功能
+
+## Description
+
+
+## ReproSteps
+
+
+## AcceptanceCriteria
+不同的晶圆膜系会有不同的反射率，会导致机器原本标定的OD 表中获取的参数，可能在运行过程中获得很低的读数。因此需要在考虑不同膜系的时候，开放一个对应膜系的OD train 表格，也就是LaserBpsODFilmConfig 这样可以覆盖掉默认的OD 设置，在扫片中获取稳定的读数

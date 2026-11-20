@@ -1,0 +1,2 @@
+Prepared Vega500. SessionPath=C:\AutoTest\AutoTest\VegaAutoTest\daily\sessions\20261117T135412_Vega500_db0fcf
+Use official Authenticator for Vega500 / Simulator / GemSim / Gen2 / ResourcesDaily_Vega500, then -Action Start -SessionPath <path>. Initial calibration data may still be required.

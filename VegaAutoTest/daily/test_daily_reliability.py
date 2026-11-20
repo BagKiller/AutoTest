@@ -17,6 +17,13 @@ import test_individual as queue_fixtures
 
 
 class ReliabilityTests(unittest.TestCase):
+    def test_authoring_prompt_includes_confirmed_ui_hit_targets(self):
+        text = m.request_text(dict(sha='a' * 40, _secret='hidden'))
+        self.assertIn('ui-004', text)
+        self.assertIn('RecipeExpander_GenericMenuItem', text)
+        self.assertIn('采集设置', text)
+        self.assertIn('\nINPUT DATA:\n', text)
+        self.assertNotIn('hidden', text)
     def controller(self):
         fixture = controller_fixtures.ControllerTests()
         fixture.setUp()
@@ -281,7 +288,7 @@ class ReliabilityTests(unittest.TestCase):
                  stdout='Microsoft.NETCore.App 8.0.32\nMicrosoft.WindowsDesktop.App 8.0.32')) as run:
             with self.assertRaisesRegex(RuntimeError, 'AspNetCore'):
                 a.runtime_check()
-        # The shared-framework gate fires before any Codex CLI probe or login.
+        # The shared-framework gate fires before any CLI login probe.
         run.assert_called_once()
 
 

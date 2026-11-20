@@ -1,0 +1,8 @@
+﻿ Vega.BL.WaferRun/WaferRunSequenceBase.cs        |   3 +
+ Vega.LD.Optics/IlluminationOptics.cs            |  12 ++-
+ Vega.LD.Optics/IlluminationOpticsLiteVega100.cs |  12 ++-
+ Vega.LD.Optics/IlluminationOpticsPlus.cs        |  17 +++-
+ Vega.UI.Jobs/Lot/LotView.xaml                   |   8 +-
+ Vega.UI.Jobs/Lot/LotView.xaml.cs                | 123 ++++++++++++++++++++++++
+ Vega.UI.Jobs/Lot/LotViewModel.cs                |  66 ++++++++++++-
+ 7 files changed, 228 insertions(+), 13 deletions(-)

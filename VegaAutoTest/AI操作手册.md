@@ -1,3 +1,5 @@
+> 当前每日策略：本机 Cursor CLI 逐项观察真实界面，以提交 SHA＋绑定工作项为单位；无工单明确跳过。先读 daily/AGENTS.md §1.4 和 daily/model-interactive-runbook.md。
+
 # AI 操作手册 — VegaAutoTest 验证体系
 
 > 读者：**AI 助手（Claude Code / vega-agent / 后续任何 LLM 编排层）**。人类请读 `README.md`。
@@ -26,9 +28,9 @@
 
 ## 0.1 UI 验证的强制实测要求（2026-10-23）
 
-每日批次的现行规则以 `daily/AGENTS.md` 和 `daily/README.md`（2026-11-03 统一版）为准：每晚 23:30 由计划任务自动运行，读取当天全部提交，逐提交分析需求、生成用例并逐提交报告结果，全部用例在最新 HEAD 上只构建一次后执行（`perCommitAcceptance=false`）。逐 SHA 独立构建只用于显式 `--strategy individual` 专项复验。`daily.py --execute` 的首次返回是候选队列，不是已执行。不要在缺登记处结束，不把自动追加工作项编号当成补测试；也不能在冻结后改断言或重算旧计划。
+每日批次的现行规则以 `daily/AGENTS.md` §1.4 和 `daily/model-interactive-runbook.md` 为准：北京时间 23:30 由本机计划任务 `VegaAutoTest-NightlyAgent` 唤起 Cursor CLI。模型从每条提交说明提取工作项，读工单，打开最新 HEAD 的 Vega，看当前界面后再决定下一步。不要把整晚交给 `autopilot.py --daily`、`model_author.py` 或一份写完即冻结的长脚本。不要恢复已删除的 `VegaAutoTest-DailyValidation`。旧夜间批次记录已删除，不要恢复。
 
-适用于日常批次、工作项专项验证和逐提交复验。用户要求 UI 验证，或工作项复现/验收步骤包含界面流程时，必须实际启动目标版本的 Vega.exe（允许 L2 启动），完成官方授权及目标账号登录，在 Simulator 中执行目标操作并核对实际结果。仅启动进程、到达登录页或主窗口不等于完成验收。
+适用于日常批次、工作项专项验证和逐提交复验。只要有复现步骤就必须复现，不要求【预期结果】【实际结果】同时出现。复现步骤字段有内容，或正文有【复现步骤】、【复现流程】，都算有。必须实际启动目标版本的 Vega.exe（允许 L2 启动），完成官方授权及目标账号登录，在 Simulator 中按这些步骤做出实际结果。单测不能代替。同时有【前置条件】且这台机器做不到时，可以跳过，并写清做不到的那一条。仅启动进程、到达登录页或主窗口不等于完成验收。
 
 代码分析、构建成功、单元/逻辑测试、DLL 反射、模拟服务、仅实例化 WPF 控件均不能替代 UI 实测。需要界面验证的工作项，即使逻辑层全部 PASS，也必须继续 UI 流程；`registry.json` 缺用例、仅有 logic 层或 `uiSlots=[]` 只能说明覆盖缺口，不能证明无需 UI。
 

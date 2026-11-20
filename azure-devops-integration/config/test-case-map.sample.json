@@ -10,10 +10,7 @@
       "suiteId": null,
       "configurationId": null,
       "testPointId": null,
-      "layers": [
-        "logic",
-        "uia"
-      ],
+      "layers": ["logic", "uia"],
       "requiredForRelease": true
     },
     {
@@ -24,9 +21,7 @@
       "suiteId": null,
       "configurationId": null,
       "testPointId": null,
-      "layers": [
-        "uia"
-      ],
+      "layers": ["uia"],
       "requiredForRelease": true
     },
     {
@@ -37,9 +32,7 @@
       "suiteId": null,
       "configurationId": null,
       "testPointId": null,
-      "layers": [
-        "uia"
-      ],
+      "layers": ["uia"],
       "requiredForRelease": true
     }
   ]

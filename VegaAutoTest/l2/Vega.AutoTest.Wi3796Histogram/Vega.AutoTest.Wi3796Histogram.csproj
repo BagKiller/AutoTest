@@ -1,0 +1,31 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net8.0-windows10.0.19041.0</TargetFramework>
+    <UseWPF>true</UseWPF>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <IsTestProject>true</IsTestProject>
+    <IsPackable>false</IsPackable>
+    <PlatformTarget>x64</PlatformTarget>
+    <ManagePackageVersionsCentrally>false</ManagePackageVersionsCentrally>
+    <NuGetAudit>false</NuGetAudit>
+    <ProductBin>$(VEGA_SW_ROOT)/Vega/bin/Debug/net8.0-windows10.0.19041.0/win-x64</ProductBin>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.8.0" />
+    <PackageReference Include="xunit" Version="2.5.3" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="2.5.3" />
+    <ProjectReference Include="..\..\harness\Vega.AutoTest.Harness.csproj" />
+    <Compile Include="..\..\harness\Wpf\WpfTestHost.cs" Link="Harness/Wpf/WpfTestHost.cs" />
+    <AssemblyAttribute Include="System.Reflection.AssemblyMetadataAttribute">
+      <_Parameter1>VegaWpfResourceDictionaries</_Parameter1>
+      <_Parameter2>/Vega.UI.Common;component/Themes/General.xaml|/Vega.UI.Inspection;component/Recipe/Themes/EditableTabControlStyle.xaml</_Parameter2>
+    </AssemblyAttribute>
+    <Reference Include="$(ProductBin)/*.dll" />
+    <Content Include="$(ProductBin)/*.dll" Link="%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
+    <Using Include="Xunit" />
+  </ItemGroup>
+  <Target Name="VegaProductOutputCheck" BeforeTargets="BeforeBuild">
+    <Error Condition="!Exists('$(ProductBin)/Vega.dll')" Text="Product build output not found: $(ProductBin)/Vega.dll. Build this SHA first; tests never use another version's binaries." />
+  </Target>
+</Project>

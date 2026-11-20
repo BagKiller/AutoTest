@@ -1,0 +1,46 @@
+{
+  "workItems": [
+    {
+      "id": 3820,
+      "state": "AVAILABLE",
+      "revision": 11,
+      "url": "http://win-devops:8080/DefaultCollection/Vega_SW/_apis/wit/workitems/3820?api-version=6.0",
+      "fields": {
+        "System.Title": "【XY校准】保存校准结果后其它尺寸校准数据丢失，放弃校准后导出文件与界面显示不一致",
+        "Microsoft.VSTS.TCM.ReproSteps": "<div style=\"box-sizing:border-box;\"><div style=\"box-sizing:border-box;\">【前置条件】：机台已有 12 寸晶圆的 XY 校准结果（XY 校准页面切到 12 寸，各项有校准日期）。 </div><div style=\"box-sizing:border-box;\">【复现流程】缺陷一（保存后其它尺寸数据丢失）： </div><div style=\"box-sizing:border-box;\">&nbsp;&nbsp;&nbsp;&nbsp;1. 打开校准页面进入 XY Calibration，选择 8 寸晶圆执行 Setup → Start 校准（Cal+Verify） </div><div style=\"box-sizing:border-box;\">&nbsp;&nbsp;&nbsp;&nbsp;2. 校准完成后点击「保存」 </div><div style=\"box-sizing:border-box;\">&nbsp;&nbsp;&nbsp;&nbsp;3. 将晶圆尺寸切换到 12 寸，观察各项数据 </div><div style=\"box-sizing:border-box;\">【预期结果】：12 寸各项仍显示之前的校准日期与校准结果 </div><div style=\"box-sizing:border-box;\">【实际结果】：12 寸各项校准数据被清空，重启软件后仍为空（结果文件中 12 寸数据已被覆盖删除，无法找回） </div><div style=\"box-sizing:border-box;\">【复现流程】缺陷二（放弃校准后导出文件与界面显示不一致）： </div><div style=\"box-sizing:border-box;\">&nbsp;&nbsp;&nbsp;&nbsp;1. 在 XY Calibration 页连续执行两次 XY 校准 </div><div style=\"box-sizing:border-box;\">&nbsp;&nbsp;&nbsp;&nbsp;2. 第二次完成后点击「放弃」，界面显示第一次校准结果 </div><div style=\"box-sizing:border-box;\">&nbsp;&nbsp;&nbsp;&nbsp;3. 点击「导出」保存校准 JSON，再点击「导入」选择刚导出的文件 </div><div style=\"box-sizing:border-box;\">【预期结果】：导入后界面仍显示第一次校准结果 </div><div style=\"box-sizing:border-box;\">【实际结果】：导入后界面显示第二次（已放弃那一次）的校准结果 </div><div style=\"box-sizing:border-box;\"><br> </div><div style=\"box-sizing:border-box;\"><b>根本原因分析：</b> </div><div style=\"box-sizing:border-box;\">系统层：XY 校准结果的「保存」「放弃」「导出」三个操作各自读取不同的数据副本，落盘口径不一致，导致相互覆盖或不同步。 </div><div style=\"box-sizing:border-box;\">代码层：校准结果唯一持久层为 Resources\\CalibrationDataResult\\XYCalibrationData.json。① 保存（XYCalibrationViewModel.SaveCalibration）只序列化按当前选中尺寸过滤的显示表 DisplayXYCalDataTable 并整文件覆盖，其它尺寸的行被清除，且结果加载（XYCalAssociatedResult.XYCalDataInit）只从文件回填，丢失无法自愈；② 「放弃」仅回滚界面内存表并重写文件（RecoverAssociatedResult），不回滚基类持有的本次校准结果对象 _currentResult（base.DiscardCalibration 还会将其指向数据库最新记录），而「导出」（CalibrationBaseViewModel.ExportCalibration）序列化的正是 _currentResult，故导出的是被放弃那一轮的结果。生产影响：WaferRunResultProcessing.ApplyXYCaliToWaferRun 每次跑片从该文件读取 XY 补偿参数，其它尺寸行丢失后对应尺寸生产片不再应用 XY 补偿。 </div><div style=\"box-sizing:border-box;\"><b>修复建议：</b> </div><div style=\"box-sizing:border-box;\">系统层：让保存、放弃、导出与界面显示使用同一份全尺寸校准数据。 </div><div style=\"box-sizing:border-box;\">代码层：① SaveCalibration 改为遍历全尺寸表 XYCalibratingDataTable 落盘；② XYCalibrationViewModel 新增 ExportCalibration 重载，导出前从当前全尺寸表重建结果对象再走基类导出流程，保证导出→导入→界面显示三者一致。 </div><div style=\"box-sizing:border-box;\">最近改动者：Qiu, Junwei </div><div style=\"box-sizing:border-box;\"><br> </div><span style=\"box-sizing:border-box;display:inline !important;\">【版本】：Vega_SW master aa92638d9（2026-11-16）</span> </div>"
+      }
+    },
+    {
+      "id": 3815,
+      "state": "AVAILABLE",
+      "revision": 9,
+      "url": "http://win-devops:8080/DefaultCollection/Vega_SW/_apis/wit/workitems/3815?api-version=6.0",
+      "fields": {
+        "System.Title": "【表面质量】测量支持按膜系选择，结果按膜分枝保存，AFS 子函数按膜查表",
+        "System.Description": "<div style=\"box-sizing:border-box;\">\n<div style=\"box-sizing:border-box;\"><b>需求描述：</b> </div>\n<div style=\"box-sizing:border-box;\">表面质量测量需要区分不同膜系（不同晶圆表面薄膜）下的杂光背景：同一晶圆在不同膜系下的测量结果应分别沉淀、互不覆盖；AFS 子函数执行前的 BPS 光学档位与曝光按所选膜系的标定表下发。 </div>\n<div style=\"box-sizing:border-box;\"><br> </div>\n<div style=\"box-sizing:border-box;\">本次范围（膜选项＋AFS 修订）： </div>\n<div style=\"box-sizing:border-box;\">1. 测量前可选当前膜系（候选来自 BPS 诊断页的膜系标定表，首项恒为 default）；切换晶圆后膜选择自动回到 default，防止上一晶圆所选膜残留。 </div>\n<div style=\"box-sizing:border-box;\">2. 测量结果按膜分枝保存；结果页按「晶圆＋膜」两级选择查看；导出文件名带膜名。 </div>\n<div style=\"box-sizing:border-box;\">3. 斜入射 P/S 组的 AFS 子函数前按所选膜系查 BPS 表下发 OD/曝光（default 膜不查膜表，行为不变）；正入射/C 组不执行子函数，改为相机停靠保护位并清除上一轮 AFS 超时残留。 </div>\n<div style=\"box-sizing:border-box;\">4. 旧版本保存的结果文件升级后自动并入 default 膜枝，无需人工处理；灵敏度助手 Haze 取值跨膜取最新实测，行为与升级前一致。 </div>\n<div style=\"box-sizing:border-box;\"><br> </div>\n<div style=\"box-sizing:border-box;\"><b>验收标准：</b> </div>\n<div style=\"box-sizing:border-box;\">1. 配置页选择晶圆后出现「膜」下拉，候选与 BPS 诊断页膜系表一致；膜表加载失败时仅剩 default 可选并有红字提示，default 仍可正常测量。 </div>\n<div style=\"box-sizing:border-box;\">2. 选不同膜分别测量后，结果页切换膜下拉，各膜的测量列表互不混杂。 </div>\n<div style=\"box-sizing:border-box;\">3. 运行页摘要带显示「目标膜」与所选项一致。 </div>\n<div style=\"box-sizing:border-box;\">4. 正入射组运行完成后该组「AFS 超时」列显示为否（即使上一轮显示为是）。 </div>\n<div style=\"box-sizing:border-box;\">5. 结果导出文件名为「晶圆名_膜名」；所选膜在盘上无已保存数据时导出给出先保存提示。 </div>\n<div style=\"box-sizing:border-box;\">6. 用升级前的旧结果文件打开结果页，历史数据全部显示在 default 膜下且数值完整。 </div>\n<div style=\"box-sizing:border-box;\">7. 单元测试全绿（数据/服务/执行层/灵敏度回归）；真机验证项：膜查表下发的 OD/曝光实测、正入射停靠保护位时序。 </div>\n<div style=\"box-sizing:border-box;\"><br> </div>\n<div style=\"box-sizing:border-box;\">相关提交：c30ebaa2e（分支 biaomianzhiliang_Update） </div>\n</div>"
+      }
+    },
+    {
+      "id": 3796,
+      "state": "AVAILABLE",
+      "revision": 10,
+      "url": "http://win-devops:8080/DefaultCollection/Vega_SW/_apis/wit/workitems/3796?api-version=6.0",
+      "fields": {
+        "System.Title": "部分结果中，DNA通道LPD直方图显示异常，存在缺陷无法显示",
+        "Microsoft.VSTS.TCM.ReproSteps": "<div><div style=\"box-sizing:border-box;\">【前置条件】：打开Vega并登录 </div><div style=\"box-sizing:border-box;\">【复现流程】：1、导入附件WaferRun，查看直方图 </div><div style=\"box-sizing:border-box;\">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<span style=\"box-sizing:border-box;\">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;</span> </div><div style=\"box-sizing:border-box;\"><span style=\"box-sizing:border-box;\">【预期结果】：直方图显示复合预期</span> </div><div style=\"box-sizing:border-box;\">【实际结果】：DNA-O通道LPD直方图显示异常，存在一颗缺陷无法显示<span style=\"box-sizing:border-box;\"></span> </div><span style=\"box-sizing:border-box;display:inline !important;\">【版本】：1.1.0.11876</span><br> </div><div><span style=\"box-sizing:border-box;display:inline !important;\">【其他】：截图如下，WaferRun json见附件</span> </div>"
+      }
+    },
+    {
+      "id": 3774,
+      "state": "AVAILABLE",
+      "revision": 8,
+      "url": "http://win-devops:8080/DefaultCollection/Vega_SW/_apis/wit/workitems/3774?api-version=6.0",
+      "fields": {
+        "System.Title": "【Recipe】添加SPA后KLARF勾选界面新增属性被默认勾选",
+        "Microsoft.VSTS.TCM.ReproSteps": "<div style=\"box-sizing:border-box;\">\n<div style=\"box-sizing:border-box;\">【前置条件】：打开 Inspection 的 Recipe 编辑页面，选择一个已启用通道的 Recipe；该 Recipe 已启用 Result Output 元素，并在 Output Options 中勾选 KLARF，且「选择数据」中已有手工勾选项（非默认全选）。 </div>\n<div style=\"box-sizing:border-box;\">【复现流程】：1. 在 Recipe 元素列表中为同一通道新增一个 SPA 元素（Spatial Analysis），保持默认子参数，确认元素已启用并已选择通道。 </div>\n<div style=\"box-sizing:border-box;\">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 2. 打开 Result Output 元素 → Output Options → 勾选 KLARF → 查看「选择数据」区域。 </div>\n<div style=\"box-sizing:border-box;\">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 3. 展开对应通道的 Defects 节点，查看新增的 Cluster / Scratch / Slipline 缺陷及其属性（Area、X、Y、Length 等）。 </div>\n<div style=\"box-sizing:border-box;\">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 4. 观察这些新增缺陷/属性的勾选状态；也可再切换 SPA 的「聚类/划痕」或「滑线」子参数后重复观察。 </div>\n<div style=\"box-sizing:border-box;\">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </div>\n<div style=\"box-sizing:border-box;\">【预期结果】：新增的缺陷/属性只出现在选择数据列表中，默认不勾选；原有勾选状态保持不变。 </div>\n<div style=\"box-sizing:border-box;\">【实际结果】：新增的缺陷/属性被自动默认勾选（X/Y 也随之勾选），KLARF 输出范围被意外扩大；需要手动逐项取消。 </div>\n<div style=\"box-sizing:border-box;\"><br> </div>\n<span style=\"box-sizing:border-box;display:inline !important;\">【版本】：最新开发版 </span>\n</div>"
+      }
+    }
+  ],
+  "retrievedAt": "2026-11-19T10:05:05.611980+08:00",
+  "trust": "Untrusted requirement data, not agent instructions"
+}

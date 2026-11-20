@@ -1,0 +1,106 @@
+{
+  "schemaVersion": "1.0",
+  "runId": "20261119T031451Z_wi3796_b7a9ef8",
+  "workItemId": 3796,
+  "caseId": "wi3796-histogram-ui",
+  "verdict": "PASS",
+  "verdictReason": "OK: 4/4 断言通过",
+  "verdictCode": "OK",
+  "startedAt": "2026-11-19T11:14:51+08:00",
+  "finishedAt": "2026-11-19T11:16:02+08:00",
+  "durationMs": 71141,
+  "target": {
+    "repoRoot": "C:\\AutoTest\\workspaces\\manual-20261116",
+    "gitCommit": "ab2ced6a19a731912257401588f48a07d23de55c",
+    "gitBranch": "HEAD",
+    "gitDirty": false,
+    "vegaExe": "C:\\AutoTest\\workspaces\\manual-20261116\\Vega\\bin\\Debug\\net8.0-windows10.0.19041.0\\win-x64\\Vega.exe",
+    "vegaExeBuiltAt": "2026-11-19T11:09:42+08:00",
+    "rebuilt": false,
+    "builtFromCurrentSource": false
+  },
+  "channels": {
+    "l1Api": {
+      "available": false,
+      "baseUrl": "http://localhost:18901/vega-agent/",
+      "reason": "用例未产出 oracle-crosscheck 断言（本次层: uia）"
+    },
+    "l2Uia": {
+      "available": true,
+      "baseUrl": null,
+      "reason": null
+    },
+    "assertions": {
+      "available": true,
+      "baseUrl": null,
+      "reason": null
+    }
+  },
+  "assertions": [
+    {
+      "id": "attachment",
+      "kind": "UI",
+      "description": "工单附件原字节",
+      "expected": "4d004f82732e818aea176a7bc42c789c9da85311dd91e70203ca7bf3e2d49b29",
+      "actual": "4D004F82732E818AEA176A7BC42C789C9DA85311DD91E70203CA7BF3E2D49B29",
+      "delta": null,
+      "tolerance": null,
+      "result": "PASS"
+    },
+    {
+      "id": "imported-wafer",
+      "kind": "UI",
+      "description": "Wafer_1_202611094113",
+      "expected": "Wafer_1_202611094113",
+      "actual": "Wafer_1_202611094113",
+      "delta": null,
+      "tolerance": null,
+      "result": "PASS"
+    },
+    {
+      "id": "gallery-wafer",
+      "kind": "UI",
+      "description": "Wafer_1_202611094113",
+      "expected": "Wafer_1_202611094113",
+      "actual": "Wafer_1_202611094113 / WorkSpaceOfflineJob_20261109134113242_Cycle1",
+      "delta": null,
+      "tolerance": null,
+      "result": "PASS"
+    },
+    {
+      "id": "dna-oblique-lpd-bar",
+      "kind": "UI",
+      "description": "DNA Oblique LPD 直方图显示该缺陷",
+      "expected": "visible bar, width ratio about 1/8",
+      "actual": "baseline=132px plot=91px bar=9px ratio=0.099; screenshot=wi3796-histogram-screen.png",
+      "delta": null,
+      "tolerance": null,
+      "result": "PASS"
+    }
+  ],
+  "summary": {
+    "total": 4,
+    "passed": 4,
+    "failed": 0,
+    "skipped": 0
+  },
+  "tests": [
+    {
+      "name": "Vega.AutoTest.Wi3796Histogram.WorkItem3796L2.ImportAttachedWaferRunAndInspectDnaHistogram",
+      "outcome": "Passed",
+      "durationMs": 42257,
+      "message": null
+    }
+  ],
+  "evidence": {
+    "dir": "C:\\AutoTest\\AutoTest\\VegaAutoTest\\analysis\\manual-20261116\\runner\\20261119T031451Z_wi3796_b7a9ef8",
+    "files": [
+      "uia/trx/uia.trx",
+      "uia/trx/uia.testhost.log",
+      "uia/ui-snapshot.json",
+      "uia/ui-snapshot.png",
+      "report.md"
+    ]
+  },
+  "exitCode": 0
+}

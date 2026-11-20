@@ -1,0 +1,7 @@
+{
+  "changedAt": "2026-11-17T16:23:17.3407887+08:00",
+  "reason": "User requested model-observed per-work-item-and-commit validation; Codex vega is sole nightly entry",
+  "taskName": "VegaAutoTest-DailyValidation",
+  "enabled": false,
+  "previousState": "Ready"
+}

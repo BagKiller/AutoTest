@@ -1,0 +1,65 @@
+{
+  "schemaVersion": "1.0",
+  "runId": "20261119T052812Z_wi3694_b9a39d4",
+  "workItemId": 3694,
+  "caseId": "wi3694-binning-ui",
+  "verdict": "BLOCKED",
+  "verdictReason": "UI_NOT_READY: Vega.AutoTest.Harness.UiPrerequisiteException : [VEGA_UI_PRECONDITION:UI_NOT_READY] 工单没有给出可导入的作业。当前配方：Default Recipe 元素列表没有分档。作业页没有附图中的 25 片 Wafer Summary。作业页文字：浏览 | 操作 | 配方 | 展示管理 | 工具 | 帮助 | 任务 | Default Job | 任务摘要 | 展示 | 导出设置 | 导出 | 使用任务名 | 使用任务名和数字后缀 | 使用文件名 | 使用文件名和数字后缀 | 文件名 | 文件路径 | ... | 循环选项 | 无 | 无限循环 | 循环 | 通过JobQueue执行时循环设置不生效，如需使用循环功能，请直接在当前Job上右键选择\"开始\" | LotLevel / WaferLevel ID设置 | 修改LotLevel 和 WaferLevel ID | [WaferEdgeTypeConfigService],Successfully loaded WaferEdgeType configuration | [HazeCaliResultHelper],No matching Key was found.Key-P-U-U.DN.Full.None.HighSensitivity | Offline | Local | 设备状态 | 空闲 | 任务状态 | 批次状态 | 检测台晶圆状态\r\nat Vega.AutoTest.L2.WorkItem3694L2.OpenBinningEditorAndLookForIllustratedSummary() in C:\\AutoTest\\AutoTest\\VegaAutoTest\\analysis\\manual-20261113\\ui3694\\WorkItem3694L2.cs:line 55\r\n   at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)\r\n   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)",
+  "verdictCode": "UI_NOT_READY",
+  "startedAt": "2026-11-19T13:28:12+08:00",
+  "finishedAt": "2026-11-19T13:29:16+08:00",
+  "durationMs": 64050,
+  "target": {
+    "repoRoot": "C:\\AutoTest\\workspaces\\manual-20261113",
+    "gitCommit": "c6bedced2d0773dc612ace3df66ba98edb7f2b80",
+    "gitBranch": "HEAD",
+    "gitDirty": false,
+    "vegaExe": "C:\\AutoTest\\workspaces\\manual-20261113\\Vega\\bin\\Debug\\net8.0-windows10.0.19041.0\\win-x64\\Vega.exe",
+    "vegaExeBuiltAt": "2026-11-19T13:19:07+08:00",
+    "rebuilt": false,
+    "builtFromCurrentSource": false
+  },
+  "channels": {
+    "l1Api": {
+      "available": false,
+      "baseUrl": "http://localhost:18901/vega-agent/",
+      "reason": "用例未产出 oracle-crosscheck 断言（本次层: uia）"
+    },
+    "l2Uia": {
+      "available": true,
+      "baseUrl": null,
+      "reason": null
+    },
+    "assertions": {
+      "available": true,
+      "baseUrl": null,
+      "reason": null
+    }
+  },
+  "assertions": [],
+  "summary": {
+    "total": 0,
+    "passed": 0,
+    "failed": 0,
+    "skipped": 0
+  },
+  "tests": [
+    {
+      "name": "Vega.AutoTest.L2.WorkItem3694L2.OpenBinningEditorAndLookForIllustratedSummary",
+      "outcome": "Failed",
+      "durationMs": 53463,
+      "message": "Vega.AutoTest.Harness.UiPrerequisiteException : [VEGA_UI_PRECONDITION:UI_NOT_READY] 工单没有给出可导入的作业。当前配方：Default Recipe 元素列表没有分档。作业页没有附图中的 25 片 Wafer Summary。作业页文字：浏览 | 操作 | 配方 | 展示管理 | 工具 | 帮助 | 任务 | Default Job | 任务摘要 | 展示 | 导出设置 | 导出 | 使用任务名 | 使用任务名和数字后缀 | 使用文件名 | 使用文件名和数字后缀 | 文件名 | 文件路径 | ... | 循环选项 | 无 | 无限循环 | 循环 | 通过JobQueue执行时循环设置不生效，如需使用循环功能，请直接在当前Job上右键选择\"开始\" | LotLevel / WaferLevel ID设置 | 修改LotLevel 和 WaferLevel ID | [WaferEdgeTypeConfigService],Successfully loaded WaferEdgeType configuration | [HazeCaliResultHelper],No matching Key was found.Key-P-U-U.DN.Full.None.HighSensitivity | Offline | Local | 设备状态 | 空闲 | 任务状态 | 批次状态 | 检测台晶圆状态\r\nat Vega.AutoTest.L2.WorkItem3694L2.OpenBinningEditorAndLookForIllustratedSummary() in C:\\AutoTest\\AutoTest\\VegaAutoTest\\analysis\\manual-20261113\\ui3694\\WorkItem3694L2.cs:line 55\r\n   at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)\r\n   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)"
+    }
+  ],
+  "evidence": {
+    "dir": "C:\\AutoTest\\AutoTest\\VegaAutoTest\\analysis\\manual-20261113\\runner\\20261119T052812Z_wi3694_b9a39d4",
+    "files": [
+      "uia/trx/uia.trx",
+      "uia/trx/uia.testhost.log",
+      "uia/ui-snapshot.json",
+      "uia/ui-snapshot.png",
+      "report.md"
+    ]
+  },
+  "exitCode": 2
+}

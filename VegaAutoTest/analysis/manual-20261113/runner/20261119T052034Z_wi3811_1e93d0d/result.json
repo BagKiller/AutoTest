@@ -1,0 +1,96 @@
+{
+  "schemaVersion": "1.0",
+  "runId": "20261119T052034Z_wi3811_1e93d0d",
+  "workItemId": 3811,
+  "caseId": "wi3811-klarf-ui",
+  "verdict": "PASS",
+  "verdictReason": "OK: 3/3 断言通过",
+  "verdictCode": "OK",
+  "startedAt": "2026-11-19T13:20:33+08:00",
+  "finishedAt": "2026-11-19T13:22:17+08:00",
+  "durationMs": 104096,
+  "target": {
+    "repoRoot": "C:\\AutoTest\\workspaces\\manual-20261113",
+    "gitCommit": "c6bedced2d0773dc612ace3df66ba98edb7f2b80",
+    "gitBranch": "HEAD",
+    "gitDirty": false,
+    "vegaExe": "C:\\AutoTest\\workspaces\\manual-20261113\\Vega\\bin\\Debug\\net8.0-windows10.0.19041.0\\win-x64\\Vega.exe",
+    "vegaExeBuiltAt": "2026-11-19T13:19:07+08:00",
+    "rebuilt": false,
+    "builtFromCurrentSource": false
+  },
+  "channels": {
+    "l1Api": {
+      "available": false,
+      "baseUrl": "http://localhost:18901/vega-agent/",
+      "reason": "用例未产出 oracle-crosscheck 断言（本次层: uia）"
+    },
+    "l2Uia": {
+      "available": true,
+      "baseUrl": null,
+      "reason": null
+    },
+    "assertions": {
+      "available": true,
+      "baseUrl": null,
+      "reason": null
+    }
+  },
+  "assertions": [
+    {
+      "id": "ppd-polarity-visible",
+      "kind": "UI",
+      "description": "BF PPD 下可见 PPD_Polarity",
+      "expected": "present",
+      "actual": "PPD_Polarity",
+      "delta": null,
+      "tolerance": null,
+      "result": "PASS"
+    },
+    {
+      "id": "ppd-polarity-under-ppd",
+      "kind": "UI",
+      "description": "PPD_Polarity 位于 PPD 之下",
+      "expected": "path contains PPD",
+      "actual": "BF Default / Defects / PPD / PPD_Polarity",
+      "delta": null,
+      "tolerance": null,
+      "result": "PASS"
+    },
+    {
+      "id": "ppd-polarity-checkable",
+      "kind": "UI",
+      "description": "PPD_Polarity 可勾选",
+      "expected": "toggle then restore",
+      "actual": "toggled",
+      "delta": null,
+      "tolerance": null,
+      "result": "PASS"
+    }
+  ],
+  "summary": {
+    "total": 3,
+    "passed": 3,
+    "failed": 0,
+    "skipped": 0
+  },
+  "tests": [
+    {
+      "name": "Vega.AutoTest.L2.WorkItem3811L2.ExistingRecipeShowsCheckablePpdPolarity",
+      "outcome": "Passed",
+      "durationMs": 81643,
+      "message": null
+    }
+  ],
+  "evidence": {
+    "dir": "C:\\AutoTest\\AutoTest\\VegaAutoTest\\analysis\\manual-20261113\\runner\\20261119T052034Z_wi3811_1e93d0d",
+    "files": [
+      "uia/trx/uia.trx",
+      "uia/trx/uia.testhost.log",
+      "uia/ui-snapshot.json",
+      "uia/ui-snapshot.png",
+      "report.md"
+    ]
+  },
+  "exitCode": 0
+}

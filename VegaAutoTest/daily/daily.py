@@ -33,6 +33,7 @@ CN = timezone(timedelta(hours=8))
 # checked 2026-11-03). Once TLS is enabled on the server, set VEGA_DAILY_REMOTE to
 # the https:// URL; the auth header is scoped to whatever origin is configured.
 REMOTE = os.environ.get("VEGA_DAILY_REMOTE", "http://win-devops:8080/DefaultCollection/Vega_SW/_git/Vega_SW")
+# PowerShell 7 binary already on this machine. It is not a Codex executor.
 SHELL = r"C:\Users\Administrator\.cache\codex-runtimes\codex-primary-runtime\dependencies\native\powershell\pwsh.exe"
 DOTNET = Path(r"C:\AutoTest\runtime\dotnet\dotnet.exe")
 WORKSPACES = Path(r"C:\AutoTest\workspaces")
@@ -90,7 +91,10 @@ def save(path, obj):
 def load(path, default=None):
     # Same extended-length prefix as save(): deep evidence paths must round-trip.
     resolved = _long_path(path)
-    return json.loads(open(resolved, encoding="utf-8-sig").read()) if os.path.exists(resolved) else default
+    if not os.path.exists(resolved):
+        return default
+    with open(resolved, encoding="utf-8-sig") as stream:
+        return json.load(stream)
 
 
 def now_cn():
@@ -974,6 +978,11 @@ def main():
     parser.add_argument("--ack", help="人工关闭一个待验提交（SHA 前缀）")
     parser.add_argument("--ack-reason")
     args = parser.parse_args()
+    if load(ROOT / 'daily' / 'execution-policy.json', {}).get('mode') == 'model-interactive':
+        if args.resume and load(args.resume / 'manifest.json', {}).get('validationMode') == 'model-interactive':
+            raise ValueError('Model batch must not enter the legacy freeze/drain queue')
+        if not any((args.resume, args.last, args.revalidate_batch, args.ack)):
+            raise ValueError('Legacy daily collection disabled; use model_daily.py --begin')
     if args.check_complete and not args.resume:
         raise ValueError('--check-complete requires --resume; it must never collect or advance the cursor')
     queue_action = any((args.prepare_all, args.author_cases, args.check_cases, args.drain))

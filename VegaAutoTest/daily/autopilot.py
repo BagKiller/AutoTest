@@ -627,18 +627,12 @@ def runtime_check():
     if runtimes.returncode or any(not re.search(r'^' + re.escape(name) + r' 8\.', runtimes.stdout, re.M)
             for name in ('Microsoft.NETCore.App', 'Microsoft.WindowsDesktop.App', 'Microsoft.AspNetCore.App')):
         raise RuntimeError('SDK8 must provide .NET, WindowsDesktop and AspNetCore 8 shared runtimes')
-    executable = model_author.find_transport()
-    result = subprocess.run([executable, 'exec', '--help'], capture_output=True, encoding='utf-8', errors='replace', timeout=15)
-    if result.returncode or any(flag not in result.stdout for flag in ('--ignore-user-config', '--output-schema', '--json')):
-        raise RuntimeError('Installed Codex CLI lacks required structured inference capabilities')
-    authentication = subprocess.run([executable, 'login', 'status'], capture_output=True,
-        encoding='utf-8', errors='replace', timeout=15)
-    if authentication.returncode:
-        raise RuntimeError('Existing Codex model login is unavailable in this execution environment')
-    receipt = dict(codexExecutable=executable, pythonExecutable=sys.executable,
-        cliStructuredInferenceAvailable=True, existingModelLoginAvailable=True, checkedAt=d.now_cn().isoformat(),
-        pid=os.getpid(), sessionName=os.environ.get('SESSIONNAME'),
-        inheritedPathHasCodex=bool(__import__('shutil').which('codex')))
+    cursor_cli = Path(os.environ.get('LOCALAPPDATA', str(Path.home() / 'AppData/Local'))) / 'cursor-agent' / 'agent.cmd'
+    if not cursor_cli.is_file():
+        raise RuntimeError('Local Cursor CLI is missing: ' + str(cursor_cli))
+    receipt = dict(cursorCli=str(cursor_cli), pythonExecutable=sys.executable,
+        checkedAt=d.now_cn().isoformat(), nightlyEntry='Cursor CLI',
+        pid=os.getpid(), sessionName=os.environ.get('SESSIONNAME'))
     receipt.update(dotnet8RuntimesAvailable=True, gitAvailable=True,
                    registryAvailable=True, profileCount=len(scheduling['profileOrder']))
     d.save(d.ROOT / 'daily' / 'controller-runtime.json', receipt)
@@ -732,10 +726,8 @@ def resolve_resume(path):
 
 
 def collected(root, manifest):
-    # Nightly batches validate one fixed latest HEAD: requirement analysis stays
-    # per-commit (requirement-scopes.json), build/test/report run once. A
-    # per-commit queue exists only when explicitly requested via
-    # daily.py --strategy individual; the controller never creates one itself.
+    # Legacy collector. New nights do not use it: model_daily.initialize owns
+    # model-interactive batches, and the model drives each work item on screen.
     import latest_head
     latest_head.configure(d, root, manifest)
     d.save(root / 'manifest.json', manifest)
@@ -767,6 +759,10 @@ def main():
     group.add_argument('--status', action='store_true')
     group.add_argument('--runtime-check', action='store_true', help='Validate the real scheduler environment without model calls or collection')
     args = parser.parse_args()
+    if args.daily and d.load(d.ROOT / 'daily' / 'execution-policy.json', {}).get('mode') == 'model-interactive':
+        raise ValueError('Legacy nightly controller disabled; use the Cursor CLI nightly task and model_daily.py')
+    if args.resume and d.load(args.resume / 'manifest.json', {}).get('validationMode') == 'model-interactive':
+        raise ValueError('Interactive model batch cannot be resumed by the legacy controller')
     if args.runtime_check:
         print(json.dumps(runtime_check(), ensure_ascii=False))
         return

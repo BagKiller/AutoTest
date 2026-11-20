@@ -1,0 +1,21 @@
+{
+  "schemaVersion": "1.0",
+  "cases": [
+    {
+      "id": "wi3804-lot-recipe-recheck",
+      "title": "#3804 Lot Recipe 过滤、清空、保存再进入、未匹配回显",
+      "targetSha": "58606ec9c84080feb715145c8100262097b60ef0",
+      "workItems": [3804],
+      "tags": ["uia"],
+      "layers": {
+        "uia": {
+          "project": "analysis/manual-wi3804/ui/Ui3804.csproj",
+          "filter": "FullyQualifiedName~WorkItem3804Check",
+          "timeoutSeconds": 900,
+          "requiresVegaExe": true,
+          "minAssertions": 4
+        }
+      }
+    }
+  ]
+}

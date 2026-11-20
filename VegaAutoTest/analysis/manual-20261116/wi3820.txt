@@ -1,0 +1,25 @@
+TITLE 【XY校准】保存校准结果后其它尺寸校准数据丢失，放弃校准后导出文件与界面显示不一致
+---DESC---
+
+---REPRO---
+【前置条件】：机台已有 12 寸晶圆的 XY 校准结果（XY 校准页面切到 12 寸，各项有校准日期）。
+【复现流程】缺陷一（保存后其它尺寸数据丢失）：
+1. 打开校准页面进入 XY Calibration，选择 8 寸晶圆执行 Setup → Start 校准（Cal+Verify）
+2. 校准完成后点击「保存」
+3. 将晶圆尺寸切换到 12 寸，观察各项数据
+【预期结果】：12 寸各项仍显示之前的校准日期与校准结果
+【实际结果】：12 寸各项校准数据被清空，重启软件后仍为空（结果文件中 12 寸数据已被覆盖删除，无法找回）
+【复现流程】缺陷二（放弃校准后导出文件与界面显示不一致）：
+1. 在 XY Calibration 页连续执行两次 XY 校准
+2. 第二次完成后点击「放弃」，界面显示第一次校准结果
+3. 点击「导出」保存校准 JSON，再点击「导入」选择刚导出的文件
+【预期结果】：导入后界面仍显示第一次校准结果
+【实际结果】：导入后界面显示第二次（已放弃那一次）的校准结果
+根本原因分析：
+系统层：XY 校准结果的「保存」「放弃」「导出」三个操作各自读取不同的数据副本，落盘口径不一致，导致相互覆盖或不同步。
+代码层：校准结果唯一持久层为 Resources\CalibrationDataResult\XYCalibrationData.json。① 保存（XYCalibrationViewModel.SaveCalibration）只序列化按当前选中尺寸过滤的显示表 DisplayXYCalDataTable 并整文件覆盖，其它尺寸的行被清除，且结果加载（XYCalAssociatedResult.XYCalDataInit）只从文件回填，丢失无法自愈；② 「放弃」仅回滚界面内存表并重写文件（RecoverAssociatedResult），不回滚基类持有的本次校准结果对象 _currentResult（base.DiscardCalibration 还会将其指向数据库最新记录），而「导出」（CalibrationBaseViewModel.ExportCalibration）序列化的正是 _currentResult，故导出的是被放弃那一轮的结果。生产影响：WaferRunResultProcessing.ApplyXYCaliToWaferRun 每次跑片从该文件读取 XY 补偿参数，其它尺寸行丢失后对应尺寸生产片不再应用 XY 补偿。
+修复建议：
+系统层：让保存、放弃、导出与界面显示使用同一份全尺寸校准数据。
+代码层：① SaveCalibration 改为遍历全尺寸表 XYCalibratingDataTable 落盘；② XYCalibrationViewModel 新增 ExportCalibration 重载，导出前从当前全尺寸表重建结果对象再走基类导出流程，保证导出→导入→界面显示三者一致。
+最近改动者：Qiu, Junwei
+【版本】：Vega_SW master aa92638d9（2026-11-16）

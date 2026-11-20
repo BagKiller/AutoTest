@@ -152,21 +152,12 @@ class ControllerTests(unittest.TestCase):
             m.install(a.d, self.child, self.manifest, response, self.registry, self.sched, 'v1')
 
     def test_model_has_no_shell_or_user_configuration(self):
-        command = m.command('codex', self.root, self.root / 'schema.json', self.root / 'response.json')
-        self.assertIn('--ignore-user-config', command)
-        self.assertIn('read-only', command)
-        self.assertIn('shell_tool', command)
-        self.assertIn('multi_agent', command)
-        self.assertNotIn('--dangerously-bypass-approvals-and-sandbox', command)
+        with self.assertRaisesRegex(RuntimeError, 'Cursor CLI'):
+            m.command('codex', self.root, self.root / 'schema.json', self.root / 'response.json')
 
     def test_model_tool_execution_is_rejected_even_with_valid_response(self):
-        def transport(command, **kwargs):
-            a.d.save(self.root / 'inference/response.json', self.response())
-            kwargs['stdout'].write(json.dumps(dict(item=dict(type='command_execution'))))
-            return subprocess.CompletedProcess(command, 0)
-        with patch.object(a.d, 'run_bounded', side_effect=transport):
-            with self.assertRaisesRegex(RuntimeError, 'tool use'):
-                m.infer(a.d, self.root / 'inference', {}, executable='codex')
+        with self.assertRaisesRegex(RuntimeError, 'Cursor CLI'):
+            m.infer(a.d, self.root / 'inference', {}, executable='codex')
 
     def test_timeout_terminates_owned_child_and_persists_failure(self):
         supervisor = a.Supervisor(self.root)
@@ -492,12 +483,8 @@ class ControllerTests(unittest.TestCase):
         self.assertEqual(len(receipt['requirements'][0]['caseIds']), 1)
 
     def test_scheduler_can_resolve_native_cli_without_desktop_path(self):
-        executable = self.root / 'OpenAI/Codex/bin/version/codex.exe'
-        executable.parent.mkdir(parents=True)
-        executable.write_bytes(b'installed binary')
-        with patch.dict(os.environ, {'LOCALAPPDATA': str(self.root), 'VEGA_CODEX_EXECUTABLE': ''}), \
-             patch.object(m.shutil, 'which', return_value=None):
-            self.assertEqual(Path(m.find_transport()), executable)
+        with self.assertRaisesRegex(RuntimeError, 'Cursor CLI'):
+            m.find_transport()
 
     def test_yesterdays_active_batch_is_not_resumed_by_tonights_task(self):
         old = self.root / 'daily/runs/old'

@@ -1,0 +1,56 @@
+{
+  "schemaVersion": "1.0",
+  "runId": "20261119T052528Z_wi3694_08dff0e",
+  "workItemId": 3694,
+  "caseId": "wi3694-binning-ui",
+  "verdict": "ERROR",
+  "verdictReason": "TEST_HOST_FAILED: 测试工程未能启动（编译失败或宿主退出且没有 trx）。C:\\AutoTest\\AutoTest\\VegaAutoTest\\analysis\\manual-20261113\\ui3694\\WorkItem3694L2.cs(23,36): error CS1061: 'AutomationElement' does not contain a definition for 'AsExpander' and no accessible extension method 'AsExpander' accepting a first argument of type 'AutomationElement' could be found (are you",
+  "verdictCode": "TEST_HOST_FAILED",
+  "startedAt": "2026-11-19T13:25:28+08:00",
+  "finishedAt": "2026-11-19T13:25:36+08:00",
+  "durationMs": 7896,
+  "target": {
+    "repoRoot": "C:\\AutoTest\\workspaces\\manual-20261113",
+    "gitCommit": "c6bedced2d0773dc612ace3df66ba98edb7f2b80",
+    "gitBranch": "HEAD",
+    "gitDirty": false,
+    "vegaExe": "C:\\AutoTest\\workspaces\\manual-20261113\\Vega\\bin\\Debug\\net8.0-windows10.0.19041.0\\win-x64\\Vega.exe",
+    "vegaExeBuiltAt": "2026-11-19T13:19:07+08:00",
+    "rebuilt": false,
+    "builtFromCurrentSource": false
+  },
+  "channels": {
+    "l1Api": {
+      "available": false,
+      "baseUrl": "http://localhost:18901/vega-agent/",
+      "reason": "用例未产出 oracle-crosscheck 断言（本次层: uia）"
+    },
+    "l2Uia": {
+      "available": true,
+      "baseUrl": null,
+      "reason": null
+    },
+    "assertions": {
+      "available": true,
+      "baseUrl": null,
+      "reason": null
+    }
+  },
+  "assertions": [],
+  "summary": {
+    "total": 0,
+    "passed": 0,
+    "failed": 0,
+    "skipped": 0
+  },
+  "tests": [],
+  "evidence": {
+    "dir": "C:\\AutoTest\\AutoTest\\VegaAutoTest\\analysis\\manual-20261113\\runner\\20261119T052528Z_wi3694_08dff0e",
+    "files": [
+      "uia/trx/uia.trx",
+      "uia/trx/uia.testhost.log",
+      "report.md"
+    ]
+  },
+  "exitCode": 3
+}

@@ -58,7 +58,7 @@ public static class Program
 
             用法:
               verify --work-item <id> [--layers logic,uia] [--rebuild] [--configuration Debug]
-                     [--repo-root <path>] [--runs-dir <path>] [--case <id>]
+                     [--repo-root <path>] [--runs-dir <path>] [--case <id>] [--registry <path>]
               doctor
               login --repo-root <path> --pid <existing Vega pid>
               list-cases [--json]
@@ -147,7 +147,10 @@ public static class Program
         var rebuild = options.ContainsKey("--rebuild");
 
         var probe = TargetProbe.Probe(repoRoot, configuration);
-        var registry = CaseRegistry.Load(autoTestRoot);
+        var registryPath = options.GetValueOrDefault("--registry");
+        var registry = string.IsNullOrWhiteSpace(registryPath)
+            ? CaseRegistry.Load(autoTestRoot)
+            : CaseRegistry.LoadFile(registryPath);
         var testCase = caseArg is not null
             ? registry.Cases.FirstOrDefault(c => c.Id == caseArg)
             : CaseRegistry.FindByWorkItem(registry, workItemId, probe.GitCommit);

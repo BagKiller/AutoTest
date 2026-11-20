@@ -1,0 +1,86 @@
+{
+  "schemaVersion": "1.0",
+  "runId": "20261119T080852Z_wi3804_3e71be7",
+  "workItemId": 3804,
+  "caseId": "wi3804-lot-recipe-filter",
+  "verdict": "FAIL",
+  "verdictReason": "ASSERTION_FAILED: 1 条断言失败",
+  "verdictCode": "ASSERTION_FAILED",
+  "startedAt": "2026-11-19T16:08:52+08:00",
+  "finishedAt": "2026-11-19T16:09:36+08:00",
+  "durationMs": 44066,
+  "target": {
+    "repoRoot": "C:\\AutoTest\\workspaces\\manual-20261111",
+    "gitCommit": "58606ec9c84080feb715145c8100262097b60ef0",
+    "gitBranch": "HEAD",
+    "gitDirty": false,
+    "vegaExe": "C:\\AutoTest\\workspaces\\manual-20261111\\Vega\\bin\\Debug\\net8.0-windows10.0.19041.0\\win-x64\\Vega.exe",
+    "vegaExeBuiltAt": "2026-11-19T16:00:47+08:00",
+    "rebuilt": false,
+    "builtFromCurrentSource": false
+  },
+  "channels": {
+    "l1Api": {
+      "available": false,
+      "baseUrl": "http://localhost:18901/vega-agent/",
+      "reason": "用例未产出 oracle-crosscheck 断言（本次层: uia）"
+    },
+    "l2Uia": {
+      "available": true,
+      "baseUrl": null,
+      "reason": null
+    },
+    "assertions": {
+      "available": true,
+      "baseUrl": null,
+      "reason": null
+    }
+  },
+  "assertions": [
+    {
+      "id": "filter-match",
+      "kind": "UI",
+      "description": "输入部分路径后列表只保留匹配项",
+      "expected": "count<5 and all contain 'Default Recipe'",
+      "actual": "count=2; items=Default Recipe | JRH_EPI_Particle_dual",
+      "delta": null,
+      "tolerance": null,
+      "result": "FAIL"
+    },
+    {
+      "id": "filter-clear",
+      "kind": "UI",
+      "description": "清空输入后恢复全量列表",
+      "expected": "count>=5",
+      "actual": "count=5",
+      "delta": null,
+      "tolerance": null,
+      "result": "PASS"
+    }
+  ],
+  "summary": {
+    "total": 2,
+    "passed": 1,
+    "failed": 1,
+    "skipped": 0
+  },
+  "tests": [
+    {
+      "name": "Vega.AutoTest.L2.WorkItem3804L2.RecipeComboFiltersByTypedText",
+      "outcome": "Passed",
+      "durationMs": 33058,
+      "message": null
+    }
+  ],
+  "evidence": {
+    "dir": "C:\\AutoTest\\AutoTest\\VegaAutoTest\\analysis\\cli-drill-20261111\\runner\\20261119T080852Z_wi3804_3e71be7",
+    "files": [
+      "uia/trx/uia.trx",
+      "uia/trx/uia.testhost.log",
+      "uia/ui-snapshot.json",
+      "uia/ui-snapshot.png",
+      "report.md"
+    ]
+  },
+  "exitCode": 1
+}

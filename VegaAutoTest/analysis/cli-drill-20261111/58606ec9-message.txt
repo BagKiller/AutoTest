@@ -1,0 +1,22 @@
+﻿commit 58606ec9c84080feb715145c8100262097b60ef0
+Author:     Han, Wang <Han, Wang>
+AuthorDate: Wed Nov 11 16:39:48 2026 +0800
+Commit:     Ma, Junyan <Ma, Junyan>
+CommitDate: Wed Nov 11 16:39:48 2026 +0800
+
+    已合并 PR 5090: feat: Vega100 支持 Edge Detector 加装（第二张 NI 卡 + 边缘数据源可切）
+    
+    实现 WI #3779：Vega100 加装被动 Edge Detector（接收器）+ 第二张同型号 NI 采集卡，边缘/对位数据源可在暗场通道（现状）与边缘检测器（逻辑通道 9999，第二张卡）间按机台配置切换。
+    
+    要点：
+    - HasEdgeDetector 能力 token（Vega100-PIC-ED / Vega100-Coherent-ED profile；装机向导 LaserType 页四选一）
+    - ComponentConfig DAQDevice_2 双条目（Tool/Simulator × Vega100 × token）；DataCollectorLiteVega100 经 IIndex 可选挂卡 2，无 token 机器 null 旁路、逐日志与现状一致
+    - DAQDevice_2 段三级 ValidOn 扩为 Vega200|HasEdgeDetector（纯 OR 追加）；DAQ Type Channel_1 同名双条目（V200 系 [2,9] / V100+ED 空集，9999 走 Channel_2）
+    - Edge Detection 新增 NotchDataSource（DarkField|EdgeDetector，缺省 DarkField）；ED 源跳过暗场家族解析/fan-out/加采/AutoZero，Inline 与 Dedicated 预扫均支持
+    - NICardDevice 单物理通道 edge 转发经 EdgeForwardPolicy token+窗长守卫（无 token 恒放行，V200/300/500 与非加装 V100 零行为变化）
+    - 单测：NotchSourceResolverTests 9/9、EdgeForwardPolicyTests 12/12
+    - Living SPEC：decision 0025 + component-composition/data-collector/wafer-run 三模块 state 同步
+    
+    剩余验证（装机/机器阶段）：Sim 矩阵（计划 §7）、Inno Setup 编译、真机 V200 inline 单 9999 回归。
+    
+    相关工作项: #3779
